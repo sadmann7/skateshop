@@ -6,13 +6,12 @@ export const siteConfig = {
     "An open source e-commerce skateshop build with everything new in Next.js",
   url: "https://skateshop.vercel.app/",
   ogImage: "https://skateshop.vercel.app/opengraph-image.png",
-  mainNav: [
+  mainNav: [],
+  secondaryNav: [
     {
       title: "Skateboards",
       href: "/skateboards",
     },
-  ],
-  secondaryNav: [
     {
       title: "Clothing",
       href: "/clothing",

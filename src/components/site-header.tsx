@@ -1,7 +1,7 @@
 "use client";
 
 import type { SessionUser } from "@/types";
-import { signOut } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -92,7 +92,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
               <Button
                 aria-label="Sign in"
                 size="sm"
-                onClick={() => router.push("/login")}
+                onClick={() => void signIn("google")}
               >
                 Sign In
               </Button>
