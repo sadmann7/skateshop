@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  '@hookform/resolvers':
+    specifier: ^3.1.0
+    version: 3.1.0(react-hook-form@7.43.9)
   '@next-auth/prisma-adapter':
     specifier: ^1.0.5
     version: 1.0.5(@prisma/client@4.11.0)(next-auth@4.21.0)
@@ -16,6 +19,9 @@ dependencies:
   '@radix-ui/react-dropdown-menu':
     specifier: ^2.0.4
     version: 2.0.4(@types/react@18.0.28)(react-dom@18.2.0)(react@18.2.0)
+  '@radix-ui/react-label':
+    specifier: ^2.0.1
+    version: 2.0.1(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-navigation-menu':
     specifier: ^1.1.2
     version: 1.1.2(react-dom@18.2.0)(react@18.2.0)
@@ -25,6 +31,9 @@ dependencies:
   '@t3-oss/env-nextjs':
     specifier: ^0.2.1
     version: 0.2.1(zod@3.21.4)
+  '@uploadthing/react':
+    specifier: ^2.0.1
+    version: 2.0.1(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@2.0.1)
   '@vercel/og':
     specifier: ^0.5.4
     version: 0.5.4
@@ -55,6 +64,12 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  react-dropzone:
+    specifier: ^14.2.3
+    version: 14.2.3(react@18.2.0)
+  react-hook-form:
+    specifier: ^7.43.9
+    version: 7.43.9(react@18.2.0)
   react-hot-toast:
     specifier: ^2.4.1
     version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
@@ -64,6 +79,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.5
     version: 1.0.5(tailwindcss@3.3.0)
+  uploadthing:
+    specifier: ^2.0.1
+    version: 2.0.1
   zod:
     specifier: ^3.21.4
     version: 3.21.4
@@ -378,6 +396,14 @@ packages:
       use-isomorphic-layout-effect: 1.1.2(@types/react@18.0.28)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /@hookform/resolvers@3.1.0(react-hook-form@7.43.9):
+    resolution: {integrity: sha512-z0A8K+Nxq+f83Whm/ajlwE6VtQlp/yPHZnXw7XWVPIGm1Vx0QV8KThU3BpbBRfAZ7/dYqCKKBNnQh85BkmBKkA==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
+    dependencies:
+      react-hook-form: 7.43.9(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.8:
@@ -869,6 +895,18 @@ packages:
       '@babel/runtime': 7.21.5
       '@radix-ui/react-use-layout-effect': 1.0.0(react@18.2.0)
       react: 18.2.0
+    dev: false
+
+  /@radix-ui/react-label@2.0.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-qcfbS3B8hTYmEO44RNcXB6pegkxRsJIbdxTMu0PEX0Luv5O2DvTIwwVYxQfUwLpM88EL84QRPLOLgwUSApMsLQ==}
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      '@babel/runtime': 7.21.5
+      '@radix-ui/react-primitive': 1.0.2(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@radix-ui/react-menu@2.0.4(@types/react@18.0.28)(react-dom@18.2.0)(react@18.2.0):
@@ -1367,6 +1405,18 @@ packages:
       eslint-visitor-keys: 3.4.0
     dev: true
 
+  /@uploadthing/react@2.0.1(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@2.0.1):
+    resolution: {integrity: sha512-wWqQBdFwZkIqlfwUledhzosT0bPrKuC/dS3Vx8iHRS3XsTugEroBEe5wU4bptXNkLk8C9yic/6hu+7lihDgWYg==}
+    peerDependencies:
+      react: ^17.0.2 || ^18.0.0
+      react-dropzone: ^14.2.3
+      uploadthing: 2.0.1
+    dependencies:
+      react: 18.2.0
+      react-dropzone: 14.2.3(react@18.2.0)
+      uploadthing: 2.0.1
+    dev: false
+
   /@vercel/og@0.5.4:
     resolution: {integrity: sha512-o4Zjgw66HPtfGFYG4CFcKfnCcK6qCY+3FC6g22Z1SdAN5jN8XjbHCh3hRVHH5IGBQp8mxH941EcH53KimAm+wg==}
     engines: {node: '>=16'}
@@ -1503,6 +1553,11 @@ packages:
   /ast-types-flow@0.0.7:
     resolution: {integrity: sha512-eBvWn1lvIApYMhzQMsu9ciLfkBY499mFZlNqG+/9WR7PVlroQw0vG30cOQQbaKz3sCEc44TAOu2ykzqXSNnwag==}
     dev: true
+
+  /attr-accept@2.2.2:
+    resolution: {integrity: sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==}
+    engines: {node: '>=4'}
+    dev: false
 
   /autoprefixer@10.4.14(postcss@8.4.21):
     resolution: {integrity: sha512-FQzyfOsTlwVzjHxKEqRIAdJx9niO6VCBCoEwax/VLSoQF29ggECcPuBqUMZ+u8jCZOPSy8b8/8KnuFbp0SaFZQ==}
@@ -2352,6 +2407,13 @@ packages:
     dependencies:
       flat-cache: 3.0.4
     dev: true
+
+  /file-selector@0.6.0:
+    resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
+    engines: {node: '>= 12'}
+    dependencies:
+      tslib: 2.5.0
+    dev: false
 
   /fill-range@7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
@@ -3532,7 +3594,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /punycode@2.3.0:
     resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}
@@ -3556,6 +3617,27 @@ packages:
       scheduler: 0.23.0
     dev: false
 
+  /react-dropzone@14.2.3(react@18.2.0):
+    resolution: {integrity: sha512-O3om8I+PkFKbxCukfIR3QAGftYXDZfOE2N1mr/7qebQJHs7U+/RSL/9xomJNpRg9kM5h9soQSdf0Gc7OHF5Fug==}
+    engines: {node: '>= 10.13'}
+    peerDependencies:
+      react: '>= 16.8 || 18.0.0'
+    dependencies:
+      attr-accept: 2.2.2
+      file-selector: 0.6.0
+      prop-types: 15.8.1
+      react: 18.2.0
+    dev: false
+
+  /react-hook-form@7.43.9(react@18.2.0):
+    resolution: {integrity: sha512-AUDN3Pz2NSeoxQ7Hs6OhQhDr6gtF9YRuutGDwPQqhSUAHJSgGl2VeY3qN19MG0SucpjgDiuMJ4iC5T5uB+eaNQ==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-hot-toast@2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==}
     engines: {node: '>=10'}
@@ -3572,7 +3654,6 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-    dev: true
 
   /react-remove-scroll-bar@2.3.4(@types/react@18.0.28)(react@18.2.0):
     resolution: {integrity: sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==}
@@ -4100,6 +4181,10 @@ packages:
       browserslist: 4.21.5
       escalade: 3.1.1
       picocolors: 1.0.0
+
+  /uploadthing@2.0.1:
+    resolution: {integrity: sha512-KjOfJv8yBndB91UI1n0y2VoBQ3OveplAIB0poyx7lo1CSX6cIOD5y9PFtsD0in+g5WWqakdOj8YKJwUOfvtd9w==}
+    dev: false
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}

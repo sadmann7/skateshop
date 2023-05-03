@@ -1,13 +1,15 @@
-import { type GetServerSidePropsContext } from "next";
+import { type GetServerSidePropsContext } from "next"
+import { env } from "@/env.mjs"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { type USER_ROLE } from "@prisma/client"
 import {
   getServerSession,
-  type NextAuthOptions,
   type DefaultSession,
-} from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "@/env.mjs";
-import { prisma } from "@/lib/db";
+  type NextAuthOptions,
+} from "next-auth"
+import GoogleProvider from "next-auth/providers/google"
+
+import { prisma } from "@/lib/db"
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -18,16 +20,20 @@ import { prisma } from "@/lib/db";
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id: string;
+      id: string
       // ...other properties
-      // role: UserRole;
-    } & DefaultSession["user"];
+      role: USER_ROLE
+      active: boolean
+      seller: boolean
+    } & DefaultSession["user"]
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    // ...other properties
+    role: USER_ROLE
+    active: boolean
+    seller: boolean
+  }
 }
 
 /**
@@ -61,7 +67,7 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
-};
+}
 
 /**
  * Wrapper for `getServerSession` so that you don't need to import the `authOptions` in every file.
@@ -69,8 +75,8 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
+  req: GetServerSidePropsContext["req"]
+  res: GetServerSidePropsContext["res"]
 }) => {
-  return getServerSession(ctx.req, ctx.res, authOptions);
-};
+  return getServerSession(ctx.req, ctx.res, authOptions)
+}
