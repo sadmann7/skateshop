@@ -2,11 +2,11 @@ import { getCurrentUser } from "@/lib/session"
 import { SiteFooter } from "@/components/layouts/site-footer"
 import { SiteHeader } from "@/components/layouts/site-header"
 
-interface LofiLayoutProps {
+interface DashboardLayout {
   children: React.ReactNode
 }
 
-export default async function LofiLayout({ children }: LofiLayoutProps) {
+export default async function DashboardLayout({ children }: DashboardLayout) {
   const user = await getCurrentUser()
 
   return (

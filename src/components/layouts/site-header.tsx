@@ -14,8 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Combobox } from "@/components/combobox"
 import { Icons } from "@/components/icons"
-import { MainNav } from "@/components/main-nav"
+import { MainNav } from "@/components/layouts/main-nav"
 
 interface SiteHeaderProps {
   user: Pick<SessionUser, "name" | "image" | "email">
@@ -28,6 +29,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         <MainNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
+            <Combobox />
             <Button
               aria-label="Cart"
               variant="ghost"
@@ -64,13 +66,13 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/stores">
+                    <Link href="/account/stores">
                       <Icons.store className="mr-2 h-4 w-4" />
                       Stores
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings">
+                    <Link href="/account/settings">
                       <Icons.settings className="mr-2 h-4 w-4" />
                       Settings
                     </Link>
