@@ -8,8 +8,8 @@ import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-interface AddProductFormProps {
-  storeId: string
+interface EditProductFOrmProps {
+  productId: string
 }
 
 const schema = z.object({
@@ -31,8 +31,8 @@ const schema = z.object({
 })
 type Inputs = z.infer<typeof schema>
 
-export function AddProductForm({ storeId }: AddProductFormProps) {
-  console.log(storeId)
+export function EditProductForm({ productId }: EditProductFOrmProps) {
+  console.log(productId)
 
   // react-hook-form
   const { register, handleSubmit, formState, control, setValue, watch, reset } =

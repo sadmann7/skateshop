@@ -8,7 +8,7 @@ import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-interface AddProductFormProps {
+interface EditStoreFormProps {
   storeId: string
 }
 
@@ -31,7 +31,7 @@ const schema = z.object({
 })
 type Inputs = z.infer<typeof schema>
 
-export function AddProductForm({ storeId }: AddProductFormProps) {
+export function EditStoreForm({ storeId }: EditStoreFormProps) {
   console.log(storeId)
 
   // react-hook-form

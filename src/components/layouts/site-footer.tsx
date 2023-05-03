@@ -9,8 +9,8 @@ import { ThemeToggle } from "@/components/layouts/theme-toggle"
 export function SiteFooter() {
   return (
     <footer className="w-full bg-background">
-      <div className="container flex flex-col items-center justify-between space-y-1 border-t py-5 sm:h-16 sm:flex-row sm:py-0">
-        <div className="text-center text-sm text-muted-foreground sm:text-base">
+      <div className="container flex flex-col items-center justify-between space-y-1 border-t py-5 md:h-16 md:flex-row md:py-0">
+        <div className="text-center text-base text-muted-foreground">
           Learn to do a{" "}
           <a
             aria-label="Kickflip tutorial on YouTube"

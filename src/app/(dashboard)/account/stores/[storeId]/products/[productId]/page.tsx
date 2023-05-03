@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { prisma } from "@/lib/db"
-import { EditStoreForm } from "@/components/forms/edit-store-form"
+import { AddProductForm } from "@/components/forms/add-product-form"
+import { EditProductForm } from "@/components/forms/edit-product-form"
 import { Header } from "@/components/header"
 
 export const metadata: Metadata = {
@@ -10,36 +11,33 @@ export const metadata: Metadata = {
   description: "Manage your store and products.",
 }
 
-interface EditStorePageProps {
+interface EditProductPageProps {
   params: {
-    storeId: string
+    productId: string
   }
 }
 
-export default async function EditStorePage({ params }: EditStorePageProps) {
-  const { storeId } = params
+export default async function EditProductPage({
+  params,
+}: EditProductPageProps) {
+  const { productId } = params
 
-  const store = await prisma.store.findUnique({
+  const product = await prisma.product.findUnique({
     where: {
-      id: storeId,
+      id: productId,
     },
     select: {
       id: true,
-      products: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          category: true,
-          price: true,
-          quantity: true,
-          inventory: true,
-        },
-      },
+      name: true,
+      description: true,
+      category: true,
+      price: true,
+      quantity: true,
+      inventory: true,
     },
   })
 
-  if (!store) {
+  if (!product) {
     notFound()
   }
 
@@ -49,7 +47,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
         title="Manage Store"
         description="Manage your store and products."
       />
-      <EditStoreForm storeId={store.id} />
+      <EditProductForm productId={product.id} />
     </section>
   )
 }
