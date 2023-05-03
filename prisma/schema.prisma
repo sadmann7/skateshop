@@ -48,8 +48,14 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    role          USER_ROLE @default(USER)
+    active        Boolean   @default(true)
+    seller        Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
     accounts      Account[]
     sessions      Session[]
+    stores        Store[]
 }
 
 model VerificationToken {
@@ -58,4 +64,43 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+enum USER_ROLE {
+    USER
+    ADMIN
+}
+
+model Store {
+    id          String    @id @default(cuid())
+    name        String
+    description String?   @db.Text
+    image       String?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId      String
+    products    Product[]
+}
+
+model Product {
+    id          String           @id @default(cuid())
+    name        String
+    description String?          @db.Text
+    price       Int
+    images      Json?
+    category    PRODUCT_CATEGORY @default(SKATEBOARD)
+    quantity    Int              @default(1)
+    rating      Int              @default(0)
+    createdAt   DateTime         @default(now())
+    updatedAt   DateTime         @updatedAt
+    store       Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
+    storeId     String
+}
+
+enum PRODUCT_CATEGORY {
+    SKATEBOARD
+    CLOTHING
+    SHOES
+    ACCESSORIES
 }

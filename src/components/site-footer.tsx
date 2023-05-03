@@ -1,9 +1,10 @@
-import Link from "next/link";
+import Link from "next/link"
 
-import { siteConfig } from "@/config/site";
-import { Icons } from "@/components/icons";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function SiteFooter() {
   return (
@@ -36,8 +37,9 @@ export function SiteFooter() {
               <span className="sr-only">GitHub</span>
             </div>
           </Link>
+          <ThemeToggle />
         </div>
       </div>
     </footer>
-  );
+  )
 }

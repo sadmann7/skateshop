@@ -1,38 +1,41 @@
-"use client";
+"use client"
 
-import type { SessionUser } from "@/types";
-import { signIn, signOut } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import Link from "next/link"
+import type { SessionUser } from "@/types"
+import { signIn, signOut } from "next-auth/react"
 
-import { Icons } from "@/components/icons";
-import { MainNav } from "@/components/main-nav";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { siteConfig } from "@/config/site";
+} from "@/components/ui/dropdown-menu"
+import { Icons } from "@/components/icons"
+import { MainNav } from "@/components/main-nav"
 
 interface SiteHeaderProps {
-  user: Pick<SessionUser, "name" | "image" | "email">;
+  user: Pick<SessionUser, "name" | "image" | "email">
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
-  const router = useRouter();
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
         <MainNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
-            <ThemeToggle />
+            <Button
+              aria-label="Cart"
+              variant="ghost"
+              size="sm"
+              className="w-9 px-0"
+            >
+              <Icons.cart className="h-6 w-6" />
+            </Button>
             {user.name && user.image && user.email ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -61,9 +64,9 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/chats">
-                      <Icons.message className="mr-2 h-4 w-4" />
-                      Chats
+                    <Link href="/stores">
+                      <Icons.store className="mr-2 h-4 w-4" />
+                      Stores
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -77,10 +80,8 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     aria-label="Sign out"
                     className="cursor-pointer"
                     onSelect={(e) => {
-                      e.preventDefault();
-                      void signOut({
-                        callbackUrl: `${window.location.origin}/login`,
-                      });
+                      e.preventDefault()
+                      void signOut()
                     }}
                   >
                     <Icons.logout className="mr-2 h-4 w-4" />
@@ -101,5 +102,5 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         </div>
       </div>
     </header>
-  );
+  )
 }

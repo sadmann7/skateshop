@@ -1,4 +1,4 @@
-export type SiteConfig = typeof siteConfig;
+export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
   name: "Skateshop",
@@ -6,8 +6,7 @@ export const siteConfig = {
     "An open source e-commerce skateshop build with everything new in Next.js",
   url: "https://skateshop.vercel.app/",
   ogImage: "https://skateshop.vercel.app/opengraph-image.png",
-  mainNav: [],
-  secondaryNav: [
+  mainNav: [
     {
       title: "Skateboards",
       href: "/skateboards",
@@ -24,9 +23,13 @@ export const siteConfig = {
       title: "Accessories",
       href: "/accessories",
     },
+    {
+      title: "Build a Board",
+      href: "/build-a-board",
+    },
   ],
   links: {
     twitter: "https://twitter.com/sadmann17",
     github: "https://github.com/sadmann7/skateshop",
   },
-};
+}

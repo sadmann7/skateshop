@@ -1,8 +1,9 @@
-import type { NavItem } from "@/types";
-import Link from "next/link";
+import Link from "next/link"
+import type { NavItem } from "@/types"
 
-import { Icons } from "@/components/icons";
-import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,19 +11,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
+} from "@/components/ui/dropdown-menu"
+import { Icons } from "@/components/icons"
 
 interface MainNavProps {
-  items?: NavItem[];
+  items?: NavItem[]
 }
 
 export function MainNav({ items }: MainNavProps) {
   return (
     <div className="flex gap-6 md:gap-10">
       <Link href="/" className="hidden items-center space-x-2 md:flex">
-        <Icons.logo className="h-6 w-6" />
+        <Icons.logo className="h-8 w-8" />
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}
         </span>
@@ -98,5 +98,5 @@ export function MainNav({ items }: MainNavProps) {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  );
+  )
 }

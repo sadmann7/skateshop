@@ -13,6 +13,8 @@ import {
   Moon,
   Plus,
   Settings,
+  ShoppingBag,
+  ShoppingCart,
   Sliders,
   SunMedium,
   Trash,
@@ -23,9 +25,9 @@ import {
   X,
   type Icon as LucideIcon,
   type LucideProps,
-} from "lucide-react";
+} from "lucide-react"
 
-export type Icon = LucideIcon;
+export type Icon = LucideIcon
 
 export const Icons = {
   sun: SunMedium,
@@ -50,10 +52,11 @@ export const Icons = {
   volumne: Volume2,
   volumneMute: VolumeX,
   message: MessageSquare,
+  cart: ShoppingCart,
+  store: ShoppingBag,
   logo: (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className="icon icon-tabler icon-tabler-skateboard"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
@@ -101,4 +104,4 @@ export const Icons = {
       ></path>
     </svg>
   ),
-};
+}
