@@ -21,5 +21,5 @@ export function formatPrice(price: number) {
 }
 
 export function formatDate(date: Date) {
-  return dayjs(date).format("MMMM D, YYYY, hh:mm a")
+  return dayjs(date).format("MMMM D, YYYY")
 }

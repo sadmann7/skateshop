@@ -30,9 +30,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Icons } from "@/components/icons"
 
-interface Props<TData, TValue = unknown> {
+interface ReactTableProps<TData, TValue = unknown> {
   tableTitle?: React.ReactNode
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
@@ -41,9 +48,11 @@ interface Props<TData, TValue = unknown> {
   isError?: boolean
   state?: {
     pagination?: PaginationState
+    globalFilter?: string
   }
   setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>
   manualPagination?: boolean
+  setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>
   disableGlobalFilter?: boolean
   disableColumnVisibility?: boolean
   itemsPerPageOptions?: number[]
@@ -80,11 +89,19 @@ const fuzzyFilter: FilterFn<unknown> = (
 }
 
 export function ReactTable<TData, TValue = unknown>(
-  props: Props<TData, TValue>
+  props: ReactTableProps<TData, TValue>
 ) {
   const { manualPagination, state } = props
 
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: "createdAt",
+      desc: true,
+    },
+  ])
+  const [globalFilter, setGlobalFilter] = React.useState<string>(
+    state?.globalFilter ?? ""
+  )
 
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
@@ -103,6 +120,8 @@ export function ReactTable<TData, TValue = unknown>(
     data: props.data,
     state: {
       sorting,
+      pagination,
+      globalFilter,
     },
     filterFns: { fuzzy: fuzzyFilter },
     pageCount:
@@ -115,6 +134,7 @@ export function ReactTable<TData, TValue = unknown>(
     manualPagination,
     onSortingChange: setSorting,
     onPaginationChange: props.setPagination ?? setPagination,
+    onGlobalFilterChange: props.setGlobalFilter ?? setGlobalFilter,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
@@ -130,10 +150,24 @@ export function ReactTable<TData, TValue = unknown>(
       <div className="flex py-4">
         <h2 className="text-2xl">{props.tableTitle}</h2>
         <div className="ml-auto mr-0 flex gap-4">
+          {props.disableGlobalFilter ? null : (
+            <div>
+              <Label htmlFor="globalFilterInput" className="sr-only">
+                Search any field
+              </Label>
+              <Input
+                id="globalFilterInput"
+                placeholder="Search.."
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                className="w-40 border border-muted"
+              />
+            </div>
+          )}
           {props.disableColumnVisibility ? null : (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline">
                   Show Columns
                   <Icons.chevronDown
                     className="-mr-1 ml-2 h-5 w-5"
@@ -141,10 +175,11 @@ export function ReactTable<TData, TValue = unknown>(
                   />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-40">
+              <PopoverContent align="end" className="w-40">
                 <div className="grid gap-4">
                   <div className="flex items-center space-x-2">
                     <input
+                      id="toggleAllColumns"
                       type="checkbox"
                       {...{
                         checked: table.getIsAllColumnsVisible(),
@@ -335,22 +370,32 @@ export function ReactTable<TData, TValue = unknown>(
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               table.setPageIndex(page)
             }}
-            className="h-auto w-16 rounded-none py-1"
+            className="h-9 w-16"
           />
         </span>
-        <select
-          className="py-1"
-          value={table.getState().pagination.pageSize}
-          onChange={(e) => {
-            table.setPageSize(Number(e.target.value))
+        <Select
+          value={table.getState().pagination.pageSize.toString()}
+          onValueChange={(value) => {
+            table.setPageSize(Number(value))
+            setPagination({
+              ...table.getState().pagination,
+              pageSize: Number(value),
+            })
           }}
         >
-          {(props.itemsPerPageOptions ?? [10, 20, 30, 40]).map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="h-9 w-28">
+            <SelectValue
+              placeholder={`Show ${table.getState().pagination.pageSize}`}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            {(props.itemsPerPageOptions ?? [10, 20, 30, 40]).map((pageSize) => (
+              <SelectItem key={pageSize} value={pageSize.toString()}>
+                Show {pageSize}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </>
   )
@@ -388,8 +433,10 @@ function Filter<TData, TValue = unknown>({
       onChange={(value) =>
         column.setFilterValue((old: [number, number]) => [value, old?.[1]])
       }
-      placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-      className="mt-2 w-36 rounded-none text-sm shadow"
+      placeholder={`Range (${column.getFacetedMinMaxValues()?.[0] ?? ""} - ${
+        column.getFacetedUniqueValues().size
+      })`}
+      className="mt-2.5 w-36 rounded-none text-sm shadow"
     />
   ) : (
     <>

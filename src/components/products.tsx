@@ -102,7 +102,6 @@ export function Products({ storeId }: ProductsProps) {
             href={`/account/stores/${storeId}/products/add`}
             className={buttonVariants({
               variant: "outline",
-              size: "sm",
             })}
           >
             Add Product
@@ -121,7 +120,7 @@ export function Products({ storeId }: ProductsProps) {
       isError={productsQuery.isError}
       manualPagination
       rowHoverEffect
-      disableGlobalFilter
+      disableGlobalFilter={false}
       bodyRowProps={(row) => ({
         onClick: () => {
           const productId = row.original.id
