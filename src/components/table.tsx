@@ -1,12 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type Dispatch,
-  type HTMLAttributes,
-  type ReactNode,
-  type SetStateAction,
-} from "react"
+import * as React from "react"
 import { rankItem } from "@tanstack/match-sorter-utils"
 import {
   flexRender,
@@ -32,7 +24,7 @@ import {
 import { cn } from "@/lib/utils"
 
 interface Props<TData, TValue = unknown> {
-  tableTitle?: ReactNode
+  tableTitle?: React.ReactNode
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   isLoading?: boolean
@@ -45,11 +37,11 @@ interface Props<TData, TValue = unknown> {
     columnVisibility?: VisibilityState
     globalFilter?: string
   }
-  setSorting?: Dispatch<SetStateAction<SortingState>>
-  setColumnFilters?: Dispatch<SetStateAction<ColumnFiltersState>>
-  setPagination?: Dispatch<SetStateAction<PaginationState>>
-  setColumnVisibility?: Dispatch<SetStateAction<VisibilityState>>
-  setGlobalFilter?: Dispatch<SetStateAction<string>>
+  setSorting?: React.Dispatch<React.SetStateAction<SortingState>>
+  setColumnFilters?: React.Dispatch<React.SetStateAction<ColumnFiltersState>>
+  setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>
+  setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>
+  setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>
   manualSorting?: boolean
   manualFiltering?: boolean
   manualPagination?: boolean
@@ -57,16 +49,16 @@ interface Props<TData, TValue = unknown> {
   disableColumnVisibility?: boolean
   itemsPerPageOptions?: number[]
   itemsCount?: number
-  headerRowProps?: HTMLAttributes<HTMLTableRowElement>
-  headerCellProps?: HTMLAttributes<HTMLTableCellElement>
+  headerRowProps?: React.HTMLAttributes<HTMLTableRowElement>
+  headerCellProps?: React.HTMLAttributes<HTMLTableCellElement>
   bodyRowProps?:
-    | ((row: Row<TData>) => HTMLAttributes<HTMLTableRowElement>)
-    | HTMLAttributes<HTMLTableRowElement>
-  bodyCellProps?: HTMLAttributes<HTMLTableCellElement>
-  footerRowProps?: HTMLAttributes<HTMLTableRowElement>
-  footerCellProps?: HTMLAttributes<HTMLTableCellElement>
-  ascendingSortIndecator?: ReactNode
-  descendingSortIndecator?: ReactNode
+    | ((row: Row<TData>) => React.HTMLAttributes<HTMLTableRowElement>)
+    | React.HTMLAttributes<HTMLTableRowElement>
+  bodyCellProps?: React.HTMLAttributes<HTMLTableCellElement>
+  footerRowProps?: React.HTMLAttributes<HTMLTableRowElement>
+  footerCellProps?: React.HTMLAttributes<HTMLTableCellElement>
+  ascendingSortIndecator?: React.ReactNode
+  descendingSortIndecator?: React.ReactNode
   rowHoverEffect?: boolean
 }
 
@@ -87,23 +79,25 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value: string, addMeta) => {
 export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
   const { manualFiltering, manualSorting, manualPagination, state } = props
 
-  const [sorting, setSorting] = useState<SortingState>(
+  const [sorting, setSorting] = React.useState<SortingState>(
     state?.sorting ? [...state?.sorting] : []
   )
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     state?.columnFilters ? [...state?.columnFilters] : []
   )
-  const [globalFilter, setGlobalFilter] = useState<string>(
+  const [globalFilter, setGlobalFilter] = React.useState<string>(
     state?.globalFilter ?? ""
   )
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    state?.columnVisibility ? { ...state?.columnVisibility } : {}
-  )
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: state?.pagination?.pageIndex ?? 0,
-    pageSize: state?.pagination?.pageSize ?? 10,
-  })
-  const pagination = useMemo(
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>(
+      state?.columnVisibility ? { ...state?.columnVisibility } : {}
+    )
+  const [{ pageIndex, pageSize }, setPagination] =
+    React.useState<PaginationState>({
+      pageIndex: state?.pagination?.pageIndex ?? 0,
+      pageSize: state?.pagination?.pageSize ?? 10,
+    })
+  const pagination = React.useMemo(
     () => ({
       pageIndex,
       pageSize,
@@ -404,7 +398,7 @@ const Filter = <TData, TValue = unknown>({
 
   const columnFilterValue = column.getFilterValue()
 
-  const sortedUniqueValues = useMemo(
+  const sortedUniqueValues = React.useMemo(
     () =>
       typeof firstValue === "number"
         ? []
@@ -464,13 +458,13 @@ const DebouncedInput = ({
   onChange: (value: string | number) => void
   debounce?: number
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) => {
-  const [value, setValue] = useState(initialValue)
+  const [value, setValue] = React.useState(initialValue)
 
-  useEffect(() => {
+  React.useEffect(() => {
     setValue(initialValue)
   }, [initialValue])
 
-  useEffect(() => {
+  React.useEffect(() => {
     const timeout = setTimeout(() => {
       onChange(value)
     }, debounce)
