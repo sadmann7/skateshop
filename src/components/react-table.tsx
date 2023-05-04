@@ -40,20 +40,21 @@ import {
 import { Icons } from "@/components/icons"
 
 interface ReactTableProps<TData, TValue = unknown> {
-  tableTitle?: React.ReactNode
+  tableTitle?: string
+  addNewButton?: React.ReactNode
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   isLoading?: boolean
   isRefetching?: boolean
   isError?: boolean
   state?: {
-    pagination?: PaginationState
     globalFilter?: string
+    pagination?: PaginationState
   }
-  setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>
-  manualPagination?: boolean
   setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>
   disableGlobalFilter?: boolean
+  setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>
+  manualPagination?: boolean
   disableColumnVisibility?: boolean
   itemsPerPageOptions?: number[]
   itemsCount?: number
@@ -146,24 +147,27 @@ export function ReactTable<TData, TValue = unknown>(
   })
 
   return (
-    <>
-      <div className="flex py-4">
-        <h2 className="text-2xl">{props.tableTitle}</h2>
-        <div className="ml-auto mr-0 flex gap-4">
-          {props.disableGlobalFilter ? null : (
-            <div>
-              <Label htmlFor="globalFilterInput" className="sr-only">
-                Search any field
-              </Label>
-              <Input
-                id="globalFilterInput"
-                placeholder="Search.."
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-40 border border-muted"
-              />
-            </div>
-          )}
+    <div className="space-y-2.5 overflow-hidden">
+      <div className="flex flex-col space-y-2">
+        {props.tableTitle && <h2>{props.tableTitle}</h2>}
+        <div className="flex items-center justify-between space-x-4 overflow-x-auto whitespace-nowrap py-2.5">
+          <div className="flex items-center space-x-4">
+            {props.addNewButton && props.addNewButton}
+            {props.disableGlobalFilter ? null : (
+              <div>
+                <Label htmlFor="globalFilterInput" className="sr-only">
+                  Search any field
+                </Label>
+                <Input
+                  id="globalFilterInput"
+                  placeholder="Search.."
+                  value={globalFilter}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                  className="w-40 border border-muted"
+                />
+              </div>
+            )}
+          </div>
           {props.disableColumnVisibility ? null : (
             <Popover>
               <PopoverTrigger asChild>
@@ -220,7 +224,7 @@ export function ReactTable<TData, TValue = unknown>(
           )}
         </div>
       </div>
-      <div className="overflow-x-auto overflow-y-hidden pb-1">
+      <div className="overflow-x-auto overflow-y-hidden py-2.5">
         <table className="w-full border-collapse border">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -287,35 +291,33 @@ export function ReactTable<TData, TValue = unknown>(
               </tr>
             ) : null}
             {!(props.isLoading || props.isRefetching || props.isError)
-              ? table.getRowModel().rows.map((row) => {
-                  return (
-                    <tr
-                      className={cn(
-                        props.rowHoverEffect &&
-                          "cursor-pointer transition-colors hover:bg-muted/25"
-                      )}
-                      {...(typeof props.bodyRowProps === "function"
-                        ? props.bodyRowProps(row)
-                        : props.bodyRowProps ?? {})}
-                      key={row.id}
-                    >
-                      {row.getVisibleCells().map((cell) => {
-                        return (
-                          <td
-                            className="border-collapse border p-2"
-                            {...(props.bodyCellProps ?? {})}
-                            key={cell.id}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })
+              ? table.getRowModel().rows.map((row) => (
+                  <tr
+                    className={cn(
+                      props.rowHoverEffect &&
+                        "cursor-pointer transition-colors hover:bg-muted/25"
+                    )}
+                    {...(typeof props.bodyRowProps === "function"
+                      ? props.bodyRowProps(row)
+                      : props.bodyRowProps ?? {})}
+                    key={row.id}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <td
+                          className="border-collapse border p-2"
+                          {...(props.bodyCellProps ?? {})}
+                          key={cell.id}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))
               : null}
             {!(props.isLoading || props.isRefetching || props.isError) &&
             props.data.length === 0 ? (
@@ -333,36 +335,33 @@ export function ReactTable<TData, TValue = unknown>(
           </tbody>
         </table>
       </div>
-      <div className="mt-5 flex w-full flex-wrap items-center gap-2 text-sm md:text-base">
-        <Button
-          aria-label="Paginate back by 1 page"
-          size="sm"
-          variant="outline"
-          className="h-9 w-9 p-0"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage}
-        >
-          <Icons.chevronLeft className="h-5 w-5" aria-hidden="true" />
-        </Button>
-        <Button
-          aria-label="Paginate forward by 1 page"
-          size="sm"
-          variant="outline"
-          className="h-9 w-9 p-0"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage}
-        >
-          <Icons.chevronRight className="h-5 w-5" aria-hidden="true" />
-        </Button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </strong>
-        </span>
-        <span className="hidden items-center gap-1 md:flex">
-          | Go to page:
+      <div className="flex w-full flex-col items-center gap-5 py-4 text-base sm:flex-row">
+        <div className="flex items-center space-x-2.5">
+          <Button
+            aria-label="Paginate back by 1 page"
+            size="sm"
+            variant="outline"
+            className="h-9 w-9 p-0"
+            onClick={() => table.previousPage()}
+            disabled={props.isLoading || props.isRefetching}
+          >
+            <Icons.chevronLeft className="h-5 w-5" aria-hidden="true" />
+          </Button>
+          <Button
+            aria-label="Paginate forward by 1 page"
+            size="sm"
+            variant="outline"
+            className="h-9 w-9 p-0"
+            onClick={() => table.nextPage()}
+            disabled={
+              !table.getCanNextPage() || props.isLoading || props.isRefetching
+            }
+          >
+            <Icons.chevronRight className="h-5 w-5" aria-hidden="true" />
+          </Button>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          Go to page:
           <Input
             type="number"
             defaultValue={table.getState().pagination.pageIndex + 1}
@@ -372,7 +371,7 @@ export function ReactTable<TData, TValue = unknown>(
             }}
             className="h-9 w-16"
           />
-        </span>
+        </div>
         <Select
           value={table.getState().pagination.pageSize.toString()}
           onValueChange={(value) => {
@@ -397,7 +396,7 @@ export function ReactTable<TData, TValue = unknown>(
           </SelectContent>
         </Select>
       </div>
-    </>
+    </div>
   )
 }
 
@@ -483,7 +482,7 @@ const DebouncedInput = ({
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [debounce, onChange, value])
+  }, [value, debounce])
 
   return (
     <Input
