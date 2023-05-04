@@ -3,21 +3,13 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import type { Product } from "@prisma/client"
-import type {
-  ColumnDef,
-  ColumnFiltersState,
-  PaginationState,
-  SortingState,
-  VisibilityState,
-} from "@tanstack/react-table"
-import dayjs from "dayjs"
+import type { PRODUCT_CATEGORY, Product } from "@prisma/client"
+import { useQuery } from "@tanstack/react-query"
+import type { ColumnDef, PaginationState } from "@tanstack/react-table"
 
-import { formatPrice } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Table } from "@/components/table"
-
-type fieldValue = string | undefined
+import { formatDate, formatEnum, formatPrice } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { ReactTable } from "@/components/react-table"
 
 interface ProductsProps {
   storeId: string
@@ -26,26 +18,6 @@ interface ProductsProps {
 export function Products({ storeId }: ProductsProps) {
   const router = useRouter()
 
-  const [data, setData] = React.useState<{
-    products: Product[] | null
-    count: number
-  }>({
-    products: null,
-    count: 0,
-  })
-  const [sorting, setSorting] = React.useState<SortingState>([
-    { id: "createdAt", desc: true },
-  ])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({
-      id: false,
-      createdBy: false,
-      updatedBy: false,
-      updatedAt: false,
-    })
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
       pageIndex: 0,
@@ -61,51 +33,42 @@ export function Products({ storeId }: ProductsProps) {
 
   const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
     () => [
-      { accessorKey: "id", enableColumnFilter: false, enableSorting: false },
       { accessorKey: "name", header: "Name" },
+      {
+        accessorKey: "category",
+        header: "Category",
+        cell: ({ cell }) => formatEnum(cell.getValue() as PRODUCT_CATEGORY),
+      },
       {
         accessorKey: "price",
         header: "Price",
-        cell: ({ cell }) =>
-          cell.getValue() ? formatPrice(Number(cell.getValue())) : "-",
-        enableColumnFilter: false,
+        cell: ({ cell }) => formatPrice(cell.getValue() as number),
+      },
+      {
+        accessorKey: "quantity",
+        header: "Quantity",
+      },
+      {
+        accessorKey: "inventory",
+        header: "Inventory",
+      },
+      {
+        accessorKey: "rating",
+        header: "Rating",
       },
       {
         accessorKey: "createdAt",
         header: "Created At",
-        cell: ({ cell }) =>
-          dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a"),
-        enableColumnFilter: false,
-      },
-      {
-        accessorKey: "createdBy",
-        header: "Created By",
-        enableSorting: false,
-        enableColumnFilter: false,
-      },
-      {
-        accessorKey: "updatedAt",
-        header: "Updated At",
-        cell: ({ cell, row }) =>
-          row.getValue("updatedBy")
-            ? dayjs(cell.getValue() as Date).format("DD/MM/YYYY, hh:mm a")
-            : "-",
-        enableSorting: false,
-        enableColumnFilter: false,
-      },
-      {
-        accessorKey: "updatedBy",
-        header: "Updated By",
-        enableSorting: false,
+        cell: ({ cell }) => formatDate(cell.getValue() as Date),
         enableColumnFilter: false,
       },
     ],
     []
   )
 
-  // get paginated products from prisma
-  React.useEffect(() => {
-    async function getProducts() {
+  const productsQuery = useQuery(
+    ["products", storeId, pagination],
+    async () => {
       const response = await fetch("/api/products", {
         method: "POST",
         headers: {
@@ -115,58 +78,48 @@ export function Products({ storeId }: ProductsProps) {
           storeId,
           page: pagination.pageIndex,
           perPage: pagination.pageSize,
-          name: columnFilters.find((f) => f.id === "name")?.value as fieldValue,
-          sortBy: sorting[0]?.id as
-            | "name"
-            | "createdAt"
-            | "price"
-            | "published"
-            | undefined,
-          sortDesc: sorting[0]?.desc,
         }),
       })
+
       const { products, count } = (await response.json()) as {
         products: Product[]
         count: number
       }
-      setData({ products, count })
+      return { products, count }
+    },
+    {
+      enabled: !!storeId,
+      refetchOnWindowFocus: false,
     }
-
-    void getProducts()
-  }, [pagination, columnFilters, sorting, storeId])
+  )
 
   return (
-    <Table
+    <ReactTable
       tableTitle={
-        <>
-          {`Products (${data?.count ?? 0} entries)`}
+        <div className="flex items-center space-x-4">
+          <div>{`Products (${productsQuery.data?.count ?? 0} entries)`}</div>
           <Link
             href={`/account/stores/${storeId}/products/add`}
-            className="ml-4"
+            className={buttonVariants({
+              variant: "outline",
+              size: "sm",
+            })}
           >
-            <Button>Add product</Button>
+            Add Product
           </Link>
-        </>
+        </div>
       }
       columns={columns}
-      data={data?.products ?? []}
+      data={productsQuery.data?.products ?? []}
       state={{
-        sorting,
         pagination,
-        columnVisibility,
-        columnFilters,
       }}
-      setSorting={setSorting}
-      setColumnFilters={setColumnFilters}
-      setColumnVisibility={setColumnVisibility}
       setPagination={setPagination}
-      itemsCount={data?.count}
-      isLoading={false}
-      isRefetching={false}
-      isError={false}
-      manualFiltering
+      itemsCount={productsQuery.data?.count ?? 0}
+      isLoading={productsQuery.isLoading}
+      isRefetching={productsQuery.isFetching}
+      isError={productsQuery.isError}
       manualPagination
-      manualSorting
       rowHoverEffect
       disableGlobalFilter
       bodyRowProps={(row) => ({

@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import { rankItem } from "@tanstack/match-sorter-utils"
 import {
@@ -12,16 +14,23 @@ import {
   useReactTable,
   type Column,
   type ColumnDef,
-  type ColumnFiltersState,
   type FilterFn,
   type PaginationState,
   type Row,
   type SortingState,
   type Table,
-  type VisibilityState,
 } from "@tanstack/react-table"
 
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Icons } from "@/components/icons"
 
 interface Props<TData, TValue = unknown> {
   tableTitle?: React.ReactNode
@@ -31,19 +40,9 @@ interface Props<TData, TValue = unknown> {
   isRefetching?: boolean
   isError?: boolean
   state?: {
-    sorting?: SortingState
-    columnFilters?: ColumnFiltersState
     pagination?: PaginationState
-    columnVisibility?: VisibilityState
-    globalFilter?: string
   }
-  setSorting?: React.Dispatch<React.SetStateAction<SortingState>>
-  setColumnFilters?: React.Dispatch<React.SetStateAction<ColumnFiltersState>>
   setPagination?: React.Dispatch<React.SetStateAction<PaginationState>>
-  setColumnVisibility?: React.Dispatch<React.SetStateAction<VisibilityState>>
-  setGlobalFilter?: React.Dispatch<React.SetStateAction<string>>
-  manualSorting?: boolean
-  manualFiltering?: boolean
   manualPagination?: boolean
   disableGlobalFilter?: boolean
   disableColumnVisibility?: boolean
@@ -62,9 +61,13 @@ interface Props<TData, TValue = unknown> {
   rowHoverEffect?: boolean
 }
 
-const fuzzyFilter: FilterFn<any> = (row, columnId, value: string, addMeta) => {
+const fuzzyFilter: FilterFn<unknown> = (
+  row,
+  columnId,
+  value: string,
+  addMeta
+) => {
   // Rank the item
-
   const itemRank = rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
@@ -76,22 +79,13 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value: string, addMeta) => {
   return itemRank.passed
 }
 
-export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
-  const { manualFiltering, manualSorting, manualPagination, state } = props
+export function ReactTable<TData, TValue = unknown>(
+  props: Props<TData, TValue>
+) {
+  const { manualPagination, state } = props
 
-  const [sorting, setSorting] = React.useState<SortingState>(
-    state?.sorting ? [...state?.sorting] : []
-  )
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    state?.columnFilters ? [...state?.columnFilters] : []
-  )
-  const [globalFilter, setGlobalFilter] = React.useState<string>(
-    state?.globalFilter ?? ""
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(
-      state?.columnVisibility ? { ...state?.columnVisibility } : {}
-    )
+  const [sorting, setSorting] = React.useState<SortingState>([])
+
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
       pageIndex: state?.pagination?.pageIndex ?? 0,
@@ -109,13 +103,8 @@ export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
     data: props.data,
     state: {
       sorting,
-      columnFilters,
-      globalFilter,
-      pagination,
-      columnVisibility,
     },
     filterFns: { fuzzy: fuzzyFilter },
-    manualSorting,
     pageCount:
       manualPagination && props.itemsCount
         ? Math.ceil(
@@ -123,17 +112,13 @@ export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
               (props.state?.pagination?.pageSize ?? pagination.pageSize)
           )
         : undefined,
-    manualFiltering,
     manualPagination,
-    onSortingChange: props.setSorting ?? setSorting,
-    onColumnFiltersChange: props.setColumnFilters ?? setColumnFilters,
-    onGlobalFilterChange: props.setGlobalFilter ?? setGlobalFilter,
+    onSortingChange: setSorting,
     onPaginationChange: props.setPagination ?? setPagination,
-    onColumnVisibilityChange: props.setColumnVisibility ?? setColumnVisibility,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
-    globalFilterFn: fuzzyFilter,
+    globalFilterFn: fuzzyFilter as FilterFn<TData> | undefined,
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -145,87 +130,69 @@ export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
       <div className="flex py-4">
         <h2 className="text-2xl">{props.tableTitle}</h2>
         <div className="ml-auto mr-0 flex gap-4">
-          {props.disableGlobalFilter ? null : (
-            <div>
-              <label htmlFor="global-filter-input" className="sr-only">
-                Search any field
-              </label>
-              <input
-                id="global-filter-input"
-                placeholder="Search"
-                value={globalFilter}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                className="w-40 border px-4 py-1.5"
-              />
-            </div>
-          )}
-          {/* {props.disableColumnVisibility ? null : (
-            <div>
-              <Popover className="relative inline-block text-left">
-                {({ open }) => (
-                  <>
-                    <Popover.Button className="hover:bg-lowkey inline-flex w-full justify-center border px-4 py-2 text-sm font-medium hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-                      Show Columns
-                      <Icons.chevronDown
-                        className="-mr-1 ml-2 h-5 w-5"
-                        aria-hidden="true"
+          {props.disableColumnVisibility ? null : (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Show Columns
+                  <Icons.chevronDown
+                    className="-mr-1 ml-2 h-5 w-5"
+                    aria-hidden="true"
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-40">
+                <div className="grid gap-4">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      {...{
+                        checked: table.getIsAllColumnsVisible(),
+                        onChange: table.getToggleAllColumnsVisibilityHandler(),
+                      }}
+                    />
+                    <Label
+                      htmlFor="toggleAllColumns"
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      Toggle All
+                    </Label>
+                  </div>
+                  {table.getAllLeafColumns().map((column) => (
+                    <div
+                      key={column.id}
+                      className="flex items-center space-x-2"
+                    >
+                      <input
+                        type="checkbox"
+                        id={column.id}
+                        {...{
+                          checked: column.getIsVisible(),
+                          onChange: column.getToggleVisibilityHandler(),
+                        }}
                       />
-                    </Popover.Button>
-
-                    {open && (
-                      <Popover.Panel
-                        className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                        static
+                      <Label
+                        htmlFor={column.id}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
-                        <div className="px-3 py-1.5">
-                          <label>
-                            <input
-                              {...{
-                                type: "checkbox",
-                                checked: table.getIsAllColumnsVisible(),
-                                onChange:
-                                  table.getToggleAllColumnsVisibilityHandler(),
-                              }}
-                            />
-                            {"  "}
-                            Toggle All
-                          </label>
-                        </div>
-                        {table.getAllLeafColumns().map((column) => {
-                          return (
-                            <div key={column.id} className="px-3 py-1.5">
-                              <label>
-                                <input
-                                  {...{
-                                    type: "checkbox",
-                                    checked: column.getIsVisible(),
-                                    onChange:
-                                      column.getToggleVisibilityHandler(),
-                                  }}
-                                />
-                                {"  "}
-                                {column.id}
-                              </label>
-                            </div>
-                          )
-                        })}
-                      </Popover.Panel>
-                    )}
-                  </>
-                )}
-              </Popover>
-            </div>
-          )} */}
+                        {column.id}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       </div>
       <div className="overflow-x-auto overflow-y-hidden pb-1">
-        <table className="border-collapse border">
+        <table className="w-full border-collapse border">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr {...(props.headerRowProps ?? {})} key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
-                    className="border-collapse border px-4 pb-3.5 pt-2 text-left text-xs font-bold tracking-wide text-black md:text-sm"
+                    className="border-collapse border px-4 pb-3.5 pt-2 text-left text-xs font-bold tracking-wide md:text-sm"
                     {...(props.headerCellProps ?? {})}
                     key={header.id}
                     colSpan={header.colSpan}
@@ -332,22 +299,26 @@ export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
         </table>
       </div>
       <div className="mt-5 flex w-full flex-wrap items-center gap-2 text-sm md:text-base">
-        <button
-          aria-label="paginate back by 1 page"
-          className="grid aspect-square w-8 place-items-center border border-neutral-500 enabled:transition-opacity enabled:hover:opacity-90 enabled:active:opacity-100 disabled:cursor-not-allowed"
+        <Button
+          aria-label="Paginate back by 1 page"
+          size="sm"
+          variant="outline"
+          className="h-9 w-9 p-0"
           onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          disabled={!table.getCanPreviousPage}
         >
-          {"<"}
-        </button>
-        <button
-          aria-label="paginate forward by 1 page"
-          className="grid aspect-square w-8 place-items-center border border-neutral-500 enabled:transition-opacity enabled:hover:opacity-90 enabled:active:opacity-100 disabled:cursor-not-allowed"
+          <Icons.chevronLeft className="h-5 w-5" aria-hidden="true" />
+        </Button>
+        <Button
+          aria-label="Paginate forward by 1 page"
+          size="sm"
+          variant="outline"
+          className="h-9 w-9 p-0"
           onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          disabled={!table.getCanNextPage}
         >
-          {">"}
-        </button>
+          <Icons.chevronRight className="h-5 w-5" aria-hidden="true" />
+        </Button>
         <span className="flex items-center gap-1">
           <div>Page</div>
           <strong>
@@ -357,14 +328,14 @@ export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
         </span>
         <span className="hidden items-center gap-1 md:flex">
           | Go to page:
-          <input
+          <Input
             type="number"
             defaultValue={table.getState().pagination.pageIndex + 1}
             onChange={(e) => {
               const page = e.target.value ? Number(e.target.value) - 1 : 0
               table.setPageIndex(page)
             }}
-            className="w-16 border p-1"
+            className="h-auto w-16 rounded-none py-1"
           />
         </span>
         <select
@@ -385,13 +356,13 @@ export function Table<TData, TValue = unknown>(props: Props<TData, TValue>) {
   )
 }
 
-const Filter = <TData, TValue = unknown>({
+function Filter<TData, TValue = unknown>({
   column,
   table,
 }: {
   column: Column<TData, TValue>
   table: Table<TData>
-}) => {
+}) {
   const firstValue = table
     .getPreFilteredRowModel()
     .flatRows[0]?.getValue(column.id)
@@ -417,16 +388,8 @@ const Filter = <TData, TValue = unknown>({
       onChange={(value) =>
         column.setFilterValue((old: [number, number]) => [value, old?.[1]])
       }
-      placeholder={`Range ${
-        column.getFacetedMinMaxValues()?.[0]
-          ? `(${column.getFacetedMinMaxValues()?.[0] ?? 0}`
-          : ""
-      } ~ ${
-        column.getFacetedMinMaxValues()?.[1]
-          ? `${column.getFacetedMinMaxValues()?.[1] ?? 0})`
-          : ""
-      })`}
-      className={"mt-1.5 w-36 border text-xs shadow md:text-sm"}
+      placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
+      className="mt-2 w-36 rounded-none text-sm shadow"
     />
   ) : (
     <>
@@ -440,7 +403,7 @@ const Filter = <TData, TValue = unknown>({
         value={(columnFilterValue ?? "") as string}
         onChange={(value) => column.setFilterValue(value)}
         placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-        className={"mt-1.5 w-36 border text-xs shadow md:text-sm"}
+        className="mt-2 w-36 rounded-none text-sm shadow"
         list={column.id + "list"}
       />
     </>
@@ -448,16 +411,19 @@ const Filter = <TData, TValue = unknown>({
 }
 
 // A debounced input react component
+interface DebouncedInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+  value: string | number
+  onChange: (value: string | number) => void
+  debounce?: number
+}
+
 const DebouncedInput = ({
   value: initialValue,
   onChange,
   debounce = 500,
   ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange">) => {
+}: DebouncedInputProps) => {
   const [value, setValue] = React.useState(initialValue)
 
   React.useEffect(() => {
@@ -470,10 +436,10 @@ const DebouncedInput = ({
     }, debounce)
 
     return () => clearTimeout(timeout)
-  }, [value])
+  }, [debounce, onChange, value])
 
   return (
-    <input
+    <Input
       {...props}
       value={value}
       onChange={(e) => setValue(e.target.value)}

@@ -25,6 +25,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     },
     select: {
       id: true,
+      name: true,
     },
   })
 
@@ -35,7 +36,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
   return (
     <section className="container grid w-full items-center gap-6 pb-8 pt-6 md:py-10">
       <Header
-        title="Manage Store"
+        title={store.name}
         description="Manage your store and products."
       />
       <Products storeId={storeId} />
