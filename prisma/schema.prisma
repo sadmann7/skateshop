@@ -1,12 +1,13 @@
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["jsonProtocol"]
 }
 
 datasource db {
     provider          = "postgresql"
-    url               = env("DATABASE_URL")
-    directUrl         = env("DIRECT_URL")
-    shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+    url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+    shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
 
 // Necessary for Next auth

@@ -5,7 +5,6 @@ import { redirect } from "next/navigation"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 
@@ -43,7 +42,6 @@ export default async function StoresPage() {
         title="Your Stores"
         description="You can create up to 3 stores. Each store can have up to 100 products."
       />
-
       {stores?.length ? (
         <div className="grid max-w-4xl gap-4 sm:grid-cols-2 md:grid-cols-3">
           {stores.map((store) => (
@@ -83,11 +81,20 @@ export default async function StoresPage() {
           )}
         </div>
       ) : (
-        <div className="grid max-w-4xl gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-40" />
-          ))}
-        </div>
+        <Link href="/account/stores/add">
+          <div className="flex aspect-video h-40 flex-col rounded-md border p-5 shadow-md hover:bg-muted">
+            <div className="flex items-center space-x-2">
+              <Icons.add className="h-5 w-5 text-muted-foreground" />
+              <h2 className="line-clamp-1 flex-1 text-lg font-bold">
+                Create a new store
+              </h2>
+            </div>
+            <p className="mt-2 flex-1 text-sm text-muted-foreground">
+              Create a new store to start selling your products.
+            </p>
+          </div>
+          <span className="sr-only">Create a new store</span>
+        </Link>
       )}
     </section>
   )
