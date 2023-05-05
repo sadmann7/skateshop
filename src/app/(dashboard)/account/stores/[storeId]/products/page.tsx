@@ -1,13 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { notFound, redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { getCurrentUser } from "@/lib/session"
-import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
+import { Products } from "@/components/products"
 
 export const metadata: Metadata = {
   title: "Products",
@@ -23,32 +23,54 @@ interface ProductsPageProps {
 export default async function ProductsPage({ params }: ProductsPageProps) {
   const { storeId } = params
 
-  const user = await getCurrentUser()
-
-  if (!user) {
-    redirect(authOptions.pages?.signIn || "/login")
-  }
-
-  const products = await prisma.product.findMany({
+  const store = await prisma.store.findUnique({
     where: {
-      storeId,
+      id: storeId,
     },
     select: {
       id: true,
       name: true,
-      description: true,
-      category: true,
-      price: true,
-      quantity: true,
-      inventory: true,
     },
   })
 
-  console.log(storeId)
+  if (!store) {
+    notFound()
+  }
 
   return (
-    <section className="container grid w-full items-center gap-6 space-y-5 pb-20 pt-6 md:py-10">
-      <Header title="Your Products" description="Manage your products." />
+    <section className="container grid w-full items-center space-y-10 pb-20 pt-6 md:py-10">
+      <Header title={store.name} description="Manage your products." />
+      <div className="flex items-center gap-2.5">
+        <Link href={`/account/stores/${storeId}`}>
+          <div
+            className={cn(
+              buttonVariants({
+                size: "sm",
+                variant: "outline",
+              })
+            )}
+          >
+            <Icons.store className="mr-2 h-4 w-4" />
+            Manage Store
+            <span className="sr-only">Manage Store</span>
+          </div>
+        </Link>
+        <Link href={`/account/stores/${storeId}/products`}>
+          <div
+            className={cn(
+              buttonVariants({
+                size: "sm",
+                variant: "secondary",
+              })
+            )}
+          >
+            <Icons.product className="mr-2 h-4 w-4" />
+            Manage Products
+            <span className="sr-only">Manage Products</span>
+          </div>
+        </Link>
+      </div>
+      <Products storeId={storeId} />
     </section>
   )
 }

@@ -14,6 +14,7 @@ import {
   LogOut,
   MessageSquare,
   Moon,
+  Package,
   Plus,
   Search,
   Settings,
@@ -61,6 +62,7 @@ export const Icons = {
   volumneMute: VolumeX,
   message: MessageSquare,
   cart: ShoppingCart,
+  product: Package,
   store: ShoppingBag,
   logo: (props: LucideProps) => (
     <svg
