@@ -26,6 +26,11 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     select: {
       id: true,
       name: true,
+      products: {
+        select: {
+          id: true,
+        },
+      },
     },
   })
 

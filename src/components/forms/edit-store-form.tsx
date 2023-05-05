@@ -35,7 +35,7 @@ export function EditStoreForm({ storeId }: EditStoreFormProps) {
   console.log(storeId)
 
   // react-hook-form
-  const { register, handleSubmit, formState, control, setValue, watch, reset } =
+  const { register, handleSubmit, formState, setValue, reset } =
     useForm<Inputs>({
       resolver: zodResolver(schema),
     })

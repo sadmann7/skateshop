@@ -165,6 +165,11 @@ export function Table<TData, TValue = unknown>(
                   value={globalFilter}
                   onChange={(e) => setGlobalFilter(e.target.value)}
                   className="w-40 border border-muted"
+                  disabled={
+                    props.isLoading ||
+                    props.isRefetching ||
+                    props.data.length === 0
+                  }
                 />
               </div>
             )}
@@ -336,15 +341,17 @@ export function Table<TData, TValue = unknown>(
           </tbody>
         </table>
       </div>
-      <div className="flex w-full flex-col items-center gap-5 py-4 text-base sm:flex-row">
-        <div className="flex items-center space-x-2.5">
+      <div className="flex w-full flex-col items-center gap-4 py-4 text-base sm:flex-row">
+        <div className="flex items-center space-x-2">
           <Button
             aria-label="Paginate back by 1 page"
             size="sm"
             variant="outline"
             className="h-9 w-9 p-0"
             onClick={() => table.previousPage()}
-            disabled={props.isLoading || props.isRefetching}
+            disabled={
+              props.isLoading || props.isRefetching || props.data.length === 0
+            }
           >
             <Icons.chevronLeft className="h-5 w-5" aria-hidden="true" />
           </Button>
@@ -355,19 +362,24 @@ export function Table<TData, TValue = unknown>(
             className="h-9 w-9 p-0"
             onClick={() => table.nextPage()}
             disabled={
-              !table.getCanNextPage() || props.isLoading || props.isRefetching
+              props.isLoading ||
+              props.isRefetching ||
+              !table.getCanNextPage() ||
+              props.data.length === 0
             }
           >
             <Icons.chevronRight className="h-5 w-5" aria-hidden="true" />
           </Button>
         </div>
-        <div className="flex items-center gap-1">
-          <span>Page</span>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </strong>
-        </div>
+        {props.data.length > 0 && (
+          <div className="flex items-center gap-1">
+            <span>Page</span>
+            <strong>
+              {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </strong>
+          </div>
+        )}
         <div className="flex items-center space-x-2.5">
           {table.getPageOptions().map((page) => (
             <Button
@@ -379,7 +391,9 @@ export function Table<TData, TValue = unknown>(
               onClick={() => {
                 table.setPageIndex(page)
               }}
-              disabled={props.isLoading || props.isRefetching}
+              disabled={
+                props.isLoading || props.isRefetching || props.data.length === 0
+              }
             >
               {page + 1}
             </Button>
@@ -394,6 +408,9 @@ export function Table<TData, TValue = unknown>(
               pageSize: Number(value),
             })
           }}
+          disabled={
+            props.isLoading || props.isRefetching || props.data.length === 0
+          }
         >
           <SelectTrigger className="h-9 w-28">
             <SelectValue
@@ -449,6 +466,7 @@ function Filter<TData, TValue = unknown>({
         column.getFacetedUniqueValues().size
       })`}
       className="w-36 text-sm shadow"
+      disabled={!columnFilterValue}
     />
   ) : (
     <>
@@ -464,6 +482,7 @@ function Filter<TData, TValue = unknown>({
         placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         className="w-36 text-sm shadow"
         list={column.id + "list"}
+        disabled={!columnFilterValue}
       />
     </>
   )
