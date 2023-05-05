@@ -25,6 +25,6 @@ export const addStoreAction = zact(
     },
   })
 
-  const tag = `stores:${input.userId}`
+  const tag = `user:${input.userId}`
   revalidateTag(tag)
 })

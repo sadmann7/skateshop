@@ -34,7 +34,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
   }
 
   return (
-    <section className="container grid w-full items-center space-y-14 pb-8 pt-6 md:py-10">
+    <section className="container grid w-full items-center space-y-12 pb-8 pt-6 md:py-10">
       <Header
         title={store.name}
         description="Manage your store and products."

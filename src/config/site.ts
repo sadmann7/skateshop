@@ -3,7 +3,7 @@ export type SiteConfig = typeof siteConfig
 export const siteConfig = {
   name: "Skateshop13",
   description:
-    "An open source e-commerce skateshop build with everything new in Next.js 13",
+    "An open source e-commerce skateshop build with everything new in Next.js 13.",
   url: "https://skateshop13.vercel.app/",
   ogImage: "https://skateshop13.vercel.app/opengraph-image.png",
   mainNav: [

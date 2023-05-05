@@ -23,7 +23,7 @@ type Inputs = z.infer<typeof addStoreSchema>
 export function AddStoreForm({ userId }: AddStoreFormProps) {
   const router = useRouter()
 
-  // zact
+  // zact for handling sever actions
   const { mutate, isLoading } = useZact(addStoreAction)
 
   // react-hook-form
