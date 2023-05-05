@@ -13,7 +13,7 @@ import type {
 
 import { formatDate, formatEnum, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { ReactTable } from "@/components/react-table"
+import { Table } from "@/components/table"
 
 interface ProductsProps {
   storeId: string
@@ -98,7 +98,7 @@ export function Products({ storeId }: ProductsProps) {
   )
 
   return (
-    <ReactTable
+    <Table
       tableTitle={`Products (${data?.count ?? 0} entries)`}
       addNewButton={
         <Link
