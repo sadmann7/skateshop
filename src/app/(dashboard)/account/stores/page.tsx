@@ -81,7 +81,7 @@ export default async function StoresPage() {
           )}
         </div>
       ) : (
-        <Link href="/account/stores/add">
+        <Link href="/account/stores/add" className="w-fit">
           <div className="flex aspect-video h-40 flex-col rounded-md border p-5 shadow-md hover:bg-muted">
             <div className="flex items-center space-x-2">
               <Icons.add className="h-5 w-5 text-muted-foreground" />

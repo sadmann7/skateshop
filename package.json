@@ -45,6 +45,7 @@
     "tailwind-merge": "^1.12.0",
     "tailwindcss-animate": "^1.0.5",
     "uploadthing": "^2.0.1",
+    "zact": "^0.0.2",
     "zod": "^3.21.4",
     "zustand": "^4.3.8"
   },

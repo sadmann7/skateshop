@@ -1,19 +1,19 @@
-import type { ServerRuntime } from "next";
-import { ImageResponse } from "@vercel/og";
+import type { ServerRuntime } from "next"
+import { ImageResponse } from "@vercel/og"
 
-import { ogImageSchema } from "@/lib/validations/og";
+import { ogImageSchema } from "@/lib/validations/og"
 
-export const runtime: ServerRuntime = "edge";
+export const runtime: ServerRuntime = "edge"
 
 export function GET(req: Request) {
   try {
-    const url = new URL(req.url);
+    const url = new URL(req.url)
     const parsedValues = ogImageSchema.parse(
       Object.fromEntries(url.searchParams)
-    );
+    )
 
-    const { mode, title, description } = parsedValues;
-    const paint = mode === "dark" ? "#fff" : "#000";
+    const { mode, title, description } = parsedValues
+    const paint = mode === "dark" ? "#fff" : "#000"
 
     return new ImageResponse(
       (
@@ -59,13 +59,13 @@ export function GET(req: Request) {
         width: 1200,
         height: 630,
       }
-    );
+    )
   } catch (error) {
     error instanceof Error
       ? console.log(`${error.message}`)
-      : console.log(error);
+      : console.log(error)
     return new Response(`Failed to generate the image`, {
       status: 500,
-    });
+    })
   }
 }

@@ -1,54 +1,50 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PRODUCT_CATEGORY } from "@prisma/client"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { z } from "zod"
+import { useZact } from "zact/client"
+import type { z } from "zod"
 
+import { addStoreAction } from "@/lib/actions"
+import { addStoreSchema } from "@/lib/validations/store"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Icons } from "@/components/icons"
 
 interface AddStoreFormProps {
   userId: string
 }
 
-const schema = z.object({
-  name: z.string().min(1, {
-    message: "Must be at least 1 character",
-  }),
-  description: z.string().optional(),
-  category: z.nativeEnum(PRODUCT_CATEGORY),
-  price: z.number().positive({
-    message: "Must be a positive number",
-  }),
-  quantity: z.number().positive({
-    message: "Must be a positive number",
-  }),
-  inventory: z.number().positive({
-    message: "Must be a positive number",
-  }),
-  images: z.array(z.string()).optional(),
-})
-type Inputs = z.infer<typeof schema>
+type Inputs = z.infer<typeof addStoreSchema>
 
 export function AddStoreForm({ userId }: AddStoreFormProps) {
-  console.log(userId)
+  const router = useRouter()
+
+  // zact
+  const { mutate, isLoading } = useZact(addStoreAction)
 
   // react-hook-form
-  const { register, handleSubmit, formState, control, setValue, watch, reset } =
-    useForm<Inputs>({
-      resolver: zodResolver(schema),
+  const { register, handleSubmit, formState, reset } = useForm<Inputs>({
+    resolver: zodResolver(addStoreSchema),
+  })
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    reset()
+    await mutate({
+      ...data,
+      userId,
     })
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data)
-
-    // reset()
+    router.push("/account/stores")
+    router.refresh()
   }
 
   return (
     <form
-      className="grid w-full gap-5"
+      className="mx-auto grid w-full max-w-xl gap-5"
       onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
     >
       <fieldset className="grid gap-2.5">
@@ -56,8 +52,9 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
         <Input
           id="name"
           type="text"
-          placeholder="Name"
+          placeholder="Type store name here."
           {...register("name", { required: true })}
+          disabled={isLoading}
         />
         {formState.errors.name && (
           <p className="text-sm text-red-500 dark:text-red-500">
@@ -65,6 +62,29 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           </p>
         )}
       </fieldset>
+      <fieldset className="grid gap-2.5">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          placeholder="Type store description here."
+          {...register("description", { required: true })}
+          disabled={isLoading}
+        />
+        {formState.errors.description && (
+          <p className="text-sm text-red-500 dark:text-red-500">
+            {formState.errors.description.message}
+          </p>
+        )}
+      </fieldset>
+      <Button type="submit" disabled={isLoading}>
+        {isLoading && (
+          <Icons.spinner
+            className="mr-2 h-4 w-4 animate-spin"
+            aria-hidden="true"
+          />
+        )}
+        Add Store
+      </Button>
     </form>
   )
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { notFound, redirect } from "next/navigation"
+import { redirect } from "next/navigation"
 
 import { authOptions } from "@/lib/auth"
 import { getCurrentUser } from "@/lib/session"
@@ -15,11 +15,11 @@ export default async function AddStorePage() {
   const user = await getCurrentUser()
 
   if (!user) {
-    redirect(authOptions.pages?.signIn || "/login")
+    redirect(authOptions.pages?.signIn || "/api/auth/signin")
   }
 
   return (
-    <section className="container grid w-full items-center gap-6 pb-8 pt-6 md:py-10">
+    <section className="container grid w-full items-center gap-14 pb-8 pt-6 md:py-10">
       <Header title="Add Store" description="Add a new store." />
       <AddStoreForm userId={user.id} />
     </section>
