@@ -16,13 +16,17 @@ export async function PATCH(req: NextRequest) {
 
     const input = editStoreSchema.parse(await req.json())
 
-    const store = await prisma.store.findUnique({
-      where: { id: input.storeId },
-      select: { user: { select: { id: true } } },
+    const storeWithSameName = await prisma.store.findFirst({
+      where: {
+        name: input.name,
+        id: {
+          not: input.storeId,
+        },
+      },
     })
 
-    if (!store) {
-      return new Response("Store not found", { status: 404 })
+    if (storeWithSameName) {
+      return new Response("Store name already exists", { status: 409 })
     }
 
     const updatedStore = await prisma.store.update({

@@ -37,7 +37,7 @@ export default async function StoresPage() {
   })
 
   return (
-    <section className="container grid w-full items-center space-y-10 pb-20 pt-6 md:py-10">
+    <section className="container grid w-full items-center gap-10 pb-10 pt-6 md:py-10">
       <Header
         title="Your Stores"
         description="You can create up to 3 stores. Each store can have up to 100 products."

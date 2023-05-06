@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
-import { revalidateTag } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 import { prisma } from "@/lib/db"
 import { cn } from "@/lib/utils"
@@ -47,6 +47,20 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     revalidateTag(tag)
   }
 
+  async function deleteStore() {
+    "use server"
+
+    await prisma.store.delete({
+      where: {
+        id: storeId,
+      },
+    })
+
+    const path = "/account/stores"
+    revalidatePath(path)
+    redirect(path)
+  }
+
   const store = await prisma.store.findUnique({
     where: {
       id: storeId,
@@ -63,19 +77,22 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
   }
 
   return (
-    <section className="container grid w-full items-center space-y-10 pb-8 pt-6 md:py-10">
+    <section className="container grid w-full items-center gap-10 pb-10 pt-6 md:py-10">
       <Header
         title={store.name}
-        description={store.description ?? "Manage your store."}
+        description={
+          store.description?.length ? store.description : "Manage your store."
+        }
       />
-      <div className="flex items-center gap-2.5">
-        <Link href={`/account/stores/${storeId}`}>
+      <div className="flex flex-col items-center gap-2.5 sm:flex-row">
+        <Link href={`/account/stores/${storeId}`} className="w-full sm:w-fit">
           <div
             className={cn(
               buttonVariants({
                 size: "sm",
                 variant: "secondary",
-              })
+              }),
+              "w-full sm:w-auto"
             )}
           >
             <Icons.store className="mr-2 h-4 w-4" />
@@ -83,13 +100,17 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
             <span className="sr-only">Manage Store</span>
           </div>
         </Link>
-        <Link href={`/account/stores/${storeId}/products`}>
+        <Link
+          href={`/account/stores/${storeId}/products`}
+          className="w-full sm:w-fit"
+        >
           <div
             className={cn(
               buttonVariants({
                 size: "sm",
                 variant: "outline",
-              })
+              }),
+              "w-full sm:w-auto"
             )}
           >
             <Icons.product className="mr-2 h-4 w-4" />
@@ -106,7 +127,10 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
             id="name"
             type="text"
             name="name"
-            placeholder="Name"
+            required
+            minLength={3}
+            maxLength={50}
+            placeholder="Type store name here."
             defaultValue={store.name}
           />
         </fieldset>
@@ -115,11 +139,20 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           <Textarea
             id="description"
             name="description"
-            placeholder="Description"
+            minLength={3}
+            maxLength={255}
+            placeholder="Type store description here."
             defaultValue={store.description ?? ""}
           />
         </fieldset>
-        <LoadingButton type="submit">Update Store</LoadingButton>
+        <LoadingButton>Update Store</LoadingButton>
+        <LoadingButton
+          variant="destructive"
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          formAction={deleteStore}
+        >
+          Delete Store
+        </LoadingButton>
       </form>
     </section>
   )
