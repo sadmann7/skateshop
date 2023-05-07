@@ -1,13 +1,11 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
-    provider          = "postgresql"
-    url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-    shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 // Necessary for Next auth
@@ -27,6 +25,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -35,6 +34,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -76,6 +77,8 @@ model Store {
     user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId      String
     products    Product[]
+
+    @@index([userId])
 }
 
 model Product {
@@ -92,6 +95,8 @@ model Product {
     updatedAt   DateTime         @updatedAt
     store       Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
     storeId     String
+
+    @@index([storeId])
 }
 
 enum PRODUCT_CATEGORY {
