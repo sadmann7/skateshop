@@ -20,7 +20,7 @@ export const addStoreAction = zact(
   })
 
   if (storeWithSameName) {
-    throw new Error("Store name already exists")
+    throw new Error("A store with the same name already exists.")
   }
 
   await prisma.store.create({

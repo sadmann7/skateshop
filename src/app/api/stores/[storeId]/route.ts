@@ -11,7 +11,7 @@ export async function PATCH(req: NextRequest) {
     const session = await getServerSession(authOptions)
 
     if (!session) {
-      return new Response("Unauthorized", { status: 403 })
+      return new Response("Unauthorized.", { status: 403 })
     }
 
     const input = editStoreSchema.parse(await req.json())
@@ -26,7 +26,9 @@ export async function PATCH(req: NextRequest) {
     })
 
     if (storeWithSameName) {
-      return new Response("Store name already exists", { status: 409 })
+      return new Response("A store with the same name already exists.", {
+        status: 409,
+      })
     }
 
     const updatedStore = await prisma.store.update({

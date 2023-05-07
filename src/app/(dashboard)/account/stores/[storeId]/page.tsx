@@ -33,6 +33,19 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     const name = fd.get("name") as string
     const description = fd.get("description") as string
 
+    const storeWithSameName = await prisma.store.findFirst({
+      where: {
+        name,
+        id: {
+          not: storeId,
+        },
+      },
+    })
+
+    if (storeWithSameName) {
+      throw new Error("A store with the same name already exists.")
+    }
+
     await prisma.store.update({
       where: {
         id: storeId,

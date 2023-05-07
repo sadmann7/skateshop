@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions)
 
     if (!session) {
-      return new Response("Unauthorized", { status: 403 })
+      return new Response("Unauthorized.", { status: 403 })
     }
 
     const { user } = session
