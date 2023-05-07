@@ -54,7 +54,6 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           type="text"
           placeholder="Type store name here."
           {...register("name", { required: true })}
-          disabled={isLoading}
         />
         {formState.errors.name && (
           <p className="text-sm text-red-500 dark:text-red-500">
@@ -68,7 +67,6 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           id="add-store-description"
           placeholder="Type store description here."
           {...register("description")}
-          disabled={isLoading}
         />
         {formState.errors.description && (
           <p className="text-sm text-red-500 dark:text-red-500">

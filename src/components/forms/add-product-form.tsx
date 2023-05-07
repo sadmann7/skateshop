@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import FileInput from "@/components/file-input"
+import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import SelectInput from "@/components/select-input"
 
@@ -27,7 +27,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   const { mutate, isLoading } = useZact(addProductAction)
 
   // react-hook-form
-  const { register, handleSubmit, formState, control, setValue, watch, reset } =
+  const { register, handleSubmit, formState, control, setValue, reset } =
     useForm<Inputs>({
       resolver: zodResolver(addProductSchema),
     })
@@ -50,7 +50,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           type="text"
           placeholder="Type product name here."
           {...register("name", { required: true })}
-          disabled={isLoading}
         />
         {formState.errors.name && (
           <p className="text-sm text-red-500 dark:text-red-500">
@@ -64,7 +63,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           id="add-product-description"
           placeholder="Type product description here."
           {...register("description")}
-          disabled={isLoading}
         />
         {formState.errors.description && (
           <p className="text-sm text-red-500 dark:text-red-500">
@@ -94,7 +92,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             type="number"
             placeholder="Type product price here."
             {...register("price", { required: true, valueAsNumber: true })}
-            disabled={isLoading}
           />
           {formState.errors.price && (
             <p className="text-sm text-red-500 dark:text-red-500">
@@ -111,7 +108,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             type="number"
             placeholder="Type product quantity here."
             {...register("quantity", { required: true, valueAsNumber: true })}
-            disabled={isLoading}
           />
           {formState.errors.quantity && (
             <p className="text-sm text-red-500 dark:text-red-500">
@@ -126,7 +122,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             type="number"
             placeholder="Type product inventory here."
             {...register("inventory", { required: true, valueAsNumber: true })}
-            disabled={isLoading}
           />
           {formState.errors.inventory && (
             <p className="text-sm text-red-500 dark:text-red-500">
@@ -135,9 +130,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           )}
         </fieldset>
       </div>
-      <fieldset className="grid gap-2.5">
-        <Label htmlFor="add-product-images">Inventory</Label>
-        <FileInput setValue={setValue} name="images" />
+      <fieldset className="grid gap-3">
+        <Label htmlFor="add-product-images">Images (optional)</Label>
+        <FileDialog setValue={setValue} name="images" />
         {formState.errors.images && (
           <p className="text-sm text-red-500 dark:text-red-500">
             {formState.errors.images.message}
