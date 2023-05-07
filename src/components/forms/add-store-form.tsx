@@ -48,9 +48,9 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
       onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
     >
       <fieldset className="grid gap-2.5">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="add-store-name">Name</Label>
         <Input
-          id="name"
+          id="add-store-name"
           type="text"
           placeholder="Type store name here."
           {...register("name", { required: true })}
@@ -63,9 +63,9 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
         )}
       </fieldset>
       <fieldset className="grid gap-2.5">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="add-store-description">Description</Label>
         <Textarea
-          id="description"
+          id="add-store-description"
           placeholder="Type store description here."
           {...register("description")}
           disabled={isLoading}
@@ -76,7 +76,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           </p>
         )}
       </fieldset>
-      <Button type="submit" disabled={isLoading}>
+      <Button disabled={isLoading}>
         {isLoading && (
           <Icons.spinner
             className="mr-2 h-4 w-4 animate-spin"
@@ -84,6 +84,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           />
         )}
         Add Store
+        <span className="sr-only">Add Store</span>
       </Button>
     </form>
   )

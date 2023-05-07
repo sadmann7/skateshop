@@ -40,7 +40,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
   return (
     <section className="container grid w-full items-center space-y-10 pb-20 pt-6 md:py-10">
       <Header title={store.name} description="Manage your products." />
-      <div className="flex flex-col items-center gap-2.5 sm:flex-row">
+      <div className="flex flex-col items-center justify-center gap-2.5 sm:flex-row">
         <Link href={`/account/stores/${storeId}`} className="w-full sm:w-fit">
           <div
             className={cn(

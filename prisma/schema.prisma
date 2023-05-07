@@ -86,7 +86,7 @@ model Product {
     name        String
     description String?          @db.Text
     price       Int
-    images      Json?
+    images      Image[]
     category    PRODUCT_CATEGORY @default(SKATEBOARD)
     quantity    Int              @default(1)
     inventory   Int              @default(1)
@@ -97,6 +97,17 @@ model Product {
     storeId     String
 
     @@index([storeId])
+}
+
+model Image {
+    id        String   @id @default(cuid())
+    url       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    Product   Product? @relation(fields: [productId], references: [id])
+    productId String?
+
+    @@index([productId])
 }
 
 enum PRODUCT_CATEGORY {

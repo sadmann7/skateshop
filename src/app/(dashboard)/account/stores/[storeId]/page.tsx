@@ -56,8 +56,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
       },
     })
 
-    const tag = `store:${storeId}`
-    revalidateTag(tag)
+    revalidateTag(storeId)
   }
 
   async function deleteStore() {
@@ -97,7 +96,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           store.description?.length ? store.description : "Manage your store."
         }
       />
-      <div className="flex flex-col items-center gap-2.5 sm:flex-row">
+      <div className="flex flex-col items-center justify-center gap-2.5 sm:flex-row">
         <Link href={`/account/stores/${storeId}`} className="w-full sm:w-fit">
           <div
             className={cn(
@@ -135,9 +134,9 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
       {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
       <form action={updateStore} className="mx-auto grid w-full max-w-xl gap-5">
         <fieldset className="grid gap-2.5">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="update-store-name">Name</Label>
           <Input
-            id="name"
+            id="update-store-name"
             type="text"
             name="name"
             required
@@ -148,9 +147,9 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           />
         </fieldset>
         <fieldset className="grid gap-2.5">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="update-store-description">Description</Label>
           <Textarea
-            id="description"
+            id="update-store-description"
             name="description"
             minLength={3}
             maxLength={255}
@@ -158,13 +157,17 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
             defaultValue={store.description ?? ""}
           />
         </fieldset>
-        <LoadingButton>Update Store</LoadingButton>
+        <LoadingButton>
+          Update Store
+          <span className="sr-only">Update Store</span>
+        </LoadingButton>
         <LoadingButton
           variant="destructive"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           formAction={deleteStore}
         >
           Delete Store
+          <span className="sr-only">Delete Store</span>
         </LoadingButton>
       </form>
     </section>

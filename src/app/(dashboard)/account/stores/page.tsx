@@ -45,7 +45,7 @@ export default async function StoresPage() {
       {stores?.length ? (
         <div className="grid max-w-4xl gap-4 sm:grid-cols-2 md:grid-cols-3">
           {stores.map((store) => (
-            <Link key={store.id} href={`/account/stores/${store.id}`}>
+            <Link key={store.id} href={`/account/stores/${store.id}/products`}>
               <div className="flex h-40 flex-col rounded-md border p-5 shadow-md hover:bg-muted">
                 <div className="flex items-center space-x-2">
                   <Icons.store className="h-5 w-5 text-muted-foreground" />
