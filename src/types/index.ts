@@ -15,3 +15,7 @@ export type SessionUser = {
   email?: string | null
   image?: string | null
 }
+
+export interface FileWithPreview extends File {
+  preview: string
+}

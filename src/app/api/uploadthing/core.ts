@@ -16,22 +16,20 @@ export const ourFileRouter = {
     .middleware(async (req) => {
       // This code runs on your server before upload
       // Get the productId from the request
-      const { productId } = (await req.json()) as { productId: string }
       console.log({ req })
 
       const user = await getCurrentUser()
+      console.log(user)
 
       // If you throw, the user will not be able to upload
       if (!user) throw new Error("Unauthorized")
 
-      if (!productId) throw new Error("Product not found")
-
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { productId }
+      return { user }
     })
     .onUploadComplete(({ metadata }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.productId)
+      console.log("Upload complete for userId:", metadata.user)
     }),
 } satisfies FileRouter
 

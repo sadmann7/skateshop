@@ -1,6 +1,7 @@
 import * as React from "react"
 import Image from "next/image"
-import { UploadCloud } from "lucide-react"
+import type { FileWithPreview } from "@/types"
+import { generateReactHelpers } from "@uploadthing/react"
 import {
   useDropzone,
   type Accept,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Icons } from "@/components/icons"
+import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 export interface FileDialogProps<TFieldValues extends FieldValues>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -27,42 +29,48 @@ export interface FileDialogProps<TFieldValues extends FieldValues>
   accept?: Accept
   maxSize?: number
   maxFiles?: number
-  previewType?: "image" | "name"
   isUploading?: boolean
   disabled?: boolean
 }
+
+const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function FileDialog<TFieldValues extends FieldValues>({
   name,
   setValue,
   accept = {
-    "image/png": [],
-    "image/jpeg": [],
+    "image/*": [],
   },
   maxSize = 1024 * 1024 * 2,
   maxFiles = 1,
-  previewType = "image",
   isUploading = false,
   disabled = false,
   className,
   ...props
 }: FileDialogProps<TFieldValues>) {
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null)
+  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+      setFiles((prev) => [
+        ...(prev ?? []),
+        ...acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        ),
+      ])
+
       acceptedFiles.forEach((file) => {
         if (!file) return
         setValue(name, file as PathValue<TFieldValues, Path<TFieldValues>>, {
           shouldValidate: true,
         })
-        setSelectedFile(file)
       })
       rejectedFiles.forEach((file) => {
         setValue(name, null as PathValue<TFieldValues, Path<TFieldValues>>, {
           shouldValidate: true,
         })
-        setSelectedFile(null)
         switch (file.errors[0]?.code as ErrorCode) {
           case "file-invalid-type":
             toast.error("File type not supported")
@@ -84,7 +92,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
         }
       })
     },
-    [maxSize, name, setSelectedFile, setValue]
+    [maxSize, name, setValue]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -94,11 +102,17 @@ export function FileDialog<TFieldValues extends FieldValues>({
     maxFiles,
   })
 
-  // revoke object URL when component unmounts
+  // revoke object URLs when component unmounts
   React.useEffect(() => {
-    if (!selectedFile) return
-    return () => URL.revokeObjectURL(selectedFile.name)
-  }, [selectedFile])
+    return () => {
+      if (!files) return
+      files.forEach((file) => {
+        URL.revokeObjectURL(file.preview)
+      })
+    }
+  }, [files])
+
+  const { startUpload, resetFiles } = useUploadThing("imageUploader")
 
   return (
     <Dialog>
@@ -112,11 +126,9 @@ export function FileDialog<TFieldValues extends FieldValues>({
         <div
           {...getRootProps()}
           className={cn(
-            "group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed px-5 py-2.5 text-center transition hover:bg-muted/25",
+            "group relative grid h-52 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
             "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            isDragActive
-              ? "border-muted-foreground/50"
-              : "border-muted-foreground/25",
+            isDragActive && "border-muted-foreground/50",
             disabled && "pointer-events-none opacity-60",
             className
           )}
@@ -154,6 +166,67 @@ export function FileDialog<TFieldValues extends FieldValues>({
             </div>
           )}
         </div>
+        <p className="mt-2 text-center text-sm font-medium text-muted-foreground">
+          You can upload up to {maxFiles} {maxFiles === 1 ? "file" : "files"}
+        </p>
+        {files && (
+          <div className="mt-2 grid gap-5">
+            {files.map((file, i) => (
+              <div
+                key={i}
+                className="relative flex items-center justify-between gap-2.5"
+              >
+                <div className="flex items-center gap-2">
+                  <Image
+                    src={file.preview}
+                    alt={file.name}
+                    className="h-10 w-10 shrink-0 rounded-md"
+                    width={40}
+                    height={40}
+                    loading="lazy"
+                  />
+                  <div className="flex flex-col">
+                    <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
+                      {file.name}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      {Math.round(file.size / 1024)}KB
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-7 w-7 p-0"
+                  onClick={() => {
+                    setFiles((prev) => {
+                      if (!prev) return null
+                      const newFiles = prev.filter(
+                        (prevFile) => prevFile.name !== file.name
+                      )
+                      if (newFiles.length === 0) return null
+                      return newFiles
+                    })
+                    setValue(
+                      name,
+                      null as PathValue<TFieldValues, Path<TFieldValues>>,
+                      {
+                        shouldValidate: true,
+                      }
+                    )
+                  }}
+                >
+                  <Icons.close
+                    className="h-4 w-4 text-white"
+                    aria-hidden="true"
+                  />
+                  <span className="sr-only">Remove file</span>
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )

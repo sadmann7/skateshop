@@ -70,7 +70,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           </p>
         )}
       </fieldset>
-      <div className="flex flex-col items-center gap-2.5 sm:flex-row">
+      <div className="flex flex-col items-start  gap-2.5 sm:flex-row">
         <fieldset className="grid w-full gap-2.5">
           <Label htmlFor="add-product-category">Category</Label>
           <SelectInput
@@ -100,7 +100,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           )}
         </fieldset>
       </div>
-      <div className="flex flex-col items-center gap-2.5 sm:flex-row">
+      <div className="flex flex-col items-start gap-2.5 sm:flex-row">
         <fieldset className="grid w-full gap-2.5">
           <Label htmlFor="add-product-quantity">Quantity</Label>
           <Input
@@ -132,10 +132,15 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       </div>
       <fieldset className="grid gap-3">
         <Label htmlFor="add-product-images">Images (optional)</Label>
-        <FileDialog setValue={setValue} name="images" />
-        {formState.errors.images && (
+        <FileDialog
+          setValue={setValue}
+          name="image"
+          maxFiles={3}
+          maxSize={1024 * 1024 * 8}
+        />
+        {formState.errors.image && (
           <p className="text-sm text-red-500 dark:text-red-500">
-            {formState.errors.images.message}
+            {formState.errors.image.message}
           </p>
         )}
       </fieldset>
