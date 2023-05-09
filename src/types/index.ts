@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react"
+import type { FileWithPath } from "react-dropzone"
 
 export interface NavItem {
   title: string
@@ -16,6 +17,8 @@ export type SessionUser = {
   image?: string | null
 }
 
-export interface FileWithPreview extends File {
+export type FullFileWithPreview = {
+  file: FileWithPath
   preview: string
+  contents: string
 }

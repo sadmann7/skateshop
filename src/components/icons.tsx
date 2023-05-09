@@ -1,5 +1,6 @@
 import {
   AlarmClock,
+  AlertTriangle,
   CalendarDays,
   Check,
   ChevronDown,
@@ -50,6 +51,7 @@ export const Icons = {
   add: Plus,
   trash: Trash,
   edit: Edit,
+  warning: AlertTriangle,
   search: Search,
   filter: Filter,
   alarm: AlarmClock,

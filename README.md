@@ -4,8 +4,6 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 
 [![Skateshop13](./public/screenshot.png)](https://skateshop13.vercel.app/)
 
-[![Skateshop13](./public/screenshot.png)](https://skateshop13.vercel.app/)
-
 ## Tech Stack
 
 - [Next.js](https://nextjs.org)

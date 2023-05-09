@@ -29,14 +29,14 @@ interface SelectInputProps<
   label?: string
 }
 
-const SelectInput = <TFieldValues extends FieldValues>({
+export function SelectInput<TFieldValues extends FieldValues>({
   control,
   name,
   options,
   defaultValue,
   placeholder,
   label,
-}: SelectInputProps<TFieldValues>) => {
+}: SelectInputProps<TFieldValues>) {
   return (
     <Controller
       control={control}
@@ -68,5 +68,3 @@ const SelectInput = <TFieldValues extends FieldValues>({
     />
   )
 }
-
-export default SelectInput

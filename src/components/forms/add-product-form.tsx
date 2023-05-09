@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
+import { generateReactHelpers } from "@uploadthing/react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { useZact } from "zact/client"
 import { type z } from "zod"
@@ -14,7 +15,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
-import SelectInput from "@/components/select-input"
+import { SelectInput } from "@/components/select-input"
+import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {
   storeId: string
@@ -22,9 +24,15 @@ interface AddProductFormProps {
 
 type Inputs = z.infer<typeof addProductSchema>
 
+const { useUploadThing } = generateReactHelpers<OurFileRouter>()
+
 export function AddProductForm({ storeId }: AddProductFormProps) {
   // zact for handling sever actions
   const { mutate, isLoading } = useZact(addProductAction)
+
+  // uploadthing
+  const { getRootProps, getInputProps, isDragActive, files, startUpload } =
+    useUploadThing("imageUploader")
 
   // react-hook-form
   const { register, handleSubmit, formState, control, setValue, reset } =
@@ -133,10 +141,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       <fieldset className="grid gap-3">
         <Label htmlFor="add-product-images">Images (optional)</Label>
         <FileDialog
-          setValue={setValue}
-          name="image"
           maxFiles={3}
           maxSize={1024 * 1024 * 8}
+          disabled={isLoading}
         />
         {formState.errors.image && (
           <p className="text-sm text-red-500 dark:text-red-500">
