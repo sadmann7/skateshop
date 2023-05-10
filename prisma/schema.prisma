@@ -68,17 +68,28 @@ enum USER_ROLE {
 }
 
 model Store {
-    id          String    @id @default(cuid())
-    name        String
-    description String?   @db.Text
-    image       String?
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String
-    products    Product[]
+    id           String      @id @default(cuid())
+    name         String
+    description  String?     @db.Text
+    image        StoreImage? @relation(fields: [storeImageId], references: [id])
+    createdAt    DateTime    @default(now())
+    updatedAt    DateTime    @updatedAt
+    user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       String
+    products     Product[]
+    storeImageId String?
 
     @@index([userId])
+    @@index([storeImageId])
+}
+
+model StoreImage {
+    id        String   @id @default(cuid())
+    name      String
+    url       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    stores    Store[]
 }
 
 model Product {
@@ -86,7 +97,7 @@ model Product {
     name        String
     description String?          @db.Text
     price       Int
-    images      Json?
+    images      ProductImage[]
     category    PRODUCT_CATEGORY @default(SKATEBOARD)
     quantity    Int              @default(1)
     inventory   Int              @default(1)
@@ -97,6 +108,18 @@ model Product {
     storeId     String
 
     @@index([storeId])
+}
+
+model ProductImage {
+    id        String   @id @default(cuid())
+    name      String
+    url       String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    product   Product? @relation(fields: [productId], references: [id])
+    productId String?
+
+    @@index([productId])
 }
 
 enum PRODUCT_CATEGORY {

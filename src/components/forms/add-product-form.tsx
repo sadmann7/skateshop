@@ -1,10 +1,12 @@
 "use client"
 
-import { UploadThingProps } from "@/types"
+import * as React from "react"
+import type { UploadThingOutput, UploadThingProps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
 import { generateReactHelpers } from "@uploadthing/react"
 import { useForm, type SubmitHandler } from "react-hook-form"
+import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
@@ -28,8 +30,10 @@ type Inputs = z.infer<typeof addProductSchema>
 const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
-  // zact for handling sever actions
-  const { mutate, isLoading } = useZact(addProductAction)
+  const [isLoading, setIsLoading] = React.useState(false)
+
+  // zact
+  const addProductMuation = useZact(addProductAction)
 
   // uploadthing
   const uploadThingProps = useUploadThing(
@@ -37,25 +41,42 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   ) satisfies UploadThingProps
 
   // react-hook-form
-  const { register, handleSubmit, formState, control } = useForm<Inputs>({
-    resolver: zodResolver(addProductSchema),
-  })
+  const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
+    {
+      resolver: zodResolver(addProductSchema),
+    }
+  )
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data)
 
-    await uploadThingProps.startUpload()
+    setIsLoading(true)
+    const rawImages =
+      (await uploadThingProps.startUpload()) as UploadThingOutput[]
 
-    // await mutate({
-    //   storeId,
-    //   category: data.category,
-    //   description: data.description,
-    //   name: data.name,
-    //   price: data.price,
-    //   images: uploadThingProps.files,
-    // })
+    const images = rawImages.map((image) => ({
+      id: image.fileKey,
+      name: image.fileKey,
+      url: image.fileUrl,
+    }))
 
-    // reset()
+    setIsLoading(addProductMuation.isLoading)
+    await addProductMuation.mutate({
+      storeId,
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      quantity: data.quantity,
+      inventory: data.inventory,
+      images,
+    })
+
+    addProductMuation.error
+      ? toast.error(addProductMuation.error.message)
+      : toast.success("Product added successfully.")
+    setIsLoading(false)
+    reset()
   }
 
   return (
@@ -155,7 +176,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         <FileDialog
           uploadThingProps={uploadThingProps}
           maxFiles={3}
-          maxSize={1024 * 1024 * 8}
+          maxSize={1024 * 1024 * 4}
           disabled={isLoading}
         />
       </fieldset>

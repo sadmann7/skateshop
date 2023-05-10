@@ -38,3 +38,8 @@ export type UploadThingProps = {
   readonly resetFiles: () => void
   readonly startUpload: () => Promise<any>
 }
+
+export type UploadThingOutput = {
+  fileKey: string
+  fileUrl: string
+}

@@ -3,7 +3,7 @@ import Image from "next/image"
 import type { FullFile, UploadThingProps } from "@/types"
 import { toast } from "react-hot-toast"
 
-import { bytesToSize, cn } from "@/lib/utils"
+import { cn, formatBytes } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Icons } from "@/components/icons"
@@ -54,7 +54,7 @@ export function FileDialog({
     const bigFiles = files.filter((file) => file.file.size > maxSize)
 
     if (bigFiles.length > 0) {
-      toast.error(`Please upload a file smaller than ${bytesToSize(maxSize)}`)
+      toast.error(`Please upload a file smaller than ${formatBytes(maxSize)}`)
       bigFiles.forEach((file) => files.splice(files.indexOf(file), 1))
       setSelectedFiles(files)
     }
@@ -125,7 +125,7 @@ export function FileDialog({
                 Drag {`'n'`} drop file here, or click to select file
               </p>
               <p className="text-sm text-slate-500">
-                Please upload file with size less than {bytesToSize(maxSize)}
+                Please upload file with size less than {formatBytes(maxSize)}
               </p>
             </div>
           )}
