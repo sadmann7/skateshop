@@ -56,7 +56,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           {...register("name", { required: true })}
         />
         {formState.errors.name && (
-          <p className="text-sm text-red-500 dark:text-red-500">
+          <p className="text-sm text-red-500">
             {formState.errors.name.message}
           </p>
         )}
@@ -69,7 +69,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
           {...register("description")}
         />
         {formState.errors.description && (
-          <p className="text-sm text-red-500 dark:text-red-500">
+          <p className="text-sm text-red-500">
             {formState.errors.description.message}
           </p>
         )}

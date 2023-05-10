@@ -6,7 +6,9 @@ export const addProductSchema = z.object({
     message: "Must be at least 1 character",
   }),
   description: z.string().optional(),
-  category: z.nativeEnum(PRODUCT_CATEGORY),
+  category: z.nativeEnum(PRODUCT_CATEGORY, {
+    required_error: "Must be a valid category",
+  }),
   price: z.number().positive({
     message: "Must be a positive number",
   }),

@@ -10,16 +10,18 @@ import { Icons } from "@/components/icons"
 
 export interface FileDialogProps extends React.HTMLAttributes<HTMLDivElement> {
   uploadThingProps: UploadThingProps
+  selectedFiles: FullFile[] | null
+  setSelectedFiles: React.Dispatch<React.SetStateAction<FullFile[] | null>>
   maxSize?: number
   maxFiles?: number
-  selectedFiles?: FullFile[] | null
-  setSelectedFiles?: React.Dispatch<React.SetStateAction<FullFile[] | null>>
   isUploading?: boolean
   disabled?: boolean
 }
 
 export function FileDialog({
   uploadThingProps,
+  selectedFiles,
+  setSelectedFiles,
   maxSize = 1024 * 1024 * 2,
   maxFiles = 1,
   isUploading = false,
@@ -27,25 +29,15 @@ export function FileDialog({
   className,
   ...props
 }: FileDialogProps) {
-  const [selectedFiles, setSelectedFiles] = React.useState<FullFile[] | null>(
-    null
-  )
-
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    files,
-    resetFiles,
-    startUpload,
-  } = uploadThingProps
+  const { getRootProps, getInputProps, isDragActive, files, resetFiles } =
+    uploadThingProps
 
   // set selected files to trigger re-render on files change
   React.useEffect(() => {
     if (!files) return
 
     setSelectedFiles(files)
-  }, [files])
+  }, [files, setSelectedFiles])
 
   // remove big files
   React.useEffect(() => {
@@ -58,7 +50,7 @@ export function FileDialog({
       bigFiles.forEach((file) => files.splice(files.indexOf(file), 1))
       setSelectedFiles(files)
     }
-  }, [files, maxSize])
+  }, [files, maxSize, setSelectedFiles])
 
   // limit number of files
   React.useEffect(() => {
@@ -66,7 +58,7 @@ export function FileDialog({
       files.splice(maxFiles)
       setSelectedFiles(files)
     }
-  }, [files, maxFiles])
+  }, [files, maxFiles, setSelectedFiles])
 
   console.log({
     files,
@@ -76,7 +68,7 @@ export function FileDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" disabled={disabled}>
           Upload Images
           <span className="sr-only">Upload Images</span>
         </Button>

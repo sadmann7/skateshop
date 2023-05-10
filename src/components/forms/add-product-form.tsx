@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { UploadThingOutput, UploadThingProps } from "@/types"
+import type { FullFile, UploadThingOutput, UploadThingProps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
 import { generateReactHelpers } from "@uploadthing/react"
@@ -30,6 +30,9 @@ type Inputs = z.infer<typeof addProductSchema>
 const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
+  const [selectedFiles, setSelectedFiles] = React.useState<FullFile[] | null>(
+    null
+  )
   const [isLoading, setIsLoading] = React.useState(false)
 
   // zact
@@ -51,14 +54,25 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     console.log(data)
 
     setIsLoading(true)
-    const rawImages =
-      (await uploadThingProps.startUpload()) as UploadThingOutput[]
 
-    const images = rawImages.map((image) => ({
-      id: image.fileKey,
-      name: image.fileKey,
-      url: image.fileUrl,
-    }))
+    const rawImages = selectedFiles?.length
+      ? ((await uploadThingProps.startUpload()) as UploadThingOutput[])
+      : []
+
+    selectedFiles?.length &&
+      (await toast.promise(uploadThingProps.startUpload(), {
+        loading: "Uploading images...",
+        success: "Images uploaded successfully.",
+        error: "Failed to upload images.",
+      }))
+
+    const images = selectedFiles?.length
+      ? rawImages.map((image) => ({
+          id: image.fileKey,
+          name: image.fileKey,
+          url: image.fileUrl,
+        }))
+      : []
 
     setIsLoading(addProductMuation.isLoading)
     await addProductMuation.mutate({
@@ -69,12 +83,12 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       price: data.price,
       quantity: data.quantity,
       inventory: data.inventory,
-      images,
+      images: images,
     })
 
     addProductMuation.error
       ? toast.error(addProductMuation.error.message)
-      : toast.success("Product added successfully.")
+      : toast.success("Product added successfully")
     setIsLoading(false)
     reset()
   }
@@ -85,7 +99,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
     >
       <fieldset className="grid gap-2.5">
-        <Label htmlFor="add-product-name">Name</Label>
+        <Label htmlFor="add-product-name">
+          Name <span className="text-red-500">*</span>
+        </Label>
         <Input
           id="add-product-name"
           type="text"
@@ -93,7 +109,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           {...register("name", { required: true })}
         />
         {formState.errors.name && (
-          <p className="text-sm text-red-500 dark:text-red-500">
+          <p className="text-sm text-red-500">
             {formState.errors.name.message}
           </p>
         )}
@@ -106,28 +122,32 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           {...register("description")}
         />
         {formState.errors.description && (
-          <p className="text-sm text-red-500 dark:text-red-500">
+          <p className="text-sm text-red-500">
             {formState.errors.description.message}
           </p>
         )}
       </fieldset>
       <div className="flex flex-col items-start  gap-2.5 sm:flex-row">
         <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-category">Category</Label>
+          <Label htmlFor="add-product-category">
+            Category <span className="text-red-500">*</span>
+          </Label>
           <SelectInput
             control={control}
             name="category"
             placeholder="Select a category."
             options={Object.values(PRODUCT_CATEGORY)}
           />
-          {formState.errors.description && (
-            <p className="text-sm text-red-500 dark:text-red-500">
-              {formState.errors.description.message}
+          {formState.errors.category && (
+            <p className="text-sm text-red-500">
+              {formState.errors.category.message}
             </p>
           )}
         </fieldset>
         <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-price">Price</Label>
+          <Label htmlFor="add-product-price">
+            Price <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="add-product-price"
             type="number"
@@ -135,7 +155,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             {...register("price", { required: true, valueAsNumber: true })}
           />
           {formState.errors.price && (
-            <p className="text-sm text-red-500 dark:text-red-500">
+            <p className="text-sm text-red-500">
               {formState.errors.price.message}
             </p>
           )}
@@ -143,7 +163,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       </div>
       <div className="flex flex-col items-start gap-2.5 sm:flex-row">
         <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-quantity">Quantity</Label>
+          <Label htmlFor="add-product-quantity">
+            Quantity <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="add-product-quantity"
             type="number"
@@ -151,13 +173,15 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             {...register("quantity", { required: true, valueAsNumber: true })}
           />
           {formState.errors.quantity && (
-            <p className="text-sm text-red-500 dark:text-red-500">
+            <p className="text-sm text-red-500">
               {formState.errors.quantity.message}
             </p>
           )}
         </fieldset>
         <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-inventory">Inventory</Label>
+          <Label htmlFor="add-product-inventory">
+            Inventory <span className="text-red-500">*</span>
+          </Label>
           <Input
             id="add-product-inventory"
             type="number"
@@ -165,16 +189,18 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             {...register("inventory", { required: true, valueAsNumber: true })}
           />
           {formState.errors.inventory && (
-            <p className="text-sm text-red-500 dark:text-red-500">
+            <p className="text-sm text-red-500">
               {formState.errors.inventory.message}
             </p>
           )}
         </fieldset>
       </div>
       <fieldset className="grid gap-3">
-        <Label htmlFor="add-product-images">Images (optional)</Label>
+        <Label htmlFor="add-product-images">Images</Label>
         <FileDialog
           uploadThingProps={uploadThingProps}
+          selectedFiles={selectedFiles}
+          setSelectedFiles={setSelectedFiles}
           maxFiles={3}
           maxSize={1024 * 1024 * 4}
           disabled={isLoading}

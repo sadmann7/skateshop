@@ -20,7 +20,7 @@ export const addStoreAction = zact(
   })
 
   if (storeWithSameName) {
-    throw new Error("A store with the same name already exists.")
+    throw new Error("Store name already taken")
   }
 
   await prisma.store.create({
@@ -40,13 +40,16 @@ export const addProductAction = zact(
   z.object({
     ...addProductSchema.shape,
     storeId: z.string(),
-    images: z.array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        url: z.string(),
-      })
-    ),
+    images: z
+      .array(
+        z.object({
+          id: z.string(),
+          name: z.string(),
+          url: z.string(),
+        })
+      )
+      .optional()
+      .default([]),
   })
 )(async (input) => {
   const productWithSameName = await prisma.product.findFirst({
@@ -56,7 +59,7 @@ export const addProductAction = zact(
   })
 
   if (productWithSameName) {
-    throw new Error("A product with the same name already exists.")
+    throw new Error("Product name already taken")
   }
 
   await prisma.product.create({
