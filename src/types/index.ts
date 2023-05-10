@@ -1,5 +1,9 @@
 import type { LucideIcon } from "lucide-react"
-import type { FileWithPath } from "react-dropzone"
+import type {
+  DropzoneInputProps,
+  DropzoneRootProps,
+  FileWithPath,
+} from "react-dropzone"
 
 export interface NavItem {
   title: string
@@ -17,8 +21,20 @@ export type SessionUser = {
   image?: string | null
 }
 
-export type FullFileWithPreview = {
+export type FullFile = {
   file: FileWithPath
-  preview: string
   contents: string
+}
+
+export type UploadThingProps = {
+  readonly getRootProps: <T extends DropzoneRootProps>(
+    props?: T | undefined
+  ) => T
+  readonly getInputProps: <T_1 extends DropzoneInputProps>(
+    props?: T_1 | undefined
+  ) => T_1
+  readonly isDragActive: boolean
+  readonly files: FullFile[]
+  readonly resetFiles: () => void
+  readonly startUpload: () => Promise<any>
 }

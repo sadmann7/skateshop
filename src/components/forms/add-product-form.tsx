@@ -1,5 +1,6 @@
 "use client"
 
+import { UploadThingProps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
 import { generateReactHelpers } from "@uploadthing/react"
@@ -31,17 +32,28 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   const { mutate, isLoading } = useZact(addProductAction)
 
   // uploadthing
-  const { getRootProps, getInputProps, isDragActive, files, startUpload } =
-    useUploadThing("imageUploader")
+  const uploadThingProps = useUploadThing(
+    "productImage"
+  ) satisfies UploadThingProps
 
   // react-hook-form
-  const { register, handleSubmit, formState, control, setValue, reset } =
-    useForm<Inputs>({
-      resolver: zodResolver(addProductSchema),
-    })
+  const { register, handleSubmit, formState, control } = useForm<Inputs>({
+    resolver: zodResolver(addProductSchema),
+  })
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data)
+
+    await uploadThingProps.startUpload()
+
+    // await mutate({
+    //   storeId,
+    //   category: data.category,
+    //   description: data.description,
+    //   name: data.name,
+    //   price: data.price,
+    //   images: uploadThingProps.files,
+    // })
 
     // reset()
   }
@@ -141,15 +153,11 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       <fieldset className="grid gap-3">
         <Label htmlFor="add-product-images">Images (optional)</Label>
         <FileDialog
+          uploadThingProps={uploadThingProps}
           maxFiles={3}
           maxSize={1024 * 1024 * 8}
           disabled={isLoading}
         />
-        {formState.errors.image && (
-          <p className="text-sm text-red-500 dark:text-red-500">
-            {formState.errors.image.message}
-          </p>
-        )}
       </fieldset>
       <Button disabled={isLoading}>
         {isLoading && (

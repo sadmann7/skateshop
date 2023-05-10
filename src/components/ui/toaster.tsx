@@ -1,9 +1,9 @@
-import { Toaster as ReactToaster } from "react-hot-toast";
+import { Toaster as ReactToaster } from "react-hot-toast"
 
 export function Toaster() {
   return (
     <ReactToaster
-      position="bottom-left"
+      position="bottom-center"
       reverseOrder={false}
       gutter={8}
       toastOptions={{
@@ -15,5 +15,5 @@ export function Toaster() {
         },
       }}
     />
-  );
+  )
 }

@@ -38,7 +38,7 @@ export const addStoreAction = zact(
 
 export const addProductAction = zact(
   z.object({
-    ...addProductSchema.omit({ image: true }).shape,
+    ...addProductSchema.shape,
     storeId: z.string(),
     images: z.array(z.string()),
   })

@@ -1,28 +1,25 @@
 import * as React from "react"
 import Image from "next/image"
-import type { FullFileWithPreview } from "@/types"
-import { generateReactHelpers } from "@uploadthing/react"
+import type { FullFile, UploadThingProps } from "@/types"
+import { toast } from "react-hot-toast"
 
-import { cn } from "@/lib/utils"
+import { bytesToSize, cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Icons } from "@/components/icons"
-import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 export interface FileDialogProps extends React.HTMLAttributes<HTMLDivElement> {
+  uploadThingProps: UploadThingProps
   maxSize?: number
   maxFiles?: number
-  selectedFiles?: FullFileWithPreview[] | null
-  setSelectedFiles?: React.Dispatch<
-    React.SetStateAction<FullFileWithPreview[] | null>
-  >
+  selectedFiles?: FullFile[] | null
+  setSelectedFiles?: React.Dispatch<React.SetStateAction<FullFile[] | null>>
   isUploading?: boolean
   disabled?: boolean
 }
 
-const { useUploadThing } = generateReactHelpers<OurFileRouter>()
-
 export function FileDialog({
+  uploadThingProps,
   maxSize = 1024 * 1024 * 2,
   maxFiles = 1,
   isUploading = false,
@@ -30,10 +27,9 @@ export function FileDialog({
   className,
   ...props
 }: FileDialogProps) {
-  const [selectedFiles, setSelectedFiles] = React.useState<
-    FullFileWithPreview[] | null
-  >(null)
-  const [isDisabled, setIsDisabled] = React.useState(disabled ?? false)
+  const [selectedFiles, setSelectedFiles] = React.useState<FullFile[] | null>(
+    null
+  )
 
   const {
     getRootProps,
@@ -42,34 +38,40 @@ export function FileDialog({
     files,
     resetFiles,
     startUpload,
-  } = useUploadThing("imageUploader")
+  } = uploadThingProps
 
-  // set preview for selected files
+  // set selected files to trigger re-render on files change
   React.useEffect(() => {
     if (!files) return
 
-    setSelectedFiles(
-      files.map((file) => ({
-        ...file,
-        preview: URL.createObjectURL(file.file),
-      }))
-    )
-  }, [files, setSelectedFiles])
+    setSelectedFiles(files)
+  }, [files])
 
-  // revoke preview url when component unmounts
+  // remove big files
   React.useEffect(() => {
-    return () => {
-      if (!selectedFiles) return
-      selectedFiles.forEach((file) => URL.revokeObjectURL(file.preview))
-    }
-  }, [selectedFiles])
+    if (!files) return
 
-  // disable upload button if maxFiles is reached
-  React.useEffect(() => {
-    if (files?.length >= maxFiles) {
-      setIsDisabled(true)
+    const bigFiles = files.filter((file) => file.file.size > maxSize)
+
+    if (bigFiles.length > 0) {
+      toast.error(`Please upload a file smaller than ${bytesToSize(maxSize)}`)
+      bigFiles.forEach((file) => files.splice(files.indexOf(file), 1))
+      setSelectedFiles(files)
     }
-  }, [files?.length, maxFiles, resetFiles])
+  }, [files, maxSize])
+
+  // limit number of files
+  React.useEffect(() => {
+    if (files?.length > maxFiles) {
+      files.splice(maxFiles)
+      setSelectedFiles(files)
+    }
+  }, [files, maxFiles])
+
+  console.log({
+    files,
+    selectedFiles,
+  })
 
   return (
     <Dialog>
@@ -86,7 +88,7 @@ export function FileDialog({
             "group relative grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
             "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             isDragActive && "border-muted-foreground/50",
-            isDisabled && "pointer-events-none opacity-60",
+            disabled && "pointer-events-none opacity-60",
             className
           )}
           {...props}
@@ -113,19 +115,6 @@ export function FileDialog({
               />
               <p className="text-base font-medium">Drop the file here</p>
             </div>
-          ) : isDisabled ? (
-            <div className="grid place-items-center gap-1 sm:px-5">
-              <Icons.warning
-                className="h-9 w-9 text-destructive"
-                aria-hidden="true"
-              />
-              <p className="mt-2 text-base font-medium text-muted-foreground">
-                You have reached the maximum number of files
-              </p>
-              <p className="text-sm text-slate-500">
-                Please remove some files to upload more
-              </p>
-            </div>
           ) : (
             <div className="grid place-items-center gap-1 sm:px-5">
               <Icons.upload
@@ -136,17 +125,16 @@ export function FileDialog({
                 Drag {`'n'`} drop file here, or click to select file
               </p>
               <p className="text-sm text-slate-500">
-                Please upload file with size less than{" "}
-                {Math.round(maxSize / 1024 / 1024)}MB
+                Please upload file with size less than {bytesToSize(maxSize)}
               </p>
             </div>
           )}
         </div>
-        <p className="mt-2 text-center text-sm font-medium text-muted-foreground">
+        <p className="text-center text-sm font-medium text-muted-foreground">
           You can upload up to {maxFiles} {maxFiles === 1 ? "file" : "files"}
         </p>
-        {selectedFiles && (
-          <div className="mt-2 grid gap-5">
+        {selectedFiles?.length ? (
+          <div className="grid gap-5">
             {selectedFiles.map((file, i) => (
               <div
                 key={i}
@@ -154,7 +142,7 @@ export function FileDialog({
               >
                 <div className="flex items-center gap-2">
                   <Image
-                    src={file.preview}
+                    src={file.contents}
                     alt={file.file.name}
                     className="h-10 w-10 shrink-0 rounded-md"
                     width={40}
@@ -176,21 +164,21 @@ export function FileDialog({
                   size="sm"
                   className="h-7 w-7 p-0"
                   onClick={() => {
-                    resetFiles()
-                    setSelectedFiles(null)
-                    setIsDisabled(false)
+                    files.splice(i, 1)
+                    setSelectedFiles([...files])
+                    selectedFiles.length === 0 && resetFiles()
                   }}
                 >
                   <Icons.close
                     className="h-4 w-4 text-white"
                     aria-hidden="true"
                   />
-                  <span className="sr-only">Remove file</span>
+                  <span className="sr-only">Remove File</span>
                 </Button>
               </div>
             ))}
           </div>
-        )}
+        ) : null}
       </DialogContent>
     </Dialog>
   )
