@@ -1,6 +1,12 @@
 import { PRODUCT_CATEGORY } from "@prisma/client"
 import { z } from "zod"
 
+export const getProductsSchema = z.object({
+  storeId: z.string(),
+  page: z.number().int().default(0),
+  perPage: z.number().int().default(10),
+})
+
 export const addProductSchema = z.object({
   name: z.string().min(1, {
     message: "Must be at least 1 character",
@@ -27,5 +33,6 @@ export const addProductSchema = z.object({
       if (val.some((file) => !(file instanceof File))) return false
       return true
     }, "Must be an array of File")
+    .optional()
     .default([]),
 })

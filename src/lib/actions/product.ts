@@ -5,36 +5,22 @@ import { z } from "zod"
 
 import { prisma } from "@/lib/db"
 import { addProductSchema } from "@/lib/validations/product"
-import { addStoreSchema } from "@/lib/validations/store"
 
-export const addStoreAction = zact(
-  z.object({
-    ...addStoreSchema.shape,
-    userId: z.string(),
-  })
-)(async (input) => {
-  const storeWithSameName = await prisma.store.findFirst({
+export async function checkProductAction(fd: FormData) {
+  const name = fd.get("name") as string
+
+  const productWithSameName = await prisma.product.findFirst({
     where: {
-      name: input.name,
+      name,
     },
   })
 
-  if (storeWithSameName) {
-    throw new Error("Store name already taken")
+  if (productWithSameName) {
+    return {
+      error: "Product name already taken",
+    }
   }
-
-  await prisma.store.create({
-    data: {
-      name: input.name,
-      description: input.description,
-      user: {
-        connect: {
-          id: input.userId,
-        },
-      },
-    },
-  })
-})
+}
 
 export const addProductAction = zact(
   z.object({

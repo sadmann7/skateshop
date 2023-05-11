@@ -5,19 +5,14 @@ import * as z from "zod"
 
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-
-const getProductsSchema = z.object({
-  storeId: z.string(),
-  page: z.number().int().default(0),
-  perPage: z.number().int().default(10),
-})
+import { getProductsSchema } from "@/lib/validations/product"
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
     if (!session) {
-      return new Response("Unauthorized.", { status: 403 })
+      return new Response("Unauthorized", { status: 403 })
     }
 
     const { user } = session

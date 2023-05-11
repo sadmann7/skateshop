@@ -6,7 +6,7 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import { useZact } from "zact/client"
 import type { z } from "zod"
 
-import { addStoreAction } from "@/lib/actions"
+import { addStoreAction } from "@/lib/actions/store"
 import { addStoreSchema } from "@/lib/validations/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

@@ -1,6 +1,7 @@
 "use client"
 
-import type { UploadThingOutput } from "@/types"
+import * as React from "react"
+import type { FileWithPreview, UploadThingOutput } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
@@ -9,7 +10,8 @@ import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
-import { addProductAction } from "@/lib/actions"
+import { addProductAction, checkProductAction } from "@/lib/actions/product"
+import { isArrayOfFile } from "@/lib/utils"
 import { addProductSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -29,8 +31,12 @@ type Inputs = z.infer<typeof addProductSchema>
 const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
+  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
+
+  const [isLoading, setIsLoading] = React.useState(false)
+
   // zact
-  const { mutate, isLoading, error } = useZact(addProductAction)
+  const addProductMuation = useZact(addProductAction)
 
   // uploadthing
   const { isUploading, startUpload } = useUploadThing({
@@ -42,14 +48,24 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     useForm<Inputs>({
       resolver: zodResolver(addProductSchema),
     })
-
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data)
 
-    if (data.images instanceof Array && data.images.length > 0) {
-      const rawImages = (await startUpload(
-        data.images as File[]
-      )) as UploadThingOutput[]
+    setIsLoading(true)
+
+    // check if product name already exists
+    const formData = new FormData()
+    formData.append("name", data.name)
+    const productWiithSameName = await checkProductAction(formData)
+
+    if (productWiithSameName?.error) {
+      toast.error(productWiithSameName.error)
+      setIsLoading(false)
+      return
+    }
+
+    if (isArrayOfFile(data.images)) {
+      const rawImages = (await startUpload(data.images)) as UploadThingOutput[]
 
       const images = rawImages.map((image) => ({
         id: image.fileKey,
@@ -57,7 +73,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         url: image.fileUrl,
       }))
 
-      await mutate({
+      await addProductMuation.mutate({
         storeId,
         name: data.name,
         description: data.description,
@@ -68,7 +84,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         images,
       })
     } else {
-      await mutate({
+      await addProductMuation.mutate({
         storeId,
         name: data.name,
         description: data.description,
@@ -80,11 +96,13 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       })
     }
 
-    error
-      ? toast.error(error.message)
+    addProductMuation.error
+      ? toast.error(addProductMuation.error.message)
       : toast.success("Product added successfully")
 
+    setIsLoading(false)
     reset()
+    setFiles(null)
   }
 
   return (
@@ -196,6 +214,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           name="images"
           maxFiles={3}
           maxSize={1024 * 1024 * 4}
+          files={files}
+          setFiles={setFiles}
           isUploading={isUploading}
           disabled={isLoading}
         />
@@ -205,14 +225,13 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           </p>
         )}
       </fieldset>
-      <Button disabled={isLoading || isUploading}>
-        {isLoading ||
-          (isUploading && (
-            <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
-          ))}
+      <Button disabled={isLoading}>
+        {isLoading && (
+          <Icons.spinner
+            className="mr-2 h-4 w-4 animate-spin"
+            aria-hidden="true"
+          />
+        )}
         Add Product
         <span className="sr-only">Add Product</span>
       </Button>

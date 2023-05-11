@@ -27,6 +27,8 @@ export interface FileDialogProps<TFieldValues extends FieldValues>
   accept?: Accept
   maxSize?: number
   maxFiles?: number
+  files: FileWithPreview[] | null
+  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
   isUploading?: boolean
   disabled?: boolean
 }
@@ -39,13 +41,13 @@ export function FileDialog<TFieldValues extends FieldValues>({
   },
   maxSize = 1024 * 1024 * 2,
   maxFiles = 1,
+  files,
+  setFiles,
   isUploading = false,
   disabled = false,
   className,
   ...props
 }: FileDialogProps<TFieldValues>) {
-  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-
   const onDrop = React.useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       setValue(
@@ -65,13 +67,19 @@ export function FileDialog<TFieldValues extends FieldValues>({
       )
 
       if (rejectedFiles.length > 0) {
-        rejectedFiles.forEach(
-          ({ errors }) => errors[0]?.message && toast.error(errors[0].message)
-        )
+        rejectedFiles.forEach(({ errors }) => {
+          if (errors[0]?.code === "file-too-large") {
+            toast.error(
+              `File is too large. Max size is ${formatBytes(maxSize)}`
+            )
+            return
+          }
+          errors[0]?.message && toast.error(errors[0].message)
+        })
       }
     },
 
-    [name, setFiles, setValue]
+    [maxSize, name, setFiles, setValue]
   )
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -80,6 +88,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
     maxSize,
     maxFiles,
     multiple: maxFiles > 1,
+    disabled,
   })
 
   // revoke preview url when component unmounts
@@ -100,10 +109,13 @@ export function FileDialog<TFieldValues extends FieldValues>({
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[480px]">
+        <p className="absolute left-5 top-4 text-base font-medium text-muted-foreground">
+          Upload your images
+        </p>
         <div
           {...getRootProps()}
           className={cn(
-            "group relative grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
+            "group relative mt-8 grid h-48 w-full cursor-pointer place-items-center rounded-lg border-2 border-dashed border-muted-foreground/25 px-5 py-2.5 text-center transition hover:bg-muted/25",
             "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
             isDragActive && "border-muted-foreground/50",
             disabled && "pointer-events-none opacity-60",
@@ -111,13 +123,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
           )}
           {...props}
         >
-          <input
-            {...getInputProps()}
-            className="absolute inset-0 z-10 h-full w-full overflow-hidden opacity-0"
-            style={{
-              display: "block",
-            }}
-          />
+          <input {...getInputProps()} />
           {isUploading ? (
             <div className="group grid w-full place-items-center gap-1 sm:px-10">
               <Icons.upload
@@ -128,7 +134,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
           ) : isDragActive ? (
             <div className="grid place-items-center gap-2 text-muted-foreground sm:px-5">
               <Icons.upload
-                className={cn("h-9 w-9", isDragActive && "animate-bounce")}
+                className={cn("h-8 w-8", isDragActive && "animate-bounce")}
                 aria-hidden="true"
               />
               <p className="text-base font-medium">Drop the file here</p>
@@ -136,7 +142,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
           ) : (
             <div className="grid place-items-center gap-1 sm:px-5">
               <Icons.upload
-                className="h-9 w-9 text-muted-foreground"
+                className="h-8 w-8 text-muted-foreground"
                 aria-hidden="true"
               />
               <p className="mt-2 text-base font-medium text-muted-foreground">
@@ -204,6 +210,28 @@ export function FileDialog<TFieldValues extends FieldValues>({
               </div>
             ))}
           </div>
+        ) : null}
+        {files?.length ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-2.5 w-full"
+            onClick={() => {
+              setFiles(null)
+              setValue(
+                name,
+                null as PathValue<TFieldValues, Path<TFieldValues>>,
+                {
+                  shouldValidate: true,
+                }
+              )
+            }}
+          >
+            <Icons.trash className="mr-2 h-4 w-4" aria-hidden="true" />
+            Remove All
+            <span className="sr-only">Remove All</span>
+          </Button>
         ) : null}
       </DialogContent>
     </Dialog>
