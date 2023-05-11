@@ -25,8 +25,6 @@ export interface FileDialogProps<TFieldValues extends FieldValues>
   name: Path<TFieldValues>
   setValue: UseFormSetValue<TFieldValues>
   accept?: Accept
-  files: FileWithPreview[] | null
-  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
   maxSize?: number
   maxFiles?: number
   isUploading?: boolean
@@ -39,8 +37,6 @@ export function FileDialog<TFieldValues extends FieldValues>({
   accept = {
     "image/*": [],
   },
-  files,
-  setFiles,
   maxSize = 1024 * 1024 * 2,
   maxFiles = 1,
   isUploading = false,
@@ -48,6 +44,8 @@ export function FileDialog<TFieldValues extends FieldValues>({
   className,
   ...props
 }: FileDialogProps<TFieldValues>) {
+  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
+
   const onDrop = React.useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       setValue(
@@ -67,9 +65,9 @@ export function FileDialog<TFieldValues extends FieldValues>({
       )
 
       if (rejectedFiles.length > 0) {
-        rejectedFiles.forEach(({ errors }) => {
-          toast.error(errors[0]?.message ?? "")
-        })
+        rejectedFiles.forEach(
+          ({ errors }) => errors[0]?.message && toast.error(errors[0].message)
+        )
       }
     },
 
@@ -82,7 +80,6 @@ export function FileDialog<TFieldValues extends FieldValues>({
     maxSize,
     maxFiles,
     multiple: maxFiles > 1,
-    autoFocus: true,
   })
 
   // revoke preview url when component unmounts

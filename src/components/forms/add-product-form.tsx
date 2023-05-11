@@ -1,10 +1,11 @@
 "use client"
 
-import * as React from "react"
-import type { FileWithPreview } from "@/types"
+import type { UploadThingOutput } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
+import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm, type SubmitHandler } from "react-hook-form"
+import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
@@ -17,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { SelectInput } from "@/components/select-input"
+import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {
   storeId: string
@@ -24,12 +26,16 @@ interface AddProductFormProps {
 
 type Inputs = z.infer<typeof addProductSchema>
 
-export function AddProductForm({ storeId }: AddProductFormProps) {
-  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false)
+const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
+export function AddProductForm({ storeId }: AddProductFormProps) {
   // zact
-  const addProductMuation = useZact(addProductAction)
+  const { mutate, isLoading, error } = useZact(addProductAction)
+
+  // uploadthing
+  const { isUploading, startUpload } = useUploadThing({
+    endpoint: "productImage",
+  })
 
   // react-hook-form
   const { register, handleSubmit, formState, control, setValue, reset } =
@@ -37,10 +43,48 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       resolver: zodResolver(addProductSchema),
     })
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     console.log(data)
 
-    // reset()
+    if (data.images instanceof Array && data.images.length > 0) {
+      const rawImages = (await startUpload(
+        data.images as File[]
+      )) as UploadThingOutput[]
+
+      const images = rawImages.map((image) => ({
+        id: image.fileKey,
+        name: image.fileKey.split("_")[1] ?? image.fileKey,
+        url: image.fileUrl,
+      }))
+
+      await mutate({
+        storeId,
+        name: data.name,
+        description: data.description,
+        category: data.category,
+        price: data.price,
+        quantity: data.quantity,
+        inventory: data.inventory,
+        images,
+      })
+    } else {
+      await mutate({
+        storeId,
+        name: data.name,
+        description: data.description,
+        category: data.category,
+        price: data.price,
+        quantity: data.quantity,
+        inventory: data.inventory,
+        images: [],
+      })
+    }
+
+    error
+      ? toast.error(error.message)
+      : toast.success("Product added successfully")
+
+    reset()
   }
 
   return (
@@ -150,20 +194,25 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         <FileDialog
           setValue={setValue}
           name="images"
-          files={files}
-          setFiles={setFiles}
           maxFiles={3}
           maxSize={1024 * 1024 * 4}
+          isUploading={isUploading}
           disabled={isLoading}
         />
-      </fieldset>
-      <Button disabled={isLoading}>
-        {isLoading && (
-          <Icons.spinner
-            className="mr-2 h-4 w-4 animate-spin"
-            aria-hidden="true"
-          />
+        {formState.errors.images && (
+          <p className="text-sm text-red-500">
+            {formState.errors.images.message}
+          </p>
         )}
+      </fieldset>
+      <Button disabled={isLoading || isUploading}>
+        {isLoading ||
+          (isUploading && (
+            <Icons.spinner
+              className="mr-2 h-4 w-4 animate-spin"
+              aria-hidden="true"
+            />
+          ))}
         Add Product
         <span className="sr-only">Add Product</span>
       </Button>

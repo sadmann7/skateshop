@@ -20,5 +20,12 @@ export const addProductSchema = z.object({
   inventory: z.number().positive({
     message: "Must be a positive number",
   }),
-  images: z.unknown(),
+  images: z
+    .unknown()
+    .refine((val) => {
+      if (!Array.isArray(val)) return false
+      if (val.some((file) => !(file instanceof File))) return false
+      return true
+    }, "Must be an array of File")
+    .default([]),
 })
