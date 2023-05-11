@@ -1,6 +1,18 @@
 import * as React from "react"
 import Image from "next/image"
-import type { FullFile, UploadThingProps } from "@/types"
+import type { FileWithPreview } from "@/types"
+import {
+  useDropzone,
+  type Accept,
+  type FileRejection,
+  type FileWithPath,
+} from "react-dropzone"
+import type {
+  FieldValues,
+  Path,
+  PathValue,
+  UseFormSetValue,
+} from "react-hook-form"
 import { toast } from "react-hot-toast"
 
 import { cn, formatBytes } from "@/lib/utils"
@@ -8,62 +20,79 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Icons } from "@/components/icons"
 
-export interface FileDialogProps extends React.HTMLAttributes<HTMLDivElement> {
-  uploadThingProps: UploadThingProps
-  selectedFiles: FullFile[] | null
-  setSelectedFiles: React.Dispatch<React.SetStateAction<FullFile[] | null>>
+export interface FileDialogProps<TFieldValues extends FieldValues>
+  extends React.HTMLAttributes<HTMLDivElement> {
+  name: Path<TFieldValues>
+  setValue: UseFormSetValue<TFieldValues>
+  accept?: Accept
+  files: FileWithPreview[] | null
+  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
   maxSize?: number
   maxFiles?: number
   isUploading?: boolean
   disabled?: boolean
 }
 
-export function FileDialog({
-  uploadThingProps,
-  selectedFiles,
-  setSelectedFiles,
+export function FileDialog<TFieldValues extends FieldValues>({
+  name,
+  setValue,
+  accept = {
+    "image/*": [],
+  },
+  files,
+  setFiles,
   maxSize = 1024 * 1024 * 2,
   maxFiles = 1,
   isUploading = false,
   disabled = false,
   className,
   ...props
-}: FileDialogProps) {
-  const { getRootProps, getInputProps, isDragActive, files, resetFiles } =
-    uploadThingProps
+}: FileDialogProps<TFieldValues>) {
+  const onDrop = React.useCallback(
+    (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
+      setValue(
+        name,
+        acceptedFiles as PathValue<TFieldValues, Path<TFieldValues>>,
+        {
+          shouldValidate: true,
+        }
+      )
 
-  // set selected files to trigger re-render on files change
-  React.useEffect(() => {
-    if (!files) return
+      setFiles(
+        acceptedFiles.map((file) =>
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        )
+      )
 
-    setSelectedFiles(files)
-  }, [files, setSelectedFiles])
+      if (rejectedFiles.length > 0) {
+        rejectedFiles.forEach(({ errors }) => {
+          toast.error(errors[0]?.message ?? "")
+        })
+      }
+    },
 
-  // remove big files
-  React.useEffect(() => {
-    if (!files) return
+    [name, setFiles, setValue]
+  )
 
-    const bigFiles = files.filter((file) => file.file.size > maxSize)
-
-    if (bigFiles.length > 0) {
-      toast.error(`Please upload a file smaller than ${formatBytes(maxSize)}`)
-      bigFiles.forEach((file) => files.splice(files.indexOf(file), 1))
-      setSelectedFiles(files)
-    }
-  }, [files, maxSize, setSelectedFiles])
-
-  // limit number of files
-  React.useEffect(() => {
-    if (files?.length > maxFiles) {
-      files.splice(maxFiles)
-      setSelectedFiles(files)
-    }
-  }, [files, maxFiles, setSelectedFiles])
-
-  console.log({
-    files,
-    selectedFiles,
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept,
+    maxSize,
+    maxFiles,
+    multiple: maxFiles > 1,
+    autoFocus: true,
   })
+
+  // revoke preview url when component unmounts
+  React.useEffect(() => {
+    return () => {
+      if (!files) return
+      files.forEach((file) => URL.revokeObjectURL(file.preview))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Dialog>
@@ -125,17 +154,17 @@ export function FileDialog({
         <p className="text-center text-sm font-medium text-muted-foreground">
           You can upload up to {maxFiles} {maxFiles === 1 ? "file" : "files"}
         </p>
-        {selectedFiles?.length ? (
+        {files?.length ? (
           <div className="grid gap-5">
-            {selectedFiles.map((file, i) => (
+            {files.map((file, i) => (
               <div
                 key={i}
                 className="relative flex items-center justify-between gap-2.5"
               >
                 <div className="flex items-center gap-2">
                   <Image
-                    src={file.contents}
-                    alt={file.file.name}
+                    src={file.preview}
+                    alt={file.name}
                     className="h-10 w-10 shrink-0 rounded-md"
                     width={40}
                     height={40}
@@ -143,10 +172,10 @@ export function FileDialog({
                   />
                   <div className="flex flex-col">
                     <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
-                      {file.file.name}
+                      {file.name}
                     </p>
                     <p className="text-xs text-slate-500">
-                      {(file.file.size / 1024 / 1024).toFixed(2)}MB
+                      {(file.size / 1024 / 1024).toFixed(2)}MB
                     </p>
                   </div>
                 </div>
@@ -156,9 +185,17 @@ export function FileDialog({
                   size="sm"
                   className="h-7 w-7 p-0"
                   onClick={() => {
-                    files.splice(i, 1)
-                    setSelectedFiles([...files])
-                    selectedFiles.length === 0 && resetFiles()
+                    setFiles(files?.filter((_, j) => j !== i))
+                    setValue(
+                      name,
+                      files?.filter((_, j) => j !== i) as PathValue<
+                        TFieldValues,
+                        Path<TFieldValues>
+                      >,
+                      {
+                        shouldValidate: true,
+                      }
+                    )
                   }}
                 >
                   <Icons.close

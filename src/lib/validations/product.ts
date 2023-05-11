@@ -6,9 +6,11 @@ export const addProductSchema = z.object({
     message: "Must be at least 1 character",
   }),
   description: z.string().optional(),
-  category: z.nativeEnum(PRODUCT_CATEGORY, {
-    required_error: "Must be a valid category",
-  }),
+  category: z
+    .nativeEnum(PRODUCT_CATEGORY, {
+      required_error: "Must be a valid category",
+    })
+    .default(PRODUCT_CATEGORY.SKATEBOARD),
   price: z.number().positive({
     message: "Must be a positive number",
   }),
@@ -18,4 +20,5 @@ export const addProductSchema = z.object({
   inventory: z.number().positive({
     message: "Must be a positive number",
   }),
+  images: z.unknown(),
 })

@@ -1,12 +1,10 @@
 "use client"
 
 import * as React from "react"
-import type { FullFile, UploadThingOutput, UploadThingProps } from "@/types"
+import type { FileWithPreview } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
-import { generateReactHelpers } from "@uploadthing/react"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
@@ -19,7 +17,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { SelectInput } from "@/components/select-input"
-import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {
   storeId: string
@@ -27,70 +24,23 @@ interface AddProductFormProps {
 
 type Inputs = z.infer<typeof addProductSchema>
 
-const { useUploadThing } = generateReactHelpers<OurFileRouter>()
-
 export function AddProductForm({ storeId }: AddProductFormProps) {
-  const [selectedFiles, setSelectedFiles] = React.useState<FullFile[] | null>(
-    null
-  )
+  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
   const [isLoading, setIsLoading] = React.useState(false)
 
   // zact
   const addProductMuation = useZact(addProductAction)
 
-  // uploadthing
-  const uploadThingProps = useUploadThing(
-    "productImage"
-  ) satisfies UploadThingProps
-
   // react-hook-form
-  const { register, handleSubmit, formState, control, reset } = useForm<Inputs>(
-    {
+  const { register, handleSubmit, formState, control, setValue, reset } =
+    useForm<Inputs>({
       resolver: zodResolver(addProductSchema),
-    }
-  )
-
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data)
-
-    setIsLoading(true)
-
-    const rawImages = selectedFiles?.length
-      ? ((await uploadThingProps.startUpload()) as UploadThingOutput[])
-      : []
-
-    selectedFiles?.length &&
-      (await toast.promise(uploadThingProps.startUpload(), {
-        loading: "Uploading images...",
-        success: "Images uploaded successfully.",
-        error: "Failed to upload images.",
-      }))
-
-    const images = selectedFiles?.length
-      ? rawImages.map((image) => ({
-          id: image.fileKey,
-          name: image.fileKey,
-          url: image.fileUrl,
-        }))
-      : []
-
-    setIsLoading(addProductMuation.isLoading)
-    await addProductMuation.mutate({
-      storeId,
-      name: data.name,
-      description: data.description,
-      category: data.category,
-      price: data.price,
-      quantity: data.quantity,
-      inventory: data.inventory,
-      images: images,
     })
 
-    addProductMuation.error
-      ? toast.error(addProductMuation.error.message)
-      : toast.success("Product added successfully")
-    setIsLoading(false)
-    reset()
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data)
+
+    // reset()
   }
 
   return (
@@ -127,7 +77,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           </p>
         )}
       </fieldset>
-      <div className="flex flex-col items-start  gap-2.5 sm:flex-row">
+      <div className="flex flex-col items-start gap-6 sm:flex-row">
         <fieldset className="grid w-full gap-2.5">
           <Label htmlFor="add-product-category">
             Category <span className="text-red-500">*</span>
@@ -135,8 +85,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           <SelectInput
             control={control}
             name="category"
-            placeholder="Select a category."
             options={Object.values(PRODUCT_CATEGORY)}
+            defaultValue={PRODUCT_CATEGORY.SKATEBOARD}
           />
           {formState.errors.category && (
             <p className="text-sm text-red-500">
@@ -161,7 +111,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           )}
         </fieldset>
       </div>
-      <div className="flex flex-col items-start gap-2.5 sm:flex-row">
+      <div className="flex flex-col items-start gap-6 sm:flex-row">
         <fieldset className="grid w-full gap-2.5">
           <Label htmlFor="add-product-quantity">
             Quantity <span className="text-red-500">*</span>
@@ -198,9 +148,10 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       <fieldset className="grid gap-3">
         <Label htmlFor="add-product-images">Images</Label>
         <FileDialog
-          uploadThingProps={uploadThingProps}
-          selectedFiles={selectedFiles}
-          setSelectedFiles={setSelectedFiles}
+          setValue={setValue}
+          name="images"
+          files={files}
+          setFiles={setFiles}
           maxFiles={3}
           maxSize={1024 * 1024 * 4}
           disabled={isLoading}

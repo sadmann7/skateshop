@@ -1,10 +1,10 @@
 /** app/api/uploadthing/core.ts */
 
-import { createFilething, type FileRouter } from "uploadthing/server"
+import { createUploadthing, type FileRouter } from "uploadthing/next"
 
 import { getCurrentUser } from "@/lib/session"
 
-const f = createFilething()
+const f = createUploadthing()
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -15,18 +15,17 @@ export const ourFileRouter = {
     .maxSize("4MB")
     .middleware(async (req) => {
       // This code runs on your server before upload
-
       const user = await getCurrentUser()
 
       // If you throw, the user will not be able to upload
       if (!user) throw new Error("Unauthorized")
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { user }
+      return { userId: user.id }
     })
     .onUploadComplete(({ metadata }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.user)
+      console.log("Upload complete for userId:", metadata.userId)
     }),
 } satisfies FileRouter
 
