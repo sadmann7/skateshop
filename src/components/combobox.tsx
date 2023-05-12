@@ -5,17 +5,18 @@ import { useRouter } from "next/navigation"
 import type { GroupedProduct } from "@/types"
 import type { Product } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
+import { CommandEmpty } from "cmdk"
 
-import { formatEnum } from "@/lib/utils"
+import { cn, formatEnum } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
-  CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
 import { CommandDebouncedInput } from "@/components/ui/debounced"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
 interface ComboboxProps {
@@ -32,7 +33,7 @@ export function Combobox({
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
-  const { data, isFetching } = useQuery(
+  const { data, isFetching, isSuccess } = useQuery(
     ["filterProducts", query],
     async () => {
       const response = await fetch("/api/products/filter", {
@@ -55,7 +56,26 @@ export function Combobox({
     }
   )
 
-  console.log(data)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setIsOpen((isOpen) => !isOpen)
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [])
+
+  const handleSelect = React.useCallback((callback: () => unknown) => {
+    setIsOpen(false)
+    callback()
+  }, [])
+
+  console.log({
+    data,
+    isFetching,
+  })
 
   return (
     <>
@@ -79,25 +99,43 @@ export function Combobox({
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty>{empty}</CommandEmpty>
-          {data?.map((group) => (
-            <CommandGroup
-              key={group.category}
-              heading={formatEnum(group.category)}
-            >
-              {group.products.map((item) => (
-                <CommandItem
-                  key={item.id}
-                  onClick={() => {
-                    router.push(`/products/${group.category}/${item.id}`)
-                    setIsOpen(false)
-                  }}
-                >
-                  {item.name}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          ))}
+          <CommandEmpty
+            className={cn(
+              "py-6 text-center text-sm",
+              isFetching ? "hidden" : "block"
+            )}
+          >
+            {empty}
+          </CommandEmpty>
+          {isFetching ? (
+            <div className="space-y-1 overflow-hidden p-1">
+              <Skeleton className="h-4 w-10 rounded" />
+              <Skeleton className="h-8 rounded-sm" />
+              <Skeleton className="h-8 rounded-sm" />
+              <Skeleton className="h-8 rounded-sm" />
+            </div>
+          ) : (
+            isSuccess &&
+            data.map((group) => (
+              <CommandGroup
+                key={group.category}
+                heading={formatEnum(group.category)}
+              >
+                {group.products.map((item) => (
+                  <CommandItem
+                    key={item.id}
+                    onSelect={() =>
+                      handleSelect(() =>
+                        router.push(`/products/${group.category}/${item.id}`)
+                      )
+                    }
+                  >
+                    {item.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))
+          )}
         </CommandList>
       </CommandDialog>
     </>

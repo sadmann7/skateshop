@@ -66,5 +66,11 @@ export const CommandDebouncedInput = ({
     return () => clearTimeout(timeout)
   }, [value, debounce])
 
-  return <CommandInput {...props} value={value} onValueChange={onValueChange} />
+  return (
+    <CommandInput
+      {...props}
+      value={value}
+      onValueChange={(value) => setValue(value)}
+    />
+  )
 }
