@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Combobox } from "@/components/combobox"
+import { CommandMenu } from "@/components/command-menu"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 
@@ -29,7 +29,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         <MainNav items={siteConfig.mainNav} />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
-            <Combobox />
+            <CommandMenu />
             <Button
               aria-label="Cart"
               variant="ghost"

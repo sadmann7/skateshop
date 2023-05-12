@@ -10,7 +10,9 @@ import {
   ChevronsUpDown,
   Edit,
   Filter,
+  Footprints,
   Gauge,
+  HardHat,
   Loader2,
   LogOut,
   MessageSquare,
@@ -19,6 +21,7 @@ import {
   Plus,
   Search,
   Settings,
+  Shirt,
   ShoppingBag,
   ShoppingCart,
   Sliders,
@@ -68,6 +71,9 @@ export const Icons = {
   product: Package,
   store: ShoppingBag,
   upload: UploadCloud,
+  clothing: Shirt,
+  shoes: Footprints,
+  accessories: HardHat,
   logo: (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"

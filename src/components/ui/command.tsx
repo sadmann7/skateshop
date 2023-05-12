@@ -6,7 +6,11 @@ import { Command as CommandPrimitive } from "cmdk"
 import { Search } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogContentFixed,
+} from "@/components/ui/dialog"
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -31,6 +35,16 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
       <DialogContent className="overflow-hidden p-0 shadow-2xl">
         <Command>{children}</Command>
       </DialogContent>
+    </Dialog>
+  )
+}
+
+const CommandDialogFixed = ({ children, ...props }: CommandDialogProps) => {
+  return (
+    <Dialog {...props}>
+      <DialogContentFixed className="overflow-hidden p-0 shadow-2xl">
+        <Command>{children}</Command>
+      </DialogContentFixed>
     </Dialog>
   )
 }
@@ -143,6 +157,7 @@ CommandShortcut.displayName = "CommandShortcut"
 export {
   Command,
   CommandDialog,
+  CommandDialogFixed,
   CommandInput,
   CommandList,
   CommandEmpty,

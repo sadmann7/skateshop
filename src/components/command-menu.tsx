@@ -10,7 +10,7 @@ import { CommandEmpty } from "cmdk"
 import { cn, formatEnum } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
-  CommandDialog,
+  CommandDialogFixed,
   CommandGroup,
   CommandItem,
   CommandList,
@@ -19,16 +19,15 @@ import { CommandDebouncedInput } from "@/components/ui/debounced"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
-interface ComboboxProps {
-  buttonText?: string
+interface CommandMenuProps {
   placeholder?: string
   empty?: string
 }
 
-export function Combobox({
+export function CommandMenu({
   placeholder = "Search products by name...",
   empty = "No product found.",
-}: ComboboxProps) {
+}: CommandMenuProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -72,11 +71,6 @@ export function Combobox({
     callback()
   }, [])
 
-  console.log({
-    data,
-    isFetching,
-  })
-
   return (
     <>
       <Button
@@ -92,7 +86,7 @@ export function Combobox({
           <span className="text-xs">Ctrl</span>K
         </kbd>
       </Button>
-      <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
+      <CommandDialogFixed open={isOpen} onOpenChange={setIsOpen}>
         <CommandDebouncedInput
           placeholder={placeholder}
           value={query}
@@ -100,15 +94,12 @@ export function Combobox({
         />
         <CommandList>
           <CommandEmpty
-            className={cn(
-              "py-6 text-center text-sm",
-              isFetching ? "hidden" : "block"
-            )}
+            className={cn("py-6 text-center text-sm", isFetching && "hidden")}
           >
             {empty}
           </CommandEmpty>
           {isFetching ? (
-            <div className="space-y-1 overflow-hidden p-1">
+            <div className="space-y-1 overflow-hidden px-1 py-2">
               <Skeleton className="h-4 w-10 rounded" />
               <Skeleton className="h-8 rounded-sm" />
               <Skeleton className="h-8 rounded-sm" />
@@ -137,7 +128,7 @@ export function Combobox({
             ))
           )}
         </CommandList>
-      </CommandDialog>
+      </CommandDialogFixed>
     </>
   )
 }
