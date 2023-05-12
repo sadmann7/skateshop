@@ -467,7 +467,6 @@ function Filter<TData, TValue = unknown>({
         column.getFacetedUniqueValues().size
       })`}
       className="w-36 text-sm shadow"
-      disabled={!columnFilterValue}
     />
   ) : (
     <>
@@ -483,7 +482,6 @@ function Filter<TData, TValue = unknown>({
         placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
         className="w-36 text-sm shadow"
         list={column.id + "list"}
-        disabled={!columnFilterValue}
       />
     </>
   )

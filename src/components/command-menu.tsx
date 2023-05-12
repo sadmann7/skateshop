@@ -71,6 +71,12 @@ export function CommandMenu({
     callback()
   }, [])
 
+  React.useEffect(() => {
+    if (!isOpen) {
+      setQuery("")
+    }
+  }, [isOpen])
+
   return (
     <>
       <Button
@@ -103,7 +109,6 @@ export function CommandMenu({
               <Skeleton className="h-4 w-10 rounded" />
               <Skeleton className="h-8 rounded-sm" />
               <Skeleton className="h-8 rounded-sm" />
-              <Skeleton className="h-8 rounded-sm" />
             </div>
           ) : (
             isSuccess &&
@@ -116,9 +121,7 @@ export function CommandMenu({
                   <CommandItem
                     key={item.id}
                     onSelect={() =>
-                      handleSelect(() =>
-                        router.push(`/products/${group.category}/${item.id}`)
-                      )
+                      handleSelect(() => router.push(`/products/${item.id}`))
                     }
                   >
                     {item.name}
