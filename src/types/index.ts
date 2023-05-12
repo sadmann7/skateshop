@@ -1,9 +1,6 @@
+import type { PRODUCT_CATEGORY } from "@prisma/client"
 import type { LucideIcon } from "lucide-react"
-import type {
-  DropzoneInputProps,
-  DropzoneRootProps,
-  FileWithPath,
-} from "react-dropzone"
+import type { FileWithPath } from "react-dropzone"
 
 export interface NavItem {
   title: string
@@ -25,12 +22,12 @@ export type FileWithPreview = FileWithPath & {
   preview: string
 }
 
-export type FullFile = {
-  file: FileWithPath
-  contents: string
-}
-
 export type UploadThingOutput = {
   fileKey: string
   fileUrl: string
+}
+
+export type GroupedProduct<TData extends object> = {
+  category: PRODUCT_CATEGORY
+  products: TData[]
 }

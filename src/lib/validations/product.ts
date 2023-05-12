@@ -36,3 +36,7 @@ export const addProductSchema = z.object({
     .optional()
     .default([]),
 })
+
+export const filterProductsSchema = z.object({
+  query: z.string(),
+})

@@ -23,6 +23,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { DebouncedInput } from "@/components/ui/debounced"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -485,42 +486,5 @@ function Filter<TData, TValue = unknown>({
         disabled={!columnFilterValue}
       />
     </>
-  )
-}
-
-// A debounced input react component
-interface DebouncedInputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-}
-
-const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: DebouncedInputProps) => {
-  const [value, setValue] = React.useState(initialValue)
-
-  React.useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
-
-    return () => clearTimeout(timeout)
-  }, [value, debounce])
-
-  return (
-    <Input
-      {...props}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
   )
 }

@@ -67,7 +67,7 @@ export function Products({ storeId }: ProductsProps) {
   )
 
   const { data, isLoading, isError, isRefetching } = useQuery(
-    ["products", storeId, pagination],
+    ["getProducts", storeId, pagination],
     async () => {
       const response = await fetch("/api/products", {
         method: "POST",
