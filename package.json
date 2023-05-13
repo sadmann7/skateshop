@@ -6,8 +6,12 @@
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
+    "start": "next start",
     "lint": "next lint",
-    "start": "next start"
+    "lint:fix": "next lint --fix",
+    "typecheck": "tsc --noEmit",
+    "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",

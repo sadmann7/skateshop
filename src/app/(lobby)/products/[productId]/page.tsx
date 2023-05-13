@@ -1,37 +1,18 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 
-import { siteConfig } from "@/config/site"
 import { prisma } from "@/lib/db"
 import { Header } from "@/components/header"
+
+export const metadata: Metadata = {
+  title: "Product",
+  description: "Product description",
+}
 
 interface PrdouctPageProps {
   params: {
     productId: string
-  }
-}
-
-export async function generateMetadata({
-  params,
-}: PrdouctPageProps): Promise<Metadata> {
-  const { productId } = params
-
-  const product = await prisma.product.findUnique({
-    where: {
-      id: productId,
-    },
-  })
-
-  if (!product) {
-    notFound()
-  }
-
-  return {
-    title: {
-      default: product.name,
-      template: `%s - ${siteConfig.name}`,
-    },
-    description: product.description ?? "",
   }
 }
 
@@ -41,6 +22,9 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
   const product = await prisma.product.findUnique({
     where: {
       id: productId,
+    },
+    include: {
+      images: true,
     },
   })
 
@@ -52,6 +36,11 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
     <section className="container grid w-full items-center gap-6 pb-8 pt-6 md:py-10">
       <div className="flex max-w-[980px] flex-col items-start gap-2">
         <Header title={product.name} description={product.description ?? ""} />
+      </div>
+      <div className="relative mx-auto my-2 flex max-w-xl pt-[66.67%]">
+        {product.images.map((image, i) => (
+          <fieldset key={image.id}></fieldset>
+        ))}
       </div>
     </section>
   )

@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation"
 import type { GroupedProduct } from "@/types"
 import type { Product } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
-import { CommandEmpty } from "cmdk"
 
-import { cn, formatEnum } from "@/lib/utils"
+import { formatEnum } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialogFixed,
+  CommandEmpty,
   CommandGroup,
   CommandItem,
   CommandList,
@@ -19,15 +19,15 @@ import { CommandDebouncedInput } from "@/components/ui/debounced"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
-interface CommandMenuProps {
+interface ComboboxProps {
   placeholder?: string
   empty?: string
 }
 
-export function CommandMenu({
+export function Combobox({
   placeholder = "Search products by name...",
   empty = "No product found.",
-}: CommandMenuProps) {
+}: ComboboxProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -81,14 +81,13 @@ export function CommandMenu({
     <>
       <Button
         variant="outline"
-        className="relative justify-start sm:w-44 lg:w-56"
+        className="relative h-9 w-9 p-0 md:h-10 md:w-60 md:justify-start md:px-3 md:py-2"
         onClick={() => setIsOpen(true)}
       >
-        <Icons.search className="mr-2 h-4 w-4" aria-hidden="true" />
-        <span className="hidden lg:inline-flex">Search products...</span>
-        <span className="inline-flex lg:hidden">Search...</span>
+        <Icons.search className="h-4 w-4 md:mr-2" aria-hidden="true" />
+        <span className="hidden md:inline-flex">Search products...</span>
         <span className="sr-only">Search products</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 md:flex">
           <span className="text-xs">Ctrl</span>K
         </kbd>
       </Button>
@@ -99,11 +98,8 @@ export function CommandMenu({
           onValueChange={setQuery}
         />
         <CommandList>
-          <CommandEmpty
-            className={cn("py-6 text-center text-sm", isFetching && "hidden")}
-          >
-            {empty}
-          </CommandEmpty>
+          {}
+          <CommandEmpty>{empty}</CommandEmpty>
           {isFetching ? (
             <div className="space-y-1 overflow-hidden px-1 py-2">
               <Skeleton className="h-4 w-10 rounded" />
