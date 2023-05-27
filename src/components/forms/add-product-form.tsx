@@ -10,7 +10,6 @@ import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
-import { addProductAction, checkProductAction } from "@/lib/_actions/product"
 import { isArrayOfFile } from "@/lib/utils"
 import { addProductSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
@@ -20,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { SelectInput } from "@/components/select-input"
+import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {

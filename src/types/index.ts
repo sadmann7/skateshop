@@ -31,3 +31,5 @@ export type ProductsByCategory<TData extends object> = {
   category: PRODUCT_CATEGORY
   products: TData[]
 }
+
+export type SortDirection = "asc" | "desc"

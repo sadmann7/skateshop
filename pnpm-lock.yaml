@@ -106,6 +106,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.5
     version: 1.0.5(tailwindcss@3.3.2)
+  unstyled-table:
+    specifier: 0.0.3-alpha-2
+    version: 0.0.3-alpha-2(react-dom@18.2.0)(react@18.2.0)
   uploadthing:
     specifier: ^3.0.5
     version: 3.0.5
@@ -4653,6 +4656,18 @@ packages:
     dependencies:
       pako: 0.2.9
       tiny-inflate: 1.0.3
+    dev: false
+
+  /unstyled-table@0.0.3-alpha-2(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-cKfX4C/rd2uKox73tqE9b0G6ijk+1cOKqIf4zzOmvepIed1tsvN0CUh0N1qiN8FihT7OTHcyzo9EaUsq6fROYw==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+    dependencies:
+      '@tanstack/match-sorter-utils': 8.8.4
+      '@tanstack/react-table': 8.9.1(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /untildify@4.0.0:
