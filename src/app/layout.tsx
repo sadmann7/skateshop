@@ -1,4 +1,5 @@
 import "@/styles/globals.css"
+
 import type { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
@@ -20,9 +21,11 @@ export const metadata: Metadata = {
     "React",
     "Tailwind CSS",
     "Server Components",
-    "AI",
-    "AI Playground",
-    "AI Chat",
+    "Server Actions",
+    "Skateshop",
+    "Skateboard",
+    "Skateboarding",
+    "Kickflip",
   ],
   authors: [
     {
@@ -75,10 +78,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <QueryProvider>
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               {children}
-              <Toaster />
               <TailwindIndicator />
             </ThemeProvider>
           </QueryProvider>
+          <Toaster />
         </body>
       </html>
     </>

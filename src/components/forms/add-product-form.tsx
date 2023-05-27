@@ -10,7 +10,7 @@ import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
-import { addProductAction, checkProductAction } from "@/lib/actions/product"
+import { addProductAction, checkProductAction } from "@/lib/_actions/product"
 import { isArrayOfFile } from "@/lib/utils"
 import { addProductSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"

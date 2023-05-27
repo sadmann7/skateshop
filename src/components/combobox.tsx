@@ -2,11 +2,9 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import type { GroupedProduct } from "@/types"
-import type { Product } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 
-import { formatEnum } from "@/lib/utils"
+import { cn, formatEnum } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialogFixed,
@@ -18,16 +16,9 @@ import {
 import { CommandDebouncedInput } from "@/components/ui/debounced"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
+import { filterProductsAction } from "@/app/_actions/product"
 
-interface ComboboxProps {
-  placeholder?: string
-  empty?: string
-}
-
-export function Combobox({
-  placeholder = "Search products by name...",
-  empty = "No product found.",
-}: ComboboxProps) {
+export function Combobox() {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -35,18 +26,7 @@ export function Combobox({
   const { data, isFetching, isSuccess } = useQuery(
     ["filterProducts", query],
     async () => {
-      const response = await fetch("/api/products/filter", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query,
-        }),
-      })
-      const data = (await response.json()) as GroupedProduct<
-        Pick<Product, "id" | "name">
-      >[]
+      const data = await filterProductsAction(query)
       return data
     },
     {
@@ -93,13 +73,16 @@ export function Combobox({
       </Button>
       <CommandDialogFixed open={isOpen} onOpenChange={setIsOpen}>
         <CommandDebouncedInput
-          placeholder={placeholder}
+          placeholder="Search products..."
           value={query}
           onValueChange={setQuery}
         />
         <CommandList>
-          {}
-          <CommandEmpty>{empty}</CommandEmpty>
+          <CommandEmpty
+            className={cn(isFetching ? "hidden" : "py-6 text-center text-sm")}
+          >
+            No products found.
+          </CommandEmpty>
           {isFetching ? (
             <div className="space-y-1 overflow-hidden px-1 py-2">
               <Skeleton className="h-4 w-10 rounded" />

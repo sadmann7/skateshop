@@ -1,10 +1,41 @@
 "use server"
 
+import { PRODUCT_CATEGORY } from "@prisma/client"
 import { zact } from "zact/server"
 import { z } from "zod"
 
 import { prisma } from "@/lib/db"
 import { addProductSchema } from "@/lib/validations/product"
+
+export async function filterProductsAction(query: string) {
+  if (typeof query !== "string") {
+    throw new Error("Query must be a string")
+  }
+
+  if (query.length < 1) return []
+
+  const products = await prisma.product.findMany({
+    where: {
+      name: {
+        contains: query,
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      category: true,
+    },
+  })
+
+  const productsByCategory = Object.values(PRODUCT_CATEGORY).map(
+    (category) => ({
+      category,
+      products: products.filter((product) => product.category === category),
+    })
+  )
+
+  return productsByCategory
+}
 
 export async function checkProductAction(fd: FormData) {
   const name = fd.get("name") as string
