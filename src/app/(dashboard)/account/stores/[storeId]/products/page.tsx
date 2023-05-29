@@ -55,21 +55,21 @@ export default async function ProductsPage({
   // Number of skaters to show per page
   const limit = items ? parseInt(items) : 10
   // Number of skaters to skip
-  const offset = page ? (parseInt(page) - 1) * limit : 1
+  const offset = page ? (parseInt(page) - 1) * limit : 0
 
   // Get skaters and total skaters count in a single query
   const [products, totalProducts] = await prisma.$transaction([
     prisma.product.findMany({
       // For server-side pagination
-      take: query ? undefined : limit,
-      skip: query ? undefined : offset,
+      take: limit,
+      skip: offset,
       // For server-side filtering
       where: {
         name: query ? { contains: query } : undefined,
         storeId,
       },
       // For server-side sorting
-      orderBy: sort ? { [sort]: order ?? "asc" } : undefined,
+      orderBy: { [sort ?? "createdAt"]: order ?? "asc" },
     }),
     prisma.product.count(),
   ])

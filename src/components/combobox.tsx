@@ -13,10 +13,11 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { CommandDebouncedInput } from "@/components/ui/debounced"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 import { filterProductsAction } from "@/app/_actions/product"
+
+import { DebounceCommandInput } from "./debounce-command-input"
 
 export function Combobox() {
   const router = useRouter()
@@ -72,7 +73,7 @@ export function Combobox() {
         </kbd>
       </Button>
       <CommandDialogFixed open={isOpen} onOpenChange={setIsOpen}>
-        <CommandDebouncedInput
+        <DebounceCommandInput
           placeholder="Search products..."
           value={query}
           onValueChange={setQuery}
