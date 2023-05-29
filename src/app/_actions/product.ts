@@ -38,8 +38,10 @@ export async function filterProductsAction(query: string) {
   return productsByCategory
 }
 
-export async function checkProductAction(fd: FormData) {
-  const name = fd.get("name") as string
+export async function checkProductAction(name: string) {
+  if (typeof name !== "string") {
+    throw new Error("Name must be a string")
+  }
 
   const productWithSameName = await prisma.product.findFirst({
     where: {
@@ -48,9 +50,7 @@ export async function checkProductAction(fd: FormData) {
   })
 
   if (productWithSameName) {
-    return {
-      error: "Product name already taken",
-    }
+    throw new Error("Product name already taken")
   }
 }
 

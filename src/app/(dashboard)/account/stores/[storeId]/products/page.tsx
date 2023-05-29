@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
-import { Products } from "@/components/products"
 import { ProductsTable } from "@/components/products-table"
 
 export const metadata: Metadata = {
@@ -115,6 +114,7 @@ export default async function ProductsPage({
           </div>
         </Link>
       </div>
+
       <ProductsTable data={products} pageCount={pageCount} />
     </section>
   )

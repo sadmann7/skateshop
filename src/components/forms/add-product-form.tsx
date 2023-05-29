@@ -5,22 +5,37 @@ import type { FileWithPreview, UploadThingOutput } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PRODUCT_CATEGORY } from "@prisma/client"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
-import { useForm, type SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
-import { isArrayOfFile } from "@/lib/utils"
+import { formatEnum, isArrayOfFile } from "@/lib/utils"
 import { addProductSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
-import { SelectInput } from "@/components/select-input"
 import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
+
+import { FileDialog } from "../file-dialog"
 
 interface AddProductFormProps {
   storeId: string
@@ -32,11 +47,10 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-
   const [isLoading, setIsLoading] = React.useState(false)
 
   // zact
-  const addProductMuation = useZact(addProductAction)
+  const { mutate, error } = useZact(addProductAction)
 
   // uploadthing
   const { isUploading, startUpload } = useUploadThing({
@@ -44,24 +58,20 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   })
 
   // react-hook-form
-  const { register, handleSubmit, formState, control, setValue, reset } =
-    useForm<Inputs>({
-      resolver: zodResolver(addProductSchema),
-    })
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const form = useForm<Inputs>({
+    resolver: zodResolver(addProductSchema),
+  })
+
+  async function onSubmit(data: Inputs) {
     console.log(data)
 
     setIsLoading(true)
 
-    // check if product name already exists
-    const formData = new FormData()
-    formData.append("name", data.name)
-    const productWiithSameName = await checkProductAction(formData)
-
-    if (productWiithSameName?.error) {
-      toast.error(productWiithSameName.error)
-      setIsLoading(false)
-      return
+    // Check if product already exists in the store
+    try {
+      await checkProductAction(data.name)
+    } catch (error) {
+      error instanceof Error && toast.error(error.message)
     }
 
     if (isArrayOfFile(data.images)) {
@@ -73,7 +83,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         url: image.fileUrl,
       }))
 
-      await addProductMuation.mutate({
+      await mutate({
         storeId,
         name: data.name,
         description: data.description,
@@ -84,7 +94,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         images,
       })
     } else {
-      await addProductMuation.mutate({
+      await mutate({
         storeId,
         name: data.name,
         description: data.description,
@@ -96,145 +106,167 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       })
     }
 
-    addProductMuation.error
-      ? toast.error(addProductMuation.error.message)
+    error
+      ? toast.error(error.message)
       : toast.success("Product added successfully")
 
     setIsLoading(false)
-    reset()
+    form.reset()
     setFiles(null)
   }
 
   return (
-    <form
-      className="mx-auto grid w-full max-w-xl gap-6"
-      onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
-    >
-      <fieldset className="grid gap-2.5">
-        <Label htmlFor="add-product-name">
-          Name <span className="text-red-500">*</span>
-        </Label>
-        <Input
-          id="add-product-name"
-          type="text"
-          placeholder="Type product name here."
-          {...register("name", { required: true })}
+    <Form {...form}>
+      <form
+        className="mx-auto grid w-full max-w-xl gap-6"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input
+                  id="add-product-name"
+                  type="text"
+                  placeholder="Type product name here."
+                  {...field}
+                />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {formState.errors.name && (
-          <p className="text-sm text-red-500">
-            {formState.errors.name.message}
-          </p>
-        )}
-      </fieldset>
-      <fieldset className="grid gap-2.5">
-        <Label htmlFor="add-product-description">Description</Label>
-        <Textarea
-          id="add-product-description"
-          placeholder="Type product description here."
-          {...register("description")}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Type product description here."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {formState.errors.description && (
-          <p className="text-sm text-red-500">
-            {formState.errors.description.message}
-          </p>
-        )}
-      </fieldset>
-      <div className="flex flex-col items-start gap-6 sm:flex-row">
-        <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-category">
-            Category <span className="text-red-500">*</span>
-          </Label>
-          <SelectInput
-            control={control}
+        <div className="flex flex-col items-start gap-6 sm:flex-row">
+          <FormField
+            control={form.control}
             name="category"
-            options={Object.values(PRODUCT_CATEGORY)}
-            defaultValue={PRODUCT_CATEGORY.SKATEBOARD}
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {Object.values(PRODUCT_CATEGORY).map((option) => (
+                          <SelectItem key={option} value={option}>
+                            {formatEnum(option ?? "")}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          {formState.errors.category && (
-            <p className="text-sm text-red-500">
-              {formState.errors.category.message}
-            </p>
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Type product price here."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="flex flex-col items-start gap-6 sm:flex-row">
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Type product quantity here."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="inventory"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Type product inventory here."
+                    value={field.value}
+                    // convert to number
+                    onChange={(e) => {
+                      const value = e.target.value
+                      field.onChange(Number(value))
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <FormItem className="flex flex-col gap-1.5">
+          <FormLabel>Images</FormLabel>
+          <FileDialog
+            setValue={form.setValue}
+            name="images"
+            maxFiles={3}
+            maxSize={1024 * 1024 * 4}
+            files={files}
+            setFiles={setFiles}
+            isUploading={isUploading}
+            disabled={isLoading}
+          />
+          <FormMessage />
+        </FormItem>
+        <Button disabled={isLoading}>
+          {isLoading && (
+            <Icons.spinner
+              className="mr-2 h-4 w-4 animate-spin"
+              aria-hidden="true"
+            />
           )}
-        </fieldset>
-        <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-price">
-            Price <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="add-product-price"
-            type="number"
-            placeholder="Type product price here."
-            {...register("price", { required: true, valueAsNumber: true })}
-          />
-          {formState.errors.price && (
-            <p className="text-sm text-red-500">
-              {formState.errors.price.message}
-            </p>
-          )}
-        </fieldset>
-      </div>
-      <div className="flex flex-col items-start gap-6 sm:flex-row">
-        <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-quantity">
-            Quantity <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="add-product-quantity"
-            type="number"
-            placeholder="Type product quantity here."
-            {...register("quantity", { required: true, valueAsNumber: true })}
-          />
-          {formState.errors.quantity && (
-            <p className="text-sm text-red-500">
-              {formState.errors.quantity.message}
-            </p>
-          )}
-        </fieldset>
-        <fieldset className="grid w-full gap-2.5">
-          <Label htmlFor="add-product-inventory">
-            Inventory <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            id="add-product-inventory"
-            type="number"
-            placeholder="Type product inventory here."
-            {...register("inventory", { required: true, valueAsNumber: true })}
-          />
-          {formState.errors.inventory && (
-            <p className="text-sm text-red-500">
-              {formState.errors.inventory.message}
-            </p>
-          )}
-        </fieldset>
-      </div>
-      <fieldset className="grid gap-3">
-        <Label htmlFor="add-product-images">Images</Label>
-        <FileDialog
-          setValue={setValue}
-          name="images"
-          maxFiles={3}
-          maxSize={1024 * 1024 * 4}
-          files={files}
-          setFiles={setFiles}
-          isUploading={isUploading}
-          disabled={isLoading}
-        />
-        {formState.errors.images && (
-          <p className="text-sm text-red-500">
-            {formState.errors.images.message}
-          </p>
-        )}
-      </fieldset>
-      <Button disabled={isLoading}>
-        {isLoading && (
-          <Icons.spinner
-            className="mr-2 h-4 w-4 animate-spin"
-            aria-hidden="true"
-          />
-        )}
-        Add Product
-        <span className="sr-only">Add Product</span>
-      </Button>
-    </form>
+          Add Product
+          <span className="sr-only">Add Product</span>
+        </Button>
+      </form>
+    </Form>
   )
 }

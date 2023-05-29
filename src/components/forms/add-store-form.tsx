@@ -1,15 +1,23 @@
 "use client"
 
+import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, type SubmitHandler } from "react-hook-form"
-import { useZact } from "zact/client"
+import { useForm } from "react-hook-form"
+import { toast } from "react-hot-toast"
 import type { z } from "zod"
 
 import { addStoreSchema } from "@/lib/validations/store"
 import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
 import { addStoreAction } from "@/app/_actions/store"
@@ -23,67 +31,76 @@ type Inputs = z.infer<typeof addStoreSchema>
 export function AddStoreForm({ userId }: AddStoreFormProps) {
   const router = useRouter()
 
-  // zact for handling sever actions
-  const { mutate, isLoading } = useZact(addStoreAction)
+  const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
-  const { register, handleSubmit, formState, reset } = useForm<Inputs>({
+  const form = useForm<Inputs>({
     resolver: zodResolver(addStoreSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+    },
   })
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    reset()
-    await mutate({
-      ...data,
-      userId,
-    })
+  function onSubmit(data: Inputs) {
+    startTransition(async () => {
+      try {
+        await addStoreAction({ ...data, userId })
 
-    router.push("/account/stores")
-    router.refresh()
+        form.reset()
+        toast.success("Store added successfully.")
+        router.push("/account/stores")
+      } catch (error) {
+        error instanceof Error && toast.error(error.message)
+      }
+    })
   }
 
   return (
-    <form
-      className="mx-auto grid w-full max-w-xl gap-5"
-      onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
-    >
-      <fieldset className="grid gap-2.5">
-        <Label htmlFor="add-store-name">Name</Label>
-        <Input
-          id="add-store-name"
-          type="text"
-          placeholder="Type store name here."
-          {...register("name", { required: true })}
+    <Form {...form}>
+      <form
+        className="mx-auto grid w-full max-w-xl gap-5"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Type store name here." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {formState.errors.name && (
-          <p className="text-sm text-red-500">
-            {formState.errors.name.message}
-          </p>
-        )}
-      </fieldset>
-      <fieldset className="grid gap-2.5">
-        <Label htmlFor="add-store-description">Description</Label>
-        <Textarea
-          id="add-store-description"
-          placeholder="Type store description here."
-          {...register("description")}
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Type store description here."
+                  {...field}
+                />
+              </FormControl>
+            </FormItem>
+          )}
         />
-        {formState.errors.description && (
-          <p className="text-sm text-red-500">
-            {formState.errors.description.message}
-          </p>
-        )}
-      </fieldset>
-      <Button disabled={isLoading}>
-        {isLoading && (
-          <Icons.spinner
-            className="mr-2 h-4 w-4 animate-spin"
-            aria-hidden="true"
-          />
-        )}
-        Add Store
-        <span className="sr-only">Add Store</span>
-      </Button>
-    </form>
+        <Button disabled={isPending}>
+          {isPending && (
+            <Icons.spinner
+              className="mr-2 h-4 w-4 animate-spin"
+              aria-hidden="true"
+            />
+          )}
+          Add Store
+          <span className="sr-only">Add Store</span>
+        </Button>
+      </form>
+    </Form>
   )
 }
