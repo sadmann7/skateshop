@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
+import { currentUser } from "@clerk/nextjs"
 
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { getCurrentUser } from "@/lib/session"
 import { AddProductForm } from "@/components/forms/add-product-form"
 import { Header } from "@/components/header"
 
@@ -21,10 +20,10 @@ interface AddProductPageProps {
 export default async function AddProductPage({ params }: AddProductPageProps) {
   const { storeId } = params
 
-  const user = await getCurrentUser()
+  const user = await currentUser()
 
   if (!user) {
-    redirect(authOptions.pages?.signIn || "/api/auth/signin")
+    redirect("/sign-in")
   }
 
   const store = await prisma.store.findUnique({

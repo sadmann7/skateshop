@@ -1,16 +1,15 @@
 import type { NextRequest } from "next/server"
-import { getServerSession } from "next-auth/next"
+import { currentUser } from "@clerk/nextjs"
 import * as z from "zod"
 
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { editStoreSchema } from "@/lib/validations/store"
 
 export async function PATCH(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const user = await currentUser()
 
-    if (!session) {
+    if (!user) {
       return new Response("Unauthorized.", { status: 403 })
     }
 

@@ -1,8 +1,7 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
+import { currentUser } from "@clerk/nextjs"
 
-import { authOptions } from "@/lib/auth"
-import { getCurrentUser } from "@/lib/session"
 import { AddStoreForm } from "@/components/forms/add-store-form"
 import { Header } from "@/components/header"
 
@@ -12,10 +11,10 @@ export const metadata: Metadata = {
 }
 
 export default async function AddStorePage() {
-  const user = await getCurrentUser()
+  const user = await currentUser()
 
   if (!user) {
-    redirect(authOptions.pages?.signIn || "/api/auth/signin")
+    redirect("/sign-in")
   }
 
   return (

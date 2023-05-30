@@ -1,21 +1,18 @@
 import type { NextRequest } from "next/server"
+import { currentUser } from "@clerk/nextjs"
 import type { Prisma } from "@prisma/client"
-import { getServerSession } from "next-auth/next"
 import * as z from "zod"
 
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { getProductsSchema } from "@/lib/validations/product"
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const user = await currentUser()
 
-    if (!session) {
+    if (!user) {
       return new Response("Unauthorized", { status: 403 })
     }
-
-    const { user } = session
 
     // if (!user.seller) {
     //     return new Response("Forbidden", { status: 403 })
