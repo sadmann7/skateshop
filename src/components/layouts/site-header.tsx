@@ -1,8 +1,5 @@
-"use client"
-
 import Link from "next/link"
-import type { SessionUser } from "@/types"
-import { signIn, signOut } from "next-auth/react"
+import type { User } from "@clerk/nextjs/dist/types/server"
 
 import { siteConfig } from "@/config/site"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -10,8 +7,11 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Combobox } from "@/components/combobox"
@@ -19,10 +19,19 @@ import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 
 interface SiteHeaderProps {
-  user: Pick<SessionUser, "name" | "image" | "email">
+  user: User
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
+  const fullname = `${user.firstName ?? ""} ${user.lastName ?? ""}`
+  const initials = fullname
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+  const email = user.emailAddresses.find(
+    (e) => e.id === user.primaryEmailAddressId
+  )?.emailAddress
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
@@ -38,68 +47,59 @@ export function SiteHeader({ user }: SiteHeaderProps) {
             >
               <Icons.cart className="h-6 w-6" />
             </Button>
-            {user.name && user.image && user.email ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    aria-label="User menu trigger"
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto rounded-full p-0"
-                  >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.image} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
-                      {user.name && <p className="font-medium">{user.name}</p>}
-                      {user.email && (
-                        <p className="w-[200px] truncate text-sm text-muted-foreground">
-                          {user.email}
-                        </p>
-                      )}
-                    </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={user.profileImageUrl}
+                      alt={user.username ?? ""}
+                    />
+                    <AvatarFallback>{initials}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {email}
+                    </p>
                   </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/account/stores">
-                      <Icons.store className="mr-2 h-4 w-4" />
-                      Stores
-                    </Link>
-                  </DropdownMenuItem>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
                     <Link href="/account/settings">
                       <Icons.settings className="mr-2 h-4 w-4" />
                       Settings
+                      <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    aria-label="Sign out"
-                    className="cursor-pointer"
-                    onSelect={(e) => {
-                      e.preventDefault()
-                      void signOut()
-                    }}
-                  >
-                    <Icons.logout className="mr-2 h-4 w-4" />
-                    Sign Out
+                  <DropdownMenuItem asChild>
+                    <Link href="/account/stores">
+                      <Icons.store className="mr-2 h-4 w-4" />
+                      Stores
+                      <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                    </Link>
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button
-                aria-label="Sign in"
-                size="sm"
-                onClick={() => void signIn("google")}
-              >
-                Sign In
-              </Button>
-            )}
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/signout">
+                    <Icons.logout className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
       </div>

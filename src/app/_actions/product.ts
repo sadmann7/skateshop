@@ -13,8 +13,6 @@ export async function filterProductsAction(query: string) {
     throw new Error("Query must be a string")
   }
 
-  if (query.length < 1) return []
-
   const products = await prisma.product.findMany({
     where: {
       name: {

@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { currentUser } from "@clerk/nextjs"
 
-import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { getCurrentUser } from "@/lib/session"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 
@@ -14,10 +13,10 @@ export const metadata: Metadata = {
 }
 
 export default async function StoresPage() {
-  const user = await getCurrentUser()
+  const user = await currentUser()
 
   if (!user) {
-    redirect(authOptions.pages?.signIn || "/api/auth/sigin")
+    redirect("/sign-in")
   }
 
   const stores = await prisma.store.findMany({
