@@ -34,6 +34,7 @@
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
+    "dayjs": "^1.11.7",
     "lucide-react": "^0.224.0",
     "next": "^13.4.4",
     "next-themes": "^0.2.1",

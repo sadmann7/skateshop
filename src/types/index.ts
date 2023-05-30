@@ -8,6 +8,7 @@ export interface NavItem {
   disabled?: boolean
   external?: boolean
   icon?: LucideIcon
+  label?: string
 }
 
 export type FileWithPreview = FileWithPath & {
