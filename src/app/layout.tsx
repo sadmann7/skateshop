@@ -4,7 +4,7 @@ import type { Metadata } from "next"
 import { ClerkProvider } from "@clerk/nextjs"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
+import { fontMono, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { QueryProvider } from "@/components/query-provider"
@@ -67,24 +67,31 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head />
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <QueryProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              {children}
-              <TailwindIndicator />
-            </ThemeProvider>
-          </QueryProvider>
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <>
+      <ClerkProvider>
+        <html lang="en" suppressHydrationWarning>
+          <head />
+          <body
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased",
+              fontSans.variable,
+              fontMono.variable
+            )}
+          >
+            <QueryProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+              >
+                {children}
+                <TailwindIndicator />
+              </ThemeProvider>
+            </QueryProvider>
+            <Toaster />
+          </body>
+        </html>
+      </ClerkProvider>
+    </>
   )
 }

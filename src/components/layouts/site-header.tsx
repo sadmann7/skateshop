@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { SignOutButton } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/dist/types/server"
 
 import { siteConfig } from "@/config/site"
@@ -57,7 +58,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={user.profileImageUrl}
+                      src={user.imageUrl}
                       alt={user.username ?? ""}
                     />
                     <AvatarFallback>{initials}</AvatarFallback>
@@ -78,27 +79,31 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
-                    <Link href="/account/settings">
-                      <Icons.settings className="mr-2 h-4 w-4" />
-                      Settings
-                      <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
                     <Link href="/account/stores">
                       <Icons.store className="mr-2 h-4 w-4" />
                       Stores
-                      <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                      <DropdownMenuShortcut>⇧⌘M</DropdownMenuShortcut>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/account/settings">
+                      <Icons.settings className="mr-2 h-4 w-4" />
+                      Settings
+                      <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/signout">
-                    <Icons.logout className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                  </Link>
+                <DropdownMenuItem>
+                  <SignOutButton>
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <div className="flex items-center">
+                        <Icons.logout className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </div>
+                      <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                    </div>
+                  </SignOutButton>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
