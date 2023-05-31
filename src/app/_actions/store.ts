@@ -23,11 +23,7 @@ export async function addStoreAction(
     data: {
       name: input.name,
       description: input.description,
-      user: {
-        connect: {
-          id: input.userId,
-        },
-      },
+      userId: input.userId,
     },
   })
 

@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
 
 import { SiteFooter } from "@/components/layouts/site-footer"
@@ -10,10 +9,6 @@ interface LobbyLayoutProps {
 
 export default async function LobbyLayout({ children }: LobbyLayoutProps) {
   const user = await currentUser()
-
-  if (!user) {
-    redirect("/sign-in")
-  }
 
   return (
     <div className="relative flex min-h-screen flex-col">
