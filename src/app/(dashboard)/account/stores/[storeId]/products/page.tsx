@@ -114,7 +114,7 @@ export default async function ProductsPage({
           </div>
         </Link>
       </div>
-      <ProductsTable data={products} pageCount={pageCount} />
+      <ProductsTable data={products} pageCount={pageCount} storeId={storeId} />
     </section>
   )
 }

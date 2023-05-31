@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { SortDirection } from "@/types"
 import { type Product } from "@prisma/client"
@@ -47,9 +48,14 @@ import { Skeleton } from "./ui/skeleton"
 interface ProductsTableProps {
   data: Product[]
   pageCount?: number
+  storeId: string
 }
 
-export function ProductsTable({ data, pageCount }: ProductsTableProps) {
+export function ProductsTable({
+  data,
+  pageCount,
+  storeId,
+}: ProductsTableProps) {
   const router = useRouter()
   const pathname = usePathname() ?? ""
   const searchParams = useSearchParams()
@@ -228,27 +234,35 @@ export function ProductsTable({ data, pageCount }: ProductsTableProps) {
                     }}
                   />
                   <div className="ml-auto flex items-center space-x-2">
-                    <Button
-                      variant="destructive"
-                      onClick={() => {
-                        startTransition(async () => {
-                          // Delete the selected rows
-                          await deleteProductsAction(
-                            tableInstance
-                              .getSelectedRowModel()
-                              .rows.map((row) => row.original.id)
-                          )
-                          // Reset row selection
-                          tableInstance.resetRowSelection()
-                        })
-                      }}
-                      disabled={
-                        !tableInstance.getSelectedRowModel().rows.length ||
-                        isPending
-                      }
-                    >
-                      Delete
-                    </Button>
+                    {tableInstance.getFilteredSelectedRowModel().rows.length ===
+                    0 ? (
+                      <Link href={`/account/stores/${storeId}/products/new`}>
+                        New
+                      </Link>
+                    ) : (
+                      <Button
+                        variant="destructive"
+                        onClick={() => {
+                          startTransition(async () => {
+                            // Delete the selected rows
+                            await deleteProductsAction(
+                              tableInstance
+                                .getSelectedRowModel()
+                                .rows.map((row) => row.original.id)
+                            )
+                            // Reset row selection
+                            tableInstance.resetRowSelection()
+                          })
+                        }}
+                        disabled={
+                          !tableInstance.getSelectedRowModel().rows.length ||
+                          isPending
+                        }
+                      >
+                        Delete (
+                        {tableInstance.getSelectedRowModel().rows.length})
+                      </Button>
+                    )}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">

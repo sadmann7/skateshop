@@ -6,11 +6,11 @@ import { AddStoreForm } from "@/components/forms/add-store-form"
 import { Header } from "@/components/header"
 
 export const metadata: Metadata = {
-  title: "Add Store",
+  title: "New Store",
   description: "Add a new store.",
 }
 
-export default async function AddStorePage() {
+export default async function NewStorePage() {
   const user = await currentUser()
 
   if (!user) {

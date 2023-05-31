@@ -7,17 +7,17 @@ import { AddProductForm } from "@/components/forms/add-product-form"
 import { Header } from "@/components/header"
 
 export const metadata: Metadata = {
-  title: "Add Product",
+  title: "New Product",
   description: "Add a new product.",
 }
 
-interface AddProductPageProps {
+interface NewProductPageProps {
   params: {
     storeId: string
   }
 }
 
-export default async function AddProductPage({ params }: AddProductPageProps) {
+export default async function NewProductPage({ params }: NewProductPageProps) {
   const { storeId } = params
 
   const user = await currentUser()

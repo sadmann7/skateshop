@@ -74,37 +74,29 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       error instanceof Error && toast.error(error.message)
     }
 
-    if (isArrayOfFile(data.images)) {
-      const rawImages = (await startUpload(data.images)) as UploadThingOutput[]
+    // Upload images if data.images is an array of files
+    const rawImages = isArrayOfFile(data.images)
+      ? ((await startUpload(data.images)) as UploadThingOutput[])
+      : []
 
-      const images = rawImages.map((image) => ({
-        id: image.fileKey,
-        name: image.fileKey.split("_")[1] ?? image.fileKey,
-        url: image.fileUrl,
-      }))
+    const images = isArrayOfFile(data.images)
+      ? rawImages.map((image) => ({
+          id: image.fileKey,
+          name: image.fileKey.split("_")[1] ?? image.fileKey,
+          url: image.fileUrl,
+        }))
+      : []
 
-      await mutate({
-        storeId,
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        price: data.price,
-        quantity: data.quantity,
-        inventory: data.inventory,
-        images,
-      })
-    } else {
-      await mutate({
-        storeId,
-        name: data.name,
-        description: data.description,
-        category: data.category,
-        price: data.price,
-        quantity: data.quantity,
-        inventory: data.inventory,
-        images: [],
-      })
-    }
+    await mutate({
+      storeId,
+      name: data.name,
+      description: data.description,
+      category: data.category,
+      price: data.price,
+      quantity: data.quantity,
+      inventory: data.inventory,
+      images: images,
+    })
 
     error
       ? toast.error(error.message)
@@ -135,7 +127,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   {...field}
                 />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
