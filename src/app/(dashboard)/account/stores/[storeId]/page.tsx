@@ -43,7 +43,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     })
 
     if (storeWithSameName) {
-      throw new Error("A store with the same name already exists.")
+      throw new Error("Store name already taken")
     }
 
     await prisma.store.update({

@@ -10,18 +10,15 @@ import { type addStoreSchema } from "@/lib/validations/store"
 export async function addStoreAction(
   input: z.infer<typeof addStoreSchema> & { userId: string }
 ) {
-  const { name, description, userId } = input
-
-  const users = await clerkClient.users.getUserList()
-
-  const user = users.find((user) => user.id === userId)
+  const user = await clerkClient.users.getUser(input.userId)
 
   if (!user) {
     throw new Error("User not found")
   }
 
+  // If the user doesn't have a role, set it to "user"
   if (!user.privateMetadata.role) {
-    await clerkClient.users.updateUser(userId, {
+    await clerkClient.users.updateUser(input.userId, {
       privateMetadata: {
         ...user.privateMetadata,
         role: "user",
@@ -31,7 +28,7 @@ export async function addStoreAction(
 
   const storeWithSameName = await prisma.store.findFirst({
     where: {
-      name,
+      name: input.name,
     },
   })
 
@@ -41,9 +38,9 @@ export async function addStoreAction(
 
   await prisma.store.create({
     data: {
-      name,
-      description,
-      userId,
+      name: input.name,
+      description: input.description,
+      userId: input.userId,
     },
   })
 
