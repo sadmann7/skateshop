@@ -50,6 +50,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
         form.reset()
         toast.success("Store added successfully.")
         router.push("/account/stores")
+        router.refresh() // Workaround for cache revalidation issue.
       } catch (error) {
         error instanceof Error && toast.error(error.message)
       }
