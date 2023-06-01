@@ -40,7 +40,7 @@ import { deleteProductsAction } from "@/app/_actions/product"
 
 import { DebounceInput } from "./debounce-input"
 import { Icons } from "./icons"
-import { Button } from "./ui/button"
+import { Button, buttonVariants } from "./ui/button"
 import { Checkbox } from "./ui/checkbox"
 import { Skeleton } from "./ui/skeleton"
 
@@ -237,7 +237,15 @@ export function ProductsTable({
                     {tableInstance.getFilteredSelectedRowModel().rows.length ===
                     0 ? (
                       <Link href={`/account/stores/${storeId}/products/new`}>
-                        New
+                        <div
+                          className={buttonVariants({
+                            variant: "default",
+                            size: "sm",
+                          })}
+                        >
+                          New Product
+                          <span className="sr-only">New product</span>
+                        </div>
                       </Link>
                     ) : (
                       <Button

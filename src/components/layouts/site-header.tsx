@@ -80,10 +80,17 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                      <Link href="/account/stores">
+                      <Link href="/settings/account">
                         <Icons.store className="mr-2 h-4 w-4" />
-                        Stores
-                        <DropdownMenuShortcut>⇧⌘M</DropdownMenuShortcut>
+                        Account
+                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard">
+                        <Icons.store className="mr-2 h-4 w-4" />
+                        Dashboard
+                        <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>

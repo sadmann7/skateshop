@@ -5,8 +5,6 @@ import { products } from "@/db/schema"
 import { type UploadedFile } from "@/types"
 import { eq } from "drizzle-orm"
 
-import { Header } from "@/components/header"
-
 export const metadata: Metadata = {
   title: "Product",
   description: "Product description",
@@ -31,9 +29,7 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
 
   return (
     <section className="container grid w-full items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <Header title={product.name} description={product.description ?? ""} />
-      </div>
+      <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
       <div className="relative mx-auto my-2 flex max-w-xl pt-[66.67%]">
         {(product?.images as UploadedFile[]).map((image, i) => (
           <fieldset key={image.id}></fieldset>

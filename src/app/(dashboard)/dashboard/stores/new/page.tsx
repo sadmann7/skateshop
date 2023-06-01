@@ -19,7 +19,7 @@ export default async function NewStorePage() {
 
   return (
     <section className="container grid w-full items-center space-y-10 pb-10 pt-6 md:py-10">
-      <Header title="Add Store" description="Add a new store." />
+      <Header title="New Store" description="Add a new store." />
       <AddStoreForm userId={user.id} />
     </section>
   )
