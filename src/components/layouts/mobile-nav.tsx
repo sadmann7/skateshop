@@ -5,7 +5,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { NavItem } from "@/types"
 
-import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -31,18 +30,13 @@ export function MobileNav({ items }: MobileNavProps) {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent size="full" position="left" className="pl-1 pr-0">
-        <Link
-          href="/"
-          className="flex items-center pl-6"
-          onClick={() => setIsOpen(false)}
-        >
-          <Icons.logo className="mr-2 h-4 w-4" />
-          <span className="font-bold">{siteConfig.name}</span>
-        </Link>
+      <SheetContent
+        size="full"
+        position="left"
+        className="bottom-0 h-[calc(100%-4rem)] pl-1 pr-0"
+      >
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="flex flex-col space-y-3">
-            <h4 className="font-medium">Menu</h4>
             {items?.map(
               (item) =>
                 item.href && (

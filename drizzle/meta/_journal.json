@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1685592506170,
+      "tag": "0000_medical_stardust",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1685596668785,
+      "tag": "0001_yielding_unus",
+      "breakpoints": false
+    }
+  ]
+}

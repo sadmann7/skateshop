@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
+import { eq } from "drizzle-orm"
 
-import { prisma } from "@/lib/db"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 
@@ -19,16 +21,11 @@ export default async function StoresPage() {
     redirect("/sign-in")
   }
 
-  const stores = await prisma.store.findMany({
-    where: {
-      userId: user.id,
-    },
-    select: {
-      id: true,
-      name: true,
-      description: true,
+  const userStores = await db.query.stores.findMany({
+    where: eq(stores.userId, user.id),
+    with: {
       products: {
-        select: {
+        columns: {
           id: true,
         },
       },
@@ -41,9 +38,9 @@ export default async function StoresPage() {
         title="Your Stores"
         description="You can create up to 3 stores. Each store can have up to 100 products."
       />
-      {stores?.length ? (
+      {userStores?.length ? (
         <div className="grid max-w-4xl gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {stores.map((store) => (
+          {userStores.map((store) => (
             <Link key={store.id} href={`/account/stores/${store.id}/products`}>
               <div className="flex h-40 flex-col rounded-md border p-5 shadow-md hover:bg-muted">
                 <div className="flex items-center space-x-2">
@@ -62,7 +59,7 @@ export default async function StoresPage() {
               <span className="sr-only">{store.name}</span>
             </Link>
           ))}
-          {stores.length < 3 && (
+          {userStores.length < 3 && (
             <Link href="/account/stores/new">
               <div className="flex h-40 flex-col rounded-md border p-5 shadow-md hover:bg-muted">
                 <div className="flex items-center space-x-2">
