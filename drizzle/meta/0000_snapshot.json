@@ -1,224 +1,134 @@
 {
-  "id": "00000000-0000-0000-0000-000000000000",
-  "prevId": "",
   "version": "5",
   "dialect": "mysql",
+  "id": "cc23e665-4f14-4395-bffc-6773ff561296",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "Product": {
-      "name": "Product",
+    "products": {
+      "name": "products",
       "columns": {
         "id": {
-          "autoincrement": false,
           "name": "id",
-          "type": "varchar(191)",
+          "type": "serial",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "name": {
-          "autoincrement": false,
           "name": "name",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "description": {
-          "autoincrement": false,
           "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
+        },
+        "images": {
+          "name": "images",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "enum('skateboard','clothing','shoes','accessories')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'skateboard'"
         },
         "price": {
-          "autoincrement": false,
           "name": "price",
           "type": "int",
           "primaryKey": false,
-          "notNull": true
-        },
-        "category": {
-          "default": "'SKATEBOARD'",
+          "notNull": true,
           "autoincrement": false,
-          "name": "category",
-          "type": "enum('SKATEBOARD','CLOTHING','SHOES','ACCESSORIES')",
-          "primaryKey": false,
-          "notNull": true
+          "default": 0
         },
         "quantity": {
-          "default": 1,
-          "autoincrement": false,
           "name": "quantity",
           "type": "int",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
         },
         "inventory": {
-          "default": 1,
-          "autoincrement": false,
           "name": "inventory",
           "type": "int",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
         },
         "rating": {
-          "default": 0,
-          "autoincrement": false,
           "name": "rating",
           "type": "int",
           "primaryKey": false,
-          "notNull": true
-        },
-        "createdAt": {
-          "default": "(CURRENT_TIMESTAMP(3))",
+          "notNull": true,
           "autoincrement": false,
-          "name": "createdAt",
-          "type": "datetime(3)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updatedAt": {
-          "autoincrement": false,
-          "name": "updatedAt",
-          "type": "datetime(3)",
-          "primaryKey": false,
-          "notNull": true
+          "default": 0
         },
         "storeId": {
-          "autoincrement": false,
           "name": "storeId",
-          "type": "varchar(191)",
+          "type": "int",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         }
       },
-      "compositePrimaryKeys": {},
-      "indexes": {
-        "Product_storeId_idx": {
-          "name": "Product_storeId_idx",
-          "columns": [
-            "storeId"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {}
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
     },
-    "ProductImage": {
-      "name": "ProductImage",
+    "stores": {
+      "name": "stores",
       "columns": {
         "id": {
-          "autoincrement": false,
           "name": "id",
-          "type": "varchar(191)",
+          "type": "serial",
           "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "autoincrement": false,
-          "name": "name",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "url": {
-          "autoincrement": false,
-          "name": "url",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "createdAt": {
-          "default": "(CURRENT_TIMESTAMP(3))",
-          "autoincrement": false,
-          "name": "createdAt",
-          "type": "datetime(3)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updatedAt": {
-          "autoincrement": false,
-          "name": "updatedAt",
-          "type": "datetime(3)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "productId": {
-          "autoincrement": false,
-          "name": "productId",
-          "type": "varchar(191)",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "compositePrimaryKeys": {},
-      "indexes": {
-        "ProductImage_productId_idx": {
-          "name": "ProductImage_productId_idx",
-          "columns": [
-            "productId"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {}
-    },
-    "Store": {
-      "name": "Store",
-      "columns": {
-        "id": {
-          "autoincrement": false,
-          "name": "id",
-          "type": "varchar(191)",
-          "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": true
         },
         "userId": {
-          "autoincrement": false,
           "name": "userId",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "name": {
-          "autoincrement": false,
           "name": "name",
           "type": "varchar(191)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "autoincrement": false
         },
         "description": {
-          "autoincrement": false,
           "name": "description",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
-        "createdAt": {
-          "default": "(CURRENT_TIMESTAMP(3))",
-          "autoincrement": false,
-          "name": "createdAt",
-          "type": "datetime(3)",
+        "slug": {
+          "name": "slug",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
-        },
-        "updatedAt": {
-          "autoincrement": false,
-          "name": "updatedAt",
-          "type": "datetime(3)",
-          "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "autoincrement": false
         }
       },
-      "compositePrimaryKeys": {},
-      "indexes": {
-        "Store_userId_idx": {
-          "name": "Store_userId_idx",
-          "columns": [
-            "userId"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {}
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
     }
   },
   "schemas": {},
