@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { db } from "@/db"
+import { products } from "@/db/schema"
+import { eq } from "drizzle-orm"
 
-import { prisma } from "@/lib/db"
 import { EditProductForm } from "@/components/forms/edit-product-form"
 import { Header } from "@/components/header"
 
@@ -12,7 +14,7 @@ export const metadata: Metadata = {
 
 interface EditProductPageProps {
   params: {
-    productId: string
+    productId: number
   }
 }
 
@@ -21,18 +23,10 @@ export default async function EditProductPage({
 }: EditProductPageProps) {
   const { productId } = params
 
-  const product = await prisma.product.findUnique({
-    where: {
-      id: productId,
-    },
-    select: {
+  const product = await db.query.products.findFirst({
+    where: eq(products.id, productId),
+    columns: {
       id: true,
-      name: true,
-      description: true,
-      category: true,
-      price: true,
-      quantity: true,
-      inventory: true,
     },
   })
 

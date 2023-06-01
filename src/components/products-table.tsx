@@ -4,7 +4,6 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
-import type { SortDirection } from "@/types"
 import { toast } from "react-hot-toast"
 import {
   Table as ShadcnTable,
@@ -66,9 +65,10 @@ export function ProductsTable({
 
   const page = searchParams?.get("page") ?? "1"
   const items = searchParams?.get("items") ?? "10"
-  const sort = (searchParams?.get("sort") ?? "createdAt") as keyof Product
-  const order = (searchParams?.get("order") ?? "asc") as SortDirection | null
-  const query = searchParams?.get("query")
+  const sort = (searchParams?.get("sort_by") ?? "name") as keyof Product
+  const order = searchParams?.get("sort_desc") ?? "asc"
+  const name = searchParams?.get("name")
+  const date = searchParams?.get("date")
 
   // create query string
   const createQueryString = React.useCallback(
@@ -189,7 +189,7 @@ export function ProductsTable({
   )
 
   // Handle server-side column (name) filtering
-  const [name, setName] = React.useState(query ?? "")
+  const [nameFilter, setNameFilter] = React.useState(name ?? "")
 
   // Handle server-side column sorting
   const [sorting] = React.useState<ColumnSort[]>([
@@ -220,9 +220,9 @@ export function ProductsTable({
                   <DebounceInput
                     className="max-w-xs"
                     placeholder="Search emails..."
-                    value={name}
+                    value={nameFilter}
                     onChange={(value) => {
-                      setName(String(value))
+                      setNameFilter(String(value))
                       startTransition(() => {
                         router.push(
                           `${pathname}?${createQueryString({
@@ -312,7 +312,7 @@ export function ProductsTable({
                   startTransition(() => {
                     router.push(
                       `${pathname}?${createQueryString({
-                        page: page,
+                        page,
                         sort: nextSortDirection ? header.column.id : null,
                         order: nextSortDirection ? nextSortDirection : null,
                       })}`
@@ -363,10 +363,10 @@ export function ProductsTable({
                         startTransition(() => {
                           router.push(
                             `${pathname}?${createQueryString({
-                              page: page,
+                              page,
                               items: value,
-                              sort: sort,
-                              order: order,
+                              sort,
+                              order,
                             })}`
                           )
                         })
@@ -398,9 +398,9 @@ export function ProductsTable({
                           router.push(
                             `${pathname}?${createQueryString({
                               page: 1,
-                              items: items,
-                              sort: sort,
-                              order: order,
+                              items,
+                              sort,
+                              order,
                             })}`
                           )
                         })
@@ -422,9 +422,9 @@ export function ProductsTable({
                           router.push(
                             `${pathname}?${createQueryString({
                               page: Number(page) - 1,
-                              items: items,
-                              sort: sort,
-                              order: order,
+                              items,
+                              sort,
+                              order,
                             })}`
                           )
                         })
@@ -446,9 +446,9 @@ export function ProductsTable({
                           router.push(
                             `${pathname}?${createQueryString({
                               page: Number(page) + 1,
-                              items: items,
-                              sort: sort,
-                              order: order,
+                              items,
+                              sort,
+                              order,
                             })}`
                           )
                         })
@@ -469,9 +469,9 @@ export function ProductsTable({
                         router.push(
                           `${pathname}?${createQueryString({
                             page: pageCount ?? 10,
-                            items: items,
-                            sort: sort,
-                            order: order,
+                            items,
+                            sort,
+                            order,
                           })}`
                         )
                       }}

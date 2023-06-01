@@ -6,7 +6,7 @@ export const addStoreSchema = z.object({
 })
 
 export const editStoreSchema = z.object({
-  storeId: z.string(),
+  storeId: z.number(),
   name: z.string().min(3).max(50),
   description: z.string().min(3).max(255).optional(),
 })

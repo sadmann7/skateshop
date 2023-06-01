@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { products } from "@/db/schema"
-import type { FileWithPreview, UploadThingOutput } from "@/types"
+import type { FileWithPreview } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
@@ -38,7 +38,7 @@ import type { OurFileRouter } from "@/app/api/uploadthing/core"
 import { FileDialog } from "../file-dialog"
 
 interface AddProductFormProps {
-  storeId: string
+  storeId: number
 }
 
 type Inputs = z.infer<typeof addProductSchema>
@@ -76,11 +76,11 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
 
     // Upload images if data.images is an array of files
     const rawImages = isArrayOfFile(data.images)
-      ? ((await startUpload(data.images)) as UploadThingOutput[])
+      ? await startUpload(data.images)
       : []
 
     const images = isArrayOfFile(data.images)
-      ? rawImages.map((image) => ({
+      ? rawImages?.map((image) => ({
           id: image.fileKey,
           name: image.fileKey.split("_")[1] ?? image.fileKey,
           url: image.fileUrl,
@@ -95,7 +95,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       price: data.price,
       quantity: data.quantity,
       inventory: data.inventory,
-      images: images,
+      images: images ?? [],
     })
 
     error

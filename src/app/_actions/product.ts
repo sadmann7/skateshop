@@ -52,7 +52,7 @@ export async function checkProductAction(name: string) {
 export const addProductAction = zact(
   z.object({
     ...addProductSchema.shape,
-    storeId: z.string(),
+    storeId: z.number(),
     images: z
       .array(
         z.object({

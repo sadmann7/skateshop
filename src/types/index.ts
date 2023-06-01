@@ -1,4 +1,4 @@
-import type { PRODUCT_CATEGORY } from "@prisma/client"
+import { type products } from "@/db/schema"
 import type { LucideIcon } from "lucide-react"
 import type { FileWithPath } from "react-dropzone"
 
@@ -15,14 +15,13 @@ export type FileWithPreview = FileWithPath & {
   preview: string
 }
 
-export type UploadThingOutput = {
-  fileKey: string
-  fileUrl: string
+export type UploadedFile = {
+  id: string
+  name: string
+  url: string
 }
 
 export type ProductsByCategory<TData extends object> = {
-  category: PRODUCT_CATEGORY
+  category: (typeof products.category.enumValues)[number]
   products: TData[]
 }
-
-export type SortDirection = "asc" | "desc"

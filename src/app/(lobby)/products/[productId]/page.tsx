@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import { notFound } from "next/navigation"
+import { db } from "@/db"
+import { products } from "@/db/schema"
+import { type UploadedFile } from "@/types"
+import { eq } from "drizzle-orm"
 
-import { prisma } from "@/lib/db"
 import { Header } from "@/components/header"
 
 export const metadata: Metadata = {
@@ -12,20 +14,15 @@ export const metadata: Metadata = {
 
 interface PrdouctPageProps {
   params: {
-    productId: string
+    productId: number
   }
 }
 
 export default async function ProductPage({ params }: PrdouctPageProps) {
   const { productId } = params
 
-  const product = await prisma.product.findUnique({
-    where: {
-      id: productId,
-    },
-    include: {
-      images: true,
-    },
+  const product = await db.query.products.findFirst({
+    where: eq(products.id, productId),
   })
 
   if (!product) {
@@ -38,7 +35,7 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
         <Header title={product.name} description={product.description ?? ""} />
       </div>
       <div className="relative mx-auto my-2 flex max-w-xl pt-[66.67%]">
-        {product.images.map((image, i) => (
+        {(product?.images as UploadedFile[]).map((image, i) => (
           <fieldset key={image.id}></fieldset>
         ))}
       </div>

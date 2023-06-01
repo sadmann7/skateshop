@@ -1,8 +1,10 @@
 import type { NextRequest } from "next/server"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
+import { and, eq, not } from "drizzle-orm"
 import * as z from "zod"
 
-import { prisma } from "@/lib/db"
 import { editStoreSchema } from "@/lib/validations/store"
 
 export async function PATCH(req: NextRequest) {
@@ -15,14 +17,12 @@ export async function PATCH(req: NextRequest) {
 
     const input = editStoreSchema.parse(await req.json())
 
-    const storeWithSameName = await prisma.store.findFirst({
-      where: {
-        name: input.name,
-        id: {
-          not: input.storeId,
-        },
-      },
-    })
+    const storeWithSameName = await db
+      .select()
+      .from(stores)
+      .where(
+        and(eq(stores.name, input.name), not(eq(stores.id, input.storeId)))
+      )
 
     if (storeWithSameName) {
       return new Response("A store with the same name already exists.", {
@@ -30,13 +30,13 @@ export async function PATCH(req: NextRequest) {
       })
     }
 
-    const updatedStore = await prisma.store.update({
-      where: { id: input.storeId },
-      data: {
+    const updatedStore = await db
+      .update(stores)
+      .set({
         name: input.name,
         description: input.description,
-      },
-    })
+      })
+      .where(eq(stores.id, input.storeId))
 
     return new Response(JSON.stringify(updatedStore), { status: 200 })
   } catch (error: unknown) {

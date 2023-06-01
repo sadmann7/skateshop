@@ -1,8 +1,10 @@
 import type { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
+import { and, eq } from "drizzle-orm"
 
-import { prisma } from "@/lib/db"
 import { AddProductForm } from "@/components/forms/add-product-form"
 import { Header } from "@/components/header"
 
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
 
 interface NewProductPageProps {
   params: {
-    storeId: string
+    storeId: number
   }
 }
 
@@ -26,11 +28,9 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
     redirect("/sign-in")
   }
 
-  const store = await prisma.store.findUnique({
-    where: {
-      id: storeId,
-    },
-    select: {
+  const store = await db.query.stores.findFirst({
+    where: and(eq(stores.id, storeId), eq(stores.userId, user.id)),
+    columns: {
       id: true,
     },
   })

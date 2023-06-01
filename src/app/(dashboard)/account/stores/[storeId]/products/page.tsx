@@ -3,7 +3,6 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
-import type { SortDirection } from "@/types"
 import { and, asc, desc, eq, like, sql } from "drizzle-orm"
 
 import { cn } from "@/lib/utils"
@@ -25,8 +24,9 @@ interface ProductsPageProps {
     page?: string
     items?: string
     sort?: keyof Product
-    order?: SortDirection
-    query?: string
+    order?: "asc" | "desc"
+    name?: string
+    date?: string
   }
 }
 
@@ -36,7 +36,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const { storeId } = params
 
-  const { page, items, sort, order, query } = searchParams
+  const { page, items, sort, order, name, date } = searchParams
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -64,13 +64,11 @@ export default async function ProductsPage({
       .where(
         and(
           eq(products.storeId, storeId),
-          query ? like(products.name, `%${query}%`) : undefined
+          name ? like(products.name, `%${name}%`) : undefined
         )
       )
       .orderBy(
-        order === "desc"
-          ? desc(products[sort ?? "name"])
-          : asc(products[sort ?? "name"])
+        order ? desc(products[sort ?? "name"]) : asc(products[sort ?? "name"])
       )
     const totalProducts = await tx
       .select({ count: sql`count(*)` })
