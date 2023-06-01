@@ -10,7 +10,7 @@ import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 
 export const metadata: Metadata = {
-  title: "Stores",
+  title: "Dashboard",
   description: "Manage your stores.",
 }
 

@@ -81,9 +81,9 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                       <Link href="/settings/account">
-                        <Icons.store className="mr-2 h-4 w-4" />
+                        <Icons.user className="mr-2 h-4 w-4" />
                         Account
-                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                        <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
