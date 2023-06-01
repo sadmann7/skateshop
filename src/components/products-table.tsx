@@ -236,7 +236,7 @@ export function ProductsTable({
                   <div className="ml-auto flex items-center space-x-2">
                     {tableInstance.getFilteredSelectedRowModel().rows.length ===
                     0 ? (
-                      <Link href={`/account/stores/${storeId}/products/new`}>
+                      <Link href={`/dashboard/stores/${storeId}/products/new`}>
                         <div
                           className={buttonVariants({
                             variant: "default",

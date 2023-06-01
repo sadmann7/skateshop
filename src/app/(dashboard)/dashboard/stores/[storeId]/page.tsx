@@ -49,7 +49,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
       .set({ name, description })
       .where(eq(stores.id, storeId))
 
-    revalidatePath(`/account/stores/${storeId}`)
+    revalidatePath(`/dashboard/stores/${storeId}`)
   }
 
   async function deleteStore() {
@@ -57,7 +57,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
 
     await db.delete(stores).where(eq(stores.id, storeId))
 
-    const path = "/account/stores"
+    const path = "/dashboard"
     revalidatePath(path)
     redirect(path)
   }
@@ -84,7 +84,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
         }
       />
       <div className="flex flex-col items-center justify-center gap-2.5 sm:flex-row">
-        <Link href={`/account/stores/${storeId}`} className="w-full sm:w-fit">
+        <Link href={`/dashboard/stores/${storeId}`} className="w-full sm:w-fit">
           <div
             className={cn(
               buttonVariants({
@@ -100,7 +100,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           </div>
         </Link>
         <Link
-          href={`/account/stores/${storeId}/products`}
+          href={`/dashboard/stores/${storeId}/products`}
           className="w-full sm:w-fit"
         >
           <div
@@ -149,9 +149,9 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           <span className="sr-only">Update Store</span>
         </LoadingButton>
         <LoadingButton
-          variant="destructive"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           formAction={deleteStore}
+          variant="destructive"
         >
           Delete Store
           <span className="sr-only">Delete Store</span>

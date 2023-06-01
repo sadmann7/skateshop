@@ -44,5 +44,5 @@ export async function addStoreAction(
     slug: slugify(input.name),
   })
 
-  revalidatePath("/account/stores")
+  revalidatePath("/dashboard")
 }

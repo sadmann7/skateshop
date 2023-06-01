@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -13,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Icons } from "@/components/icons"
 
@@ -45,37 +47,39 @@ export default async function DashboardPage() {
       <Tabs defaultValue="stores" className="space-y-4">
         <TabsList>
           <TabsTrigger value="stores">Stores</TabsTrigger>
-          <TabsTrigger value="analytics">Purchases</TabsTrigger>
+          <TabsTrigger value="purchases">Purchases</TabsTrigger>
         </TabsList>
         <TabsContent value="products" className="space-y-4"></TabsContent>
         <TabsContent value="stores" className="space-y-4">
-          {userStores?.length || userStores?.length < 3 ? (
+          {userStores?.length ? (
             <div className="grid gap-4 sm:max-w-4xl sm:grid-cols-2 md:grid-cols-3">
               {userStores.map((store) => (
-                <Link
-                  aria-label={`Go to ${store.name}`}
-                  key={store.id}
-                  href={`/dashboard/stores/${store.id}/products`}
-                >
-                  <Card className="h-36 hover:bg-muted">
-                    <CardHeader>
-                      <div className="flex items-center space-x-2">
-                        <Icons.store className="h-5 w-5 text-muted-foreground" />
-                        <CardTitle className="line-clamp-1">
-                          {store.name}
-                        </CardTitle>
-                      </div>
-                      <CardDescription className="line-clamp-2 pt-3">
-                        {store.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        {store.products.length} products
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <React.Suspense fallback={<Skeleton className="h-36 w-1/4" />}>
+                  <Link
+                    aria-label={`Go to ${store.name}`}
+                    key={store.id}
+                    href={`/dashboard/stores/${store.id}/products`}
+                  >
+                    <Card className="h-36 hover:bg-muted">
+                      <CardHeader>
+                        <div className="flex items-center space-x-2">
+                          <Icons.store className="h-5 w-5 text-muted-foreground" />
+                          <CardTitle className="line-clamp-1">
+                            {store.name}
+                          </CardTitle>
+                        </div>
+                        <CardDescription className="line-clamp-2 pt-3">
+                          {store.description}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground">
+                          {store.products.length} products
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </React.Suspense>
               ))}
               {userStores.length < 3 && (
                 <Link

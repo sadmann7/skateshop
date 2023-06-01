@@ -168,7 +168,7 @@ export default async function ProductsPage({
         </TabsContent>
       </Tabs>
       <div className="flex flex-col items-center justify-center gap-2.5 sm:flex-row">
-        <Link href={`/account/stores/${storeId}`} className="w-full sm:w-fit">
+        <Link href={`/dashboard/stores/${storeId}`} className="w-full sm:w-fit">
           <div
             className={cn(
               buttonVariants({
@@ -184,7 +184,7 @@ export default async function ProductsPage({
           </div>
         </Link>
         <Link
-          href={`/account/stores/${storeId}/products`}
+          href={`/dashboard/stores/${storeId}/products`}
           className="w-full sm:w-fit"
         >
           <div

@@ -88,7 +88,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard">
-                        <Icons.store className="mr-2 h-4 w-4" />
+                        <Icons.dashboard className="mr-2 h-4 w-4" />
                         Dashboard
                         <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
                       </Link>
