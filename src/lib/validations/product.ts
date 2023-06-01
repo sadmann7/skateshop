@@ -1,4 +1,4 @@
-import { PRODUCT_CATEGORY } from "@prisma/client"
+import { products } from "@/db/schema"
 import { z } from "zod"
 
 export const addProductSchema = z.object({
@@ -7,10 +7,10 @@ export const addProductSchema = z.object({
   }),
   description: z.string().optional(),
   category: z
-    .nativeEnum(PRODUCT_CATEGORY, {
+    .enum(products.category.enumValues, {
       required_error: "Must be a valid category",
     })
-    .default(PRODUCT_CATEGORY.SKATEBOARD),
+    .default(products.category.enumValues[0]),
   price: z.number().positive({
     message: "Must be a positive number",
   }),

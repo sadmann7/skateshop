@@ -12,7 +12,6 @@ const config = {
   },
   experimental: {
     serverActions: true,
-    serverComponentsExternalPackages: ["@prisma/client"],
   },
 }
 export default config

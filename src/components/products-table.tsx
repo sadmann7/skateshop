@@ -3,8 +3,8 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { type Product } from "@/db/schema"
 import type { SortDirection } from "@/types"
-import { type Product } from "@prisma/client"
 import { toast } from "react-hot-toast"
 import {
   Table as ShadcnTable,
@@ -48,7 +48,7 @@ import { Skeleton } from "./ui/skeleton"
 interface ProductsTableProps {
   data: Product[]
   pageCount?: number
-  storeId: string
+  storeId: number
 }
 
 export function ProductsTable({
@@ -170,8 +170,8 @@ export function ProductsTable({
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => {
-                    void navigator.clipboard.writeText(product.id)
-                    toast.success("Product ID copied to clipboard")
+                    void navigator.clipboard.writeText(product.name)
+                    toast.success("Product name copied to clipboard")
                   }}
                 >
                   Copy skater ID

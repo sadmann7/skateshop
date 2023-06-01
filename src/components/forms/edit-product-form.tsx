@@ -1,7 +1,7 @@
 "use client"
 
+import { products } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PRODUCT_CATEGORY } from "@prisma/client"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { z } from "zod"
 
@@ -17,7 +17,7 @@ const schema = z.object({
     message: "Must be at least 1 character",
   }),
   description: z.string().optional(),
-  category: z.nativeEnum(PRODUCT_CATEGORY),
+  category: z.enum(products.category.enumValues),
   price: z.number().positive({
     message: "Must be a positive number",
   }),

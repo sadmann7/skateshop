@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { products } from "@/db/schema"
 import type { FileWithPreview, UploadThingOutput } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PRODUCT_CATEGORY } from "@prisma/client"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -161,11 +161,13 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {Object.values(PRODUCT_CATEGORY).map((option) => (
-                          <SelectItem key={option} value={option}>
-                            {formatEnum(option ?? "")}
-                          </SelectItem>
-                        ))}
+                        {Object.values(products.category.enumValues).map(
+                          (option) => (
+                            <SelectItem key={option} value={option}>
+                              {formatEnum(option ?? "")}
+                            </SelectItem>
+                          )
+                        )}
                       </SelectGroup>
                     </SelectContent>
                   </Select>

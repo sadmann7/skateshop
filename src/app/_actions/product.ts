@@ -1,11 +1,12 @@
 "use server"
 
 import { revalidateTag } from "next/cache"
-import { PRODUCT_CATEGORY } from "@prisma/client"
+import { db } from "@/db"
+import { products } from "@/db/schema"
+import { eq } from "drizzle-orm"
 import { zact } from "zact/server"
 import { z } from "zod"
 
-import { prisma } from "@/lib/db"
 import { addProductSchema } from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
@@ -13,23 +14,21 @@ export async function filterProductsAction(query: string) {
     throw new Error("Query must be a string")
   }
 
-  const products = await prisma.product.findMany({
-    where: {
-      name: {
-        contains: query,
-      },
-    },
-    select: {
+  const filteredProducts = await db.query.products.findMany({
+    where: eq(products.name, query),
+    columns: {
       id: true,
       name: true,
       category: true,
     },
   })
 
-  const productsByCategory = Object.values(PRODUCT_CATEGORY).map(
+  const productsByCategory = Object.values(products.category.enumValues).map(
     (category) => ({
       category,
-      products: products.filter((product) => product.category === category),
+      products: filteredProducts.filter(
+        (product) => product.category === category
+      ),
     })
   )
 
@@ -41,10 +40,8 @@ export async function checkProductAction(name: string) {
     throw new Error("Name must be a string")
   }
 
-  const productWithSameName = await prisma.product.findFirst({
-    where: {
-      name,
-    },
+  const productWithSameName = await db.query.products.findFirst({
+    where: eq(products.name, name),
   })
 
   if (productWithSameName) {
@@ -68,51 +65,39 @@ export const addProductAction = zact(
       .default([]),
   })
 )(async (input) => {
-  const productWithSameName = await prisma.product.findFirst({
-    where: {
-      name: input.name,
-    },
+  const productWithSameName = await db.query.products.findFirst({
+    where: eq(products.name, input.name),
   })
 
   if (productWithSameName) {
     throw new Error("Product name already taken")
   }
 
-  await prisma.product.create({
-    data: {
-      name: input.name,
-      description: input.description,
-      category: input.category,
-      price: input.price,
-      quantity: input.quantity,
-      inventory: input.inventory,
-      images: {
-        createMany: {
-          data: input.images,
-        },
-      },
-      store: {
-        connect: {
-          id: input.storeId,
-        },
-      },
-    },
+  await db.insert(products).values({
+    name: input.name,
+    description: input.description,
+    category: input.category,
+    images: input.images,
+    price: input.price,
+    quantity: input.quantity,
+    inventory: input.inventory,
+    storeId: input.storeId,
   })
 })
 
-export async function deleteProductsAction(ids: string[]) {
+export async function deleteProductsAction(ids: number[]) {
   // check if ids are array of strings
   if (!Array.isArray(ids)) {
     throw new Error("Ids must be an array")
   }
 
-  await prisma.product.deleteMany({
-    where: {
-      id: {
-        in: ids,
-      },
-    },
-  })
+  if (ids.some((id) => typeof id !== "string")) {
+    throw new Error("Ids must be an array of strings")
+  }
+
+  for (const id of ids) {
+    await db.delete(products).where(eq(products.id, id))
+  }
 
   revalidateTag("products")
 }

@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
-import { revalidatePath, revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
+import { and, eq, not } from "drizzle-orm"
 
-import { prisma } from "@/lib/db"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -20,7 +22,7 @@ export const metadata: Metadata = {
 
 interface EditStorePageProps {
   params: {
-    storeId: string
+    storeId: number
   }
 }
 
@@ -33,51 +35,36 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     const name = fd.get("name") as string
     const description = fd.get("description") as string
 
-    const storeWithSameName = await prisma.store.findFirst({
-      where: {
-        name,
-        id: {
-          not: storeId,
-        },
-      },
-    })
+    const storeWithSameName = await db
+      .select()
+      .from(stores)
+      .where(and(eq(stores.name, name), not(eq(stores.id, storeId))))
 
     if (storeWithSameName) {
       throw new Error("Store name already taken")
     }
 
-    await prisma.store.update({
-      where: {
-        id: storeId,
-      },
-      data: {
-        name,
-        description,
-      },
-    })
+    await db
+      .update(stores)
+      .set({ name, description })
+      .where(eq(stores.id, storeId))
 
-    revalidateTag(storeId)
+    revalidatePath(`/account/stores/${storeId}`)
   }
 
   async function deleteStore() {
     "use server"
 
-    await prisma.store.delete({
-      where: {
-        id: storeId,
-      },
-    })
+    await db.delete(stores).where(eq(stores.id, storeId))
 
     const path = "/account/stores"
     revalidatePath(path)
     redirect(path)
   }
 
-  const store = await prisma.store.findUnique({
-    where: {
-      id: storeId,
-    },
-    select: {
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, storeId),
+    columns: {
       id: true,
       name: true,
       description: true,

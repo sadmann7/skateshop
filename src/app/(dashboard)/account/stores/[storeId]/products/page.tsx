@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { db } from "@/db"
+import { products, stores, type Product } from "@/db/schema"
 import type { SortDirection } from "@/types"
-import { type Product } from "@prisma/client"
+import { and, asc, desc, eq, like, sql } from "drizzle-orm"
 
-import { prisma } from "@/lib/db"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Header } from "@/components/header"
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 
 interface ProductsPageProps {
   params: {
-    storeId: string
+    storeId: number
   }
   searchParams: {
     page?: string
@@ -37,11 +38,9 @@ export default async function ProductsPage({
 
   const { page, items, sort, order, query } = searchParams
 
-  const store = await prisma.store.findUnique({
-    where: {
-      id: storeId,
-    },
-    select: {
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, storeId),
+    columns: {
       id: true,
       name: true,
     },
@@ -56,24 +55,34 @@ export default async function ProductsPage({
   // Number of skaters to skip
   const offset = page ? (parseInt(page) - 1) * limit : 0
 
-  // Get skaters and total skaters count in a single query
-  const [products, totalProducts] = await prisma.$transaction([
-    prisma.product.findMany({
-      // For server-side pagination
-      take: limit,
-      skip: offset,
-      // For server-side filtering
-      where: {
-        name: query ? { contains: query } : undefined,
-        storeId,
-      },
-      // For server-side sorting
-      orderBy: { [sort ?? "createdAt"]: order ?? "asc" },
-    }),
-    prisma.product.count(),
-  ])
+  const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
+    const storeProducts = await tx
+      .select()
+      .from(products)
+      .limit(limit)
+      .offset(offset)
+      .where(
+        and(
+          eq(products.storeId, storeId),
+          query ? like(products.name, `%${query}%`) : undefined
+        )
+      )
+      .orderBy(
+        order === "desc"
+          ? desc(products[sort ?? "name"])
+          : asc(products[sort ?? "name"])
+      )
+    const totalProducts = await tx
+      .select({ count: sql`count(*)` })
+      .from(products)
+      .where(eq(products.storeId, storeId))
 
-  // Page count
+    return {
+      storeProducts,
+      totalProducts: Number(totalProducts[0]?.count) ?? 0,
+    }
+  })
+
   const pageCount = Math.ceil(totalProducts / limit)
 
   return (
@@ -114,7 +123,11 @@ export default async function ProductsPage({
           </div>
         </Link>
       </div>
-      <ProductsTable data={products} pageCount={pageCount} storeId={storeId} />
+      <ProductsTable
+        data={storeProducts}
+        pageCount={pageCount}
+        storeId={storeId}
+      />
     </section>
   )
 }

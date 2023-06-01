@@ -40,7 +40,7 @@ export const products = mysqlTable("products", {
   quantity: int("quantity").default(1).notNull(),
   inventory: int("inventory").default(1).notNull(),
   rating: int("rating").default(0).notNull(),
-  storeId: varchar("storeId", { length: 191 }).notNull(),
+  storeId: int("storeId").notNull(),
 })
 
 export type Product = InferModel<typeof products>
