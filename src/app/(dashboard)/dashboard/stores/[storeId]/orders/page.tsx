@@ -40,7 +40,7 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
         <StoreTabs
           className="block md:hidden"
           storeId={storeId}
-          activeTab="products"
+          activeTab="orders"
         />
         <div>Orders Table</div>
       </div>

@@ -6,6 +6,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { experimental_useFormStatus as useFormStatus } from "react-dom"
 
 import { cn } from "@/lib/utils"
+import { useMounted } from "@/hooks/use-mounted"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
 const buttonVariants = cva(
@@ -45,8 +47,17 @@ export interface ButtonProps
 const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const { pending } = useFormStatus()
+    const mounted = useMounted()
 
     const Comp = asChild ? Slot : "button"
+
+    if (!mounted)
+      return (
+        <Skeleton className={cn(buttonVariants({ variant, size, className }))}>
+          {props.children}
+        </Skeleton>
+      )
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
