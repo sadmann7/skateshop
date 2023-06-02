@@ -38,9 +38,9 @@ export default async function PaymentsPage({ params }: PaymentsPageProps) {
   return (
     <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
       <h1 className="text-3xl font-bold tracking-tight">{store.name}</h1>
-      <div className="space-y-4">
+      <div className="space-y-4 overflow-hidden md:space-y-0">
         <StoreTabs
-          className="block sm:hidden"
+          className="block md:hidden"
           storeId={storeId}
           activeTab="payments"
         />

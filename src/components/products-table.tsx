@@ -243,7 +243,10 @@ export function ProductsTable({
                             size: "sm",
                           })}
                         >
-                          New <div className="hidden sm:block">Product</div>
+                          <span className="hidden sm:inline-block">
+                            New Product
+                          </span>
+                          <span className="inline-block sm:hidden">New</span>
                           <span className="sr-only">New product</span>
                         </div>
                       </Link>
