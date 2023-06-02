@@ -4,11 +4,13 @@ import { currentUser } from "@clerk/nextjs"
 import { SiteFooter } from "@/components/layouts/site-footer"
 import { SiteHeader } from "@/components/layouts/site-header"
 
-interface DashboardLayout {
+interface DashboardLayoutProps {
   children: React.ReactNode
 }
 
-export default async function DashboardLayout({ children }: DashboardLayout) {
+export default async function DashboardLayout({
+  children,
+}: DashboardLayoutProps) {
   const user = await currentUser()
 
   if (!user) {

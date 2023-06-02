@@ -34,9 +34,11 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
   }
 
   return (
-    <section className="container grid w-full items-center gap-6 pb-10 pt-6 md:py-10">
+    <section className="grid items-center gap-6 pb-10 pt-6 md:py-10">
       <h1 className="text-3xl font-bold tracking-tight">{store.name}</h1>
-      <StoreTabs storeId={storeId} activeTab="orders" />
+      <div className="space-y-2">
+        <StoreTabs storeId={storeId} activeTab="orders" />
+      </div>
     </section>
   )
 }

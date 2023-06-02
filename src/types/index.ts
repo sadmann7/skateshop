@@ -1,15 +1,24 @@
 import { type products } from "@/db/schema"
-import type { LucideIcon } from "lucide-react"
 import type { FileWithPath } from "react-dropzone"
+
+import { type Icons } from "@/components/icons"
 
 export interface NavItem {
   title: string
   href?: string
   disabled?: boolean
   external?: boolean
-  icon?: LucideIcon
+  icon?: keyof typeof Icons
   label?: string
 }
+
+export interface NavItemWithChildren extends NavItem {
+  items: NavItemWithChildren[]
+}
+
+export type MainNavItem = NavItem
+
+export type SidebarNavItem = NavItemWithChildren
 
 export type FileWithPreview = FileWithPath & {
   preview: string

@@ -13,13 +13,13 @@ export const metadata: Metadata = {
   description: "Manage your store.",
 }
 
-interface AnalyticsPageProps {
+interface PaymentsPageProps {
   params: {
     storeId: number
   }
 }
 
-export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
+export default async function PaymentsPage({ params }: PaymentsPageProps) {
   const { storeId } = params
 
   const store = await db.query.stores.findFirst({
@@ -39,7 +39,7 @@ export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
     <section className="grid items-center gap-6 pb-10 pt-6 md:py-10">
       <h1 className="text-3xl font-bold tracking-tight">{store.name}</h1>
       <div className="space-y-4">
-        <StoreTabs storeId={storeId} activeTab="analytics" />
+        <StoreTabs storeId={storeId} activeTab="payments" />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

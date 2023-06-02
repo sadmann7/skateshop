@@ -80,9 +80,13 @@ export default async function ProductsPage({
   const pageCount = Math.ceil(totalProducts / limit)
 
   return (
-    <section className="container grid w-full items-center gap-6 pb-10 pt-6 md:py-10">
+    <section className="grid w-full items-center gap-6 pb-10 pt-6 md:py-10">
       <h1 className="text-3xl font-bold tracking-tight">{store.name}</h1>
-      <StoreTabs storeId={storeId} activeTab="products" />
+      <StoreTabs
+        className="mb-4 block sm:mb-0 sm:hidden"
+        storeId={storeId}
+        activeTab="products"
+      />
       <ProductsTable
         data={storeProducts}
         pageCount={pageCount}

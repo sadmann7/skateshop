@@ -163,8 +163,12 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                       <SelectGroup>
                         {Object.values(products.category.enumValues).map(
                           (option) => (
-                            <SelectItem key={option} value={option}>
-                              {formatEnum(option ?? "")}
+                            <SelectItem
+                              key={option}
+                              value={option}
+                              className="capitalize"
+                            >
+                              {option ?? ""}
                             </SelectItem>
                           )
                         )}

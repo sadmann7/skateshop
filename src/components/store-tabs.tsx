@@ -2,12 +2,17 @@ import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 
-interface StoreTabsProps {
+interface StoreTabsProps extends React.HTMLAttributes<HTMLDivElement> {
   storeId: number
-  activeTab: "store" | "products" | "orders" | "analytics"
+  activeTab: "store" | "products" | "orders" | "payments" | "analytics"
 }
 
-export function StoreTabs({ storeId, activeTab }: StoreTabsProps) {
+export function StoreTabs({
+  className,
+  storeId,
+  activeTab,
+  ...props
+}: StoreTabsProps) {
   const tabs = [
     {
       title: "Store",
@@ -25,6 +30,11 @@ export function StoreTabs({ storeId, activeTab }: StoreTabsProps) {
       active: activeTab === "orders",
     },
     {
+      title: "Payments",
+      href: `/dashboard/stores/${storeId}/payments`,
+      active: activeTab === "payments",
+    },
+    {
       title: "Analytics",
       href: `/dashboard/stores/${storeId}/analytics`,
       active: activeTab === "analytics",
@@ -32,7 +42,7 @@ export function StoreTabs({ storeId, activeTab }: StoreTabsProps) {
   ]
 
   return (
-    <div role="tablist">
+    <div {...props} className={cn(className)} role="tablist">
       <div className="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
         {tabs.map((tab) => (
           <Link key={tab.title} href={tab.href}>
