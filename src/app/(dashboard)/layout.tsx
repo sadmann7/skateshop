@@ -18,9 +18,9 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden">
+    <div className="relative flex min-h-screen flex-col">
       <SiteHeader user={user} />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 overflow-hidden">{children}</main>
       <SiteFooter />
     </div>
   )

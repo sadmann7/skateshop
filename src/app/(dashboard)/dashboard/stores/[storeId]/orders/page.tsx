@@ -7,8 +7,8 @@ import { eq } from "drizzle-orm"
 import { StoreTabs } from "@/components/store-tabs"
 
 export const metadata: Metadata = {
-  title: "Manage Store",
-  description: "Manage your store.",
+  title: "Orders",
+  description: "Manage your orders.",
 }
 
 interface OrdersPageProps {
