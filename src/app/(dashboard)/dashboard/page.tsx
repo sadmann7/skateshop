@@ -42,7 +42,7 @@ export default async function DashboardPage() {
   })
 
   return (
-    <section className="container grid w-full items-center gap-6 pb-10 pt-6 md:py-10">
+    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-8">
       <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
       <Tabs defaultValue="stores" className="space-y-4">
         <TabsList>
@@ -58,7 +58,7 @@ export default async function DashboardPage() {
                   <Link
                     aria-label={`Go to ${store.name}`}
                     key={store.id}
-                    href={`/dashboard/stores/${store.id}`}
+                    href={`/dashboard/stores/${store.id}/products`}
                   >
                     <Card className="h-36 hover:bg-muted">
                       <CardHeader>

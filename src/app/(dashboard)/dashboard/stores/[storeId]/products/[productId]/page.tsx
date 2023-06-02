@@ -35,7 +35,7 @@ export default async function EditProductPage({
   }
 
   return (
-    <section className="container grid w-full items-center gap-10 pb-10 pt-6 md:py-10">
+    <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
       <Header title="Edit Product" description="Edit your product." />
       <EditProductForm productId={product.id} />
     </section>

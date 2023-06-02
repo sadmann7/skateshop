@@ -110,7 +110,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   return (
     <Form {...form}>
       <form
-        className="mx-auto grid w-full max-w-xl gap-6"
+        className="grid w-full max-w-xl gap-6"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
         <FormField

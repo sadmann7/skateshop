@@ -48,7 +48,7 @@ export function EditProductForm({ productId }: EditProductFOrmProps) {
 
   return (
     <form
-      className="grid w-full gap-5"
+      className="grid w-full max-w-xl gap-5"
       onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
     >
       <fieldset className="grid gap-2.5">

@@ -40,7 +40,7 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
   }
 
   return (
-    <section className="container grid w-full items-center gap-10 pb-10 pt-6 md:py-10">
+    <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
       <Header title="Add Product" description="Add a new product." />
       <AddProductForm storeId={storeId} />
     </section>

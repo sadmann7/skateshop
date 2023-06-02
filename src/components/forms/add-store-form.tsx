@@ -10,6 +10,13 @@ import type { z } from "zod"
 import { addStoreSchema } from "@/lib/validations/store"
 import { Button } from "@/components/ui/button"
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
   Form,
   FormControl,
   FormField,
@@ -58,50 +65,58 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
   }
 
   return (
-    <Form {...form}>
-      <form
-        className="mx-auto grid w-full max-w-xl gap-5"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Type store name here." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Type store description here."
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Button disabled={isPending}>
-          {isPending && (
-            <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
-              aria-hidden="true"
+    <Card className="mx-auto w-full max-w-xl">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Add store</CardTitle>
+        <CardDescription>Add a new store to your account</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <Form {...form}>
+          <form
+            className="grid w-full gap-5"
+            onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Type store name here." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-          Add Store
-          <span className="sr-only">Add Store</span>
-        </Button>
-      </form>
-    </Form>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Type store description here."
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <Button disabled={isPending}>
+              {isPending && (
+                <Icons.spinner
+                  className="mr-2 h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
+              Add Store
+              <span className="sr-only">Add Store</span>
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

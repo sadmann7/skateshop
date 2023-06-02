@@ -26,12 +26,6 @@ export default async function StoreLayout({
 
   const sidebarNavItems = [
     {
-      title: "Store",
-      href: `/dashboard/stores/${storeId}`,
-      icon: "store",
-      items: [],
-    },
-    {
       title: "Products",
       href: `/dashboard/stores/${storeId}/products`,
       icon: "product",
@@ -53,6 +47,12 @@ export default async function StoreLayout({
       title: "Analytics",
       href: `/dashboard/stores/${storeId}/analytics`,
       icon: "chart",
+      items: [],
+    },
+    {
+      title: "Store",
+      href: `/dashboard/stores/${storeId}`,
+      icon: "store",
       items: [],
     },
   ] satisfies SidebarNavItem[]
