@@ -200,7 +200,7 @@ export function ProductsTable({
   ])
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-hidden">
       <ShadcnTable
         columns={columns}
         // The inline `[]` prevents re-rendering the table when the data changes.
@@ -243,7 +243,7 @@ export function ProductsTable({
                             size: "sm",
                           })}
                         >
-                          New Product
+                          New <div className="hidden sm:block">Product</div>
                           <span className="sr-only">New product</span>
                         </div>
                       </Link>

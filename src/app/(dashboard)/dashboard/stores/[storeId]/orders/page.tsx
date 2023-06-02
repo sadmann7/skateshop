@@ -34,10 +34,15 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
   }
 
   return (
-    <section className="grid items-center gap-6 pb-10 pt-6 md:py-10">
+    <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
       <h1 className="text-3xl font-bold tracking-tight">{store.name}</h1>
-      <div className="space-y-2">
-        <StoreTabs storeId={storeId} activeTab="orders" />
+      <div className="space-y-4 overflow-hidden sm:space-y-0">
+        <StoreTabs
+          className="block sm:hidden"
+          storeId={storeId}
+          activeTab="products"
+        />
+        <div>Orders Table</div>
       </div>
     </section>
   )
