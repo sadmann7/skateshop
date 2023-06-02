@@ -1,10 +1,11 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
 import { clerkClient } from "@clerk/nextjs"
-import { eq } from "drizzle-orm"
+import { and, eq, not } from "drizzle-orm"
 import type { z } from "zod"
 
 import { slugify } from "@/lib/utils"
@@ -45,4 +46,43 @@ export async function addStoreAction(
   })
 
   revalidatePath("/dashboard")
+}
+
+export async function updateStoreAction(fd: FormData, storeId: number) {
+  "use server"
+
+  const name = fd.get("name") as string
+  const description = fd.get("description") as string
+
+  const storeWithSameName = await db
+    .select()
+    .from(stores)
+    .where(and(eq(stores.name, name), not(eq(stores.id, storeId))))
+
+  if (storeWithSameName) {
+    throw new Error("Store name already taken")
+  }
+
+  await db
+    .update(stores)
+    .set({ name, description })
+    .where(eq(stores.id, storeId))
+
+  revalidatePath(`/dashboard/stores/${storeId}`)
+}
+
+export async function deleteStoreAction(storeId: number) {
+  "use server"
+
+  const store = await db.select().from(stores).where(eq(stores.id, storeId))
+
+  if (!store) {
+    throw new Error("Store not found")
+  }
+
+  await db.delete(stores).where(eq(stores.id, storeId))
+
+  const path = "/dashboard"
+  revalidatePath(path)
+  redirect(path)
 }

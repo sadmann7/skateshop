@@ -58,7 +58,7 @@ export default async function DashboardPage() {
                   <Link
                     aria-label={`Go to ${store.name}`}
                     key={store.id}
-                    href={`/dashboard/stores/${store.id}/products`}
+                    href={`/dashboard/stores/${store.id}`}
                   >
                     <Card className="h-36 hover:bg-muted">
                       <CardHeader>
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
                             {store.name}
                           </CardTitle>
                         </div>
-                        <CardDescription className="line-clamp-2 pt-3">
+                        <CardDescription className="line-clamp-2 pt-1.5">
                           {store.description}
                         </CardDescription>
                       </CardHeader>
@@ -87,7 +87,7 @@ export default async function DashboardPage() {
                   href="/dashboard/stores/new"
                 >
                   <Card className="h-36 hover:bg-muted">
-                    <CardHeader className="pb-3">
+                    <CardHeader className="pb-2.5">
                       <div className="flex items-center space-x-2">
                         <Icons.add className="h-5 w-5 text-muted-foreground" />
                         <CardTitle className="line-clamp-1">
@@ -107,7 +107,7 @@ export default async function DashboardPage() {
           ) : (
             <Link aria-label="Create a new store" href="/dashboard/stores/new">
               <Card className="h-36 hover:bg-muted">
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-2.5">
                   <div className="flex items-center space-x-2">
                     <Icons.add className="h-5 w-5 text-muted-foreground" />
                     <CardTitle className="line-clamp-1">

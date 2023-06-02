@@ -65,8 +65,8 @@ export function ProductsTable({
 
   const page = searchParams?.get("page") ?? "1"
   const items = searchParams?.get("items") ?? "10"
-  const sort = (searchParams?.get("sort_by") ?? "name") as keyof Product
-  const order = searchParams?.get("sort_desc") ?? "asc"
+  const sort = (searchParams?.get("sort") ?? "name") as keyof Product
+  const order = searchParams?.get("order") ?? "asc"
   const name = searchParams?.get("name")
   const date = searchParams?.get("date")
 
@@ -216,7 +216,7 @@ export function ProductsTable({
           table: ({ children, tableInstance }) => {
             return (
               <div className="w-full p-1">
-                <div className="flex items-center gap-2 py-4">
+                <div className="flex items-center gap-2 pb-4">
                   <DebounceInput
                     className="max-w-xs"
                     placeholder="Search emails..."
