@@ -7,6 +7,12 @@ export type DashboardConfig = {
 export const dashboardConfig: DashboardConfig = {
   sidebarNav: [
     {
+      title: "Account",
+      href: "/dashboard/account",
+      icon: "user",
+      items: [],
+    },
+    {
       title: "Stores",
       href: "/dashboard/stores",
       icon: "store",
