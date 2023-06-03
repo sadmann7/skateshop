@@ -5,10 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { z } from "zod"
 
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-interface EditProductFOrmProps {
+interface EditProductFormProps {
   productId: number
 }
 
@@ -31,7 +39,7 @@ const schema = z.object({
 })
 type Inputs = z.infer<typeof schema>
 
-export function EditProductForm({ productId }: EditProductFOrmProps) {
+export function EditProductForm({ productId }: EditProductFormProps) {
   console.log(productId)
 
   // react-hook-form
@@ -47,24 +55,33 @@ export function EditProductForm({ productId }: EditProductFOrmProps) {
   }
 
   return (
-    <form
-      className="grid w-full max-w-xl gap-5"
-      onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
-    >
-      <fieldset className="grid gap-2.5">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          type="text"
-          placeholder="Name"
-          {...register("name", { required: true })}
-        />
-        {formState.errors.name && (
-          <p className="text-sm text-red-500 dark:text-red-500">
-            {formState.errors.name.message}
-          </p>
-        )}
-      </fieldset>
-    </form>
+    <Card>
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Edit product</CardTitle>
+        <CardDescription>Edit a product in your store</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <form
+          className="grid w-full max-w-xl gap-5"
+          onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}
+        >
+          <fieldset className="grid gap-2.5">
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Name"
+              {...register("name", { required: true })}
+            />
+            {formState.errors.name && (
+              <p className="text-sm text-red-500 dark:text-red-500">
+                {formState.errors.name.message}
+              </p>
+            )}
+          </fieldset>
+          <Button className="w-fit">Save</Button>
+        </form>
+      </CardContent>
+    </Card>
   )
 }

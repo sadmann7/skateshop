@@ -65,7 +65,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
   }
 
   return (
-    <Card className="w-full max-w-4xl">
+    <Card>
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Add store</CardTitle>
         <CardDescription>Add a new store to your account</CardDescription>
@@ -73,7 +73,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
       <CardContent className="grid gap-4">
         <Form {...form}>
           <form
-            className="grid w-full gap-5"
+            className="grid w-full max-w-xl gap-5"
             onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
           >
             <FormField
@@ -104,7 +104,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
                 </FormItem>
               )}
             />
-            <Button disabled={isPending}>
+            <Button className="w-fit" disabled={isPending}>
               {isPending && (
                 <Icons.spinner
                   className="mr-2 h-4 w-4 animate-spin"

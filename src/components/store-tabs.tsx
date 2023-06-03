@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
@@ -45,17 +44,16 @@ export function StoreTabs({ className, storeId, ...props }: StoreTabsProps) {
     >
       <TabsList>
         {tabs.map((tab) => (
-          <Link key={tab.title} href={tab.href}>
-            <TabsTrigger
-              value={tab.href}
-              className={cn(
-                pathname === tab.href &&
-                  "bg-background text-foreground shadow-sm"
-              )}
-            >
-              {tab.title}
-            </TabsTrigger>
-          </Link>
+          <TabsTrigger
+            key={tab.title}
+            value={tab.href}
+            className={cn(
+              pathname === tab.href && "bg-background text-foreground shadow-sm"
+            )}
+            onClick={() => router.push(tab.href)}
+          >
+            {tab.title}
+          </TabsTrigger>
         ))}
       </TabsList>
     </Tabs>
