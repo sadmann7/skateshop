@@ -7,6 +7,8 @@ import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
+import { stripe } from "@/lib/stripe"
+import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -44,18 +46,30 @@ export default async function DashboardPage() {
     },
   })
 
+  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+
+  // // If user has a pro plan, check cancel status on Stripe.
+  // let isCanceled = false
+  // if (subscriptionPlan?.isPro && subscriptionPlan?.stripeSubscriptionId) {
+  //   const stripePlan = await stripe.subscriptions.retrieve(
+  //     subscriptionPlan?.stripeSubscriptionId
+  //   )
+  //   isCanceled = stripePlan.cancel_at_period_end
+  // }
+
   return (
     <section className="container grid items-center gap-6 pb-8 pt-6 md:py-8">
       <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
       <Tabs defaultValue="stores" className="space-y-4">
         <TabsList>
           <TabsTrigger value="stores">Stores</TabsTrigger>
+          <TabsTrigger value="subscription">Subscription</TabsTrigger>
           <TabsTrigger value="purchases">Purchases</TabsTrigger>
         </TabsList>
         <TabsContent value="products" className="space-y-4"></TabsContent>
-        <TabsContent value="stores" className="space-y-4">
+        <TabsContent value="stores" className="space-y-4 sm:max-w-4xl">
           {userStores?.length ? (
-            <div className="grid gap-4 sm:max-w-4xl sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
               {userStores.map((store) => (
                 <React.Suspense fallback={<Skeleton className="h-36 w-1/4" />}>
                   <Link
@@ -127,31 +141,37 @@ export default async function DashboardPage() {
             </Link>
           )}
         </TabsContent>
+        <TabsContent value="subscription" className="space-y-4">
+          <form>
+            <Card>
+              <CardHeader>
+                <CardTitle>Subscription Plan</CardTitle>
+                <CardDescription>
+                  You are currently on the <strong>Free</strong> plan.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                The free plan allows you to create up to 3 stores and 10
+                products per store.
+              </CardContent>
+              <CardFooter className="flex flex-col items-start space-y-2 md:flex-row md:justify-between md:space-x-0">
+                <Button>Upgrade to PRO</Button>
+                {true ? (
+                  <p className="rounded-full text-xs font-medium">
+                    {true
+                      ? "Your plan will be canceled on "
+                      : "Your plan renews on "}
+                    {formatDate(
+                      new Date(new Date().setDate(new Date().getDate() + 14))
+                    )}
+                    .
+                  </p>
+                ) : null}
+              </CardFooter>
+            </Card>
+          </form>
+        </TabsContent>
       </Tabs>
-      <Card>
-        <CardHeader>
-          <CardTitle>Subscription Plan</CardTitle>
-          <CardDescription>
-            You are currently on the <strong>Free</strong> plan.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          The free plan allows you to create up to 3 stores and 10 products per
-          store.
-        </CardContent>
-        <CardFooter className="flex flex-col items-start space-y-2 md:flex-row md:justify-between md:space-x-0">
-          <Button>Upgrade to PRO</Button>
-          {true ? (
-            <p className="rounded-full text-xs font-medium">
-              {true ? "Your plan will be canceled on " : "Your plan renews on "}
-              {formatDate(
-                new Date(new Date().setDate(new Date().getDate() + 14))
-              )}
-              .
-            </p>
-          ) : null}
-        </CardFooter>
-      </Card>
     </section>
   )
 }

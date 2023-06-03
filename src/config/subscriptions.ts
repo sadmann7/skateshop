@@ -9,8 +9,8 @@ export const freePlan: SubscriptionPlan = {
 }
 
 export const proPlan: SubscriptionPlan = {
-  name: "Pro",
-  description: "The pro plan allows you to create up to 3 stores.",
+  name: "Kickflip",
+  description: "The kickflip plan allows you to create up to 3 stores.",
   stripePriceId: env.STRIPE_PRO_STORE_PRICE_ID ?? "",
   monthlyPrice: 10,
 }

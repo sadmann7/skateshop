@@ -9,12 +9,6 @@ export async function getUserSubscriptionPlan(userId: string) {
     throw new Error("User not found")
   }
 
-  // Check if user has a subscription
-  if (!user.privateMetadata.stripeSubscriptionId) return null
-
-  // Check if user has a valid subscription plan
-  if (!user.privateMetadata.stripePriceId) return null
-
   // Check if user is on a pro plan
   const isPro =
     user.privateMetadata.stripePriceId &&
@@ -26,7 +20,7 @@ export async function getUserSubscriptionPlan(userId: string) {
 
   return {
     ...plan,
-    ...user,
+    stripeSubscriptionId: user.privateMetadata.stripeSubscriptionId,
     stripeCurrentPeriodEnd: user.privateMetadata.stripeCurrentPeriodEnd,
     isPro,
   }
