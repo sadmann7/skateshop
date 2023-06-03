@@ -7,10 +7,13 @@ import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
+import { formatDate } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -125,6 +128,30 @@ export default async function DashboardPage() {
           )}
         </TabsContent>
       </Tabs>
+      <Card>
+        <CardHeader>
+          <CardTitle>Subscription Plan</CardTitle>
+          <CardDescription>
+            You are currently on the <strong>Free</strong> plan.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          The free plan allows you to create up to 3 stores and 10 products per
+          store.
+        </CardContent>
+        <CardFooter className="flex flex-col items-start space-y-2 md:flex-row md:justify-between md:space-x-0">
+          <Button>Upgrade to PRO</Button>
+          {true ? (
+            <p className="rounded-full text-xs font-medium">
+              {true ? "Your plan will be canceled on " : "Your plan renews on "}
+              {formatDate(
+                new Date(new Date().setDate(new Date().getDate() + 14))
+              )}
+              .
+            </p>
+          ) : null}
+        </CardFooter>
+      </Card>
     </section>
   )
 }

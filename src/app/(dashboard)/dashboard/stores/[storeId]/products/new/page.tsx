@@ -6,7 +6,6 @@ import { currentUser } from "@clerk/nextjs"
 import { and, eq } from "drizzle-orm"
 
 import { AddProductForm } from "@/components/forms/add-product-form"
-import { Header } from "@/components/header"
 
 export const metadata: Metadata = {
   title: "New Product",
@@ -41,7 +40,6 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
 
   return (
     <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
-      <Header title="Add Product" description="Add a new product." />
       <AddProductForm storeId={storeId} />
     </section>
   )

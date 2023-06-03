@@ -10,9 +10,16 @@ import { toast } from "react-hot-toast"
 import { useZact } from "zact/client"
 import { type z } from "zod"
 
-import { formatEnum, isArrayOfFile } from "@/lib/utils"
+import { isArrayOfFile } from "@/lib/utils"
 import { addProductSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Form,
   FormControl,
@@ -108,162 +115,173 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   }
 
   return (
-    <Form {...form}>
-      <form
-        className="grid w-full max-w-xl gap-6"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  id="add-product-name"
-                  type="text"
-                  placeholder="Type product name here."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Type product description here."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Category</FormLabel>
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {Object.values(products.category.enumValues).map(
-                          (option) => (
-                            <SelectItem
-                              key={option}
-                              value={option}
-                              className="capitalize"
-                            >
-                              {option ?? ""}
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Price</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Type product price here."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Quantity</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Type product quantity here."
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="inventory"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Inventory</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Type product inventory here."
-                    value={field.value}
-                    // convert to number
-                    onChange={(e) => {
-                      const value = e.target.value
-                      field.onChange(Number(value))
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormItem className="flex flex-col gap-1.5">
-          <FormLabel>Images</FormLabel>
-          <FileDialog
-            setValue={form.setValue}
-            name="images"
-            maxFiles={3}
-            maxSize={1024 * 1024 * 4}
-            files={files}
-            setFiles={setFiles}
-            isUploading={isUploading}
-            disabled={isLoading}
-          />
-          <FormMessage />
-        </FormItem>
-        <Button disabled={isLoading}>
-          {isLoading && (
-            <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
-              aria-hidden="true"
+    <Card className="w-full max-w-2xl">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Add product</CardTitle>
+        <CardDescription>Add a new product to your store</CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <Form {...form}>
+          <form
+            className="grid w-full gap-5"
+            onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="add-product-name"
+                      type="text"
+                      placeholder="Type product name here."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-          Add Product
-          <span className="sr-only">Add Product</span>
-        </Button>
-      </form>
-    </Form>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Type product description here."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {Object.values(products.category.enumValues).map(
+                              (option) => (
+                                <SelectItem
+                                  key={option}
+                                  value={option}
+                                  className="capitalize"
+                                >
+                                  {option ?? ""}
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Type product price here."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Type product quantity here."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="inventory"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Inventory</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Type product inventory here."
+                        value={field.value}
+                        // convert to number
+                        onChange={(e) => {
+                          const value = e.target.value
+                          field.onChange(Number(value))
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormItem className="flex flex-col gap-1.5">
+              <FormLabel>Images</FormLabel>
+              <FileDialog
+                setValue={form.setValue}
+                name="images"
+                maxFiles={3}
+                maxSize={1024 * 1024 * 4}
+                files={files}
+                setFiles={setFiles}
+                isUploading={isUploading}
+                disabled={isLoading}
+              />
+              <FormMessage />
+            </FormItem>
+            <Button disabled={isLoading}>
+              {isLoading && (
+                <Icons.spinner
+                  className="mr-2 h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
+              Add Product
+              <span className="sr-only">Add Product</span>
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   )
 }

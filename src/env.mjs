@@ -11,6 +11,9 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     CLERK_SECRET_KEY: z.string(),
     UPLOADTHING_SECRET: z.string(),
+    STRIPE_API_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
+    STRIPE_PRO_STORE_PRICE_ID: z.string(),
   },
 
   /**
@@ -33,6 +36,9 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
+    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+    STRIPE_PRO_STORE_PRICE_ID: process.env.STRIPE_PRO_STORE_PRICE_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

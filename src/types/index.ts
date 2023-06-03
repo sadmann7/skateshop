@@ -34,3 +34,10 @@ export type ProductsByCategory<TData extends object> = {
   category: (typeof products.category.enumValues)[number]
   products: TData[]
 }
+
+export type SubscriptionPlan = {
+  name: string
+  description: string
+  stripePriceId: string
+  monthlyPrice?: number | null
+}
