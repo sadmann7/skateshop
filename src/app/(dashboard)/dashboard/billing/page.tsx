@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
+import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Billing",
@@ -41,7 +42,7 @@ export default async function BillingPage() {
   // }
 
   return (
-    <section className="grid items-center gap-8 pb-8 pt-6 md:py-8">
+    <Shell>
       <Header
         title="Billing"
         description="Manage your billing and subscription."
@@ -81,6 +82,6 @@ export default async function BillingPage() {
           </Card>
         </form>
       </div>
-    </section>
+    </Shell>
   )
 }

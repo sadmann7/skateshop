@@ -65,7 +65,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-xl">
+    <Card className="w-full max-w-4xl">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Add store</CardTitle>
         <CardDescription>Add a new store to your account</CardDescription>

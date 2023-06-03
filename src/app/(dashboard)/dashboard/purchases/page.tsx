@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
 
 import { Header } from "@/components/header"
+import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Purchases",
@@ -17,13 +18,13 @@ export default async function PurchasesPage() {
   }
 
   return (
-    <section className="grid items-center gap-8 pb-8 pt-6 md:py-8">
+    <Shell>
       <Header
         title="Purchases"
         description="Manage your purchases."
         size="sm"
       />
       <div>Purchases Table</div>
-    </section>
+    </Shell>
   )
 }
