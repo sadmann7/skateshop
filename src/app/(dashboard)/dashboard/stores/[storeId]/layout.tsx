@@ -1,0 +1,51 @@
+import { notFound, redirect } from "next/navigation"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
+import { currentUser } from "@clerk/nextjs"
+import { eq } from "drizzle-orm"
+
+import { Header } from "@/components/header"
+import { Shell } from "@/components/shell"
+import { StoreTabs } from "@/components/store-tabs"
+
+interface StoreLayoutProps {
+  children: React.ReactNode
+  params: {
+    storeId: number
+  }
+}
+
+export default async function StoreLayout({
+  children,
+  params,
+}: StoreLayoutProps) {
+  const { storeId } = params
+
+  const user = await currentUser()
+
+  if (!user) {
+    redirect("/sign-in")
+  }
+
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, storeId),
+    columns: {
+      id: true,
+      name: true,
+    },
+  })
+
+  if (!store) {
+    notFound()
+  }
+
+  return (
+    <Shell>
+      <Header title={store.name} size="sm" />
+      <div className="space-y-4 overflow-hidden">
+        <StoreTabs storeId={storeId} />
+        {children}
+      </div>
+    </Shell>
+  )
+}

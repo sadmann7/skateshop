@@ -4,8 +4,6 @@ import { db } from "@/db"
 import { stores } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
-import { StoreTabs } from "@/components/store-tabs"
-
 export const metadata: Metadata = {
   title: "Orders",
   description: "Manage your orders.",
@@ -33,17 +31,5 @@ export default async function OrdersPage({ params }: OrdersPageProps) {
     notFound()
   }
 
-  return (
-    <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
-      <h1 className="text-3xl font-bold tracking-tight">{store.name}</h1>
-      <div className="space-y-4 overflow-hidden md:space-y-0">
-        <StoreTabs
-          className="block md:hidden"
-          storeId={storeId}
-          activeTab="orders"
-        />
-        <div>Orders Table</div>
-      </div>
-    </section>
-  )
+  return <div>Orders Table</div>
 }

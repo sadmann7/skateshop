@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import type { NavItem } from "@/types"
+import type { MainNavItem, SidebarNavItem } from "@/types"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -13,10 +13,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Icons } from "@/components/icons"
 
 interface MobileNavProps {
-  items?: NavItem[]
+  mainNavItems?: MainNavItem[]
+  sidebarNavItems: SidebarNavItem[]
 }
 
-export function MobileNav({ items }: MobileNavProps) {
+export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
 
@@ -42,11 +43,32 @@ export function MobileNav({ items }: MobileNavProps) {
         </Link>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="flex flex-col space-y-3">
-            {items?.map(
-              (item) =>
+            <h4 className="font-medium">Main Menu</h4>
+            {mainNavItems?.map(
+              (item, index) =>
                 item.href && (
                   <Link
-                    key={item.title}
+                    key={index}
+                    href={item.href}
+                    className={cn(
+                      "ml-2.5 text-foreground/70 transition-colors hover:text-foreground",
+                      pathname === item.href && "text-foreground",
+                      item.disabled && "pointer-events-none opacity-60"
+                    )}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.title}
+                  </Link>
+                )
+            )}
+          </div>
+          <div className="mt-4 flex flex-col space-y-3">
+            <h4 className="font-medium">Side Menu</h4>
+            {sidebarNavItems?.map(
+              (item, index) =>
+                item.href && (
+                  <Link
+                    key={index}
                     href={item.href}
                     className={cn(
                       "ml-2.5 text-foreground/70 transition-colors hover:text-foreground",

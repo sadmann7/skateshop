@@ -14,7 +14,7 @@ export interface SidebarNavProps {
 export function SidebarNav({ items }: SidebarNavProps) {
   const pathname = usePathname()
 
-  if (!items.length) return null
+  if (!items?.length) return null
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -37,7 +37,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
                 item.disabled && "pointer-events-none opacity-60"
               )}
             >
-              <Icon className="mr-2 h-4 w-4" />
+              <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
               <span>{item.title}</span>
             </span>
           </Link>

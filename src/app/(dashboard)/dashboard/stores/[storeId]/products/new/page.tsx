@@ -1,9 +1,6 @@
 import type { Metadata } from "next"
-import { notFound, redirect } from "next/navigation"
-import { db } from "@/db"
-import { stores } from "@/db/schema"
+import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
-import { and, eq } from "drizzle-orm"
 
 import { AddProductForm } from "@/components/forms/add-product-form"
 
@@ -27,20 +24,5 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
     redirect("/sign-in")
   }
 
-  const store = await db.query.stores.findFirst({
-    where: and(eq(stores.id, storeId), eq(stores.userId, user.id)),
-    columns: {
-      id: true,
-    },
-  })
-
-  if (!store) {
-    notFound()
-  }
-
-  return (
-    <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
-      <AddProductForm storeId={storeId} />
-    </section>
-  )
+  return <AddProductForm storeId={storeId} />
 }

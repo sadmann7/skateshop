@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import type { NavItem } from "@/types"
+import type { MainNavItem } from "@/types"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
 interface MainNavProps {
-  items?: NavItem[]
+  items?: MainNavItem[]
 }
 
 export function MainNav({ items }: MainNavProps) {

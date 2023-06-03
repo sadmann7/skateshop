@@ -5,7 +5,6 @@ import { products } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 import { EditProductForm } from "@/components/forms/edit-product-form"
-import { Header } from "@/components/header"
 
 export const metadata: Metadata = {
   title: "Edit Product",
@@ -34,10 +33,5 @@ export default async function EditProductPage({
     notFound()
   }
 
-  return (
-    <section className="grid items-center gap-6 pb-8 pt-6 md:py-8">
-      <Header title="Edit Product" description="Edit your product." />
-      <EditProductForm productId={product.id} />
-    </section>
-  )
+  return <EditProductForm productId={product.id} />
 }
