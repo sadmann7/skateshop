@@ -2,7 +2,11 @@ import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 
-interface StoreTabsProps extends React.HTMLAttributes<HTMLDivElement> {
+interface StoreTabsProps
+  extends React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  > {
   storeId: number
   activeTab: "store" | "products" | "orders" | "payments" | "analytics"
 }
