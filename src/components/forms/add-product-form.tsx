@@ -27,6 +27,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  UncontrolledFormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import {
@@ -67,6 +68,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   // react-hook-form
   const form = useForm<Inputs>({
     resolver: zodResolver(addProductSchema),
+    defaultValues: {
+      category: "skateboard",
+    },
   })
 
   async function onSubmit(data: Inputs) {
@@ -79,6 +83,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       await checkProductAction(data.name)
     } catch (error) {
       error instanceof Error && toast.error(error.message)
+      setIsLoading(false)
+      return
     }
 
     // Upload images if data.images is an array of files
@@ -130,11 +136,14 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input
+                  aria-invalid={!!form.formState.errors.name}
                   placeholder="Type product name here."
                   {...form.register("name")}
                 />
               </FormControl>
-              <FormMessage />
+              <UncontrolledFormMessage
+                message={form.formState.errors.name?.message}
+              />
             </FormItem>
             <FormItem>
               <FormLabel>Description</FormLabel>
@@ -144,7 +153,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   {...form.register("description")}
                 />
               </FormControl>
-              <FormMessage />
+              <UncontrolledFormMessage
+                message={form.formState.errors.description?.message}
+              />
             </FormItem>
             <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormField
@@ -158,8 +169,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                         value={field.value}
                         onValueChange={field.onChange}
                       >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
+                        <SelectTrigger className="capitalize">
+                          <SelectValue placeholder={field.value} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectGroup>
@@ -187,13 +198,16 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                 <FormControl>
                   <Input
                     type="number"
+                    inputMode="numeric"
                     placeholder="Type product price here."
                     {...form.register("price", {
                       valueAsNumber: true,
                     })}
                   />
                 </FormControl>
-                <FormMessage />
+                <UncontrolledFormMessage
+                  message={form.formState.errors.price?.message}
+                />
               </FormItem>
             </div>
             <div className="flex flex-col items-start gap-6 sm:flex-row">
@@ -202,26 +216,32 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                 <FormControl>
                   <Input
                     type="number"
+                    inputMode="numeric"
                     placeholder="Type product quantity here."
                     {...form.register("quantity", {
                       valueAsNumber: true,
                     })}
                   />
                 </FormControl>
-                <FormMessage />
+                <UncontrolledFormMessage
+                  message={form.formState.errors.quantity?.message}
+                />
               </FormItem>
               <FormItem className="w-full">
                 <FormLabel>Inventory</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
+                    inputMode="numeric"
                     placeholder="Type product inventory here."
                     {...form.register("inventory", {
                       valueAsNumber: true,
                     })}
                   />
                 </FormControl>
-                <FormMessage />
+                <UncontrolledFormMessage
+                  message={form.formState.errors.inventory?.message}
+                />
               </FormItem>
             </div>
             <FormItem className="flex flex-col gap-1.5">
@@ -238,7 +258,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   disabled={isLoading}
                 />
               </FormControl>
-              <FormMessage />
+              <UncontrolledFormMessage
+                message={form.formState.errors.images?.message}
+              />
             </FormItem>
             <Button className="w-fit" disabled={isLoading}>
               {isLoading && (

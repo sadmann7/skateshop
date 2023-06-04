@@ -45,19 +45,19 @@ export async function addStoreAction(
     slug: slugify(input.name),
   })
 
-  revalidatePath("/dashboard")
+  revalidatePath("/dashboard/stores")
 }
 
 export async function updateStoreAction(fd: FormData, storeId: number) {
-  "use server"
-
   const name = fd.get("name") as string
   const description = fd.get("description") as string
 
-  const storeWithSameName = await db
-    .select()
-    .from(stores)
-    .where(and(eq(stores.name, name), not(eq(stores.id, storeId))))
+  const storeWithSameName = await db.query.stores.findFirst({
+    where: and(eq(stores.name, name), not(eq(stores.id, storeId))),
+    columns: {
+      id: true,
+    },
+  })
 
   if (storeWithSameName) {
     throw new Error("Store name already taken")
@@ -72,9 +72,12 @@ export async function updateStoreAction(fd: FormData, storeId: number) {
 }
 
 export async function deleteStoreAction(storeId: number) {
-  "use server"
-
-  const store = await db.select().from(stores).where(eq(stores.id, storeId))
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, storeId),
+    columns: {
+      id: true,
+    },
+  })
 
   if (!store) {
     throw new Error("Store not found")
@@ -82,7 +85,7 @@ export async function deleteStoreAction(storeId: number) {
 
   await db.delete(stores).where(eq(stores.id, storeId))
 
-  const path = "/dashboard"
+  const path = "/dashboard/stores"
   revalidatePath(path)
   redirect(path)
 }

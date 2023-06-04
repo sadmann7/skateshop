@@ -10,7 +10,6 @@ import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -64,23 +63,13 @@ export default async function StoresPage() {
                 key={store.id}
                 href={`/dashboard/stores/${store.id}`}
               >
-                <Card className="h-36 hover:bg-muted">
+                <Card className="h-full hover:bg-muted">
                   <CardHeader>
-                    <div className="flex items-center space-x-2">
-                      <Icons.store className="h-5 w-5 text-muted-foreground" />
-                      <CardTitle className="line-clamp-1">
-                        {store.name}
-                      </CardTitle>
-                    </div>
-                    <CardDescription className="line-clamp-2 pt-1.5">
+                    <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+                    <CardDescription className="line-clamp-2">
                       {store.description}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      {store.products.length} products
-                    </p>
-                  </CardContent>
                 </Card>
               </Link>
             ))}
@@ -89,40 +78,30 @@ export default async function StoresPage() {
                 aria-label="Create a new store"
                 href="/dashboard/stores/new"
               >
-                <Card className="h-36 hover:bg-muted">
-                  <CardHeader className="pb-2.5">
-                    <div className="flex items-center space-x-2">
-                      <Icons.add className="h-5 w-5 text-muted-foreground" />
-                      <CardTitle className="line-clamp-1">
-                        Create a new store
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
+                <Card className="h-full hover:bg-muted">
+                  <CardHeader>
+                    <CardTitle className="line-clamp-1">
+                      Create a new store
+                    </CardTitle>
                     <CardDescription className="line-clamp-2">
                       Create a new store to start selling your products.
                     </CardDescription>
-                  </CardContent>
+                  </CardHeader>
                 </Card>
               </Link>
             )}
           </div>
         ) : (
           <Link aria-label="Create a new store" href="/dashboard/stores/new">
-            <Card className="h-36 hover:bg-muted">
-              <CardHeader className="pb-2.5">
-                <div className="flex items-center space-x-2">
-                  <Icons.add className="h-5 w-5 text-muted-foreground" />
-                  <CardTitle className="line-clamp-1">
-                    Create a new store
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
+            <Card className="h-full hover:bg-muted">
+              <CardHeader>
+                <CardTitle className="line-clamp-1">
+                  Create a new store
+                </CardTitle>
                 <CardDescription className="line-clamp-2">
                   Create a new store to start selling your products.
                 </CardDescription>
-              </CardContent>
+              </CardHeader>
             </Card>
           </Link>
         )}

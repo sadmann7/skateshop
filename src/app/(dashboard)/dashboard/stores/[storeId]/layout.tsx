@@ -11,7 +11,7 @@ import { StoreTabs } from "@/components/store-tabs"
 interface StoreLayoutProps {
   children: React.ReactNode
   params: {
-    storeId: number
+    storeId: string
   }
 }
 
@@ -19,7 +19,7 @@ export default async function StoreLayout({
   children,
   params,
 }: StoreLayoutProps) {
-  const { storeId } = params
+  const storeId = Number(params.storeId)
 
   const user = await currentUser()
 
