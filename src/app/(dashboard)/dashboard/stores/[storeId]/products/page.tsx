@@ -66,7 +66,11 @@ export default async function ProductsPage({
         order ? desc(products[sort ?? "name"]) : asc(products[sort ?? "name"])
       )
     const totalProducts = await tx
-      .select({ count: sql`count(*)` })
+      .select({
+        count: sql<number>`count(
+        ${products.id}
+      )`,
+      })
       .from(products)
       .where(eq(products.storeId, storeId))
 

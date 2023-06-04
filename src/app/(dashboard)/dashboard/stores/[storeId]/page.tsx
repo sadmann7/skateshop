@@ -37,10 +37,12 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
     const name = fd.get("name") as string
     const description = fd.get("description") as string
 
-    const storeWithSameName = await db
-      .select()
-      .from(stores)
-      .where(and(eq(stores.name, name), not(eq(stores.id, storeId))))
+    const storeWithSameName = await db.query.stores.findFirst({
+      where: and(eq(stores.name, name), not(eq(stores.id, storeId))),
+      columns: {
+        id: true,
+      },
+    })
 
     if (storeWithSameName) {
       throw new Error("Store name already taken")
@@ -57,9 +59,20 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
   async function deleteStore() {
     "use server"
 
+    const store = await db.query.stores.findFirst({
+      where: eq(stores.id, storeId),
+      columns: {
+        id: true,
+      },
+    })
+
+    if (!store) {
+      throw new Error("Store not found")
+    }
+
     await db.delete(stores).where(eq(stores.id, storeId))
 
-    const path = "/dashboard"
+    const path = "/dashboard/stores"
     revalidatePath(path)
     redirect(path)
   }
@@ -115,18 +128,20 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
               defaultValue={store.description ?? ""}
             />
           </fieldset>
-          <LoadingButton>
-            Update Store
-            <span className="sr-only">Update Store</span>
-          </LoadingButton>
-          <LoadingButton
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            formAction={deleteStore}
-            variant="destructive"
-          >
-            Delete Store
-            <span className="sr-only">Delete Store</span>
-          </LoadingButton>
+          <div className="flex space-x-2">
+            <LoadingButton>
+              Update Store
+              <span className="sr-only">Update Store</span>
+            </LoadingButton>
+            <LoadingButton
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              formAction={deleteStore}
+              variant="destructive"
+            >
+              Delete Store
+              <span className="sr-only">Delete Store</span>
+            </LoadingButton>
+          </div>
         </form>
       </CardContent>
     </Card>

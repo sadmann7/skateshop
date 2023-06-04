@@ -6,11 +6,7 @@ import { Shell } from "@/components/shell"
 export default function StoresLoading() {
   return (
     <Shell>
-      <Header
-        title="Billing"
-        description="Manage your billing and subscription."
-        size="sm"
-      />
+      <Header title="Stores" description="Manage your stores." size="sm" />
       <div className="space-y-4">
         <div className="space-y-2 rounded-lg border p-4">
           <Skeleton className="h-5 w-20" />

@@ -4,7 +4,7 @@ interface DashboardLayout {
 
 export default function AuthLayout({ children }: DashboardLayout) {
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col">
       <main className="flex-1">{children}</main>
     </div>
   )

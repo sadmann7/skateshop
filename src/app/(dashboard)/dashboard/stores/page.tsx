@@ -62,7 +62,7 @@ export default async function StoresPage() {
               <Link
                 aria-label={`Go to ${store.name}`}
                 key={store.id}
-                href={`/dashboard/stores/${store.id}/products`}
+                href={`/dashboard/stores/${store.id}`}
               >
                 <Card className="h-36 hover:bg-muted">
                   <CardHeader>
