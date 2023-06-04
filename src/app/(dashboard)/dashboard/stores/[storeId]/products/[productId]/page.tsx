@@ -13,14 +13,14 @@ export const metadata: Metadata = {
 
 interface EditProductPageProps {
   params: {
-    productId: number
+    productId: string
   }
 }
 
 export default async function EditProductPage({
   params,
 }: EditProductPageProps) {
-  const { productId } = params
+  const productId = Number(params.productId)
 
   const product = await db.query.products.findFirst({
     where: eq(products.id, productId),

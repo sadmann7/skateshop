@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 
 interface NewProductPageProps {
   params: {
-    storeId: number
+    storeId: string
   }
 }
 
 export default async function NewProductPage({ params }: NewProductPageProps) {
-  const { storeId } = params
+  const storeId = Number(params.storeId)
 
   const user = await currentUser()
 

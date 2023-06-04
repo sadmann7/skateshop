@@ -70,7 +70,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
         <CardTitle className="text-2xl">Add store</CardTitle>
         <CardDescription>Add a new store to your account</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent>
         <Form {...form}>
           <form
             className="grid w-full max-w-xl gap-5"

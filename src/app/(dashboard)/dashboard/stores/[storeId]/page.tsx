@@ -24,12 +24,12 @@ export const metadata: Metadata = {
 
 interface EditStorePageProps {
   params: {
-    storeId: number
+    storeId: string
   }
 }
 
 export default async function EditStorePage({ params }: EditStorePageProps) {
-  const { storeId } = params
+  const storeId = Number(params.storeId)
 
   async function updateStore(fd: FormData) {
     "use server"
@@ -98,7 +98,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           Update your store name and description, or delete it
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent>
         <form
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           action={updateStore}
@@ -108,7 +108,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
             <Label htmlFor="update-store-name">Name</Label>
             <Input
               id="update-store-name"
-              type="text"
+              aria-describedby="update-store-name-description"
               name="name"
               required
               minLength={3}
@@ -121,6 +121,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
             <Label htmlFor="update-store-description">Description</Label>
             <Textarea
               id="update-store-description"
+              aria-describedby="update-store-description-description"
               name="description"
               minLength={3}
               maxLength={255}

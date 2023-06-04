@@ -11,12 +11,12 @@ export const metadata: Metadata = {
 
 interface OrdersPageProps {
   params: {
-    storeId: number
+    storeId: string
   }
 }
 
 export default async function OrdersPage({ params }: OrdersPageProps) {
-  const { storeId } = params
+  const storeId = Number(params.storeId)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),

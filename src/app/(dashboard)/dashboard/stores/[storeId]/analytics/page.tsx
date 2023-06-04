@@ -14,12 +14,12 @@ export const metadata: Metadata = {
 
 interface AnalyticsPageProps {
   params: {
-    storeId: number
+    storeId: string
   }
 }
 
 export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
-  const { storeId } = params
+  const storeId = Number(params.storeId)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),

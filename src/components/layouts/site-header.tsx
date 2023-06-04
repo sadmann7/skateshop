@@ -26,14 +26,12 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
-  const fullname = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`
-  const initials = fullname
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-  const email = user?.emailAddresses.find(
-    (e) => e.id === user.primaryEmailAddressId
-  )?.emailAddress
+  const initials = `${user?.firstName?.charAt(0) ?? ""} ${
+    user?.lastName?.charAt(0) ?? ""
+  }`
+  const email =
+    user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
+      ?.emailAddress ?? ""
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -92,7 +90,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/stores">
-                        <Icons.store className="mr-2 h-4 w-4" />
+                        <Icons.dashboard className="mr-2 h-4 w-4" />
                         Dashboard
                         <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
                       </Link>

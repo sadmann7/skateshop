@@ -60,7 +60,7 @@ export function EditProductForm({ productId }: EditProductFormProps) {
         <CardTitle className="text-2xl">Edit product</CardTitle>
         <CardDescription>Edit a product in your store</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent>
         <form
           className="grid w-full max-w-xl gap-5"
           onSubmit={(...args) => void handleSubmit(onSubmit)(...args)}

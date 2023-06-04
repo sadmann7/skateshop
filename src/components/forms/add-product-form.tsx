@@ -110,8 +110,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       : toast.success("Product added successfully")
 
     setIsLoading(false)
-    form.reset()
-    setFiles(null)
+    !error && form.reset()
+    !error && setFiles(null)
   }
 
   return (
@@ -120,46 +120,32 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         <CardTitle className="text-2xl">Add product</CardTitle>
         <CardDescription>Add a new product to your store</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
+      <CardContent>
         <Form {...form}>
           <form
             className="grid w-full max-w-2xl gap-5"
             onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      id="add-product-name"
-                      type="text"
-                      placeholder="Type product name here."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Type product description here."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Type product name here."
+                  {...form.register("name")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Type product description here."
+                  {...form.register("description")}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
             <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormField
                 control={form.control}
@@ -196,77 +182,62 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Type product price here."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className="w-full">
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Type product price here."
+                    {...form.register("price", {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             </div>
             <div className="flex flex-col items-start gap-6 sm:flex-row">
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Type product quantity here."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="inventory"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Inventory</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Type product inventory here."
-                        value={field.value}
-                        // convert to number
-                        onChange={(e) => {
-                          const value = e.target.value
-                          field.onChange(Number(value))
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormItem className="w-full">
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Type product quantity here."
+                    {...form.register("quantity", {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+              <FormItem className="w-full">
+                <FormLabel>Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Type product inventory here."
+                    {...form.register("inventory", {
+                      valueAsNumber: true,
+                    })}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             </div>
             <FormItem className="flex flex-col gap-1.5">
               <FormLabel>Images</FormLabel>
-              <FileDialog
-                setValue={form.setValue}
-                name="images"
-                maxFiles={3}
-                maxSize={1024 * 1024 * 4}
-                files={files}
-                setFiles={setFiles}
-                isUploading={isUploading}
-                disabled={isLoading}
-              />
+              <FormControl>
+                <FileDialog
+                  setValue={form.setValue}
+                  name="images"
+                  maxFiles={3}
+                  maxSize={1024 * 1024 * 4}
+                  files={files}
+                  setFiles={setFiles}
+                  isUploading={isUploading}
+                  disabled={isLoading}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
             <Button className="w-fit" disabled={isLoading}>
