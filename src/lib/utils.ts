@@ -6,13 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatEnum(value: string) {
-  return value
-    .split("_")
-    .map((word) => (word[0] as string) + word.slice(1).toLowerCase())
-    .join(" ")
-}
-
 export function formatPrice(price: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { type Product } from "@/db/schema"
+import { products, type Product } from "@/db/schema"
 import dayjs from "dayjs"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { type DateRange } from "react-day-picker"
@@ -14,7 +14,8 @@ import {
   type ColumnSort,
 } from "unstyled-table"
 
-import { cn, formatDate, formatEnum, formatPrice } from "@/lib/utils"
+import { cn, formatDate, formatPrice } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -129,7 +130,18 @@ export function ProductsTable({
       {
         accessorKey: "category",
         header: "Category",
-        cell: ({ row }) => formatEnum(row.original.category),
+        cell: ({ cell }) => {
+          const categories = Object.values(products.category.enumValues)
+          const category = cell.getValue() as Product["category"]
+
+          if (!categories.includes(category)) return null
+
+          return (
+            <Badge variant="outline" className="capitalize">
+              {category}
+            </Badge>
+          )
+        },
       },
       {
         accessorKey: "price",
