@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
-import { and, asc, desc, eq, like, sql } from "drizzle-orm"
+import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { ProductsTable } from "@/components/products-table"
 
@@ -21,7 +21,8 @@ interface ProductsPageProps {
     sort?: keyof Product
     order?: "asc" | "desc"
     name?: string
-    date?: string
+    start_date?: string
+    end_date?: string
   }
 }
 
@@ -31,7 +32,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const { storeId } = params
 
-  const { page, items, sort, order, name, date } = searchParams
+  const { page, items, sort, order, name, start_date, end_date } = searchParams
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -48,7 +49,7 @@ export default async function ProductsPage({
   // Number of skaters to show per page
   const limit = items ? parseInt(items) : 10
   // Number of skaters to skip
-  const offset = page ? (parseInt(page) - 1) * limit : 0
+  const offset = page && items ? (parseInt(page) - 1) * parseInt(items) : 0
 
   const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
     const storeProducts = await tx
@@ -59,11 +60,22 @@ export default async function ProductsPage({
       .where(
         and(
           eq(products.storeId, storeId),
-          name ? like(products.name, `%${name}%`) : undefined
+          // Filter by name
+          name ? like(products.name, `%${name}%`) : undefined,
+          // Filter by created date
+          start_date && end_date
+            ? and(
+                gte(products.createdAt, start_date),
+                lte(products.createdAt, end_date)
+              )
+            : undefined
         )
       )
       .orderBy(
-        order ? desc(products[sort ?? "name"]) : asc(products[sort ?? "name"])
+        // Sort by column
+        order
+          ? desc(products[sort ?? "createdAt"])
+          : asc(products[sort ?? "createdAt"])
       )
     const totalProducts = await tx
       .select({

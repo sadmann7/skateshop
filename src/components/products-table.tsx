@@ -4,6 +4,9 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
+import dayjs from "dayjs"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { type DateRange } from "react-day-picker"
 import { toast } from "react-hot-toast"
 import {
   Table as ShadcnTable,
@@ -11,7 +14,10 @@ import {
   type ColumnSort,
 } from "unstyled-table"
 
-import { formatDate, formatEnum, formatPrice } from "@/lib/utils"
+import { cn, formatDate, formatEnum, formatPrice } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,12 +28,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -36,13 +48,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DebounceInput } from "@/components/debounce-input"
+import { Icons } from "@/components/icons"
 import { deleteProductsAction } from "@/app/_actions/product"
-
-import { DebounceInput } from "./debounce-input"
-import { Icons } from "./icons"
-import { Button, buttonVariants } from "./ui/button"
-import { Checkbox } from "./ui/checkbox"
-import { Skeleton } from "./ui/skeleton"
 
 interface ProductsTableProps {
   data: Product[]
@@ -65,10 +73,11 @@ export function ProductsTable({
 
   const page = searchParams?.get("page") ?? "1"
   const items = searchParams?.get("items") ?? "10"
-  const sort = (searchParams?.get("sort") ?? "name") as keyof Product
+  const sort = (searchParams?.get("sort") ?? "createdAt") as keyof Product
   const order = searchParams?.get("order") ?? "asc"
   const name = searchParams?.get("name")
-  const date = searchParams?.get("date")
+  const start_date = searchParams?.get("start_date")
+  const end_date = searchParams?.get("end_date")
 
   // create query string
   const createQueryString = React.useCallback(
@@ -191,6 +200,16 @@ export function ProductsTable({
   // Handle server-side column (name) filtering
   const [nameFilter, setNameFilter] = React.useState(name ?? "")
 
+  // Handle server-side column (date) filtering
+  const [dateFilter, setDateFilter] = React.useState<DateRange | undefined>(
+    start_date && end_date
+      ? {
+          from: new Date(start_date),
+          to: new Date(end_date),
+        }
+      : undefined
+  )
+
   // Handle server-side column sorting
   const [sorting] = React.useState<ColumnSort[]>([
     {
@@ -201,6 +220,68 @@ export function ProductsTable({
 
   return (
     <div className="w-full overflow-hidden">
+      <div className={cn("grid gap-2 p-1")}>
+        <Popover
+          // update start_date and end_date when the popover is closed
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              startTransition(() => {
+                router.push(
+                  `${pathname}?${createQueryString({
+                    page: 1,
+                    start_date:
+                      dateFilter === undefined
+                        ? null
+                        : dayjs(dateFilter?.from).format(
+                            "YYYY-MM-DD HH:mm:ss.SSS"
+                          ),
+                    end_date:
+                      dateFilter === undefined
+                        ? null
+                        : dayjs(dateFilter?.to).format(
+                            "YYYY-MM-DD HH:mm:ss.SSS"
+                          ),
+                  })}`
+                )
+              })
+            }
+          }}
+        >
+          <PopoverTrigger asChild>
+            <Button
+              id="date"
+              variant={"outline"}
+              className={cn(
+                "w-[300px] justify-start text-left font-normal",
+                !dateFilter && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {dateFilter?.from ? (
+                dateFilter.to ? (
+                  <>
+                    {formatDate(dateFilter.from)} - {formatDate(dateFilter.to)}
+                  </>
+                ) : (
+                  formatDate(dateFilter.from)
+                )
+              ) : (
+                <span>Pick a date</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              initialFocus
+              mode="range"
+              defaultMonth={dateFilter?.from}
+              selected={dateFilter}
+              onSelect={setDateFilter}
+              numberOfMonths={2}
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
       <ShadcnTable
         columns={columns}
         // The inline `[]` prevents re-rendering the table when the data changes.
@@ -218,8 +299,8 @@ export function ProductsTable({
               <div className="w-full p-1">
                 <div className="flex items-center gap-2 pb-4">
                   <DebounceInput
-                    className="max-w-xs"
-                    placeholder="Search emails..."
+                    className="w-full max-w-[300px]"
+                    placeholder="Search names..."
                     value={nameFilter}
                     onChange={(value) => {
                       setNameFilter(String(value))
@@ -227,7 +308,7 @@ export function ProductsTable({
                         router.push(
                           `${pathname}?${createQueryString({
                             page: 1,
-                            query: String(value),
+                            name: String(value),
                           })}`
                         )
                       })
@@ -256,11 +337,17 @@ export function ProductsTable({
                         onClick={() => {
                           startTransition(async () => {
                             // Delete the selected rows
-                            await deleteProductsAction(
-                              tableInstance
-                                .getSelectedRowModel()
-                                .rows.map((row) => row.original.id)
-                            )
+                            try {
+                              await deleteProductsAction(
+                                tableInstance
+                                  .getSelectedRowModel()
+                                  .rows.map((row) => row.original.id)
+                              )
+                            } catch (error) {
+                              error instanceof Error
+                                ? toast.error(error.message)
+                                : toast.error("Something went wrong")
+                            }
                             // Reset row selection
                             tableInstance.resetRowSelection()
                           })
@@ -277,7 +364,8 @@ export function ProductsTable({
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
-                          Columns <Icons.chevronDown className="ml-2 h-4 w-4" />
+                          <Icons.horizontalSliders className="mr-2 h-4 w-4" />
+                          View
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">

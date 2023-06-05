@@ -1,5 +1,6 @@
-import { relations, type InferModel } from "drizzle-orm"
+import { relations, sql, type InferModel } from "drizzle-orm"
 import {
+  datetime,
   int,
   json,
   mysqlEnum,
@@ -15,6 +16,12 @@ export const stores = mysqlTable("stores", {
   name: varchar("name", { length: 191 }).notNull(),
   description: text("description"),
   slug: text("slug"),
+  createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
+    .default(sql`CURRENT_TIMESTAMP(3)`)
+    .notNull(),
+  updatedAt: datetime("updatedAt", { mode: "string", fsp: 3 })
+    .default(sql`CURRENT_TIMESTAMP(3)`)
+    .notNull(),
 })
 
 export type Store = InferModel<typeof stores>
@@ -41,6 +48,12 @@ export const products = mysqlTable("products", {
   inventory: int("inventory").default(1).notNull(),
   rating: int("rating").default(0).notNull(),
   storeId: int("storeId").notNull(),
+  createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
+    .default(sql`CURRENT_TIMESTAMP(3)`)
+    .notNull(),
+  updatedAt: datetime("updatedAt", { mode: "string", fsp: 3 })
+    .default(sql`CURRENT_TIMESTAMP(3)`)
+    .notNull(),
 })
 
 export type Product = InferModel<typeof products>

@@ -91,8 +91,8 @@ export async function deleteProductsAction(ids: number[]) {
     throw new Error("Ids must be an array")
   }
 
-  if (ids.some((id) => typeof id !== "string")) {
-    throw new Error("Ids must be an array of strings")
+  if (ids.some((id) => typeof id !== "number")) {
+    throw new Error("Ids must be an array of numbers")
   }
 
   for (const id of ids) {
