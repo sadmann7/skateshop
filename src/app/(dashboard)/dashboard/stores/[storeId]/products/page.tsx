@@ -73,7 +73,7 @@ export default async function ProductsPage({
       )
       .orderBy(
         // Sort by column
-        order
+        order === "desc"
           ? desc(products[sort ?? "createdAt"])
           : asc(products[sort ?? "createdAt"])
       )

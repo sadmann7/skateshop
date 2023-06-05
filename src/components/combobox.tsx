@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 
-import { cn, formatEnum } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialogFixed,
@@ -95,7 +95,8 @@ export function Combobox() {
             data.map((group) => (
               <CommandGroup
                 key={group.category}
-                heading={formatEnum(group.category)}
+                className="capitalize"
+                heading={group.category}
               >
                 {group.products.map((item) => (
                   <CommandItem
