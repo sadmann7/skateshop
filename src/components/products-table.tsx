@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { products, type Product } from "@/db/schema"
 import dayjs from "dayjs"
@@ -162,26 +163,40 @@ export function ProductsTable({
                   />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => {
-                    void navigator.clipboard.writeText(product.name)
-                    toast.success("Product name copied to clipboard")
-                  }}
-                >
-                  Copy skater ID
+              <DropdownMenuContent align="end" className="w-[150px]">
+                <DropdownMenuItem asChild>
+                  <Link
+                    href={`/dashboard/stores/${storeId}/products/${product.id}`}
+                  >
+                    <Icons.edit
+                      className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
+                      aria-hidden="true"
+                    />
+                    Edit
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>View skater</DropdownMenuItem>
-                <DropdownMenuItem>View deck details</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    startTransition(async () => {
+                      await deleteProductsAction([product.id])
+                      toast.success("Product deleted")
+                    })
+                  }}
+                >
+                  <Icons.trash
+                    className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
+                    aria-hidden="true"
+                  />
+                  Delete
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           )
         },
       },
     ],
-    []
+    [storeId]
   )
 
   // Search params
@@ -348,7 +363,7 @@ export function ProductsTable({
                       >
                         <Icons.addCircle className="mr-2 h-4 w-4" />
                         <span className="hidden lg:inline-block">
-                          New Product
+                          New product
                         </span>
                         <span className="inline-block lg:hidden">New</span>
                       </Button>
@@ -394,12 +409,15 @@ export function ProductsTable({
                           Download
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="w-[150px]">
                         <DropdownMenuItem
                           onClick={() => {
-                            const rows = tableInstance
-                              .getFilteredRowModel()
-                              .rows.filter((row) => row.getIsSelected())
+                            const rows =
+                              tableInstance.getFilteredSelectedRowModel().rows
+                                .length > 0
+                                ? tableInstance.getFilteredSelectedRowModel()
+                                    .rows
+                                : tableInstance.getFilteredRowModel().rows
 
                             const csv = rows
                               .map((row) => {
@@ -430,9 +448,12 @@ export function ProductsTable({
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            const rows = tableInstance
-                              .getFilteredRowModel()
-                              .rows.filter((row) => row.getIsSelected())
+                            const rows =
+                              tableInstance.getFilteredSelectedRowModel().rows
+                                .length > 0
+                                ? tableInstance.getFilteredSelectedRowModel()
+                                    .rows
+                                : tableInstance.getFilteredRowModel().rows
 
                             const visibleColumns = tableInstance
                               .getAllColumns()
@@ -477,7 +498,7 @@ export function ProductsTable({
                           View
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className="w-[150px]">
                         <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {tableInstance

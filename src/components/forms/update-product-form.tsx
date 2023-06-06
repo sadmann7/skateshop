@@ -39,7 +39,7 @@ const schema = z.object({
 })
 type Inputs = z.infer<typeof schema>
 
-export function EditProductForm({ productId }: EditProductFormProps) {
+export function UpdateProductForm({ productId }: EditProductFormProps) {
   console.log(productId)
 
   // react-hook-form

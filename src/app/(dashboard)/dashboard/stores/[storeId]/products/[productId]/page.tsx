@@ -4,7 +4,7 @@ import { db } from "@/db"
 import { products } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
-import { EditProductForm } from "@/components/forms/edit-product-form"
+import { UpdateProductForm } from "@/components/forms/update-product-form"
 
 export const metadata: Metadata = {
   title: "Edit Product",
@@ -33,5 +33,5 @@ export default async function EditProductPage({
     notFound()
   }
 
-  return <EditProductForm productId={product.id} />
+  return <UpdateProductForm productId={product.id} />
 }
