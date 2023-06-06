@@ -1,10 +1,11 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { products, type Product } from "@/db/schema"
 import dayjs from "dayjs"
+import jsPDF from "jspdf"
+import autoTable from "jspdf-autotable"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { type DateRange } from "react-day-picker"
 import { toast } from "react-hot-toast"
@@ -16,7 +17,7 @@ import {
 
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -71,32 +72,6 @@ export function ProductsTable({
   // This lets us update states without blocking the UI
   // Read more: https://react.dev/reference/react/useTransition#usage
   const [isPending, startTransition] = React.useTransition()
-
-  const page = searchParams?.get("page") ?? "1"
-  const items = searchParams?.get("items") ?? "10"
-  const sort = (searchParams?.get("sort") ?? "createdAt") as keyof Product
-  const order = searchParams?.get("order") ?? "asc"
-  const name = searchParams?.get("name")
-  const start_date = searchParams?.get("start_date")
-  const end_date = searchParams?.get("end_date")
-
-  // create query string
-  const createQueryString = React.useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString())
-
-      for (const [key, value] of Object.entries(params)) {
-        if (value === null) {
-          newSearchParams.delete(key)
-        } else {
-          newSearchParams.set(key, String(value))
-        }
-      }
-
-      return newSearchParams.toString()
-    },
-    [searchParams]
-  )
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
@@ -209,6 +184,33 @@ export function ProductsTable({
     []
   )
 
+  // Search params
+  const page = searchParams?.get("page") ?? "1"
+  const items = searchParams?.get("items") ?? "10"
+  const sort = (searchParams?.get("sort") ?? "createdAt") as keyof Product
+  const order = searchParams?.get("order") ?? "asc"
+  const name = searchParams?.get("name")
+  const start_date = searchParams?.get("start_date")
+  const end_date = searchParams?.get("end_date")
+
+  // Create query string
+  const createQueryString = React.useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams?.toString())
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null) {
+          newSearchParams.delete(key)
+        } else {
+          newSearchParams.set(key, String(value))
+        }
+      }
+
+      return newSearchParams.toString()
+    },
+    [searchParams]
+  )
+
   // Handle server-side column (name) filtering
   const [nameFilter, setNameFilter] = React.useState(name ?? "")
 
@@ -221,6 +223,7 @@ export function ProductsTable({
         }
       : undefined
   )
+  const [isDateChanged, setIsDateChanged] = React.useState(false)
 
   // Handle server-side column sorting
   const [sorting] = React.useState<ColumnSort[]>([
@@ -232,11 +235,11 @@ export function ProductsTable({
 
   return (
     <div className="w-full overflow-hidden">
-      <div className={cn("grid gap-2 p-1")}>
+      <div className={cn("grid gap-2 px-1 pb-1")}>
         <Popover
           // update start_date and end_date when the popover is closed
           onOpenChange={(isOpen) => {
-            if (!isOpen) {
+            if (!isOpen && isDateChanged) {
               startTransition(() => {
                 router.push(
                   `${pathname}?${createQueryString({
@@ -257,6 +260,7 @@ export function ProductsTable({
                 )
               })
             }
+            setIsDateChanged(false)
           }}
         >
           <PopoverTrigger asChild>
@@ -264,7 +268,7 @@ export function ProductsTable({
               id="date"
               variant={"outline"}
               className={cn(
-                "w-[300px] justify-start text-left font-normal",
+                "h-8 justify-start text-left font-normal lg:w-[280px]",
                 !dateFilter && "text-muted-foreground"
               )}
             >
@@ -288,7 +292,10 @@ export function ProductsTable({
               mode="range"
               defaultMonth={dateFilter?.from}
               selected={dateFilter}
-              onSelect={setDateFilter}
+              onSelect={(date) => {
+                setDateFilter(date)
+                setIsDateChanged(true)
+              }}
               numberOfMonths={2}
             />
           </PopoverContent>
@@ -308,11 +315,11 @@ export function ProductsTable({
         renders={{
           table: ({ children, tableInstance }) => {
             return (
-              <div className="w-full p-1">
-                <div className="flex items-center gap-2 pb-4">
+              <div className="w-full space-y-4 p-1">
+                <div className="flex items-center gap-2">
                   <DebounceInput
-                    className="w-full max-w-[300px]"
-                    placeholder="Search names..."
+                    className="h-8 w-[150px] lg:w-[280px]"
+                    placeholder="Filter names..."
                     value={nameFilter}
                     onChange={(value) => {
                       setNameFilter(String(value))
@@ -329,23 +336,27 @@ export function ProductsTable({
                   <div className="ml-auto flex items-center space-x-2">
                     {tableInstance.getFilteredSelectedRowModel().rows.length ===
                     0 ? (
-                      <Link href={`/dashboard/stores/${storeId}/products/new`}>
-                        <div
-                          className={buttonVariants({
-                            variant: "default",
-                            size: "sm",
-                          })}
-                        >
-                          <span className="hidden lg:inline-block">
-                            New Product
-                          </span>
-                          <span className="inline-block lg:hidden">New</span>
-                          <span className="sr-only">New product</span>
-                        </div>
-                      </Link>
+                      <Button
+                        aria-label="Add new product"
+                        size="sm"
+                        className="h-8"
+                        onClick={() => {
+                          router.push(
+                            `/dashboard/stores/${storeId}/products/new`
+                          )
+                        }}
+                      >
+                        <Icons.addCircle className="mr-2 h-4 w-4" />
+                        <span className="hidden lg:inline-block">
+                          New Product
+                        </span>
+                        <span className="inline-block lg:hidden">New</span>
+                      </Button>
                     ) : (
                       <Button
+                        aria-label="Delete selected rows"
                         variant="destructive"
+                        className="h-8"
                         onClick={() => {
                           startTransition(async () => {
                             // Delete the selected rows
@@ -375,15 +386,107 @@ export function ProductsTable({
                     )}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto">
+                        <Button aria-label="Download" className="h-8">
+                          <Icons.downlaod
+                            className="mr-2 h-4 w-4"
+                            aria-hidden="true"
+                          />
+                          Download
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() => {
+                            const rows = tableInstance
+                              .getFilteredRowModel()
+                              .rows.filter((row) => row.getIsSelected())
+
+                            const csv = rows
+                              .map((row) => {
+                                return [
+                                  row.original.name,
+                                  row.original.category,
+                                  row.original.price,
+                                  row.original.quantity,
+                                  row.original.inventory,
+                                  row.original.rating,
+                                  row.original.updatedAt,
+                                ].join(",")
+                              })
+                              .join("\n")
+
+                            const blob = new Blob([csv], { type: "text/csv" })
+                            const url = window.URL.createObjectURL(blob)
+                            const a = document.createElement("a")
+                            a.setAttribute("hidden", "")
+                            a.setAttribute("href", url)
+                            a.setAttribute("download", "products.csv")
+                            document.body.appendChild(a)
+                            a.click()
+                            document.body.removeChild(a)
+                          }}
+                        >
+                          Download CSV
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => {
+                            const rows = tableInstance
+                              .getFilteredRowModel()
+                              .rows.filter((row) => row.getIsSelected())
+
+                            const visibleColumns = tableInstance
+                              .getAllColumns()
+                              .filter(
+                                (column) =>
+                                  typeof column.accessorFn !== "undefined" &&
+                                  column.getCanHide()
+                              )
+
+                            const doc = new jsPDF()
+
+                            autoTable(doc, {
+                              head: [
+                                // @ts-expect-error - columnDef.header is need to be RowInput
+                                visibleColumns.map(
+                                  (column) => column.columnDef.header
+                                ),
+                              ],
+                              body: rows.map((row) => {
+                                return [
+                                  row.original.name,
+                                  row.original.category,
+                                  row.original.price,
+                                  row.original.quantity,
+                                  row.original.inventory,
+                                  row.original.rating,
+                                  row.original.updatedAt,
+                                ]
+                              }),
+                            })
+                            doc.save("products.pdf")
+                          }}
+                        >
+                          Download PDF
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="ml-auto h-8">
                           <Icons.horizontalSliders className="mr-2 h-4 w-4" />
                           View
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                         {tableInstance
                           .getAllColumns()
-                          .filter((column) => column.getCanHide())
+                          .filter(
+                            (column) =>
+                              typeof column.accessorFn !== "undefined" &&
+                              column.getCanHide()
+                          )
                           .map((column) => {
                             return (
                               <DropdownMenuCheckboxItem
