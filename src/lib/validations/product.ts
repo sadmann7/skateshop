@@ -31,6 +31,11 @@ export const addProductSchema = z.object({
     .default([]),
 })
 
+export const updateProductSchema = z.object({
+  ...addProductSchema.shape,
+  id: z.number(),
+})
+
 export const filterProductsSchema = z.object({
   query: z.string(),
 })

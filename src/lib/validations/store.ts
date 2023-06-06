@@ -5,7 +5,7 @@ export const addStoreSchema = z.object({
   description: z.string().min(3).max(255).optional(),
 })
 
-export const editStoreSchema = z.object({
+export const updateStoreSchema = z.object({
   ...addStoreSchema.shape,
-  storeId: z.number(),
+  id: z.number(),
 })

@@ -3,25 +3,29 @@
 import { revalidateTag } from "next/cache"
 import { db } from "@/db"
 import { products } from "@/db/schema"
-import { eq } from "drizzle-orm"
-import { zact } from "zact/server"
-import { z } from "zod"
+import { desc, eq, like } from "drizzle-orm"
+import { type z } from "zod"
 
-import { addProductSchema } from "@/lib/validations/product"
+import type {
+  addProductSchema,
+  updateProductSchema,
+} from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
   if (typeof query !== "string") {
     throw new Error("Query must be a string")
   }
 
-  const filteredProducts = await db.query.products.findMany({
-    where: eq(products.name, query),
-    columns: {
-      id: true,
-      name: true,
-      category: true,
-    },
-  })
+  const filteredProducts = await db
+    .select({
+      id: products.id,
+      name: products.name,
+      category: products.category,
+    })
+    .from(products)
+    .where(like(products.name, `%${query}%`))
+    .orderBy(desc(products.createdAt))
+    .limit(10)
 
   const productsByCategory = Object.values(products.category.enumValues).map(
     (category) => ({
@@ -49,22 +53,9 @@ export async function checkProductAction(name: string) {
   }
 }
 
-export const addProductAction = zact(
-  z.object({
-    ...addProductSchema.shape,
-    storeId: z.number(),
-    images: z
-      .array(
-        z.object({
-          id: z.string(),
-          name: z.string(),
-          url: z.string(),
-        })
-      )
-      .optional()
-      .default([]),
-  })
-)(async (input) => {
+export async function addProductAction(
+  input: z.infer<typeof addProductSchema> & { storeId: number }
+) {
   const productWithSameName = await db.query.products.findFirst({
     where: eq(products.name, input.name),
   })
@@ -74,16 +65,32 @@ export const addProductAction = zact(
   }
 
   await db.insert(products).values({
-    name: input.name,
-    description: input.description,
-    category: input.category,
-    images: input.images,
-    price: input.price,
-    quantity: input.quantity,
-    inventory: input.inventory,
+    ...input,
     storeId: input.storeId,
   })
-})
+
+  revalidateTag("products")
+}
+
+export async function updateProductAction(
+  input: z.infer<typeof updateProductSchema>
+) {
+  if (typeof input.id !== "number") {
+    throw new Error("Product id must be a number")
+  }
+
+  const product = await db.query.products.findFirst({
+    where: eq(products.id, input.id),
+  })
+
+  if (!product) {
+    throw new Error("Product not found")
+  }
+
+  await db.update(products).set(input).where(eq(products.id, input.id))
+
+  revalidateTag("products")
+}
 
 export async function deleteProductsAction(ids: number[]) {
   // check if ids are array of strings
@@ -92,7 +99,7 @@ export async function deleteProductsAction(ids: number[]) {
   }
 
   if (ids.some((id) => typeof id !== "number")) {
-    throw new Error("Ids must be an array of numbers")
+    throw new Error("Product ids must be an array of numbers")
   }
 
   for (const id of ids) {

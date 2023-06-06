@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
-import { useZact } from "zact/client"
 import { type z } from "zod"
 
 import { isArrayOfFile } from "@/lib/utils"
@@ -55,10 +54,7 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false)
-
-  // zact
-  const { mutate, error } = useZact(addProductAction)
+  const [isPending, startTransition] = React.useTransition()
 
   // uploadthing
   const { isUploading, startUpload } = useUploadThing({
@@ -73,51 +69,63 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     },
   })
 
-  async function onSubmit(data: Inputs) {
+  function onSubmit(data: Inputs) {
     console.log(data)
 
-    setIsLoading(true)
+    startTransition(async () => {
+      // Check if product already exists in the store
+      try {
+        await checkProductAction(data.name)
 
-    // Check if product already exists in the store
-    try {
-      await checkProductAction(data.name)
-    } catch (error) {
-      error instanceof Error && toast.error(error.message)
-      setIsLoading(false)
-      return
-    }
+        // Upload images if data.images is an array of files
+        const rawImages = isArrayOfFile(data.images)
+          ? await toast.promise(
+              startUpload(data.images),
+              {
+                loading: "Uploading images...",
+                success: "Images uploaded successfully",
+                error: "Failed to upload images",
+              },
+              {
+                loading: {
+                  duration: Infinity,
+                },
+                success: {
+                  duration: 3000,
+                },
+                error: {
+                  duration: 3000,
+                },
+              }
+            )
+          : []
 
-    // Upload images if data.images is an array of files
-    const rawImages = isArrayOfFile(data.images)
-      ? await startUpload(data.images)
-      : []
+        const images = isArrayOfFile(data.images)
+          ? rawImages?.map((image) => ({
+              id: image.fileKey,
+              name: image.fileKey.split("_")[1] ?? image.fileKey,
+              url: image.fileUrl,
+            }))
+          : []
 
-    const images = isArrayOfFile(data.images)
-      ? rawImages?.map((image) => ({
-          id: image.fileKey,
-          name: image.fileKey.split("_")[1] ?? image.fileKey,
-          url: image.fileUrl,
-        }))
-      : []
+        // Add product to the store
+        await addProductAction({
+          ...data,
+          storeId,
+          images,
+        })
 
-    await mutate({
-      storeId,
-      name: data.name,
-      description: data.description,
-      category: data.category,
-      price: data.price,
-      quantity: data.quantity,
-      inventory: data.inventory,
-      images: images ?? [],
+        toast.success("Product added successfully")
+
+        // Reset form and files
+        form.reset()
+        setFiles(null)
+      } catch (error) {
+        error instanceof Error
+          ? toast.error(error.message)
+          : toast.error("Something went wrong")
+      }
     })
-
-    error
-      ? toast.error(error.message)
-      : toast.success("Product added successfully")
-
-    setIsLoading(false)
-    !error && form.reset()
-    !error && setFiles(null)
   }
 
   return (
@@ -255,15 +263,15 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   files={files}
                   setFiles={setFiles}
                   isUploading={isUploading}
-                  disabled={isLoading}
+                  disabled={isPending}
                 />
               </FormControl>
               <UncontrolledFormMessage
                 message={form.formState.errors.images?.message}
               />
             </FormItem>
-            <Button className="w-fit" disabled={isLoading}>
-              {isLoading && (
+            <Button className="w-fit" disabled={isPending}>
+              {isPending && (
                 <Icons.spinner
                   className="mr-2 h-4 w-4 animate-spin"
                   aria-hidden="true"
