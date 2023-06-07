@@ -91,6 +91,9 @@ dependencies:
   react:
     specifier: 18.2.0
     version: 18.2.0
+  react-cropper:
+    specifier: ^2.3.3
+    version: 2.3.3(react@18.2.0)
   react-day-picker:
     specifier: ^8.7.1
     version: 8.7.1(date-fns@2.30.0)(react@18.2.0)
@@ -106,9 +109,6 @@ dependencies:
   react-hot-toast:
     specifier: ^2.4.1
     version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
-  react-image-crop:
-    specifier: ^10.1.4
-    version: 10.1.4(react@18.2.0)
   stripe:
     specifier: ^12.8.0
     version: 12.8.0
@@ -2569,6 +2569,10 @@ packages:
     dev: false
     optional: true
 
+  /cropperjs@1.5.13:
+    resolution: {integrity: sha512-by7jKAo73y5/Do0K6sxdTKHgndY0NMjG2bEdgeJxycbcmHuCiMXqw8sxy5C5Y5WTOTcDGmbT7Sr5CgKOXR06OA==}
+    dev: false
+
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
@@ -4927,6 +4931,15 @@ packages:
     dev: false
     optional: true
 
+  /react-cropper@2.3.3(react@18.2.0):
+    resolution: {integrity: sha512-zghiEYkUb41kqtu+2jpX2Ntigf+Jj1dF9ew4lAobPzI2adaPE31z0p+5TcWngK6TvmWQUwK3lj4G+NDh1PDQ1w==}
+    peerDependencies:
+      react: '>=17.0.2'
+    dependencies:
+      cropperjs: 1.5.13
+      react: 18.2.0
+    dev: false
+
   /react-day-picker@8.7.1(date-fns@2.30.0)(react@18.2.0):
     resolution: {integrity: sha512-Gv426AW8b151CZfh3aP5RUGztLwHB/EyJgWZ5iMgtzbFBkjHfG6Y66CIQFMWGLnYjsQ9DYSJRmJ5S0Pg5HWKjA==}
     peerDependencies:
@@ -4980,15 +4993,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - csstype
-    dev: false
-
-  /react-image-crop@10.1.4(react@18.2.0):
-    resolution: {integrity: sha512-bEc/SfJRPU06ApivtzuNmofEH3rqf1WsKgWNwloiZ4ttCB37DEETwR4KsQb+KkW87srvRtWpCbOhPs0a4TVAKw==}
-    peerDependencies:
-      react: '>=16.13.1'
-    dependencies:
-      clsx: 1.2.1
-      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

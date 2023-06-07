@@ -331,7 +331,7 @@ export function ProductsTable({
           table: ({ children, tableInstance }) => {
             return (
               <div className="w-full space-y-4 p-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto overflow-y-hidden">
                   <DebounceInput
                     className="h-8 w-[150px] lg:w-[280px]"
                     placeholder="Filter names..."
