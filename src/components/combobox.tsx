@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
-  CommandDialogFixed,
+  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandItem,
@@ -72,7 +72,7 @@ export function Combobox() {
           <span className="text-xs">Ctrl</span>K
         </kbd>
       </Button>
-      <CommandDialogFixed open={isOpen} onOpenChange={setIsOpen}>
+      <CommandDialog align="top" open={isOpen} onOpenChange={setIsOpen}>
         <DebounceCommandInput
           placeholder="Search products..."
           value={query}
@@ -112,7 +112,7 @@ export function Combobox() {
             ))
           )}
         </CommandList>
-      </CommandDialogFixed>
+      </CommandDialog>
     </>
   )
 }

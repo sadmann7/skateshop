@@ -182,31 +182,52 @@ export function FileDialog<TFieldValues extends FieldValues>({
                     </p>
                   </div>
                 </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="h-7 w-7 p-0"
-                  onClick={() => {
-                    setFiles(files?.filter((_, j) => j !== i))
-                    setValue(
-                      name,
-                      files?.filter((_, j) => j !== i) as PathValue<
-                        TFieldValues,
-                        Path<TFieldValues>
-                      >,
-                      {
-                        shouldValidate: true,
-                      }
-                    )
-                  }}
-                >
-                  <Icons.close
-                    className="h-4 w-4 text-white"
-                    aria-hidden="true"
-                  />
-                  <span className="sr-only">Remove File</span>
-                </Button>
+                <div className="flex items-center gap-2">
+                  {file.type.startsWith("image") && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-7 w-7 p-0"
+                      onClick={() => {
+                        console.log("crop")
+                        // setCropImage(file)
+                        // setCropModalOpen(true)
+                      }}
+                    >
+                      <Icons.crop
+                        className="h-4 w-4 text-white"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Crop image</span>
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-7 w-7 p-0"
+                    onClick={() => {
+                      setFiles(files?.filter((_, j) => j !== i))
+                      setValue(
+                        name,
+                        files?.filter((_, j) => j !== i) as PathValue<
+                          TFieldValues,
+                          Path<TFieldValues>
+                        >,
+                        {
+                          shouldValidate: true,
+                        }
+                      )
+                    }}
+                  >
+                    <Icons.close
+                      className="h-4 w-4 text-white"
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">Remove file</span>
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

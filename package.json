@@ -53,6 +53,7 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.44.3",
     "react-hot-toast": "^2.4.1",
+    "react-image-crop": "^10.1.4",
     "stripe": "^12.8.0",
     "tailwind-merge": "^1.13.0",
     "tailwindcss-animate": "^1.0.5",

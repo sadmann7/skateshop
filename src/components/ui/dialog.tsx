@@ -6,6 +6,10 @@ import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+export interface DialogAlignment {
+  align?: "center" | "top"
+}
+
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
@@ -13,28 +17,21 @@ const DialogTrigger = DialogPrimitive.Trigger
 const DialogPortal = ({
   className,
   children,
+  align = "center",
   ...props
-}: DialogPrimitive.DialogPortalProps) => (
+}: DialogPrimitive.DialogPortalProps & DialogAlignment) => (
   <DialogPrimitive.Portal className={cn(className)} {...props}>
-    <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
+    <div
+      className={cn(
+        "fixed inset-0 z-50 flex items-start justify-center",
+        align === "center" ? "sm:items-center" : "sm:inset-x-0 sm:top-44"
+      )}
+    >
       {children}
     </div>
   </DialogPrimitive.Portal>
 )
 DialogPortal.displayName = DialogPrimitive.Portal.displayName
-
-const DialogPortalFixed = ({
-  className,
-  children,
-  ...props
-}: DialogPrimitive.DialogPortalProps) => (
-  <DialogPrimitive.Portal className={cn(className)} {...props}>
-    <div className="fixed inset-0 z-50 flex items-start justify-center sm:inset-x-0 sm:top-44">
-      {children}
-    </div>
-  </DialogPrimitive.Portal>
-)
-DialogPortalFixed.displayName = "DialogPortalFixed"
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -53,9 +50,10 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortal>
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> &
+    DialogAlignment
+>(({ className, children, align, ...props }, ref) => (
+  <DialogPortal align={align}>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -74,30 +72,6 @@ const DialogContent = React.forwardRef<
   </DialogPortal>
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
-
-const DialogContentFixed = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPortalFixed>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed z-50 grid w-full gap-4 rounded-b-lg border bg-background p-6 shadow-lg animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 sm:max-w-lg sm:rounded-lg sm:zoom-in-90 data-[state=open]:sm:slide-in-from-bottom-0",
-        className
-      )}
-      {...props}
-    >
-      {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
-  </DialogPortalFixed>
-))
-DialogContentFixed.displayName = "DialogContentFixed"
 
 const DialogHeader = ({
   className,
@@ -158,7 +132,6 @@ export {
   Dialog,
   DialogTrigger,
   DialogContent,
-  DialogContentFixed,
   DialogHeader,
   DialogFooter,
   DialogTitle,

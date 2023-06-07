@@ -355,11 +355,7 @@ export function ProductsTable({
                         aria-label="Add new product"
                         size="sm"
                         className="h-8"
-                        onClick={() => {
-                          router.push(
-                            `/dashboard/stores/${storeId}/products/new`
-                          )
-                        }}
+                        onClick={() => router.push(`${pathname}/new`)}
                       >
                         <Icons.addCircle className="mr-2 h-4 w-4" />
                         <span className="hidden lg:inline-block">
@@ -371,6 +367,7 @@ export function ProductsTable({
                       <Button
                         aria-label="Delete selected rows"
                         variant="destructive"
+                        size="sm"
                         className="h-8"
                         onClick={() => {
                           startTransition(async () => {

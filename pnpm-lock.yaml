@@ -106,6 +106,9 @@ dependencies:
   react-hot-toast:
     specifier: ^2.4.1
     version: 2.4.1(csstype@3.1.2)(react-dom@18.2.0)(react@18.2.0)
+  react-image-crop:
+    specifier: ^10.1.4
+    version: 10.1.4(react@18.2.0)
   stripe:
     specifier: ^12.8.0
     version: 12.8.0
@@ -4977,6 +4980,15 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - csstype
+    dev: false
+
+  /react-image-crop@10.1.4(react@18.2.0):
+    resolution: {integrity: sha512-bEc/SfJRPU06ApivtzuNmofEH3rqf1WsKgWNwloiZ4ttCB37DEETwR4KsQb+KkW87srvRtWpCbOhPs0a4TVAKw==}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      clsx: 1.2.1
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:
