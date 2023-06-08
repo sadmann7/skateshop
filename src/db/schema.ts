@@ -1,3 +1,4 @@
+import type { StoredFile } from "@/types"
 import { relations, sql, type InferModel } from "drizzle-orm"
 import {
   datetime,
@@ -34,7 +35,7 @@ export const products = mysqlTable("products", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 191 }).notNull(),
   description: text("description"),
-  images: json("images"),
+  images: json("images").$type<StoredFile[]>(),
   category: mysqlEnum("category", [
     "skateboard",
     "clothing",

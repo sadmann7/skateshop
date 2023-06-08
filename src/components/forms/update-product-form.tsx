@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { products, type Product } from "@/db/schema"
-import type { FileWithPreview, UploadedFile } from "@/types"
+import type { FileWithPreview } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
@@ -56,14 +57,14 @@ type Inputs = z.infer<typeof productSchema>
 const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function UpdateProductForm({ product }: UpdateProductFormProps) {
-  const productImages =
-    product.images instanceof Array && product.images.length > 0
-      ? (product.images as UploadedFile[])
-      : []
+  const router = useRouter()
+  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
+  const [isPending, startTransition] = React.useTransition()
 
-  const [files, setFiles] = React.useState<FileWithPreview[] | null>(
-    productImages.length > 0
-      ? productImages.map((image) => {
+  React.useEffect(() => {
+    if (product.images && product.images.length > 0) {
+      setFiles(
+        product.images.map((image) => {
           const file = new File([], image.name, {
             type: "image",
           })
@@ -73,9 +74,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
 
           return fileWithPreview
         })
-      : null
-  )
-  const [isPending, startTransition] = React.useTransition()
+      )
+    }
+  }, [product])
 
   // uploadthing
   const { isUploading, startUpload } = useUploadThing({
@@ -96,29 +97,15 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     startTransition(async () => {
       try {
         // Check if product already exists in the store
-        await checkProductAction(data.name)
+        await checkProductAction(data.name, product.id)
 
         // Upload images if data.images is an array of files
         const rawImages = isArrayOfFile(data.images)
-          ? await toast.promise(
-              startUpload(data.images),
-              {
-                loading: "Uploading images...",
-                success: "Images uploaded successfully",
-                error: "Failed to upload images",
-              },
-              {
-                loading: {
-                  duration: Infinity,
-                },
-                success: {
-                  duration: 3000,
-                },
-                error: {
-                  duration: 3000,
-                },
-              }
-            )
+          ? await toast.promise(startUpload(data.images), {
+              loading: "Uploading images...",
+              success: "Images uploaded successfully",
+              error: "Failed to upload images",
+            })
           : []
 
         const images = isArrayOfFile(data.images)
@@ -137,10 +124,6 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
         })
 
         toast.success("Product added successfully")
-
-        // Reset form and files
-        form.reset()
-        setFiles(null)
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
@@ -315,6 +298,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                 onClick={() => {
                   startTransition(async () => {
                     await deleteProductAction(product.id)
+                    router.push(`/dashboard/stores/${product.storeId}/products`)
                   })
                 }}
                 disabled={isPending}

@@ -175,6 +175,15 @@ export function ProductsTable({
                     Edit
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={`/products/${product.id}`}>
+                    <Icons.view
+                      className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
+                      aria-hidden="true"
+                    />
+                    View
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={() => {

@@ -78,25 +78,11 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
 
         // Upload images if data.images is an array of files
         const rawImages = isArrayOfFile(data.images)
-          ? await toast.promise(
-              startUpload(data.images),
-              {
-                loading: "Uploading images...",
-                success: "Images uploaded successfully",
-                error: "Failed to upload images",
-              },
-              {
-                loading: {
-                  duration: Infinity,
-                },
-                success: {
-                  duration: 3000,
-                },
-                error: {
-                  duration: 3000,
-                },
-              }
-            )
+          ? await toast.promise(startUpload(data.images), {
+              loading: "Uploading images...",
+              success: "Images uploaded successfully",
+              error: "Failed to upload images",
+            })
           : []
 
         const images = isArrayOfFile(data.images)

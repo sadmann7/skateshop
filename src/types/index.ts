@@ -24,7 +24,7 @@ export type FileWithPreview = FileWithPath & {
   preview: string
 }
 
-export type UploadedFile = {
+export type StoredFile = {
   id: string
   name: string
   url: string

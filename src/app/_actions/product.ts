@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache"
 import { db } from "@/db"
 import { products } from "@/db/schema"
-import { desc, eq, like } from "drizzle-orm"
+import { and, desc, eq, like, not } from "drizzle-orm"
 import { type z } from "zod"
 
 import type { productSchema } from "@/lib/validations/product"
@@ -36,13 +36,15 @@ export async function filterProductsAction(query: string) {
   return productsByCategory
 }
 
-export async function checkProductAction(name: string) {
+export async function checkProductAction(name: string, id?: number) {
   if (typeof name !== "string") {
-    throw new Error("Name must be a string")
+    throw new Error("Invalid input")
   }
 
   const productWithSameName = await db.query.products.findFirst({
-    where: eq(products.name, name),
+    where: id
+      ? and(not(eq(products.id, id)), eq(products.name, name))
+      : eq(products.name, name),
   })
 
   if (productWithSameName) {
