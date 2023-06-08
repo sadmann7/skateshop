@@ -18,7 +18,7 @@ export default async function PurchasesPage() {
   }
 
   return (
-    <Shell>
+    <Shell layout="dashboard">
       <Header
         title="Purchases"
         description="Manage your purchases."

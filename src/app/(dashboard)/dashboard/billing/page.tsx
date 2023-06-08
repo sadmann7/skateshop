@@ -42,7 +42,7 @@ export default async function BillingPage() {
   // }
 
   return (
-    <Shell>
+    <Shell layout="dashboard">
       <Header
         title="Billing"
         description="Manage your billing and subscription."

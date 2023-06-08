@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { UserProfile } from "@clerk/nextjs"
 
 import { Header } from "@/components/header"
+import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Account",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function AccountPage() {
   return (
-    <section className="grid items-center gap-8 pb-8 pt-6 md:py-8">
+    <Shell layout="dashboard">
       <Header
         title="Account"
         description="Manage your account settings."
@@ -32,6 +33,6 @@ export default function AccountPage() {
           }}
         />
       </div>
-    </section>
+    </Shell>
   )
 }
