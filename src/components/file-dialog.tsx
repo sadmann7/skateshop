@@ -16,6 +16,8 @@ import type {
 } from "react-hook-form"
 import { toast } from "react-hot-toast"
 
+import "cropperjs/dist/cropper.css"
+
 import { cn, formatBytes } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
@@ -101,22 +103,6 @@ export function FileDialog<TFieldValues extends FieldValues>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Cropper for image files
-  const [cropData, setCropData] = React.useState<string | null>(null)
-  const cropperRef = React.useRef<ReactCropperElement>(null)
-
-  // Crop image on enter key press
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Enter") {
-        if (!files?.length || !cropperRef.current) return
-        setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL())
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [files?.length, setCropData])
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -177,134 +163,15 @@ export function FileDialog<TFieldValues extends FieldValues>({
         {files?.length ? (
           <div className="grid gap-5">
             {files.map((file, i) => (
-              <div
+              <FileCard
                 key={i}
-                className="relative flex items-center justify-between gap-2.5"
-              >
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={cropData ? cropData : file.preview}
-                    alt={file.name}
-                    className="h-10 w-10 shrink-0 rounded-md"
-                    width={40}
-                    height={40}
-                    loading="lazy"
-                  />
-                  <div className="flex flex-col">
-                    <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
-                      {file.name}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {(file.size / 1024 / 1024).toFixed(2)}MB
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {file.type.startsWith("image") && (
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                        >
-                          <Icons.crop
-                            className="h-4 w-4 text-white"
-                            aria-hidden="true"
-                          />
-                          <span className="sr-only">Crop image</span>
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <p className="absolute left-5 top-4 text-base font-medium text-muted-foreground">
-                          Crop image
-                        </p>
-                        <div className="grid gap-5">
-                          <Cropper
-                            ref={cropperRef}
-                            className="h-full w-full object-cover"
-                            zoomTo={0.5}
-                            initialAspectRatio={1}
-                            preview=".img-preview"
-                            src={file.preview}
-                            viewMode={1}
-                            minCropBoxHeight={10}
-                            minCropBoxWidth={10}
-                            background={false}
-                            responsive={true}
-                            autoCropArea={1}
-                            checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-                            guides={true}
-                          />
-                          <div className="flex items-center justify-center gap-2.5">
-                            <Button
-                              aria-label="Crop image"
-                              type="button"
-                              size="sm"
-                              onClick={() => {
-                                if (!files.length || !cropperRef.current) return
-                                setCropData(
-                                  cropperRef.current?.cropper
-                                    .getCroppedCanvas()
-                                    .toDataURL()
-                                )
-                              }}
-                            >
-                              <Icons.crop
-                                className="mr-2 h-4 w-4"
-                                aria-hidden="true"
-                              />
-                              Crop image
-                            </Button>
-                            <Button
-                              aria-label="Reset crop"
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                cropperRef.current?.cropper.reset()
-                                setCropData(null)
-                              }}
-                            >
-                              <Icons.reset
-                                className="mr-2 h-4 w-4"
-                                aria-hidden="true"
-                              />
-                              Reset crop
-                            </Button>
-                          </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  )}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-7 w-7 p-0"
-                    onClick={() => {
-                      setFiles(files?.filter((_, j) => j !== i))
-                      setValue(
-                        name,
-                        files?.filter((_, j) => j !== i) as PathValue<
-                          TFieldValues,
-                          Path<TFieldValues>
-                        >,
-                        {
-                          shouldValidate: true,
-                        }
-                      )
-                    }}
-                  >
-                    <Icons.close
-                      className="h-4 w-4 text-white"
-                      aria-hidden="true"
-                    />
-                    <span className="sr-only">Remove file</span>
-                  </Button>
-                </div>
-              </div>
+                i={i}
+                name={name}
+                setValue={setValue}
+                files={files}
+                setFiles={setFiles}
+                file={file}
+              />
             ))}
           </div>
         ) : null}
@@ -332,5 +199,176 @@ export function FileDialog<TFieldValues extends FieldValues>({
         ) : null}
       </DialogContent>
     </Dialog>
+  )
+}
+
+interface FileCardProps<TFieldValues extends FieldValues> {
+  i: number
+  name: Path<TFieldValues>
+  setValue: UseFormSetValue<TFieldValues>
+  files: FileWithPreview[] | null
+  setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
+  file: FileWithPreview
+}
+
+function FileCard<TFieldValues extends FieldValues>({
+  i,
+  name,
+  setValue,
+  files,
+  setFiles,
+  file,
+}: FileCardProps<TFieldValues>) {
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [cropData, setCropData] = React.useState<string | null>(null)
+  const cropperRef = React.useRef<ReactCropperElement>(null)
+
+  // Crop image
+  const onCrop = React.useCallback(() => {
+    if (!files || !cropperRef.current) return
+    setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL())
+
+    cropperRef.current?.cropper.getCroppedCanvas().toBlob((blob) => {
+      if (!blob) return
+      const croppedImage = new File([blob], file.name, {
+        type: file.type,
+        lastModified: Date.now(),
+      })
+      files.splice(i, 1, croppedImage as FileWithPreview)
+      setValue(name, files as PathValue<TFieldValues, Path<TFieldValues>>)
+    })
+  }, [file.name, file.type, files, i, name, setValue])
+
+  // Crop image on enter key press
+  React.useEffect(() => {
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Enter") {
+        onCrop()
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener("keydown", handleKeydown)
+    return () => document.removeEventListener("keydown", handleKeydown)
+  }, [onCrop])
+
+  return (
+    <div className="relative flex items-center justify-between gap-2.5">
+      <div className="flex items-center gap-2">
+        <Image
+          src={cropData ? cropData : file.preview}
+          alt={file.name}
+          className="h-10 w-10 shrink-0 rounded-md"
+          width={40}
+          height={40}
+          loading="lazy"
+        />
+        <div className="flex flex-col">
+          <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
+            {file.name}
+          </p>
+          <p className="text-xs text-slate-500">
+            {(file.size / 1024 / 1024).toFixed(2)}MB
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        {file.type.startsWith("image") && (
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 w-7 p-0"
+              >
+                <Icons.crop className="h-4 w-4 text-white" aria-hidden="true" />
+                <span className="sr-only">Crop image</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <p className="absolute left-5 top-4 text-base font-medium text-muted-foreground">
+                Crop image
+              </p>
+              <div className="mt-8 grid place-items-center space-y-5">
+                <Cropper
+                  ref={cropperRef}
+                  className="h-[450px] w-[450px] object-cover"
+                  zoomTo={0.5}
+                  initialAspectRatio={1 / 1}
+                  preview=".img-preview"
+                  src={file.preview}
+                  viewMode={1}
+                  minCropBoxHeight={10}
+                  minCropBoxWidth={10}
+                  background={false}
+                  responsive={true}
+                  autoCropArea={1}
+                  checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                  guides={true}
+                />
+                <div className="flex items-center justify-center space-x-2">
+                  <Button
+                    aria-label="Crop image"
+                    type="button"
+                    size="sm"
+                    className="h-8"
+                    onClick={() => {
+                      onCrop()
+                      setIsOpen(false)
+                    }}
+                  >
+                    <Icons.crop
+                      className="mr-2 h-3.5 w-3.5"
+                      aria-hidden="true"
+                    />
+                    Crop Image
+                  </Button>
+                  <Button
+                    aria-label="Reset crop"
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-8"
+                    onClick={() => {
+                      cropperRef.current?.cropper.reset()
+                      setCropData(null)
+                    }}
+                  >
+                    <Icons.reset
+                      className="mr-2 h-3.5 w-3.5"
+                      aria-hidden="true"
+                    />
+                    Reset Crop
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-7 w-7 p-0"
+          onClick={() => {
+            if (!files) return
+            setFiles(files.filter((_, j) => j !== i))
+            setValue(
+              name,
+              files.filter((_, j) => j !== i) as PathValue<
+                TFieldValues,
+                Path<TFieldValues>
+              >,
+              {
+                shouldValidate: true,
+              }
+            )
+          }}
+        >
+          <Icons.close className="h-4 w-4 text-white" aria-hidden="true" />
+          <span className="sr-only">Remove file</span>
+        </Button>
+      </div>
+    </div>
   )
 }
