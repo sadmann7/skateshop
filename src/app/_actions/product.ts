@@ -3,10 +3,11 @@
 import { revalidateTag } from "next/cache"
 import { db } from "@/db"
 import { products } from "@/db/schema"
+import type { StoredFile } from "@/types"
 import { and, desc, eq, like, not } from "drizzle-orm"
 import { type z } from "zod"
 
-import type { productSchema } from "@/lib/validations/product"
+import { type productSchema } from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
   if (typeof query !== "string") {
@@ -53,7 +54,10 @@ export async function checkProductAction(name: string, id?: number) {
 }
 
 export async function addProductAction(
-  input: z.infer<typeof productSchema> & { storeId: number }
+  input: z.infer<typeof productSchema> & {
+    storeId: number
+    images?: StoredFile[]
+  }
 ) {
   const productWithSameName = await db.query.products.findFirst({
     where: eq(products.name, input.name),
@@ -66,13 +70,14 @@ export async function addProductAction(
   await db.insert(products).values({
     ...input,
     storeId: input.storeId,
+    images: input.images,
   })
 
   revalidateTag("products")
 }
 
 export async function updateProductAction(
-  input: z.infer<typeof productSchema> & { id: number }
+  input: z.infer<typeof productSchema> & { id: number; images?: StoredFile[] }
 ) {
   if (typeof input.id !== "number") {
     throw new Error("Id must be a number")

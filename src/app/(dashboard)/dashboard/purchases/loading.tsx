@@ -4,7 +4,7 @@ import { Shell } from "@/components/shell"
 
 export default function PurchasesLoading() {
   return (
-    <Shell>
+    <Shell layout="dashboard">
       <Header
         title="Purchases"
         description="Manage your purchases."

@@ -5,7 +5,7 @@ import { Shell } from "@/components/shell"
 
 export default function StoresLoading() {
   return (
-    <Shell>
+    <Shell layout="dashboard">
       <Header title="Stores" description="Manage your stores." size="sm" />
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {Array.from({ length: 3 }).map((_, i) => (
