@@ -162,7 +162,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
         </p>
         {files?.length ? (
           <div className="grid gap-5">
-            {files.map((file, i) => (
+            {files?.map((file, i) => (
               <FileCard
                 key={i}
                 i={i}
@@ -204,20 +204,20 @@ export function FileDialog<TFieldValues extends FieldValues>({
 
 interface FileCardProps<TFieldValues extends FieldValues> {
   i: number
+  file: FileWithPreview
   name: Path<TFieldValues>
   setValue: UseFormSetValue<TFieldValues>
   files: FileWithPreview[] | null
   setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
-  file: FileWithPreview
 }
 
 function FileCard<TFieldValues extends FieldValues>({
   i,
+  file,
   name,
   setValue,
   files,
   setFiles,
-  file,
 }: FileCardProps<TFieldValues>) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [cropData, setCropData] = React.useState<string | null>(null)

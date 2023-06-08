@@ -1,7 +1,7 @@
 import { products } from "@/db/schema"
 import { z } from "zod"
 
-export const addProductSchema = z.object({
+export const productSchema = z.object({
   name: z.string().min(1, {
     message: "Must be at least 1 character",
   }),
@@ -29,11 +29,6 @@ export const addProductSchema = z.object({
     }, "Must be an array of File")
     .optional()
     .default([]),
-})
-
-export const updateProductSchema = z.object({
-  ...addProductSchema.shape,
-  id: z.number(),
 })
 
 export const filterProductsSchema = z.object({

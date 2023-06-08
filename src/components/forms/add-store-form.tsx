@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import type { z } from "zod"
 
-import { addStoreSchema } from "@/lib/validations/store"
+import { storeSchema } from "@/lib/validations/store"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -33,7 +33,7 @@ interface AddStoreFormProps {
   userId: string
 }
 
-type Inputs = z.infer<typeof addStoreSchema>
+type Inputs = z.infer<typeof storeSchema>
 
 export function AddStoreForm({ userId }: AddStoreFormProps) {
   const router = useRouter()
@@ -42,7 +42,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(addStoreSchema),
+    resolver: zodResolver(storeSchema),
     defaultValues: {
       name: "",
       description: "",

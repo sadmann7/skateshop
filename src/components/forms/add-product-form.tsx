@@ -10,7 +10,7 @@ import { toast } from "react-hot-toast"
 import { type z } from "zod"
 
 import { isArrayOfFile } from "@/lib/utils"
-import { addProductSchema } from "@/lib/validations/product"
+import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -38,17 +38,16 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
-
-import { FileDialog } from "../file-dialog"
 
 interface AddProductFormProps {
   storeId: number
 }
 
-type Inputs = z.infer<typeof addProductSchema>
+type Inputs = z.infer<typeof productSchema>
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
@@ -63,7 +62,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(addProductSchema),
+    resolver: zodResolver(productSchema),
     defaultValues: {
       category: "skateboard",
     },
@@ -73,8 +72,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     console.log(data)
 
     startTransition(async () => {
-      // Check if product already exists in the store
       try {
+        // Check if product already exists in the store
         await checkProductAction(data.name)
 
         // Upload images if data.images is an array of files

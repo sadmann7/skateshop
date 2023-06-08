@@ -6,10 +6,7 @@ import { products } from "@/db/schema"
 import { desc, eq, like } from "drizzle-orm"
 import { type z } from "zod"
 
-import type {
-  addProductSchema,
-  updateProductSchema,
-} from "@/lib/validations/product"
+import type { productSchema } from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
   if (typeof query !== "string") {
@@ -54,7 +51,7 @@ export async function checkProductAction(name: string) {
 }
 
 export async function addProductAction(
-  input: z.infer<typeof addProductSchema> & { storeId: number }
+  input: z.infer<typeof productSchema> & { storeId: number }
 ) {
   const productWithSameName = await db.query.products.findFirst({
     where: eq(products.name, input.name),
@@ -73,10 +70,10 @@ export async function addProductAction(
 }
 
 export async function updateProductAction(
-  input: z.infer<typeof updateProductSchema>
+  input: z.infer<typeof productSchema> & { id: number }
 ) {
   if (typeof input.id !== "number") {
-    throw new Error("Product id must be a number")
+    throw new Error("Id must be a number")
   }
 
   const product = await db.query.products.findFirst({
@@ -92,8 +89,17 @@ export async function updateProductAction(
   revalidateTag("products")
 }
 
+export async function deleteProductAction(id: number) {
+  if (typeof id !== "number") {
+    throw new Error("Id must be a number")
+  }
+
+  await db.delete(products).where(eq(products.id, id))
+
+  revalidateTag("products")
+}
+
 export async function deleteProductsAction(ids: number[]) {
-  // check if ids are array of strings
   if (!Array.isArray(ids)) {
     throw new Error("Ids must be an array")
   }

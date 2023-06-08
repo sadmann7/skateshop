@@ -22,13 +22,15 @@ export const metadata: Metadata = {
   description: "Manage your store.",
 }
 
-interface EditStorePageProps {
+interface UpdateStorePageProps {
   params: {
     storeId: string
   }
 }
 
-export default async function EditStorePage({ params }: EditStorePageProps) {
+export default async function UpdateStorePage({
+  params,
+}: UpdateStorePageProps) {
   const storeId = Number(params.storeId)
 
   async function updateStore(fd: FormData) {
@@ -132,7 +134,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
           <div className="flex space-x-2">
             <LoadingButton>
               Update Store
-              <span className="sr-only">Update Store</span>
+              <span className="sr-only">Update store</span>
             </LoadingButton>
             <LoadingButton
               // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -140,7 +142,7 @@ export default async function EditStorePage({ params }: EditStorePageProps) {
               variant="destructive"
             >
               Delete Store
-              <span className="sr-only">Delete Store</span>
+              <span className="sr-only">Delete store</span>
             </LoadingButton>
           </div>
         </form>
