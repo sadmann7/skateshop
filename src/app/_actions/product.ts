@@ -4,10 +4,10 @@ import { revalidateTag } from "next/cache"
 import { db } from "@/db"
 import { products } from "@/db/schema"
 import type { StoredFile } from "@/types"
-import { and, desc, eq, like, not } from "drizzle-orm"
+import { and, asc, desc, eq, gt, like, lt, not } from "drizzle-orm"
 import { type z } from "zod"
 
-import { type productSchema } from "@/lib/validations/product"
+import type { getProductSchema, productSchema } from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
   if (typeof query !== "string") {
@@ -123,4 +123,42 @@ export async function deleteProductsAction(ids: number[]) {
   }
 
   revalidateTag("products")
+}
+
+export async function getPreviousProductAction(
+  input: z.infer<typeof getProductSchema>
+) {
+  if (typeof input.storeId !== "number" || typeof input.id !== "number") {
+    throw new Error("Invalid input")
+  }
+
+  const product = await db.query.products.findFirst({
+    where: and(eq(products.storeId, input.storeId), lt(products.id, input.id)),
+    orderBy: desc(products.id),
+  })
+
+  if (!product) {
+    throw new Error("Product not found")
+  }
+
+  return product.id
+}
+
+export async function getNextProductAction(
+  input: z.infer<typeof getProductSchema>
+) {
+  if (typeof input.storeId !== "number" || typeof input.id !== "number") {
+    throw new Error("Invalid input")
+  }
+
+  const product = await db.query.products.findFirst({
+    where: and(eq(products.storeId, input.storeId), gt(products.id, input.id)),
+    orderBy: asc(products.id),
+  })
+
+  if (!product) {
+    throw new Error("Product not found")
+  }
+
+  return product.id
 }

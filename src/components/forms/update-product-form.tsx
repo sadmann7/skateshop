@@ -44,6 +44,8 @@ import { Icons } from "@/components/icons"
 import {
   checkProductAction,
   deleteProductAction,
+  getNextProductAction,
+  getPreviousProductAction,
   updateProductAction,
 } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
@@ -136,7 +138,63 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Update product</CardTitle>
+        <div className="flex items-center justify-between space-x-2">
+          <CardTitle className="text-2xl">Update product</CardTitle>
+          <div className="flex space-x-0.5">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-9 px-0"
+              onClick={() => {
+                startTransition(async () => {
+                  try {
+                    const prevProductId = await getPreviousProductAction({
+                      id: product.id,
+                      storeId: product.storeId,
+                    })
+                    router.push(
+                      `/dashboard/stores/${product.storeId}/products/${prevProductId}`
+                    )
+                  } catch (error) {
+                    error instanceof Error
+                      ? toast.error(error.message)
+                      : toast.error("Something went wrong")
+                  }
+                })
+              }}
+              disabled={isPending || isUploading}
+            >
+              <Icons.chevronLeft className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only">Previous product</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-9 px-0"
+              onClick={() => {
+                startTransition(async () => {
+                  try {
+                    const nextProductId = await getNextProductAction({
+                      id: product.id,
+                      storeId: product.storeId,
+                    })
+                    router.push(
+                      `/dashboard/stores/${product.storeId}/products/${nextProductId}`
+                    )
+                  } catch (error) {
+                    error instanceof Error
+                      ? toast.error(error.message)
+                      : toast.error("Something went wrong")
+                  }
+                })
+              }}
+              disabled={isPending || isUploading}
+            >
+              <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only">Next product</span>
+            </Button>
+          </div>
+        </div>
         <CardDescription>
           Update your product information, or delete it
         </CardDescription>

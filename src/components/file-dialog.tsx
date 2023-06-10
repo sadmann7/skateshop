@@ -14,7 +14,7 @@ import type {
   PathValue,
   UseFormSetValue,
 } from "react-hook-form"
-import { toast } from "sonner"
+import { toast } from "react-hot-toast"
 
 import "cropperjs/dist/cropper.css"
 

@@ -40,7 +40,7 @@ export default async function StoreLayout({
   }
 
   return (
-    <Shell>
+    <Shell layout="dashboard">
       <Header title={store.name} size="sm" />
       <div className="space-y-4 overflow-hidden">
         <StoreTabs storeId={storeId} />

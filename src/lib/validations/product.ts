@@ -17,9 +17,7 @@ export const productSchema = z.object({
   quantity: z.number().positive({
     message: "Must be a positive number",
   }),
-  inventory: z.number().positive({
-    message: "Must be a positive number",
-  }),
+  inventory: z.number(),
   images: z
     .unknown()
     .refine((val) => {
@@ -28,7 +26,13 @@ export const productSchema = z.object({
       return true
     }, "Must be an array of File")
     .optional()
+    .nullable()
     .default([]),
+})
+
+export const getProductSchema = z.object({
+  id: z.number(),
+  storeId: z.number(),
 })
 
 export const filterProductsSchema = z.object({
