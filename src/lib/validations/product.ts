@@ -27,7 +27,7 @@ export const productSchema = z.object({
     }, "Must be an array of File")
     .optional()
     .nullable()
-    .default([]),
+    .default(null),
 })
 
 export const getProductSchema = z.object({

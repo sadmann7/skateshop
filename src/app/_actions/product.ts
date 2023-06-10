@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { products } from "@/db/schema"
 import type { StoredFile } from "@/types"
@@ -73,11 +73,12 @@ export async function addProductAction(
     images: input.images,
   })
 
-  revalidateTag("products")
+  revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
 
 export async function updateProductAction(
   input: z.infer<typeof productSchema> & {
+    storeId: number
     id: number
     images: StoredFile[] | null
   }
@@ -87,7 +88,7 @@ export async function updateProductAction(
   }
 
   const product = await db.query.products.findFirst({
-    where: eq(products.id, input.id),
+    where: and(eq(products.id, input.id), eq(products.storeId, input.storeId)),
   })
 
   if (!product) {
@@ -96,36 +97,48 @@ export async function updateProductAction(
 
   await db.update(products).set(input).where(eq(products.id, input.id))
 
-  revalidateTag("products")
+  revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`)
 }
 
-export async function deleteProductAction(id: number) {
-  if (typeof id !== "number") {
-    throw new Error("Id must be a number")
+export async function deleteProductAction(
+  input: z.infer<typeof getProductSchema>
+) {
+  if (typeof input.storeId !== "number" || typeof input.id !== "number") {
+    throw new Error("Invalid input")
   }
 
-  await db.delete(products).where(eq(products.id, id))
+  and(eq(products.id, input.id), eq(products.storeId, input.storeId)),
+    await db
+      .delete(products)
+      .where(
+        and(eq(products.id, input.id), eq(products.storeId, input.storeId))
+      )
 
-  revalidateTag("products")
+  revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
 
-export async function deleteProductsAction(ids: number[]) {
-  if (!Array.isArray(ids)) {
-    throw new Error("Ids must be an array")
+export async function deleteProductsAction(input: {
+  storeId: number
+  ids: number[]
+}) {
+  if (typeof input.storeId !== "number") {
+    throw new Error("Invalid input")
   }
 
-  if (ids.some((id) => typeof id !== "number")) {
-    throw new Error("Product ids must be an array of numbers")
+  if (input.ids.some((id) => typeof id !== "number")) {
+    throw new Error("Invalid input")
   }
 
-  for (const id of ids) {
-    await db.delete(products).where(eq(products.id, id))
+  for (const id of input.ids) {
+    await db
+      .delete(products)
+      .where(and(eq(products.id, id), eq(products.storeId, input.storeId)))
   }
 
-  revalidateTag("products")
+  revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
 
-export async function getPreviousProductAction(
+export async function getPreviousProductIdAction(
   input: z.infer<typeof getProductSchema>
 ) {
   if (typeof input.storeId !== "number" || typeof input.id !== "number") {
@@ -144,7 +157,7 @@ export async function getPreviousProductAction(
   return product.id
 }
 
-export async function getNextProductAction(
+export async function getNextProductIdAction(
   input: z.infer<typeof getProductSchema>
 ) {
   if (typeof input.storeId !== "number" || typeof input.id !== "number") {

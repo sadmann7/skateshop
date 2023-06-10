@@ -53,7 +53,10 @@ import {
 } from "@/components/ui/table"
 import { DebounceInput } from "@/components/debounce-input"
 import { Icons } from "@/components/icons"
-import { deleteProductsAction } from "@/app/_actions/product"
+import {
+  deleteProductAction,
+  deleteProductsAction,
+} from "@/app/_actions/product"
 
 interface ProductsTableProps {
   data: Product[]
@@ -188,7 +191,10 @@ export function ProductsTable({
                 <DropdownMenuItem
                   onClick={() => {
                     startTransition(async () => {
-                      await deleteProductsAction([product.id])
+                      await deleteProductAction({
+                        storeId,
+                        id: product.id,
+                      })
                       toast.success("Product deleted")
                     })
                   }}
@@ -382,11 +388,12 @@ export function ProductsTable({
                           startTransition(async () => {
                             // Delete the selected rows
                             try {
-                              await deleteProductsAction(
-                                tableInstance
+                              await deleteProductsAction({
+                                storeId,
+                                ids: tableInstance
                                   .getSelectedRowModel()
-                                  .rows.map((row) => row.original.id)
-                              )
+                                  .rows.map((row) => row.original.id),
+                              })
                             } catch (error) {
                               error instanceof Error
                                 ? toast.error(error.message)

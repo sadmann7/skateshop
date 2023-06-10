@@ -44,8 +44,8 @@ import { Icons } from "@/components/icons"
 import {
   checkProductAction,
   deleteProductAction,
-  getNextProductAction,
-  getPreviousProductAction,
+  getNextProductIdAction,
+  getPreviousProductIdAction,
   updateProductAction,
 } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
@@ -93,6 +93,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     },
   })
 
+  console.log(product)
+
   function onSubmit(data: Inputs) {
     console.log(data)
 
@@ -122,11 +124,13 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
         // Update product
         await updateProductAction({
           ...data,
+          storeId: product.storeId,
           id: product.id,
-          images: images ?? product.images,
+          images: images,
         })
 
         toast.success("Product updated successfully")
+        setFiles(null)
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
@@ -148,7 +152,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
               onClick={() => {
                 startTransition(async () => {
                   try {
-                    const prevProductId = await getPreviousProductAction({
+                    const prevProductId = await getPreviousProductIdAction({
                       id: product.id,
                       storeId: product.storeId,
                     })
@@ -174,7 +178,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
               onClick={() => {
                 startTransition(async () => {
                   try {
-                    const nextProductId = await getNextProductAction({
+                    const nextProductId = await getNextProductIdAction({
                       id: product.id,
                       storeId: product.storeId,
                     })
@@ -356,7 +360,10 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                 variant="destructive"
                 onClick={() => {
                   startTransition(async () => {
-                    await deleteProductAction(product.id)
+                    await deleteProductAction({
+                      storeId: product.storeId,
+                      id: product.id,
+                    })
                     router.push(`/dashboard/stores/${product.storeId}/products`)
                   })
                 }}
