@@ -56,7 +56,7 @@ export async function checkProductAction(name: string, id?: number) {
 export async function addProductAction(
   input: z.infer<typeof productSchema> & {
     storeId: number
-    images?: StoredFile[]
+    images: StoredFile[] | null
   }
 ) {
   const productWithSameName = await db.query.products.findFirst({
@@ -77,7 +77,10 @@ export async function addProductAction(
 }
 
 export async function updateProductAction(
-  input: z.infer<typeof productSchema> & { id: number; images?: StoredFile[] }
+  input: z.infer<typeof productSchema> & {
+    id: number
+    images: StoredFile[] | null
+  }
 ) {
   if (typeof input.id !== "number") {
     throw new Error("Id must be a number")
