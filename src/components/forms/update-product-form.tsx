@@ -93,8 +93,6 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     },
   })
 
-  console.log(product)
-
   function onSubmit(data: Inputs) {
     console.log(data)
 

@@ -20,9 +20,6 @@ export const stores = mysqlTable("stores", {
   createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
     .default(sql`CURRENT_TIMESTAMP(3)`)
     .notNull(),
-  updatedAt: datetime("updatedAt", { mode: "string", fsp: 3 })
-    .default(sql`CURRENT_TIMESTAMP(3)`)
-    .notNull(),
 })
 
 export type Store = InferModel<typeof stores>
@@ -48,11 +45,9 @@ export const products = mysqlTable("products", {
   quantity: int("quantity").default(1).notNull(),
   inventory: int("inventory").default(1).notNull(),
   rating: int("rating").default(0).notNull(),
+  tags: json("tags").$type<string[] | null>().default(null),
   storeId: int("storeId").notNull(),
   createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
-    .default(sql`CURRENT_TIMESTAMP(3)`)
-    .notNull(),
-  updatedAt: datetime("updatedAt", { mode: "string", fsp: 3 })
     .default(sql`CURRENT_TIMESTAMP(3)`)
     .notNull(),
 })

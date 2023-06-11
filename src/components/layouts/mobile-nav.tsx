@@ -32,7 +32,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent size="full" position="left" className="pl-1 pr-0">
+      <SheetContent size="xl" position="left" className="pl-1 pr-0">
         <Link
           href="/"
           className="flex items-center pl-6"
