@@ -441,7 +441,6 @@ export function ProductsTable({
                                   row.original.quantity,
                                   row.original.inventory,
                                   row.original.rating,
-                                  row.original.updatedAt,
                                 ].join(",")
                               })
                               .join("\n")
@@ -493,7 +492,6 @@ export function ProductsTable({
                                   row.original.quantity,
                                   row.original.inventory,
                                   row.original.rating,
-                                  row.original.updatedAt,
                                 ]
                               }),
                             })

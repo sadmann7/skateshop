@@ -43,14 +43,19 @@ export function Hero() {
     }
   }
 
-  function goToImage(index: number) {
-    setCurrentImage(index)
-  }
-
   return (
-    <div className="relative">
-      <AspectRatio ratio={16 / 9}>
-        <div className="absolute inset-0 z-10 bg-black/50" />
+    <div
+      role="region"
+      aria-label="Hero"
+      aria-roledescription="carousel"
+      aria-live="polite"
+      aria-atomic="true"
+      aria-relevant="additions removals"
+      aria-describedby="hero-carousel"
+      className="relative"
+    >
+      <AspectRatio ratio={2.39 / 1}>
+        <div className="absolute inset-0 z-10 bg-black/60" />
         <Image
           src={heroImages[currentImage]?.src ?? "/images/hero-image-one.webp"}
           alt={heroImages[currentImage]?.title ?? "Hero Image One"}
@@ -64,22 +69,24 @@ export function Hero() {
             key={image.title}
             className={cn(
               "h-1.5 w-10 rounded-none p-0 hover:bg-white",
-              index === currentImage ? "bg-white" : "bg-zinc-400"
+              index === currentImage ? "bg-white" : "bg-zinc-500"
             )}
-            onClick={() => goToImage(index)}
+            onClick={() => setCurrentImage(index)}
           >
-            <span className="sr-only">{image.title}</span>
+            <span className="sr-only">
+              Slide {index + 1} of {heroImages.length}
+            </span>
           </Button>
         ))}
       </div>
-      <div className="absolute inset-x-0 inset-y-1/2 z-20 flex justify-between px-4 py-2">
+      <div className="absolute inset-x-0 inset-y-1/2 z-20 hidden justify-between px-4 py-2 md:flex">
         <Button
           size="sm"
           className="w-9 rounded-full bg-zinc-500 p-0 text-white hover:bg-zinc-600"
           onClick={prevImage}
         >
           <Icons.chevronLeft className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Previous image</span>
+          <span className="sr-only">Previous slide</span>
         </Button>
         <Button
           size="sm"
@@ -87,7 +94,7 @@ export function Hero() {
           onClick={nextImage}
         >
           <Icons.chevronRight className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Next image</span>
+          <span className="sr-only">Next slide</span>
         </Button>
       </div>
     </div>

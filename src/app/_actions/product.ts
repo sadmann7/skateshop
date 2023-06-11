@@ -138,25 +138,6 @@ export async function deleteProductsAction(input: {
   revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
 
-export async function getPreviousProductIdAction(
-  input: z.infer<typeof getProductSchema>
-) {
-  if (typeof input.storeId !== "number" || typeof input.id !== "number") {
-    throw new Error("Invalid input")
-  }
-
-  const product = await db.query.products.findFirst({
-    where: and(eq(products.storeId, input.storeId), lt(products.id, input.id)),
-    orderBy: desc(products.id),
-  })
-
-  if (!product) {
-    throw new Error("Product not found")
-  }
-
-  return product.id
-}
-
 export async function getNextProductIdAction(
   input: z.infer<typeof getProductSchema>
 ) {
@@ -167,6 +148,25 @@ export async function getNextProductIdAction(
   const product = await db.query.products.findFirst({
     where: and(eq(products.storeId, input.storeId), gt(products.id, input.id)),
     orderBy: asc(products.id),
+  })
+
+  if (!product) {
+    throw new Error("Product not found")
+  }
+
+  return product.id
+}
+
+export async function getPreviousProductIdAction(
+  input: z.infer<typeof getProductSchema>
+) {
+  if (typeof input.storeId !== "number" || typeof input.id !== "number") {
+    throw new Error("Invalid input")
+  }
+
+  const product = await db.query.products.findFirst({
+    where: and(eq(products.storeId, input.storeId), lt(products.id, input.id)),
+    orderBy: desc(products.id),
   })
 
   if (!product) {
