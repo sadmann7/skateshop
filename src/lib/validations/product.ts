@@ -41,13 +41,20 @@ export const getProductSchema = z.object({
 
 export const getProductsSchema = z.object({
   limit: z.number().default(10).optional().nullable(),
-  cursor: z.number().optional().optional().nullable(),
+  cursor: z.number().optional().nullable(),
+  category: z.enum(products.category.enumValues).optional().nullable(),
   sort: z
     .enum(["createdAt", "price", "rating", "name"])
     .default("createdAt")
     .optional()
     .nullable(),
   order: z.enum(["asc", "desc"]).default("desc").optional().nullable(),
-  price: z.number().optional().nullable(),
+  priceRange: z
+    .object({
+      min: z.number().optional().nullable(),
+      max: z.number().optional().nullable(),
+    })
+    .optional()
+    .nullable(),
   storeIds: z.array(z.number()).optional().nullable(),
 })

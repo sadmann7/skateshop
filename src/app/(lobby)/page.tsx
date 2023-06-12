@@ -19,7 +19,7 @@ export default function IndexPage() {
         />
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {Object.values(products.category.enumValues).map((category) => (
-            <Link key={category} href={`/products/categories/${category}`}>
+            <Link key={category} href={`/categories/${category}`}>
               <AspectRatio
                 ratio={16 / 9}
                 className="relative overflow-hidden rounded-lg"

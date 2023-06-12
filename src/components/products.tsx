@@ -1,11 +1,15 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
+import { useInfiniteQuery } from "@tanstack/react-query"
 
 import { sortOptions } from "@/config/products"
-import { cn } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
+import { getProductsSchema } from "@/lib/validations/product"
+import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -24,23 +28,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
+import { getProductsAction } from "@/app/_actions/product"
+
+import { AspectRatio } from "./ui/aspect-ratio"
 
 interface ProductsProps {
-  products: Product[]
-  nextCursor?: number
+  category: Product["category"]
 }
 
-export function Products({ products, nextCursor }: ProductsProps) {
+export function Products({ category }: ProductsProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = React.useTransition()
+  const intersectionRef = React.useRef<HTMLDivElement>(null)
+  const intersectionEntry = useIntersectionObserver(intersectionRef, {
+    threshold: 0,
+  })
+  const isIntersecting = !!intersectionEntry?.isIntersecting
 
   // Search params
-  const sort = searchParams.get("sort") ?? "createdAt"
-  const order = searchParams.get("order") ?? "desc"
-  const price = searchParams.get("price")
-  const storeIds = searchParams.get("storeIds")?.split(",")
+  const sort =
+    getProductsSchema.shape.sort.parse(searchParams.get("sort")) ?? "createdAt"
+  const order =
+    getProductsSchema.shape.order.parse(searchParams.get("order")) ?? "desc"
+  const priceRange = getProductsSchema.shape.priceRange.parse(
+    searchParams.get("priceRange")
+  )
+  const storeIds = getProductsSchema.shape.storeIds.parse(
+    searchParams.get("storeIds")
+  )
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -59,6 +76,30 @@ export function Products({ products, nextCursor }: ProductsProps) {
     },
     [searchParams]
   )
+
+  // Fetch products
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["products", category, sort, order, priceRange, storeIds],
+    queryFn: async ({ pageParam = null }) => {
+      const data = await getProductsAction({
+        category,
+        sort,
+        order,
+        priceRange,
+        storeIds,
+      })
+      return data
+    },
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    refetchOnWindowFocus: false,
+  })
 
   return (
     <div className="flex flex-col space-y-4">
@@ -104,53 +145,42 @@ export function Products({ products, nextCursor }: ProductsProps) {
           </DropdownMenu>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
-          <Card key={product.id}>
-            <CardHeader>
-              <CardTitle>{product.name}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>{product.description}</CardDescription>
-            </CardContent>
-            <CardFooter>
-              <Button
-                onClick={() => {
-                  router.push(`/products/${product.id}`)
-                }}
-              >
-                View
-              </Button>
-            </CardFooter>
-          </Card>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {data?.pages.map((page, i) => (
+          <React.Fragment key={i}>
+            {page.products.map((product) => (
+              <Card key={product.id} className="flex flex-col justify-between">
+                {product.images?.length && (
+                  <CardHeader>
+                    <AspectRatio ratio={1}>
+                      <Image
+                        src={
+                          product.images[0]?.url ?? "/product-placeholder.svg"
+                        }
+                        alt={
+                          product.images[0]?.name ?? "Product placeholder image"
+                        }
+                        fill
+                        className="object-cover"
+                      />
+                    </AspectRatio>
+                  </CardHeader>
+                )}
+                <CardContent>
+                  <CardTitle>{product.name}</CardTitle>
+                  <CardDescription>{product.description}</CardDescription>
+                </CardContent>
+                <CardFooter>
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-700">
+                      {formatPrice(product.price)}
+                    </div>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </React.Fragment>
         ))}
-        <div className="flex items-center justify-center">
-          {nextCursor && (
-            <Button
-              onClick={() => {
-                startTransition(() => {
-                  router.push(
-                    `${pathname}?${createQueryString({
-                      cursor: nextCursor,
-                    })}`
-                  )
-                })
-              }}
-              disabled={isPending}
-            >
-              {isPending && (
-                <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Load more
-            </Button>
-          )}
-          {!nextCursor && <span>No more products</span>}
-          {!products.length && <span>No products found</span>}
-          {!searchParams && <span>Invalid search params</span>}
-        </div>
       </div>
     </div>
   )

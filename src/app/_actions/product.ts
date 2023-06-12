@@ -7,7 +7,11 @@ import type { StoredFile } from "@/types"
 import { and, asc, desc, eq, gt, like, lt, not } from "drizzle-orm"
 import { type z } from "zod"
 
-import type { getProductSchema, productSchema } from "@/lib/validations/product"
+import type {
+  getProductSchema,
+  getProductsSchema,
+  productSchema,
+} from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
   if (typeof query !== "string") {
@@ -35,6 +39,47 @@ export async function filterProductsAction(query: string) {
   )
 
   return productsByCategory
+}
+
+export async function getProductsAction(
+  input: z.infer<typeof getProductsSchema>
+) {
+  const limit = input.limit ?? 10
+
+  const allProducts = await db
+    .select()
+    .from(products)
+    .limit(limit + 1) // +1 to use as next cursor
+    .where(
+      and(
+        input.category ? eq(products.category, input.category) : undefined,
+        input.cursor
+          ? (input.order === "desc" ? lt : gt)(products.id, input.cursor)
+          : undefined,
+        input.priceRange?.min
+          ? gt(products.price, input.priceRange.min)
+          : undefined,
+        input.priceRange?.max
+          ? lt(products.price, input.priceRange.max)
+          : undefined
+      )
+    )
+    .orderBy(
+      input.order === "desc"
+        ? desc(products[input.sort ?? "createdAt"])
+        : asc(products[input.sort ?? "createdAt"])
+    )
+
+  let nextCursor: typeof input.cursor | undefined = undefined
+  if (allProducts.length > limit) {
+    const nextItem = allProducts.pop()
+    nextCursor = nextItem?.id
+  }
+
+  return {
+    products: allProducts,
+    nextCursor,
+  }
 }
 
 export async function checkProductAction(input: { name: string; id?: number }) {
