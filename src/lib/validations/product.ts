@@ -40,8 +40,8 @@ export const getProductSchema = z.object({
 })
 
 export const getProductsSchema = z.object({
-  limit: z.number().default(10).optional().nullable(),
-  cursor: z.number().optional().nullable(),
+  limit: z.number().default(10),
+  offset: z.number().default(0),
   category: z.enum(products.category.enumValues).optional().nullable(),
   sort: z
     .enum(["createdAt", "price", "rating", "name"])
@@ -49,12 +49,12 @@ export const getProductsSchema = z.object({
     .optional()
     .nullable(),
   order: z.enum(["asc", "desc"]).default("desc").optional().nullable(),
-  priceRange: z
+  price_range: z
     .object({
       min: z.number().optional().nullable(),
       max: z.number().optional().nullable(),
     })
     .optional()
     .nullable(),
-  storeIds: z.array(z.number()).optional().nullable(),
+  store_ids: z.array(z.number()).optional().nullable(),
 })

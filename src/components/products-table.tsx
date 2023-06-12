@@ -216,8 +216,8 @@ export function ProductsTable({
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
-  const items = searchParams?.get("items") ?? "10"
-  const sort = (searchParams?.get("sort") ?? "createdAt") as keyof Product
+  const per_page = searchParams?.get("per_page") ?? "10"
+  const sort = searchParams?.get("sort") ?? "createdAt"
   const order = searchParams?.get("order") ?? "asc"
   const name = searchParams?.get("name")
   const start_date = searchParams?.get("start_date")
@@ -336,7 +336,7 @@ export function ProductsTable({
         // The inline `[]` prevents re-rendering the table when the data changes.
         data={data ?? []}
         // Rows per page
-        itemsCount={Number(items)}
+        itemsCount={Number(per_page)}
         // States controlled by the table
         state={{ sorting }}
         // Enable controlled states
@@ -598,19 +598,19 @@ export function ProductsTable({
               <div className="flex flex-col-reverse items-center gap-4 py-2 md:flex-row">
                 <div className="flex-1 text-sm font-medium">
                   {tableInstance.getFilteredSelectedRowModel().rows.length} of{" "}
-                  {items} row(s) selected.
+                  {per_page} row(s) selected.
                 </div>
                 <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-6">
                   <div className="flex flex-wrap items-center space-x-2">
                     <span className="text-sm font-medium">Rows per page</span>
                     <Select
-                      value={items}
+                      value={per_page}
                       onValueChange={(value) => {
                         startTransition(() => {
                           router.push(
                             `${pathname}?${createQueryString({
-                              page,
-                              items: value,
+                              page: 1,
+                              per_page: value,
                               sort,
                               order,
                             })}`
@@ -620,7 +620,7 @@ export function ProductsTable({
                       disabled={isPending}
                     >
                       <SelectTrigger className="h-8 w-16">
-                        <SelectValue placeholder={items} />
+                        <SelectValue placeholder={per_page} />
                       </SelectTrigger>
                       <SelectContent>
                         {[10, 20, 30, 40, 50].map((item) => (
@@ -644,7 +644,7 @@ export function ProductsTable({
                           router.push(
                             `${pathname}?${createQueryString({
                               page: 1,
-                              items,
+                              per_page,
                               sort,
                               order,
                             })}`
@@ -668,7 +668,7 @@ export function ProductsTable({
                           router.push(
                             `${pathname}?${createQueryString({
                               page: Number(page) - 1,
-                              items,
+                              per_page,
                               sort,
                               order,
                             })}`
@@ -692,7 +692,7 @@ export function ProductsTable({
                           router.push(
                             `${pathname}?${createQueryString({
                               page: Number(page) + 1,
-                              items,
+                              per_page,
                               sort,
                               order,
                             })}`
@@ -715,7 +715,7 @@ export function ProductsTable({
                         router.push(
                           `${pathname}?${createQueryString({
                             page: pageCount ?? 10,
-                            items,
+                            per_page,
                             sort,
                             order,
                           })}`

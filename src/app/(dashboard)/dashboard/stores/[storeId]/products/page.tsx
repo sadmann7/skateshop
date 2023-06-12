@@ -17,7 +17,7 @@ interface ProductsPageProps {
   }
   searchParams: {
     page?: string
-    items?: string
+    per_page?: string
     sort?: keyof Product
     order?: "asc" | "desc"
     name?: string
@@ -32,7 +32,8 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const { storeId } = params
 
-  const { page, items, sort, order, name, start_date, end_date } = searchParams
+  const { page, per_page, sort, order, name, start_date, end_date } =
+    searchParams
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -47,9 +48,10 @@ export default async function ProductsPage({
   }
 
   // Number of skaters to show per page
-  const limit = items ? parseInt(items) : 10
+  const limit = per_page ? parseInt(per_page) : 10
   // Number of skaters to skip
-  const offset = page && items ? (parseInt(page) - 1) * parseInt(items) : 0
+  const offset =
+    page && per_page ? (parseInt(page) - 1) * parseInt(per_page) : 0
 
   const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
     const storeProducts = await tx
@@ -79,9 +81,7 @@ export default async function ProductsPage({
       )
     const totalProducts = await tx
       .select({
-        count: sql<number>`count(
-        ${products.id}
-      )`,
+        count: sql<number>`count(${products.id})`,
       })
       .from(products)
       .where(eq(products.storeId, storeId))

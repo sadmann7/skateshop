@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { products } from "@/db/schema"
 import type { StoredFile } from "@/types"
-import { and, asc, desc, eq, gt, like, lt, not } from "drizzle-orm"
+import { and, asc, desc, eq, gt, like, lt, not, sql } from "drizzle-orm"
 import { type z } from "zod"
 
 import type {
@@ -44,41 +44,55 @@ export async function filterProductsAction(query: string) {
 export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
 ) {
-  const limit = input.limit ?? 10
-
-  const allProducts = await db
-    .select()
-    .from(products)
-    .limit(limit + 1) // +1 to use as next cursor
-    .where(
-      and(
-        input.category ? eq(products.category, input.category) : undefined,
-        input.cursor
-          ? (input.order === "desc" ? lt : gt)(products.id, input.cursor)
-          : undefined,
-        input.priceRange?.min
-          ? gt(products.price, input.priceRange.min)
-          : undefined,
-        input.priceRange?.max
-          ? lt(products.price, input.priceRange.max)
-          : undefined
+  const { items, total } = await db.transaction(async (tx) => {
+    const allProducts = await tx
+      .select()
+      .from(products)
+      .limit(input.limit)
+      .offset(input.offset)
+      .where(
+        and(
+          input.category ? eq(products.category, input.category) : undefined,
+          input.price_range?.min
+            ? gt(products.price, input.price_range.min)
+            : undefined,
+          input.price_range?.max
+            ? lt(products.price, input.price_range.max)
+            : undefined
+        )
       )
-    )
-    .orderBy(
-      input.order === "desc"
-        ? desc(products[input.sort ?? "createdAt"])
-        : asc(products[input.sort ?? "createdAt"])
-    )
+      .orderBy(
+        input.order === "desc"
+          ? desc(products[input.sort ?? "createdAt"])
+          : asc(products[input.sort ?? "createdAt"])
+      )
 
-  let nextCursor: typeof input.cursor | undefined = undefined
-  if (allProducts.length > limit) {
-    const nextItem = allProducts.pop()
-    nextCursor = nextItem?.id
-  }
+    const totalProducts = await tx
+      .select({
+        count: sql<number>`count(${products.id})`,
+      })
+      .from(products)
+      .where(
+        and(
+          input.category ? eq(products.category, input.category) : undefined,
+          input.price_range?.min
+            ? gt(products.price, input.price_range.min)
+            : undefined,
+          input.price_range?.max
+            ? lt(products.price, input.price_range.max)
+            : undefined
+        )
+      )
+
+    return {
+      items: allProducts,
+      total: Number(totalProducts[0]?.count) ?? 0,
+    }
+  })
 
   return {
-    products: allProducts,
-    nextCursor,
+    items,
+    total,
   }
 }
 
