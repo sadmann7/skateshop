@@ -74,7 +74,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     startTransition(async () => {
       try {
         // Check if product already exists in the store
-        await checkProductAction(data.name)
+        await checkProductAction({
+          name: data.name,
+        })
 
         // Upload images if data.images is an array of files
         const images = isArrayOfFile(data.images)

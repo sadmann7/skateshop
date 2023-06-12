@@ -30,11 +30,24 @@ export const productSchema = z.object({
     .default(null),
 })
 
+export const filterProductsSchema = z.object({
+  query: z.string(),
+})
+
 export const getProductSchema = z.object({
   id: z.number(),
   storeId: z.number(),
 })
 
-export const filterProductsSchema = z.object({
-  query: z.string(),
+export const getProductsSchema = z.object({
+  limit: z.number().default(10).optional().nullable(),
+  cursor: z.number().optional().optional().nullable(),
+  sort: z
+    .enum(["createdAt", "price", "rating", "name"])
+    .default("createdAt")
+    .optional()
+    .nullable(),
+  order: z.enum(["asc", "desc"]).default("desc").optional().nullable(),
+  price: z.number().optional().nullable(),
+  storeIds: z.array(z.number()).optional().nullable(),
 })

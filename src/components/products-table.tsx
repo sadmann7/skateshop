@@ -70,7 +70,7 @@ export function ProductsTable({
   storeId,
 }: ProductsTableProps) {
   const router = useRouter()
-  const pathname = usePathname() ?? ""
+  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   // This lets us update states without blocking the UI

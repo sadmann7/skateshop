@@ -54,7 +54,7 @@ export function Hero() {
       aria-describedby="hero-carousel"
       className="relative"
     >
-      <AspectRatio ratio={2.39 / 1}>
+      <AspectRatio ratio={2.7 / 1}>
         <div className="absolute inset-0 z-10 bg-black/60" />
         <Image
           src={heroImages[currentImage]?.src ?? "/images/hero-image-one.webp"}

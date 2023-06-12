@@ -37,15 +37,15 @@ export async function filterProductsAction(query: string) {
   return productsByCategory
 }
 
-export async function checkProductAction(name: string, id?: number) {
-  if (typeof name !== "string") {
+export async function checkProductAction(input: { name: string; id?: number }) {
+  if (typeof input.name !== "string") {
     throw new Error("Invalid input")
   }
 
   const productWithSameName = await db.query.products.findFirst({
-    where: id
-      ? and(not(eq(products.id, id)), eq(products.name, name))
-      : eq(products.name, name),
+    where: input.id
+      ? and(not(eq(products.id, input.id)), eq(products.name, input.name))
+      : eq(products.name, input.name),
   })
 
   if (productWithSameName) {

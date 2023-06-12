@@ -15,7 +15,7 @@ export default function IndexPage() {
         <Header
           className="place-items-center text-center"
           title="Buy rad skating goodies"
-          description="Support your local skate shop, and get some rad gear"
+          description="We have a wide range of products to suit your needs"
         />
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {Object.values(products.category.enumValues).map((category) => (
