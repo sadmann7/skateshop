@@ -7,10 +7,10 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   ChevronsLeft,
   ChevronsRight,
   ChevronsUpDown,
-  ChevronUp,
   CreditCard,
   Crop,
   DollarSign,
@@ -21,6 +21,7 @@ import {
   Filter,
   Footprints,
   HardHat,
+  Image,
   Loader2,
   LogOut,
   Menu,
@@ -49,7 +50,7 @@ import {
   Wallet,
   X,
   type Icon as LucideIcon,
-  type LucideProps,
+  type LucideProps
 } from "lucide-react"
 
 export type Icon = LucideIcon
@@ -101,6 +102,7 @@ export const Icons = {
   store: ShoppingBag,
   chart: BarChart3,
   upload: UploadCloud,
+  placeholder: Image,
   clothing: Shirt,
   shoes: Footprints,
   accessories: HardHat,

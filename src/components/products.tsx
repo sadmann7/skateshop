@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
 import { useInfiniteQuery } from "@tanstack/react-query"
@@ -103,78 +104,103 @@ export function Products({ category }: ProductsProps) {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Button size="sm">Filter</Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button aria-label="Sort by" size="sm">
-                Sort
-                <Icons.chevronDown
-                  className="ml-2 h-4 w-4"
-                  aria-hidden="true"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-48">
-              <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {sortOptions.map((option) => (
-                <DropdownMenuItem
-                  key={option.label}
-                  className={cn(
-                    option.value === sort &&
-                      option.order === order &&
-                      "font-bold"
-                  )}
-                  onClick={() => {
-                    startTransition(() => {
-                      router.push(
-                        `${pathname}?${createQueryString({
-                          sort: option.value,
-                          order: option.order,
-                        })}`
-                      )
-                    })
-                  }}
-                >
-                  {option.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      <div className="flex items-center space-x-2">
+        <Button size="sm">Filter</Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button aria-label="Sort by" size="sm">
+              Sort
+              <Icons.chevronDown className="ml-2 h-4 w-4" aria-hidden="true" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {sortOptions.map((option) => (
+              <DropdownMenuItem
+                key={option.label}
+                className={cn(
+                  option.value === sort && option.order === order && "font-bold"
+                )}
+                onClick={() => {
+                  startTransition(() => {
+                    router.push(
+                      `${pathname}?${createQueryString({
+                        sort: option.value,
+                        order: option.order,
+                      })}`
+                    )
+                  })
+                }}
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
         {data?.pages.map((page, i) => (
           <React.Fragment key={i}>
             {page.products.map((product) => (
-              <Card key={product.id} className="flex flex-col justify-between">
-                {product.images?.length && (
-                  <CardHeader>
-                    <AspectRatio ratio={1}>
-                      <Image
-                        src={
-                          product.images[0]?.url ?? "/product-placeholder.svg"
-                        }
-                        alt={
-                          product.images[0]?.name ?? "Product placeholder image"
-                        }
-                        fill
-                        className="object-cover"
-                      />
+              <Card key={product.id} className="overflow-hidden rounded-none">
+                <Link
+                  aria-label={`View ${product.name} details`}
+                  href={`/products/${product.id}`}
+                >
+                  <CardHeader className="border-b p-0">
+                    <AspectRatio ratio={4 / 3}>
+                      {product?.images?.length ? (
+                        <Image
+                          src={
+                            product.images[0]?.url ??
+                            '"/images/product-placeholder.webp"'
+                          }
+                          alt={product.images[0]?.name ?? "Product image"}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-secondary">
+                          <Icons.placeholder
+                            className="h-9 w-9 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                        </div>
+                      )}
                     </AspectRatio>
                   </CardHeader>
-                )}
-                <CardContent>
-                  <CardTitle>{product.name}</CardTitle>
-                  <CardDescription>{product.description}</CardDescription>
-                </CardContent>
-                <CardFooter>
-                  <div className="flex items-center justify-between">
-                    <div className="text-gray-700">
+                </Link>
+                <Link
+                  aria-label={`View ${product.name} details`}
+                  href={`/products/${product.id}`}
+                >
+                  <CardContent className="grid gap-2.5 p-4">
+                    <CardTitle className="line-clamp-1">
+                      {product.name}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
                       {formatPrice(product.price)}
-                    </div>
+                    </CardDescription>
+                  </CardContent>
+                </Link>
+                <CardFooter className="p-4">
+                  <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
+                    <Button
+                      aria-label="Quick view"
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-full rounded-none"
+                    >
+                      Quick view
+                    </Button>
+                    <Button
+                      aria-label="Add to cart"
+                      size="sm"
+                      className="h-8 w-full rounded-none"
+                    >
+                      Add to cart
+                    </Button>
                   </div>
                 </CardFooter>
               </Card>
