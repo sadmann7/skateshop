@@ -16,7 +16,7 @@ interface CategoryPageProps {
     sort?: keyof Pick<Product, "createdAt" | "price" | "rating" | "name">
     order?: "asc" | "desc"
     price_range?: string
-    store_ids?: string[]
+    store_ids?: string
   }
 }
 
@@ -37,10 +37,7 @@ export default async function CategoryPage({
   const limit = per_page ? parseInt(per_page) : 8
   const offset =
     page && per_page ? (parseInt(page) - 1) * parseInt(per_page) : 0
-
-  // convert price_range to { min: number, max: number }
-
-  const price_range = searchParams.price_range?.split("_").map(Number)
+  const price_range = searchParams.price_range?.split("-").map(Number)
 
   const data = await getProductsAction({
     category,
@@ -49,6 +46,7 @@ export default async function CategoryPage({
     sort,
     order,
     price_range: { min: price_range?.[0], max: price_range?.[1] },
+    store_ids: store_ids?.split("-").map(Number),
   })
 
   const pageCount = Math.ceil(data.total / limit)

@@ -58,5 +58,13 @@ export const getProductsSchema = z.object({
     })
     .optional()
     .nullable(),
-  store_ids: z.array(z.number()).optional().nullable(),
+  store_ids: z
+    .string()
+    .regex(/^\d+_\d+$/)
+    .transform((val) => {
+      const arr = val.split("_").map(Number)
+      return arr
+    })
+    .optional()
+    .nullable(),
 })

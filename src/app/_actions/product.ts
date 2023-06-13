@@ -62,9 +62,11 @@ export async function getProductsAction(
         )
       )
       .orderBy(
-        input.order === "desc"
-          ? desc(products[input.sort ?? "createdAt"])
-          : asc(products[input.sort ?? "createdAt"])
+        input.sort && input.sort in products
+          ? input.order === "desc" && input.sort in products
+            ? desc(products[input.sort])
+            : asc(products[input.sort])
+          : desc(products.createdAt)
       )
 
     const totalProducts = await tx

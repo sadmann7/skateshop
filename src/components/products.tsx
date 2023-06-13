@@ -82,12 +82,15 @@ export function Products({ data, pageCount }: ProductsProps) {
 
   React.useEffect(() => {
     const [min, max] = debouncedPrice
-    router.push(
-      `${pathname}?${createQueryString({
-        price_range: `${min}_${max}`,
-      })}`
-    )
-  }, [debouncedPrice, createQueryString, pathname, router])
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          price_range: `${min}-${max}`,
+        })}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedPrice])
 
   return (
     <div className="flex flex-col space-y-6">
