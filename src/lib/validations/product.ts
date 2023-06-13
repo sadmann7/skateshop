@@ -44,11 +44,12 @@ export const getProductsSchema = z.object({
   offset: z.number().default(0),
   category: z.enum(products.category.enumValues).optional().nullable(),
   sort: z
-    .enum(["createdAt", "price", "rating", "name"])
-    .default("createdAt")
+    .object({
+      column: z.enum(["createdAt", "price", "name"]).optional().nullable(),
+      order: z.enum(["asc", "desc"]).optional().nullable(),
+    })
     .optional()
     .nullable(),
-  order: z.enum(["asc", "desc"]).default("desc").optional().nullable(),
   price_range: z
     .string()
     .regex(/^\d+_\d+$/)

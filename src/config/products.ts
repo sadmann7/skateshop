@@ -1,20 +1,17 @@
 export const sortOptions = [
+  { label: "Date: Old to new", value: "createdAt-asc" },
   {
     label: "Date: New to old",
-    value: "createdAt",
-    order: "desc",
+    value: "createdAt-desc",
   },
-  { label: "Date: Old to new", value: "createdAt", order: "asc" },
-  { label: "Price: Low to high", value: "price", order: "asc" },
-  { label: "Price: High to low", value: "price", order: "desc" },
+  { label: "Price: Low to high", value: "price-asc" },
+  { label: "Price: High to low", value: "price-desc" },
   {
     label: "Alphabetical: A to Z",
-    value: "name",
-    order: "asc",
+    value: "name-asc",
   },
   {
     label: "Alphabetical: Z to A",
-    value: "name",
-    order: "desc",
+    value: "name-desc",
   },
 ]

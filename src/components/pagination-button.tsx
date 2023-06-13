@@ -16,7 +16,6 @@ interface PaginationButtonProps
   page: string
   per_page?: string
   sort: string
-  order: string
   createQueryString: (params: Record<string, string | number | null>) => string
   router: AppRouterInstance
   pathname: string
@@ -29,7 +28,6 @@ export function PaginationButton({
   page,
   per_page,
   sort,
-  order,
   createQueryString,
   router,
   pathname,
@@ -51,7 +49,6 @@ export function PaginationButton({
                 page: 1,
                 per_page: per_page ?? null,
                 sort,
-                order,
               })}`
             )
           })
@@ -72,7 +69,6 @@ export function PaginationButton({
                 page: Number(page) - 1,
                 per_page: per_page ?? null,
                 sort,
-                order,
               })}`
             )
           })
@@ -95,7 +91,6 @@ export function PaginationButton({
                   page: p,
                   per_page: per_page ?? null,
                   sort,
-                  order,
                 })}`
               )
             })
@@ -117,7 +112,6 @@ export function PaginationButton({
                 page: Number(page) + 1,
                 per_page: per_page ?? null,
                 sort,
-                order,
               })}`
             )
           })
@@ -137,7 +131,6 @@ export function PaginationButton({
               page: pageCount ?? 10,
               per_page: per_page ?? null,
               sort,
-              order,
             })}`
           )
         }}

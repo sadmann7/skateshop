@@ -55,8 +55,7 @@ export function Products({ data, pageCount }: ProductsProps) {
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
-  const sort = searchParams?.get("sort") ?? "createdAt"
-  const order = searchParams?.get("order") ?? "asc"
+  const sort = searchParams?.get("sort") ?? "createdAt-desc"
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -163,15 +162,12 @@ export function Products({ data, pageCount }: ProductsProps) {
             {sortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.label}
-                className={cn(
-                  option.value === sort && option.order === order && "font-bold"
-                )}
+                className={cn(option.value === sort && "font-bold")}
                 onClick={() => {
                   startTransition(() => {
                     router.push(
                       `${pathname}?${createQueryString({
                         sort: option.value,
-                        order: option.order,
                       })}`
                     )
                   })
@@ -279,7 +275,6 @@ export function Products({ data, pageCount }: ProductsProps) {
         pageCount={pageCount}
         page={page}
         sort={sort}
-        order={order}
         createQueryString={createQueryString}
         router={router}
         pathname={pathname}

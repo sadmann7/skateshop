@@ -62,10 +62,10 @@ export async function getProductsAction(
         )
       )
       .orderBy(
-        input.sort && input.sort in products
-          ? input.order === "desc" && input.sort in products
-            ? desc(products[input.sort])
-            : asc(products[input.sort])
+        input.sort?.column
+          ? input.sort?.order === "desc"
+            ? desc(products[input.sort.column])
+            : asc(products[input.sort.column])
           : desc(products.createdAt)
       )
 
