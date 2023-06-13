@@ -84,7 +84,7 @@ export function Products({ data, pageCount }: ProductsProps) {
     const [min, max] = debouncedPrice
     router.push(
       `${pathname}?${createQueryString({
-        price: `${min},${max}`,
+        price_range: `${min}_${max}`,
       })}`
     )
   }, [debouncedPrice, createQueryString, pathname, router])

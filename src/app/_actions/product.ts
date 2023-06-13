@@ -73,15 +73,7 @@ export async function getProductsAction(
       })
       .from(products)
       .where(
-        and(
-          input.category ? eq(products.category, input.category) : undefined,
-          input.price_range?.min
-            ? gt(products.price, input.price_range.min)
-            : undefined,
-          input.price_range?.max
-            ? lt(products.price, input.price_range.max)
-            : undefined
-        )
+        and(input.category ? eq(products.category, input.category) : undefined)
       )
 
     return {

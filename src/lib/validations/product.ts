@@ -50,9 +50,11 @@ export const getProductsSchema = z.object({
     .nullable(),
   order: z.enum(["asc", "desc"]).default("desc").optional().nullable(),
   price_range: z
-    .object({
-      min: z.number().optional().nullable(),
-      max: z.number().optional().nullable(),
+    .string()
+    .regex(/^\d+_\d+$/)
+    .transform((val) => {
+      const [min, max] = val.split("_").map(Number)
+      return { min, max }
     })
     .optional()
     .nullable(),
