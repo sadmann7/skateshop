@@ -14,7 +14,7 @@ interface PaginationButtonProps
   > {
   pageCount: number
   page: string
-  per_page: string
+  per_page?: string
   sort: string
   order: string
   createQueryString: (params: Record<string, string | number | null>) => string
@@ -49,7 +49,7 @@ export function PaginationButton({
             router.push(
               `${pathname}?${createQueryString({
                 page: 1,
-                per_page,
+                per_page: per_page ?? null,
                 sort,
                 order,
               })}`
@@ -70,7 +70,7 @@ export function PaginationButton({
             router.push(
               `${pathname}?${createQueryString({
                 page: Number(page) - 1,
-                per_page,
+                per_page: per_page ?? null,
                 sort,
                 order,
               })}`
@@ -82,6 +82,30 @@ export function PaginationButton({
         <Icons.chevronLeft className="h-5 w-5" aria-hidden="true" />
         <span className="sr-only">Previous page</span>
       </Button>
+      {Array.from({ length: pageCount }, (_, i) => i + 1).map((p) => (
+        <Button
+          key={p}
+          variant={Number(page) === p ? "default" : "outline"}
+          size="sm"
+          className="h-8 w-8 px-0"
+          onClick={() => {
+            startTransition(() => {
+              router.push(
+                `${pathname}?${createQueryString({
+                  page: p,
+                  per_page: per_page ?? null,
+                  sort,
+                  order,
+                })}`
+              )
+            })
+          }}
+          disabled={isPending}
+        >
+          {p}
+          <span className="sr-only">{p === Number(page) ? "Current" : ""}</span>
+        </Button>
+      ))}
       <Button
         variant="outline"
         size="sm"
@@ -91,7 +115,7 @@ export function PaginationButton({
             router.push(
               `${pathname}?${createQueryString({
                 page: Number(page) + 1,
-                per_page,
+                per_page: per_page ?? null,
                 sort,
                 order,
               })}`
@@ -111,7 +135,7 @@ export function PaginationButton({
           router.push(
             `${pathname}?${createQueryString({
               page: pageCount ?? 10,
-              per_page,
+              per_page: per_page ?? null,
               sort,
               order,
             })}`
