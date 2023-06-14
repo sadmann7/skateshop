@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +33,6 @@ import { Separator } from "@/components/ui/separator"
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -56,6 +56,7 @@ export function Products({ data, pageCount }: ProductsProps) {
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const sort = searchParams?.get("sort") ?? "createdAt-desc"
+  const store_ids = searchParams?.get("store_ids")
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -75,7 +76,7 @@ export function Products({ data, pageCount }: ProductsProps) {
     [searchParams]
   )
 
-  // Handle price filter
+  // Price filter
   const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 100])
   const debouncedPrice = useDebounce(priceRange, 500)
 
@@ -90,6 +91,13 @@ export function Products({ data, pageCount }: ProductsProps) {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
+
+  // Store filter
+  const [storeIds, setStoreIds] = React.useState<number[]>([])
+
+  React.useEffect(() => {
+    setStoreIds(store_ids ? store_ids.split("-").map(Number) : [])
+  }, [store_ids])
 
   return (
     <div className="flex flex-col space-y-6">
@@ -110,10 +118,11 @@ export function Products({ data, pageCount }: ProductsProps) {
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <Separator className="my-4" />
-            <div className="space-y-4">
-              <SheetDescription>Price</SheetDescription>
+            <div className="space-y-5">
+              <div className="text-sm text-muted-foreground">Price range</div>
               <Slider
                 variant="range"
+                thickness="thin"
                 defaultValue={[0, 100]}
                 max={100}
                 step={1}
@@ -140,6 +149,26 @@ export function Products({ data, pageCount }: ProductsProps) {
                     setPriceRange([priceRange[0], value])
                   }}
                 />
+              </div>
+            </div>
+            <Separator className="my-4" />
+            <div className="space-y-5">
+              <div className="text-sm text-muted-foreground">Stores</div>
+              <div className="space-y-2">
+                {data.map((product) => (
+                  <div key={product.id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`store-${product.id}`}
+                      checked={storeIds.includes(product.id)}
+                    />
+                    <label
+                      htmlFor={`store-${product.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {product.name}
+                    </label>
+                  </div>
+                ))}
               </div>
             </div>
           </SheetContent>
@@ -221,6 +250,7 @@ export function Products({ data, pageCount }: ProductsProps) {
                           }
                           alt={product.images[0]?.name ?? "Product image"}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover"
                           loading="lazy"
                         />

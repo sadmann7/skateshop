@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 interface ProductsPageProps {
   params: {
-    storeId: number
+    storeId: string
   }
   searchParams: {
     page?: string
@@ -30,7 +30,7 @@ export default async function ProductsPage({
   params,
   searchParams,
 }: ProductsPageProps) {
-  const { storeId } = params
+  const storeId = Number(params.storeId)
 
   const { page, per_page, sort, order, name, start_date, end_date } =
     searchParams

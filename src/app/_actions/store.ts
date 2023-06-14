@@ -2,13 +2,43 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { stores } from "@/db/schema"
+import { stores, type Store } from "@/db/schema"
 import { clerkClient } from "@clerk/nextjs"
-import { eq } from "drizzle-orm"
+import { asc, desc, eq } from "drizzle-orm"
 import type { z } from "zod"
 
 import { slugify } from "@/lib/utils"
 import { type storeSchema } from "@/lib/validations/store"
+
+export async function getStoresAction(input: {
+  limit?: number
+  offset?: number
+  sort?: keyof Store
+  sortOrder?: "asc" | "desc"
+}) {
+  const limit = input.limit ?? 10
+  const offset = input.offset ?? 0
+  const column = input.sort ? stores[input.sort] : undefined
+  const order = input.sortOrder ?? "desc"
+
+  const allStores = await db
+    .select({
+      id: stores.id,
+      name: stores.name,
+    })
+    .from(stores)
+    .orderBy(
+      column
+        ? order === "asc"
+          ? asc(column)
+          : desc(column)
+        : desc(stores.createdAt)
+    )
+    .limit(limit)
+    .offset(offset)
+
+  return allStores
+}
 
 export async function addStoreAction(
   input: z.infer<typeof storeSchema> & { userId: string }

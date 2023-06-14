@@ -2,9 +2,20 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { products } from "@/db/schema"
+import { products, stores } from "@/db/schema"
 import type { StoredFile } from "@/types"
-import { and, asc, desc, eq, gt, like, lt, not, sql } from "drizzle-orm"
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gt,
+  inArray,
+  like,
+  lt,
+  not,
+  sql,
+} from "drizzle-orm"
 import { type z } from "zod"
 
 import type {
@@ -58,6 +69,9 @@ export async function getProductsAction(
             : undefined,
           input.price_range?.max
             ? lt(products.price, input.price_range.max)
+            : undefined,
+          input.store_ids
+            ? inArray(products.storeId, input.store_ids)
             : undefined
         )
       )
@@ -182,11 +196,14 @@ export async function deleteProductsAction(input: {
     throw new Error("Invalid input")
   }
 
-  for (const id of input.ids) {
-    await db
-      .delete(products)
-      .where(and(eq(products.id, id), eq(products.storeId, input.storeId)))
-  }
+  await db
+    .delete(products)
+    .where(
+      and(
+        input.ids.length > 0 ? inArray(products.id, input.ids) : undefined,
+        eq(products.storeId, input.storeId)
+      )
+    )
 
   revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
