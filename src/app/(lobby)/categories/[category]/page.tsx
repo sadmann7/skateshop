@@ -35,8 +35,7 @@ export default async function CategoryPage({
   const { page, per_page, sort, price_range, store_ids } = searchParams
 
   const limit = per_page ? parseInt(per_page) : 8
-  const offset =
-    page && per_page ? (parseInt(page) - 1) * parseInt(per_page) : 0
+  const offset = page ? (parseInt(page) - 1) * limit : 0
 
   const productsTransaction = await getProductsAction({
     category,

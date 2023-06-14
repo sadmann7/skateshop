@@ -29,10 +29,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -41,8 +44,6 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
-
-import { ScrollArea } from "./ui/scroll-area"
 
 interface ProductsProps {
   products: Product[]
@@ -125,7 +126,7 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
               Filter
             </Button>
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent className="w-5/6 sm:w-1/2 lg:w-1/3">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
@@ -146,6 +147,9 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
               <div className="flex items-center space-x-4">
                 <Input
                   type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={priceRange[1]}
                   value={priceRange[0]}
                   onChange={(e) => {
                     const value = Number(e.target.value)
@@ -155,6 +159,9 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
                 <span className="text-muted-foreground">-</span>
                 <Input
                   type="number"
+                  inputMode="numeric"
+                  min={priceRange[0]}
+                  max={100}
                   value={priceRange[1]}
                   onChange={(e) => {
                     const value = Number(e.target.value)
@@ -166,13 +173,13 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
             <Separator className="my-4" />
             <div className="space-y-5">
               <div className="text-sm text-muted-foreground">Stores</div>
-              <ScrollArea className="h-60">
+              <ScrollArea className="h-96">
                 <div className="space-y-2">
                   {stores.map((store) => (
                     <div key={store.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={`store-${store.id}`}
-                        checked={storeIds?.includes(store.id)}
+                        checked={storeIds?.includes(store.id) ?? false}
                         onCheckedChange={(value) => {
                           if (value) {
                             setStoreIds([...(storeIds ?? []), store.id])
@@ -183,17 +190,32 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
                           }
                         }}
                       />
-                      <label
+                      <Label
                         htmlFor={`store-${store.id}`}
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                       >
                         {store.name}
-                      </label>
+                      </Label>
                     </div>
                   ))}
                 </div>
               </ScrollArea>
             </div>
+            <Separator className="my-4" />
+            <SheetFooter>
+              <Button
+                aria-label="Clear Filters"
+                variant="secondary"
+                size="sm"
+                className="w-full"
+                onClick={() => {
+                  setPriceRange([0, 100])
+                  setStoreIds(null)
+                }}
+              >
+                Clear Filters
+              </Button>
+            </SheetFooter>
           </SheetContent>
         </Sheet>
         <DropdownMenu>
@@ -231,6 +253,19 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      {!isPending && !products.length ? (
+        <Card className="rounded-sm">
+          <CardContent className="flex flex-col items-center justify-center space-y-4 p-8">
+            <Icons.product className="h-12 w-12 text-muted-foreground" />
+            <div className="text-center">
+              <h2 className="text-lg font-medium">No products found</h2>
+              <p className="text-sm text-muted-foreground">
+                Try adjusting your filters
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isPending
           ? Array.from({ length: 8 }).map((_, i) => (
@@ -323,17 +358,19 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
               </Card>
             ))}
       </div>
-      <PaginationButton
-        className="mx-auto"
-        pageCount={pageCount}
-        page={page}
-        sort={sort}
-        createQueryString={createQueryString}
-        router={router}
-        pathname={pathname}
-        isPending={isPending}
-        startTransition={startTransition}
-      />
+      {products.length ? (
+        <PaginationButton
+          className="mx-auto"
+          pageCount={pageCount}
+          page={page}
+          sort={sort}
+          createQueryString={createQueryString}
+          router={router}
+          pathname={pathname}
+          isPending={isPending}
+          startTransition={startTransition}
+        />
+      ) : null}
     </div>
   )
 }

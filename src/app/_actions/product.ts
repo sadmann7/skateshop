@@ -91,7 +91,12 @@ export async function getProductsAction(
       })
       .from(products)
       .where(
-        and(input.category ? eq(products.category, input.category) : undefined)
+        and(
+          input.category ? eq(products.category, input.category) : undefined,
+          minPrice ? gt(products.price, minPrice) : undefined,
+          maxPrice ? lt(products.price, maxPrice) : undefined,
+          storeIds.length ? inArray(products.storeId, storeIds) : undefined
+        )
       )
 
     return {

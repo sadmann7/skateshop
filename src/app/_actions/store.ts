@@ -4,14 +4,13 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { stores, type Store } from "@/db/schema"
 import { clerkClient } from "@clerk/nextjs"
-import { and, asc, desc, eq, lt } from "drizzle-orm"
+import { asc, desc, eq } from "drizzle-orm"
 import type { z } from "zod"
 
 import { slugify } from "@/lib/utils"
 import { type storeSchema } from "@/lib/validations/store"
 
 export async function getStoresAction(input: {
-  cursor?: number
   sort?: `${keyof Store}-${"asc" | "desc"}`
 }) {
   const [column, order] =
@@ -26,11 +25,8 @@ export async function getStoresAction(input: {
       name: stores.name,
     })
     .from(stores)
-    .where(input.cursor ? lt(stores.id, input.cursor) : undefined)
     .orderBy(
-      input.cursor
-        ? asc(stores.id)
-        : column
+      column
         ? order === "asc"
           ? asc(stores[column])
           : desc(stores[column])

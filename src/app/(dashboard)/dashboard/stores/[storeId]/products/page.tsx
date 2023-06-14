@@ -50,8 +50,7 @@ export default async function ProductsPage({
   // Number of skaters to show per page
   const limit = per_page ? parseInt(per_page) : 10
   // Number of skaters to skip
-  const offset =
-    page && per_page ? (parseInt(page) - 1) * parseInt(per_page) : 0
+  const offset = page ? (parseInt(page) - 1) * limit : 0
 
   const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
     const storeProducts = await tx
@@ -84,7 +83,18 @@ export default async function ProductsPage({
         count: sql<number>`count(${products.id})`,
       })
       .from(products)
-      .where(eq(products.storeId, storeId))
+      .where(
+        and(
+          eq(products.storeId, storeId),
+          name ? like(products.name, `%${name}%`) : undefined,
+          start_date && end_date
+            ? and(
+                gte(products.createdAt, start_date),
+                lte(products.createdAt, end_date)
+              )
+            : undefined
+        )
+      )
 
     return {
       storeProducts,
