@@ -100,8 +100,6 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
     store_ids?.split("-").map(Number) ?? null
   )
 
-  console.log(storeIds)
-
   React.useEffect(() => {
     startTransition(() => {
       router.push(

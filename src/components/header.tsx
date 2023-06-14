@@ -18,9 +18,7 @@ export function Header({
   ...props
 }: HeaderProps) {
   return (
-    <div  className={cn("grid gap-1", className)}
-    {...props}
-    >
+    <div className={cn("grid gap-1", className)} {...props}>
       <h1
         className={cn(
           "text-3xl font-bold tracking-tight",

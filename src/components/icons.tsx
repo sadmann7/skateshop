@@ -7,10 +7,10 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
   ChevronsLeft,
   ChevronsRight,
   ChevronsUpDown,
+  ChevronUp,
   CreditCard,
   Crop,
   DollarSign,
@@ -50,7 +50,7 @@ import {
   Wallet,
   X,
   type Icon as LucideIcon,
-  type LucideProps
+  type LucideProps,
 } from "lucide-react"
 
 export type Icon = LucideIcon
