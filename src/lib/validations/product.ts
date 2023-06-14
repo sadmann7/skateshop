@@ -44,28 +44,18 @@ export const getProductsSchema = z.object({
   offset: z.number().default(0),
   category: z.enum(products.category.enumValues).optional().nullable(),
   sort: z
-    .object({
-      column: z.enum(["createdAt", "price", "name"]).optional().nullable(),
-      order: z.enum(["asc", "desc"]).optional().nullable(),
-    })
+    .string()
+    .regex(/^[a-z]+_(asc|desc)$/i)
     .optional()
     .nullable(),
   price_range: z
     .string()
     .regex(/^\d+_\d+$/)
-    .transform((val) => {
-      const [min, max] = val.split("_").map(Number)
-      return { min, max }
-    })
     .optional()
     .nullable(),
   store_ids: z
     .string()
     .regex(/^\d+_\d+$/)
-    .transform((val) => {
-      const arr = val.split("_").map(Number)
-      return arr
-    })
     .optional()
     .nullable(),
 })

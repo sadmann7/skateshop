@@ -4,22 +4,21 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { stores, type Store } from "@/db/schema"
 import { clerkClient } from "@clerk/nextjs"
-import { asc, desc, eq } from "drizzle-orm"
+import { and, asc, desc, eq, lt } from "drizzle-orm"
 import type { z } from "zod"
 
 import { slugify } from "@/lib/utils"
 import { type storeSchema } from "@/lib/validations/store"
 
 export async function getStoresAction(input: {
-  limit?: number
-  offset?: number
-  sort?: keyof Store
-  sortOrder?: "asc" | "desc"
+  cursor?: number
+  sort?: `${keyof Store}-${"asc" | "desc"}`
 }) {
-  const limit = input.limit ?? 10
-  const offset = input.offset ?? 0
-  const column = input.sort ? stores[input.sort] : undefined
-  const order = input.sortOrder ?? "desc"
+  const [column, order] =
+    (input.sort?.split("-") as [
+      keyof Store | undefined,
+      "asc" | "desc" | undefined
+    ]) ?? []
 
   const allStores = await db
     .select({
@@ -27,15 +26,16 @@ export async function getStoresAction(input: {
       name: stores.name,
     })
     .from(stores)
+    .where(input.cursor ? lt(stores.id, input.cursor) : undefined)
     .orderBy(
-      column
+      input.cursor
+        ? asc(stores.id)
+        : column
         ? order === "asc"
-          ? asc(column)
-          : desc(column)
+          ? asc(stores[column])
+          : desc(stores[column])
         : desc(stores.createdAt)
     )
-    .limit(limit)
-    .offset(offset)
 
   return allStores
 }

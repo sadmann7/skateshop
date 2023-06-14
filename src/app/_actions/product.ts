@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { products, stores } from "@/db/schema"
+import { products, type Product } from "@/db/schema"
 import type { StoredFile } from "@/types"
 import {
   and,
@@ -55,6 +55,14 @@ export async function filterProductsAction(query: string) {
 export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
 ) {
+  const [column, order] =
+    (input.sort?.split("-") as [
+      keyof Product | undefined,
+      "asc" | "desc" | undefined
+    ]) ?? []
+  const [minPrice, maxPrice] = input.price_range?.split("-").map(Number) ?? []
+  const storeIds = input.store_ids?.split("-").map(Number) ?? []
+
   const { items, total } = await db.transaction(async (tx) => {
     const allProducts = await tx
       .select()
@@ -64,22 +72,16 @@ export async function getProductsAction(
       .where(
         and(
           input.category ? eq(products.category, input.category) : undefined,
-          input.price_range?.min
-            ? gt(products.price, input.price_range.min)
-            : undefined,
-          input.price_range?.max
-            ? lt(products.price, input.price_range.max)
-            : undefined,
-          input.store_ids
-            ? inArray(products.storeId, input.store_ids)
-            : undefined
+          minPrice ? gt(products.price, minPrice) : undefined,
+          maxPrice ? lt(products.price, maxPrice) : undefined,
+          storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
       .orderBy(
-        input.sort?.column
-          ? input.sort?.order === "desc"
-            ? desc(products[input.sort.column])
-            : asc(products[input.sort.column])
+        column
+          ? order === "asc"
+            ? asc(products[column])
+            : desc(products[column])
           : desc(products.createdAt)
       )
 

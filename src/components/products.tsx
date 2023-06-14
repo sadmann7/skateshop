@@ -4,7 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { type Product } from "@/db/schema"
+import { type Product, type Store } from "@/db/schema"
 
 import { sortOptions } from "@/config/products"
 import { cn, formatPrice } from "@/lib/utils"
@@ -42,12 +42,15 @@ import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
 
+import { ScrollArea } from "./ui/scroll-area"
+
 interface ProductsProps {
-  data: Product[]
+  products: Product[]
   pageCount: number
+  stores: Pick<Store, "id" | "name">[]
 }
 
-export function Products({ data, pageCount }: ProductsProps) {
+export function Products({ products, pageCount, stores }: ProductsProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -93,11 +96,22 @@ export function Products({ data, pageCount }: ProductsProps) {
   }, [debouncedPrice])
 
   // Store filter
-  const [storeIds, setStoreIds] = React.useState<number[]>([])
+  const [storeIds, setStoreIds] = React.useState<number[] | null>(
+    store_ids?.split("-").map(Number) ?? null
+  )
+
+  console.log(storeIds)
 
   React.useEffect(() => {
-    setStoreIds(store_ids ? store_ids.split("-").map(Number) : [])
-  }, [store_ids])
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          store_ids: storeIds?.length ? storeIds.join("-") : null,
+        })}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeIds])
 
   return (
     <div className="flex flex-col space-y-6">
@@ -154,22 +168,33 @@ export function Products({ data, pageCount }: ProductsProps) {
             <Separator className="my-4" />
             <div className="space-y-5">
               <div className="text-sm text-muted-foreground">Stores</div>
-              <div className="space-y-2">
-                {data.map((product) => (
-                  <div key={product.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`store-${product.id}`}
-                      checked={storeIds.includes(product.id)}
-                    />
-                    <label
-                      htmlFor={`store-${product.id}`}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {product.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
+              <ScrollArea className="h-60">
+                <div className="space-y-2">
+                  {stores.map((store) => (
+                    <div key={store.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`store-${store.id}`}
+                        checked={storeIds?.includes(store.id)}
+                        onCheckedChange={(value) => {
+                          if (value) {
+                            setStoreIds([...(storeIds ?? []), store.id])
+                          } else {
+                            setStoreIds(
+                              storeIds?.filter((id) => id !== store.id) ?? null
+                            )
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor={`store-${store.id}`}
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {store.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
             </div>
           </SheetContent>
         </Sheet>
@@ -234,7 +259,7 @@ export function Products({ data, pageCount }: ProductsProps) {
                 </CardFooter>
               </Card>
             ))
-          : data.map((product) => (
+          : products.map((product) => (
               <Card key={product.id} className="overflow-hidden rounded-sm">
                 <Link
                   aria-label={`View ${product.name} details`}
