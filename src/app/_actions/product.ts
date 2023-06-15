@@ -78,7 +78,7 @@ export async function getProductsAction(
         )
       )
       .orderBy(
-        column
+        column && column in products
           ? order === "asc"
             ? asc(products[column])
             : desc(products[column])

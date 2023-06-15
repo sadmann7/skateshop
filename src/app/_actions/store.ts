@@ -26,7 +26,7 @@ export async function getStoresAction(input: {
     })
     .from(stores)
     .orderBy(
-      column
+      column && column in stores
         ? order === "asc"
           ? asc(stores[column])
           : desc(stores[column])

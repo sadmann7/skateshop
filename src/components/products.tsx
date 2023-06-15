@@ -117,12 +117,7 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
-            <Button
-              aria-label="Filter products"
-              size="sm"
-              className="rounded-sm"
-              disabled={isPending}
-            >
+            <Button aria-label="Filter products" size="sm" disabled={isPending}>
               Filter
             </Button>
           </SheetTrigger>
@@ -233,12 +228,7 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
         </Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              aria-label="Sort products"
-              size="sm"
-              className="rounded-sm"
-              disabled={isPending}
-            >
+            <Button aria-label="Sort products" size="sm" disabled={isPending}>
               Sort
               <Icons.chevronDown className="ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
