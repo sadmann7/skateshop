@@ -6,8 +6,7 @@ export default authMiddleware({
     "/sign-in(.*)",
     "/sign-up(.*)",
     "/api(.*)",
-    "/info(.*)",
-    "/proxy(.*)",
+    "/categories(.*)",
   ],
 })
 
