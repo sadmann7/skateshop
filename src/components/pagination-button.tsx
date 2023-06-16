@@ -36,7 +36,7 @@ export function PaginationButton({
   className,
   ...props
 }: PaginationButtonProps) {
-  // memoize the pagination range
+  // Memoize pagination range to avoid unnecessary re-renders
   const paginationRange = React.useMemo(() => {
     const delta = siblingCount + 2
 
