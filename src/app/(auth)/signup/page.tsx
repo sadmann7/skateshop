@@ -1,17 +1,17 @@
 import { type Metadata } from "next"
 
-import { SignInForm } from "@/components/forms/signin-form"
+import { SignUpForm } from "@/components/forms/signup-form"
 import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
-  title: "Sign In",
-  description: "Sign in to your account",
+  title: "Sign Up",
+  description: "Sign up for an account",
 }
 
-export default function SignInPage() {
+export default function SignUpPage() {
   return (
     <Shell layout="dashboard" className="mx-auto w-full sm:w-auto">
-      <SignInForm />
+      <SignUpForm />
     </Shell>
   )
 }

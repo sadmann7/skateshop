@@ -47,10 +47,7 @@ export function SignInForm() {
     },
   })
 
-  // State for the form
   function onSubmit(data: Inputs) {
-    console.log(data)
-
     if (!isLoaded) return
 
     startTransition(async () => {
@@ -69,13 +66,11 @@ export function SignInForm() {
           console.log(result)
         }
       } catch (error) {
-        const unknownError = "Something went wrong"
+        const unknownError = "Something went wrong, please try again"
 
-        if (isClerkAPIResponseError(error)) {
-          toast.error(error.errors[0]?.message ?? unknownError)
-        } else {
-          toast.error(unknownError)
-        }
+        isClerkAPIResponseError(error)
+          ? toast.error(error.errors[0]?.message ?? unknownError)
+          : toast.error(unknownError)
       }
     })
   }
@@ -136,8 +131,8 @@ export function SignInForm() {
                   aria-hidden="true"
                 />
               )}
-              Sign In
-              <span className="sr-only">Sign In</span>
+              Sign in
+              <span className="sr-only">Sign in</span>
             </Button>
           </form>
         </Form>

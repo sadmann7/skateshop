@@ -34,7 +34,7 @@ export function OAuthSignIn() {
     } catch (error) {
       console.error(error)
       setIsLoading(null)
-      toast.error("Something went wrong, please try again.")
+      toast.error("Something went wrong, please try again")
     }
   }
 

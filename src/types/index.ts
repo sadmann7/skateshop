@@ -1,4 +1,3 @@
-import { type products } from "@/db/schema"
 import type { FileWithPath } from "react-dropzone"
 
 import { type Icons } from "@/components/icons"
@@ -28,11 +27,6 @@ export type StoredFile = {
   id: string
   name: string
   url: string
-}
-
-export type ProductsByCategory<TData extends object> = {
-  category: (typeof products.category.enumValues)[number]
-  products: TData[]
 }
 
 export type SubscriptionPlan = {

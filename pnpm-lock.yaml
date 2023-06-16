@@ -61,9 +61,6 @@ dependencies:
   '@t3-oss/env-nextjs':
     specifier: ^0.4.0
     version: 0.4.0(typescript@5.1.3)(zod@3.21.4)
-  '@tanstack/react-query':
-    specifier: ^4.29.13
-    version: 4.29.13(react-dom@18.2.0)(react@18.2.0)
   '@uploadthing/react':
     specifier: ^4.1.3
     version: 4.1.3(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@4.1.3)(zod@3.21.4)
@@ -1871,28 +1868,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       remove-accents: 0.4.2
-    dev: false
-
-  /@tanstack/query-core@4.29.11:
-    resolution: {integrity: sha512-8C+hF6SFAb/TlFZyS9FItgNwrw4PMa7YeX+KQYe2ZAiEz6uzg6yIr+QBzPkUwZ/L0bXvGd1sufTm3wotoz+GwQ==}
-    dev: false
-
-  /@tanstack/react-query@4.29.13(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-qF8SHosMU6SzxWa7Ivxp3Q07zXvH+8PBDAlH8CR9ywfT3Y7uOK3jclfwMLzqgoGgDnYCarY2Ra+qDV0+xm19JQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      '@tanstack/query-core': 4.29.11
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
   /@tanstack/react-table@8.9.2(react-dom@18.2.0)(react@18.2.0):
@@ -5739,14 +5714,6 @@ packages:
       detect-node-es: 1.1.0
       react: 18.2.0
       tslib: 2.5.3
-    dev: false
-
-  /use-sync-external-store@1.2.0(react@18.2.0):
-    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /util-deprecate@1.0.2:

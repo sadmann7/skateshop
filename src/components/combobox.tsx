@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
+import { type Product } from "@/db/schema"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -23,18 +23,22 @@ export function Combobox() {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
-
-  const { data, isFetching, isSuccess } = useQuery(
-    ["filterProducts", query],
-    async () => {
-      const data = await filterProductsAction(query)
-      return data
-    },
+  const [data, setData] = React.useState<
     {
-      enabled: query.length > 0,
-      refetchOnWindowFocus: false,
-    }
-  )
+      category: Product["category"]
+      products: Pick<Product, "id" | "name" | "category">[]
+    }[]
+  >([])
+  const [isPending, startTransition] = React.useTransition()
+
+  React.useEffect(() => {
+    if (query.length <= 0) return
+
+    startTransition(async () => {
+      const data = await filterProductsAction(query)
+      setData(data)
+    })
+  }, [query])
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -80,19 +84,18 @@ export function Combobox() {
         />
         <CommandList>
           <CommandEmpty
-            className={cn(isFetching ? "hidden" : "py-6 text-center text-sm")}
+            className={cn(isPending ? "hidden" : "py-6 text-center text-sm")}
           >
             No products found.
           </CommandEmpty>
-          {isFetching ? (
+          {isPending ? (
             <div className="space-y-1 overflow-hidden px-1 py-2">
               <Skeleton className="h-4 w-10 rounded" />
               <Skeleton className="h-8 rounded-sm" />
               <Skeleton className="h-8 rounded-sm" />
             </div>
           ) : (
-            isSuccess &&
-            data.map((group) => (
+            data?.map((group) => (
               <CommandGroup
                 key={group.category}
                 className="capitalize"
