@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs"
+import { isClerkAPIResponseError, useSignUp } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
@@ -35,7 +35,7 @@ type Inputs = z.infer<typeof authSchema>
 
 export function SignUpForm() {
   const router = useRouter()
-  const { isLoaded, signIn, setActive } = useSignIn()
+  const { isLoaded, signUp } = useSignUp()
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
@@ -52,24 +52,22 @@ export function SignUpForm() {
 
     startTransition(async () => {
       try {
-        const result = await signIn.create({
-          identifier: data.email,
+        await signUp.create({
+          emailAddress: data.email,
           password: data.password,
         })
 
-        if (result.status === "complete") {
-          console.log(result)
-          await setActive({ session: result.createdSessionId })
-          router.push("/")
-        } else {
-          /*Investigate why the login hasn't completed */
-          console.log(result)
-        }
+        // Send email verification link
+        await signUp.prepareEmailAddressVerification({
+          strategy: "email_code",
+        })
+
+        router.push("/signup/verify-email")
       } catch (error) {
-        const unknownError = "Something went wrong, please try again"
+        const unknownError = "Something went wrong, please try again."
 
         isClerkAPIResponseError(error)
-          ? toast.error(error.errors[0]?.message ?? unknownError)
+          ? toast.error(error.errors[0]?.longMessage ?? unknownError)
           : toast.error(unknownError)
       }
     })
@@ -131,8 +129,10 @@ export function SignUpForm() {
                   aria-hidden="true"
                 />
               )}
-              Create account
-              <span className="sr-only">Create account</span>
+              Continue
+              <span className="sr-only">
+                Continue to email verification page
+              </span>
             </Button>
           </form>
         </Form>

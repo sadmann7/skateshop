@@ -66,10 +66,10 @@ export function SignInForm() {
           console.log(result)
         }
       } catch (error) {
-        const unknownError = "Something went wrong, please try again"
+        const unknownError = "Something went wrong, please try again."
 
         isClerkAPIResponseError(error)
-          ? toast.error(error.errors[0]?.message ?? unknownError)
+          ? toast.error(error.errors[0]?.longMessage ?? unknownError)
           : toast.error(unknownError)
       }
     })

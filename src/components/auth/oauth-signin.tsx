@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useSignIn } from "@clerk/nextjs"
+import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs"
 import type { OAuthStrategy } from "@clerk/types"
 import { toast } from "react-hot-toast"
 
@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 const oauthProviders = [
-  { name: "Google", icon: "google", strategy: "oauth_google" },
-  { name: "Facebook", icon: "facebook", strategy: "oauth_facebook" },
-  { name: "Apple", icon: "apple", strategy: "oauth_apple" },
+  { name: "Google", strategy: "oauth_google", icon: "google" },
+  { name: "Facebook", strategy: "oauth_facebook", icon: "facebook" },
+  { name: "Apple", strategy: "oauth_apple", icon: "apple" },
 ] satisfies {
   name: string
   icon: keyof typeof Icons
@@ -32,9 +32,13 @@ export function OAuthSignIn() {
         redirectUrlComplete: "/",
       })
     } catch (error) {
-      console.error(error)
       setIsLoading(null)
-      toast.error("Something went wrong, please try again")
+
+      const unknownError = "Something went wrong, please try again."
+
+      isClerkAPIResponseError(error)
+        ? toast.error(error.errors[0]?.longMessage ?? unknownError)
+        : toast.error(unknownError)
     }
   }
 

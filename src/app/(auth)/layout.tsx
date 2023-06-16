@@ -1,4 +1,6 @@
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { currentUser } from "@clerk/nextjs"
 
 import { siteConfig } from "@/config/site"
 import { Icons } from "@/components/icons"
@@ -7,7 +9,13 @@ interface AuthLayoutProps {
   children: React.ReactNode
 }
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default async function AuthLayout({ children }: AuthLayoutProps) {
+  const user = await currentUser()
+
+  if (user) {
+    redirect("/")
+  }
+
   return (
     <div className="relative grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2">
       <div className="relative">

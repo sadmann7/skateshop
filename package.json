@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.21.1",
-    "@clerk/themes": "^1.7.5",
     "@clerk/types": "^3.42.0",
     "@hookform/resolvers": "^3.1.1",
     "@planetscale/database": "^1.7.0",

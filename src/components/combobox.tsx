@@ -24,15 +24,16 @@ export function Combobox() {
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
   const [data, setData] = React.useState<
-    {
-      category: Product["category"]
-      products: Pick<Product, "id" | "name" | "category">[]
-    }[]
-  >([])
+    | {
+        category: Product["category"]
+        products: Pick<Product, "id" | "name" | "category">[]
+      }[]
+    | null
+  >(null)
   const [isPending, startTransition] = React.useTransition()
 
   React.useEffect(() => {
-    if (query.length <= 0) return
+    if (query.length === 0) setData(null)
 
     startTransition(async () => {
       const data = await filterProductsAction(query)

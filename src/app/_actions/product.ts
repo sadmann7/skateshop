@@ -29,6 +29,8 @@ export async function filterProductsAction(query: string) {
     throw new Error("Query must be a string")
   }
 
+  if (query.length === 0) return null
+
   const filteredProducts = await db
     .select({
       id: products.id,

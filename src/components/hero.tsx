@@ -27,21 +27,21 @@ export function Hero() {
   // hero carousel with pagination
   const [currentImage, setCurrentImage] = React.useState(0)
 
-  function nextImage() {
-    if (currentImage === heroImages.length - 1) {
-      setCurrentImage(0)
-    } else {
-      setCurrentImage(currentImage + 1)
-    }
-  }
+  // function nextImage() {
+  //   if (currentImage === heroImages.length - 1) {
+  //     setCurrentImage(0)
+  //   } else {
+  //     setCurrentImage(currentImage + 1)
+  //   }
+  // }
 
-  function prevImage() {
-    if (currentImage === 0) {
-      setCurrentImage(heroImages.length - 1)
-    } else {
-      setCurrentImage(currentImage - 1)
-    }
-  }
+  // function prevImage() {
+  //   if (currentImage === 0) {
+  //     setCurrentImage(heroImages.length - 1)
+  //   } else {
+  //     setCurrentImage(currentImage - 1)
+  //   }
+  // }
 
   return (
     <div
@@ -54,7 +54,7 @@ export function Hero() {
       aria-describedby="hero-carousel"
       className="relative"
     >
-      <AspectRatio ratio={2.7 / 1}>
+      <AspectRatio ratio={16 / 9}>
         <div className="absolute inset-0 z-10 bg-black/60" />
         <Image
           src={heroImages[currentImage]?.src ?? "/images/hero-image-one.webp"}
@@ -79,7 +79,7 @@ export function Hero() {
           </Button>
         ))}
       </div>
-      <div className="absolute inset-x-0 inset-y-1/2 z-20 hidden justify-between px-4 py-2 md:flex">
+      {/* <div className="absolute inset-x-0 inset-y-1/2 z-20 hidden justify-between px-4 py-2 md:flex">
         <Button
           size="sm"
           className="w-9 rounded-full bg-zinc-500 p-0 text-white hover:bg-zinc-600"
@@ -96,7 +96,7 @@ export function Hero() {
           <Icons.chevronRight className="h-6 w-6" aria-hidden="true" />
           <span className="sr-only">Next slide</span>
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }

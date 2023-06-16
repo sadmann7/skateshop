@@ -2,7 +2,6 @@ import "@/styles/globals.css"
 
 import type { Metadata } from "next"
 import { ClerkProvider } from "@clerk/nextjs"
-import { neobrutalism } from "@clerk/themes"
 
 import { siteConfig } from "@/config/site"
 import { fontMono, fontSans } from "@/lib/fonts"
@@ -68,11 +67,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-      <ClerkProvider
-        appearance={{
-          baseTheme: neobrutalism,
-        }}
-      >
+      <ClerkProvider>
         <html lang="en" suppressHydrationWarning>
           <head />
           <body
