@@ -7,6 +7,9 @@ dependencies:
   '@clerk/themes':
     specifier: ^1.7.5
     version: 1.7.5(react@18.2.0)
+  '@clerk/types':
+    specifier: ^3.42.0
+    version: 3.42.0
   '@hookform/resolvers':
     specifier: ^3.1.1
     version: 3.1.1(react-hook-form@7.44.3)

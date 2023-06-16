@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function AccountPage() {
   return (
-    <Shell variant="dashboard">
+    <Shell layout="dashboard">
       <Header
         title="Account"
         description="Manage your account settings."
