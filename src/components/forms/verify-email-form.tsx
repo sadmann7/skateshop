@@ -58,11 +58,9 @@ export function VerifyEmailForm() {
         }
         if (completeSignUp.status === "complete") {
           await setActive({ session: completeSignUp.createdSessionId })
-          router.push("/")
+          router.push(`${window.location.origin}/}`)
         }
       } catch (error) {
-        console.log(error)
-
         const unknownError = "Something went wrong, please try again."
 
         isClerkAPIResponseError(error)

@@ -59,10 +59,15 @@ export function SignUpForm() {
 
         // Send email verification link
         await signUp.prepareEmailAddressVerification({
-          strategy: "email_code",
+          strategy: "email_link",
+          redirectUrl: `/`,
         })
 
-        router.push("/signup/verify-email")
+        toast.success(
+          "Check your email for a link to verify your email address"
+        )
+
+        // router.push("/signup/verify-email")
       } catch (error) {
         const unknownError = "Something went wrong, please try again."
 
