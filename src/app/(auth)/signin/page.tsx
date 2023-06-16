@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -10,9 +12,9 @@ import {
 import { OAuthSignIn } from "@/components/auth/oauth-signin"
 import { Shell } from "@/components/shell"
 
-export default function SigninPage() {
+export default function SignInPage() {
   return (
-    <Shell layout="dashboard" className="mx-auto">
+    <Shell layout="dashboard" className="mx-auto w-full sm:w-auto">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Create an account</CardTitle>
@@ -41,8 +43,17 @@ export default function SigninPage() {
           <Input id="password" type="password" />
         </div> */}
         </CardContent>
-        <CardFooter>
+        <CardFooter className="grid gap-4">
           <Button className="w-full">Create account</Button>
+          <div className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-primary/80 underline underline-offset-4 transition-colors hover:text-primary"
+            >
+              Sign up
+            </Link>
+          </div>
         </CardFooter>
       </Card>
     </Shell>
