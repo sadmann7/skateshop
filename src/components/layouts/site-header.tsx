@@ -118,7 +118,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link href="/sign-in">
+              <Link href="/signin">
                 <div
                   className={buttonVariants({
                     size: "sm",
