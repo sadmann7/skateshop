@@ -1,6 +1,5 @@
 import { type Metadata } from "next"
 
-import { SignUpForm } from "@/components/forms/signup-form"
 import { VerifyEmailForm } from "@/components/forms/verify-email-form"
 import { Shell } from "@/components/shell"
 

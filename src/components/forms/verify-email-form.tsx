@@ -58,7 +58,8 @@ export function VerifyEmailForm() {
         }
         if (completeSignUp.status === "complete") {
           await setActive({ session: completeSignUp.createdSessionId })
-          router.push(`${window.location.origin}/}`)
+
+          router.push("/")
         }
       } catch (error) {
         const unknownError = "Something went wrong, please try again."

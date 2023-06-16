@@ -7,6 +7,8 @@ import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { Shell } from "@/components/shell"
 
+export const runtime = "edge"
+
 export default function IndexPage() {
   return (
     <div>
