@@ -31,8 +31,8 @@ export function OAuthSignIn() {
         redirectUrl: "/sso-callback",
         redirectUrlComplete: "/",
       })
-    } catch (cause) {
-      console.error(cause)
+    } catch (error) {
+      console.error(error)
       setIsLoading(null)
       toast.error("Something went wrong, please try again.")
     }

@@ -101,6 +101,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />

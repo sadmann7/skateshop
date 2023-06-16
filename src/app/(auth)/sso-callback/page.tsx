@@ -1,27 +1,15 @@
-"use client"
-
-import * as React from "react"
-import { useClerk } from "@clerk/nextjs"
 import type { HandleOAuthCallbackParams } from "@clerk/types"
 
-import { Icons } from "@/components/icons"
+import SSOCallback from "@/components/auth/sso-callback"
 
 export const runtime = "edge"
 
-interface SSOCallbackProps {
+export interface SSOCallbackPageProps {
   searchParams: HandleOAuthCallbackParams
 }
 
-export default function SSOCallbackPage({ searchParams }: SSOCallbackProps) {
-  const { handleRedirectCallback } = useClerk()
-
-  React.useEffect(() => {
-    void handleRedirectCallback(searchParams)
-  }, [searchParams, handleRedirectCallback])
-
-  return (
-    <div className="flex items-center justify-center">
-      <Icons.spinner className="mr-2 h-16 w-16 animate-spin" />
-    </div>
-  )
+export default function SSOCallbackPage({
+  searchParams,
+}: SSOCallbackPageProps) {
+  return <SSOCallback searchParams={searchParams} />
 }

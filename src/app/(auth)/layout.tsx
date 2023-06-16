@@ -3,11 +3,11 @@ import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { Icons } from "@/components/icons"
 
-interface DashboardLayout {
+interface AuthLayoutProps {
   children: React.ReactNode
 }
 
-export default function AuthLayout({ children }: DashboardLayout) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="relative grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2">
       <div className="relative">
