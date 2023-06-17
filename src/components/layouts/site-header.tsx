@@ -82,21 +82,30 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/account">
-                        <Icons.user className="mr-2 h-4 w-4" />
+                        <Icons.user
+                          className="mr-2 h-4 w-4"
+                          aria-hidden="true"
+                        />
                         Account
                         <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/stores">
-                        <Icons.dashboard className="mr-2 h-4 w-4" />
+                        <Icons.dashboard
+                          className="mr-2 h-4 w-4"
+                          aria-hidden="true"
+                        />
                         Dashboard
                         <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild disabled>
                       <Link href="/dashboard/settings">
-                        <Icons.settings className="mr-2 h-4 w-4" />
+                        <Icons.settings
+                          className="mr-2 h-4 w-4"
+                          aria-hidden="true"
+                        />
                         Settings
                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                       </Link>
@@ -105,7 +114,10 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/signout">
-                      <Icons.settings className="mr-2 h-4 w-4" />
+                      <Icons.logout
+                        className="mr-2 h-4 w-4"
+                        aria-hidden="true"
+                      />
                       Log out
                       <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                     </Link>
@@ -117,7 +129,6 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 <div
                   className={buttonVariants({
                     size: "sm",
-                    variant: "secondary",
                   })}
                 >
                   Sign In

@@ -53,6 +53,7 @@ export function LogOutButtons() {
         size="sm"
         className="w-full"
         onClick={() => router.back()}
+        disabled={isPending}
       >
         Go back
       </Button>

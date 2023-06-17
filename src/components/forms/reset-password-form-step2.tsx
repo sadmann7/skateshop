@@ -58,12 +58,12 @@ export function ResetPasswordStep2Form() {
         })
 
         if (attemptFirstFactor.status === "needs_second_factor") {
-          // TODO: implement 2FA (requires Clerk Pro plan)
+          // TODO: implement 2FA (requires clerk pro plan)
         } else if (attemptFirstFactor.status === "complete") {
           void setActive({
             session: attemptFirstFactor.createdSessionId,
           })
-          router.push("/")
+          router.push(`${window.location.origin}/`)
         } else {
           console.error(attemptFirstFactor)
         }
