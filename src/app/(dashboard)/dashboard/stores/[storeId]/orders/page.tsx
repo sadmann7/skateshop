@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm"
 
 export const metadata: Metadata = {
   title: "Orders",
-  description: "Manage your orders.",
+  description: "Manage your orders",
 }
 
 interface OrdersPageProps {

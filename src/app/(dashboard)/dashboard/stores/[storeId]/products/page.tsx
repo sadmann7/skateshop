@@ -8,7 +8,7 @@ import { ProductsTable } from "@/components/products-table"
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Manage your products.",
+  description: "Manage your products",
 }
 
 interface ProductsPageProps {

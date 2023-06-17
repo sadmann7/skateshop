@@ -20,14 +20,14 @@ import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Billing",
-  description: "Manage your billing and subscription.",
+  description: "Manage your billing and subscription",
 }
 
 export default async function BillingPage() {
   const user = await currentUser()
 
   if (!user) {
-    redirect("/sign-in")
+    redirect("/signin")
   }
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)

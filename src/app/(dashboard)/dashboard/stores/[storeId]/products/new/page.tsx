@@ -6,7 +6,7 @@ import { AddProductForm } from "@/components/forms/add-product-form"
 
 export const metadata: Metadata = {
   title: "New Product",
-  description: "Add a new product.",
+  description: "Add a new product",
 }
 
 interface NewProductPageProps {
@@ -21,7 +21,7 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
   const user = await currentUser()
 
   if (!user) {
-    redirect("/sign-in")
+    redirect("/sigin")
   }
 
   return <AddProductForm storeId={storeId} />

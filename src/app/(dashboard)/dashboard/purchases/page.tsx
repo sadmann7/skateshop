@@ -7,14 +7,14 @@ import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Purchases",
-  description: "Manage your purchases.",
+  description: "Manage your purchases",
 }
 
 export default async function PurchasesPage() {
   const user = await currentUser()
 
   if (!user) {
-    redirect("/sign-in")
+    redirect("/signin")
   }
 
   return (

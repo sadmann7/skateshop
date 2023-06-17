@@ -8,7 +8,7 @@ import { UpdateProductForm } from "@/components/forms/update-product-form"
 
 export const metadata: Metadata = {
   title: "Manage Product",
-  description: "Manage your product.",
+  description: "Manage your product",
 }
 
 interface EditProductPageProps {

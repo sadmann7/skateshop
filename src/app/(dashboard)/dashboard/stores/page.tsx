@@ -17,14 +17,14 @@ import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Stores",
-  description: "Manage your stores.",
+  description: "Manage your stores",
 }
 
 export default async function StoresPage() {
   const user = await currentUser()
 
   if (!user) {
-    redirect("/sign-in")
+    redirect("/signin")
   }
 
   const userStores = await db.query.stores.findMany({

@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
   title: "Payments",
-  description: "Manage your payments.",
+  description: "Manage your payments",
 }
 
 interface PaymentsPageProps {

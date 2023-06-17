@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
   title: "Analytics",
-  description: "Analytics for your store.",
+  description: "Analytics for your store",
 }
 
 interface AnalyticsPageProps {

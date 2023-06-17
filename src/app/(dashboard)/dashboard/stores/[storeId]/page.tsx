@@ -19,7 +19,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 export const metadata: Metadata = {
   title: "Manage Store",
-  description: "Manage your store.",
+  description: "Manage your store",
 }
 
 interface UpdateStorePageProps {

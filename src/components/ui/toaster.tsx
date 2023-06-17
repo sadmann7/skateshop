@@ -3,7 +3,7 @@ import { Toaster as ReactToaster } from "react-hot-toast"
 export function Toaster() {
   return (
     <ReactToaster
-      position="bottom-center"
+      position="bottom-right"
       toastOptions={{
         style: {
           background: "hsl(var(--background))",

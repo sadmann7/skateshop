@@ -24,7 +24,7 @@ export default async function StoreLayout({
   const user = await currentUser()
 
   if (!user) {
-    redirect("/sign-in")
+    redirect("/signin")
   }
 
   const store = await db.query.stores.findFirst({
