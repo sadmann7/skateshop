@@ -42,7 +42,7 @@ export async function addStoreAction(
   const user = await clerkClient.users.getUser(input.userId)
 
   if (!user) {
-    throw new Error("User not found")
+    throw new Error("User not found.")
   }
 
   // If the user doesn't have a role, set it to user
@@ -60,7 +60,7 @@ export async function addStoreAction(
   })
 
   if (storeWithSameName) {
-    throw new Error("Store name already taken")
+    throw new Error("Store name already taken.")
   }
 
   await db.insert(stores).values({

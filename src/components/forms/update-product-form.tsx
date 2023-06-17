@@ -7,7 +7,7 @@ import type { FileWithPreview } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import { type z } from "zod"
 
 import { isArrayOfFile } from "@/lib/utils"
@@ -106,20 +106,14 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
 
         // Upload images if data.images is an array of files
         const images = isArrayOfFile(data.images)
-          ? await toast
-              .promise(startUpload(data.images), {
-                loading: "Uploading images",
-                success: "Images uploaded successfully",
-                error: "Something went wrong",
-              })
-              .then((res) => {
-                const formattedImages = res?.map((image) => ({
-                  id: image.fileKey,
-                  name: image.fileKey.split("_")[1] ?? image.fileKey,
-                  url: image.fileUrl,
-                }))
-                return formattedImages ?? null
-              })
+          ? await startUpload(data.images).then((res) => {
+              const formattedImages = res?.map((image) => ({
+                id: image.fileKey,
+                name: image.fileKey.split("_")[1] ?? image.fileKey,
+                url: image.fileUrl,
+              }))
+              return formattedImages ?? null
+            })
           : null
 
         // Update product

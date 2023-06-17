@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import type { z } from "zod"
 
 import { storeSchema } from "@/lib/validations/store"
@@ -37,7 +37,6 @@ type Inputs = z.infer<typeof storeSchema>
 
 export function AddStoreForm({ userId }: AddStoreFormProps) {
   const router = useRouter()
-
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form

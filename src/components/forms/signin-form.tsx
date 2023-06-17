@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import type { z } from "zod"
 
 import { authSchema } from "@/lib/validations/auth"
@@ -60,6 +60,7 @@ export function SignInForm() {
 
         if (result.status === "complete") {
           await setActive({ session: result.createdSessionId })
+
           router.push(`${window.location.origin}/`)
         } else {
           /*Investigate why the login hasn't completed */

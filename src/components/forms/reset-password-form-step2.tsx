@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import type { z } from "zod"
 
 import { resetPasswordSchema } from "@/lib/validations/auth"
@@ -60,10 +60,11 @@ export function ResetPasswordStep2Form() {
         if (attemptFirstFactor.status === "needs_second_factor") {
           // TODO: implement 2FA (requires clerk pro plan)
         } else if (attemptFirstFactor.status === "complete") {
-          void setActive({
+          await setActive({
             session: attemptFirstFactor.createdSessionId,
           })
           router.push(`${window.location.origin}/`)
+          toast.success("Password reset successfully")
         } else {
           console.error(attemptFirstFactor)
         }

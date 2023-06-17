@@ -9,7 +9,7 @@ import jsPDF from "jspdf"
 import autoTable from "jspdf-autotable"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { type DateRange } from "react-day-picker"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import {
   Table as ShadcnTable,
   type ColumnDef,

@@ -1,8 +1,10 @@
-import { Toaster as ReactToaster } from "react-hot-toast"
+"use client"
+
+import { Toaster as RadToaster } from "sonner"
 
 export function Toaster() {
   return (
-    <ReactToaster
+    <RadToaster
       position="bottom-right"
       toastOptions={{
         style: {

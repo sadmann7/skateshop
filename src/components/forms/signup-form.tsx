@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { isClerkAPIResponseError, useSignUp } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import type { z } from "zod"
 
 import { authSchema } from "@/lib/validations/auth"
@@ -64,7 +64,9 @@ export function SignUpForm() {
         })
 
         router.push("/signup/verify-email")
-        toast.success("Check your email for the verification code")
+        toast.message("Check your email", {
+          description: "We sent you a 6-digit verification code.",
+        })
       } catch (error) {
         const unknownError = "Something went wrong, please try again."
 

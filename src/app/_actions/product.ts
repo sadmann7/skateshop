@@ -26,7 +26,7 @@ import type {
 
 export async function filterProductsAction(query: string) {
   if (typeof query !== "string") {
-    throw new Error("Query must be a string")
+    throw new Error("Invalid input.")
   }
 
   if (query.length === 0) return null
@@ -115,7 +115,7 @@ export async function getProductsAction(
 
 export async function checkProductAction(input: { name: string; id?: number }) {
   if (typeof input.name !== "string") {
-    throw new Error("Invalid input")
+    throw new Error("Invalid input.")
   }
 
   const productWithSameName = await db.query.products.findFirst({
@@ -125,7 +125,7 @@ export async function checkProductAction(input: { name: string; id?: number }) {
   })
 
   if (productWithSameName) {
-    throw new Error("Product name already taken")
+    throw new Error("Product name already taken.")
   }
 }
 
@@ -140,7 +140,7 @@ export async function addProductAction(
   })
 
   if (productWithSameName) {
-    throw new Error("Product name already taken")
+    throw new Error("Product name already taken.")
   }
 
   await db.insert(products).values({
@@ -149,7 +149,7 @@ export async function addProductAction(
     images: input.images,
   })
 
-  revalidatePath(`/dashboard/stores/${input.storeId}/products`)
+  revalidatePath(`/dashboard/stores/${input.storeId}/products.`)
 }
 
 export async function updateProductAction(
@@ -160,7 +160,7 @@ export async function updateProductAction(
   }
 ) {
   if (typeof input.id !== "number") {
-    throw new Error("Id must be a number")
+    throw new Error("Invalid input.")
   }
 
   const product = await db.query.products.findFirst({
@@ -168,7 +168,7 @@ export async function updateProductAction(
   })
 
   if (!product) {
-    throw new Error("Product not found")
+    throw new Error("Product not found.")
   }
 
   await db.update(products).set(input).where(eq(products.id, input.id))
@@ -180,7 +180,7 @@ export async function deleteProductAction(
   input: z.infer<typeof getProductSchema>
 ) {
   if (typeof input.storeId !== "number" || typeof input.id !== "number") {
-    throw new Error("Invalid input")
+    throw new Error("Invalid input.")
   }
 
   and(eq(products.id, input.id), eq(products.storeId, input.storeId)),
@@ -198,11 +198,11 @@ export async function deleteProductsAction(input: {
   ids: number[]
 }) {
   if (typeof input.storeId !== "number") {
-    throw new Error("Invalid input")
+    throw new Error("Invalid input.")
   }
 
   if (input.ids.some((id) => typeof id !== "number")) {
-    throw new Error("Invalid input")
+    throw new Error("Invalid input.")
   }
 
   await db
@@ -221,7 +221,7 @@ export async function getNextProductIdAction(
   input: z.infer<typeof getProductSchema>
 ) {
   if (typeof input.storeId !== "number" || typeof input.id !== "number") {
-    throw new Error("Invalid input")
+    throw new Error("Invalid input.")
   }
 
   const product = await db.query.products.findFirst({
@@ -230,7 +230,7 @@ export async function getNextProductIdAction(
   })
 
   if (!product) {
-    throw new Error("Product not found")
+    throw new Error("Product not found.")
   }
 
   return product.id
@@ -240,7 +240,7 @@ export async function getPreviousProductIdAction(
   input: z.infer<typeof getProductSchema>
 ) {
   if (typeof input.storeId !== "number" || typeof input.id !== "number") {
-    throw new Error("Invalid input")
+    throw new Error("Invalid input.")
   }
 
   const product = await db.query.products.findFirst({
@@ -249,7 +249,7 @@ export async function getPreviousProductIdAction(
   })
 
   if (!product) {
-    throw new Error("Product not found")
+    throw new Error("Product not found.")
   }
 
   return product.id

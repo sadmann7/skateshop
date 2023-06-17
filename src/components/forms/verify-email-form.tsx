@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { isClerkAPIResponseError, useSignUp } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "react-hot-toast"
+import { toast } from "sonner"
 import type { z } from "zod"
 
 import { verfifyEmailSchema } from "@/lib/validations/auth"
