@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function SignInPage() {
   return (
-    <Shell layout="dashboard" className="mx-auto w-full sm:w-auto">
+    <Shell layout="auth">
       <SignInForm />
     </Shell>
   )

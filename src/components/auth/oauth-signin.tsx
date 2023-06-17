@@ -43,12 +43,13 @@ export function OAuthSignIn() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4">
+    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-4">
       {oauthProviders.map((provider) => {
-        const Icon = Icons[provider.icon ?? "google"]
+        const Icon = Icons[provider.icon]
 
         return (
           <Button
+            aria-label={`Sign in with ${provider.name}`}
             key={provider.strategy}
             variant="outline"
             className="w-full bg-background sm:w-auto"
@@ -60,7 +61,6 @@ export function OAuthSignIn() {
               <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
             )}
             {provider.name}
-            <span className="sr-only">Sign in with {provider.name}</span>
           </Button>
         )
       })}
