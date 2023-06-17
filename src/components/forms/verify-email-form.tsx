@@ -92,7 +92,14 @@ export function VerifyEmailForm() {
                 <FormItem>
                   <FormLabel>Verification Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="169420" {...field} />
+                    <Input
+                      placeholder="169420"
+                      {...field}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.trim()
+                        field.onChange(e)
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

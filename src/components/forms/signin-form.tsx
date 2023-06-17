@@ -153,7 +153,7 @@ export function SignInForm() {
           href="/signin/reset-password"
           className="text-sm text-primary underline-offset-4 transition-colors hover:underline"
         >
-          Reset password?
+          Reset password
         </Link>
       </CardFooter>
     </Card>

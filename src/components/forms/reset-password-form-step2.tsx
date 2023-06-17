@@ -35,7 +35,6 @@ export function ResetPasswordStep2Form() {
   const router = useRouter()
   const { isLoaded, signIn, setActive } = useSignIn()
   const [isPending, startTransition] = React.useTransition()
-  const [isSecondFactor, setIsSecondFactor] = React.useState(false)
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -59,12 +58,12 @@ export function ResetPasswordStep2Form() {
         })
 
         if (attemptFirstFactor.status === "needs_second_factor") {
-          setIsSecondFactor(true)
+          // TODO: implement 2FA (requires Clerk Pro plan)
         } else if (attemptFirstFactor.status === "complete") {
           void setActive({
             session: attemptFirstFactor.createdSessionId,
           })
-          router.push(`${window.location.origin}/}`)
+          router.push("/")
         } else {
           console.error(attemptFirstFactor)
         }
@@ -125,7 +124,14 @@ export function ResetPasswordStep2Form() {
                 <FormItem>
                   <FormLabel>Code</FormLabel>
                   <FormControl>
-                    <Input placeholder="169420" {...field} />
+                    <Input
+                      placeholder="169420"
+                      {...field}
+                      onChange={(e) => {
+                        e.target.value = e.target.value.trim()
+                        field.onChange(e)
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

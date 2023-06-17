@@ -1,7 +1,5 @@
 import Image from "next/image"
 import Link from "next/link"
-import { redirect } from "next/navigation"
-import { currentUser } from "@clerk/nextjs"
 
 import { siteConfig } from "@/config/site"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -11,13 +9,7 @@ interface AuthLayoutProps {
   children: React.ReactNode
 }
 
-export default async function AuthLayout({ children }: AuthLayoutProps) {
-  const user = await currentUser()
-
-  if (user) {
-    redirect("/")
-  }
-
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div className="grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2">
       <AspectRatio ratio={16 / 9}>

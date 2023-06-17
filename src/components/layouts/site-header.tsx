@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { SignOutButton } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/dist/types/server"
 
 import { dashboardConfig } from "@/config/dashboard"
@@ -104,16 +103,12 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <SignOutButton>
-                      <div className="flex w-full items-center justify-between gap-2">
-                        <div className="flex items-center">
-                          <Icons.logout className="mr-2 h-4 w-4" />
-                          <span>Log out</span>
-                        </div>
-                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                      </div>
-                    </SignOutButton>
+                  <DropdownMenuItem asChild>
+                    <Link href="/signout">
+                      <Icons.settings className="mr-2 h-4 w-4" />
+                      Log out
+                      <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
