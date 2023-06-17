@@ -31,7 +31,7 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
 
   return (
     <Shell>
-      <Header title={product.name} description={product.description ?? ""} />
+      <Header title={product.name} description={product.description} />
     </Shell>
   )
 }

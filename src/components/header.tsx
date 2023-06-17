@@ -6,7 +6,7 @@ interface HeaderProps
     HTMLDivElement
   > {
   title: string
-  description?: string
+  description?: string | null
   size?: "default" | "sm"
 }
 

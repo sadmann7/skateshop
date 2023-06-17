@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { stores, type Store } from "@/db/schema"
+import { type UserRole } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
 import { asc, desc, eq } from "drizzle-orm"
 import type { z } from "zod"
@@ -50,7 +51,7 @@ export async function addStoreAction(
     await clerkClient.users.updateUser(input.userId, {
       privateMetadata: {
         ...user.privateMetadata,
-        role: "user",
+        role: "user" satisfies UserRole,
       },
     })
   }

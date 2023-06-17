@@ -19,6 +19,8 @@ export type MainNavItem = NavItem
 
 export type SidebarNavItem = NavItemWithChildren
 
+export type UserRole = "user" | "admin"
+
 export type FileWithPreview = FileWithPath & {
   preview: string
 }
