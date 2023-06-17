@@ -30,6 +30,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { OAuthSignIn } from "@/components/auth/oauth-signin"
 import { Icons } from "@/components/icons"
+import { PasswordInput } from "@/components/password-input"
 
 type Inputs = z.infer<typeof authSchema>
 
@@ -117,7 +118,7 @@ export function SignInForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="**********" {...field} />
+                    <PasswordInput placeholder="**********" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

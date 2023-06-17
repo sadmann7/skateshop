@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
+import { PasswordInput } from "@/components/password-input"
 
 type Inputs = z.infer<typeof resetPasswordSchema>
 
@@ -98,7 +99,7 @@ export function ResetPasswordStep2Form() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="*********" {...field} />
+                    <PasswordInput placeholder="*********" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +112,7 @@ export function ResetPasswordStep2Form() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="*********" {...field} />
+                    <PasswordInput placeholder="*********" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
