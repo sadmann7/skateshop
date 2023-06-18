@@ -49,19 +49,13 @@ Create a `.env` file in the root directory and add the environment variables as 
 pnpm run dev
 ```
 
-### 5. Run CLI migration command
-
-```bash
-pnpm run postinstall
-```
-
-### 6. Push database
+### 5. Push database
 
 ```bash
 pnpm run db:push
 ```
 
-### 7. Listen for stripe events
+### 6. Listen for stripe events
 
 ```bash
 pnpm run stripe:listen

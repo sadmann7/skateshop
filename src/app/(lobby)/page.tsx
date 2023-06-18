@@ -30,7 +30,7 @@ export default function IndexPage() {
               <Card className="group overflow-hidden">
                 <CardContent className="p-0">
                   <AspectRatio ratio={1.85 / 1}>
-                    <div className="absolute inset-0 z-10 bg-black/70 transition-colors group-hover:bg-black/80" />
+                    <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
                     <CardTitle className="absolute inset-0 z-10 flex items-center justify-center text-2xl capitalize">
                       {category}
                     </CardTitle>
