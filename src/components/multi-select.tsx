@@ -7,11 +7,11 @@ import { X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command"
 
-interface MultiSelectProps<TData extends { value: string; label: string }> {
+interface MultiSelectProps<TData extends { label: string; value: string }> {
   options: TData[]
 }
 
-export function MultiSelect<TData extends { value: string; label: string }>({
+export function MultiSelect<TData extends { label: string; value: string }>({
   options,
 }: MultiSelectProps<TData>) {
   const inputRef = React.useRef<HTMLInputElement>(null)

@@ -10,7 +10,7 @@ import { sortOptions } from "@/config/products"
 import { cn, formatPrice } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -308,7 +308,7 @@ export function Products({
               <Card key={product.id} className="overflow-hidden rounded-sm">
                 <Link
                   aria-label={`View ${product.name} details`}
-                  href={`/products/${product.id}`}
+                  href={`/product/${product.id}`}
                 >
                   <CardHeader className="border-b p-0">
                     <AspectRatio ratio={4 / 3}>
@@ -350,14 +350,17 @@ export function Products({
                 </Link>
                 <CardFooter className="p-4">
                   <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
-                    <Button
+                    <Link
                       aria-label="Quick view"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 w-full rounded-sm"
+                      href={`/quickview/product/${product.id}`}
+                      className={buttonVariants({
+                        variant: "outline",
+                        size: "sm",
+                        className: "h-8 w-full rounded-sm",
+                      })}
                     >
                       Quick view
-                    </Button>
+                    </Link>
                     <Button
                       aria-label="Add to cart"
                       size="sm"
