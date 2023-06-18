@@ -48,10 +48,16 @@ import { PaginationButton } from "@/components/pagination-button"
 interface ProductsProps {
   products: Product[]
   pageCount: number
-  stores: Pick<Store, "id" | "name">[]
+  stores?: Pick<Store, "id" | "name">[]
+  categories?: Product["category"][]
 }
 
-export function Products({ products, pageCount, stores }: ProductsProps) {
+export function Products({
+  products,
+  pageCount,
+  stores,
+  categories,
+}: ProductsProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -59,6 +65,7 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
+  const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt-desc"
   const store_ids = searchParams?.get("store_ids")
 
@@ -170,42 +177,44 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
                   />
                 </div>
               </div>
-              <div className="h-[420px] space-y-5">
-                <h3 className="text-sm font-medium tracking-wide text-foreground">
-                  Stores
-                </h3>
-                <ScrollArea className="h-full">
-                  <div className="space-y-4">
-                    {stores.map((store) => (
-                      <div
-                        key={store.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={`store-${store.id}`}
-                          checked={storeIds?.includes(store.id) ?? false}
-                          onCheckedChange={(value) => {
-                            if (value) {
-                              setStoreIds([...(storeIds ?? []), store.id])
-                            } else {
-                              setStoreIds(
-                                storeIds?.filter((id) => id !== store.id) ??
-                                  null
-                              )
-                            }
-                          }}
-                        />
-                        <Label
-                          htmlFor={`store-${store.id}`}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              {stores?.length ? (
+                <div className="h-[420px] space-y-5">
+                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                    Stores
+                  </h3>
+                  <ScrollArea className="h-full">
+                    <div className="space-y-4">
+                      {stores.map((store) => (
+                        <div
+                          key={store.id}
+                          className="flex items-center space-x-2"
                         >
-                          {store.name}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </div>
+                          <Checkbox
+                            id={`store-${store.id}`}
+                            checked={storeIds?.includes(store.id) ?? false}
+                            onCheckedChange={(value) => {
+                              if (value) {
+                                setStoreIds([...(storeIds ?? []), store.id])
+                              } else {
+                                setStoreIds(
+                                  storeIds?.filter((id) => id !== store.id) ??
+                                    null
+                                )
+                              }
+                            }}
+                          />
+                          <Label
+                            htmlFor={`store-${store.id}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {store.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              ) : null}
             </div>
             <div className="absolute inset-x-6 bottom-6">
               <Separator className="my-4" />
@@ -366,6 +375,7 @@ export function Products({ products, pageCount, stores }: ProductsProps) {
           className="mx-auto"
           pageCount={pageCount}
           page={page}
+          per_page={per_page}
           sort={sort}
           createQueryString={createQueryString}
           router={router}

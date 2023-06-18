@@ -106,23 +106,19 @@ export function PaginationButton({
         <Icons.chevronLeft className="h-5 w-5" aria-hidden="true" />
         <span className="sr-only">Previous page</span>
       </Button>
-      {paginationRange.map((pageNumber, i) => {
-        if (pageNumber === "...") {
-          return (
-            <Button
-              aria-label="Page separator"
-              key={i}
-              variant="outline"
-              size="sm"
-              className="h-8 w-8 px-0"
-              disabled
-            >
-              ...
-            </Button>
-          )
-        }
-
-        return (
+      {paginationRange.map((pageNumber, i) =>
+        pageNumber === "..." ? (
+          <Button
+            aria-label="Page separator"
+            key={i}
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 px-0"
+            disabled
+          >
+            ...
+          </Button>
+        ) : (
           <Button
             aria-label={`Page ${pageNumber}`}
             key={i}
@@ -145,7 +141,7 @@ export function PaginationButton({
             {pageNumber}
           </Button>
         )
-      })}
+      )}
       <Button
         variant="outline"
         size="sm"
