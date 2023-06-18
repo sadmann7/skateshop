@@ -34,12 +34,12 @@ export const products = mysqlTable("products", {
   description: text("description"),
   images: json("images").$type<StoredFile[] | null>().default(null),
   category: mysqlEnum("category", [
-    "skateboard",
+    "skateboards",
     "clothing",
     "shoes",
     "accessories",
   ])
-    .default("skateboard")
+    .default("skateboards")
     .notNull(),
   price: int("price").default(0).notNull(),
   quantity: int("quantity").default(1).notNull(),

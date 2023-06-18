@@ -9,19 +9,19 @@ export const siteConfig = {
   mainNav: [
     {
       title: "Skateboards",
-      href: "/skateboards",
+      href: "/categories/skateboards",
     },
     {
       title: "Clothing",
-      href: "/clothing",
+      href: "/categories/clothing",
     },
     {
       title: "Shoes",
-      href: "/shoes",
+      href: "/categories/shoes",
     },
     {
       title: "Accessories",
-      href: "/accessories",
+      href: "/categories/accessories",
     },
     {
       title: "Build a Board",

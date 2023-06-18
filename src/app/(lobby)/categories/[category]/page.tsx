@@ -20,6 +20,8 @@ interface CategoryPageProps {
   }
 }
 
+export const runtime = "edge"
+
 export function generateMetadata({ params }: CategoryPageProps) {
   return {
     title: toTitleCase(params.category),
@@ -54,7 +56,11 @@ export default async function CategoryPage({
 
   return (
     <Shell>
-      <Header title={toTitleCase(category)} description={`Buy ${category}`} />
+      <Header
+        title={toTitleCase(category)}
+        description={`Buy ${category} from the best stores`}
+        size="sm"
+      />
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}

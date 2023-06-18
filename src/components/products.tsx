@@ -266,17 +266,12 @@ export function Products({
         </DropdownMenu>
       </div>
       {!isPending && !products.length ? (
-        <Card className="rounded-sm">
-          <CardContent className="flex flex-col items-center justify-center space-y-4 p-8">
-            <Icons.product className="h-12 w-12 text-muted-foreground" />
-            <div className="text-center">
-              <h2 className="text-lg font-medium">No products found</h2>
-              <p className="text-sm text-muted-foreground">
-                Try adjusting your filters
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
+          <h1 className="text-center text-2xl font-bold">No products found</h1>
+          <p className="text-center text-muted-foreground">
+            Try changing your filters, or check back later for new products
+          </p>
+        </div>
       ) : null}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isPending

@@ -89,7 +89,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const form = useForm<Inputs>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      category: "skateboard",
+      category: product.category,
     },
   })
 

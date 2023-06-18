@@ -4,21 +4,32 @@ import { db } from "@/db"
 import { products } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
-import { Header } from "@/components/header"
-import { Shell } from "@/components/shell"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { DialogShell } from "@/components/dialog-shell"
 
 export const metadata: Metadata = {
   title: "Product",
   description: "Product description",
 }
 
-interface ProductModalProps {
+interface ProductDialogProps {
   params: {
     productId: string
   }
 }
 
-export default async function ProductModal({ params }: ProductModalProps) {
+export default async function ProductDialog({ params }: ProductDialogProps) {
   const productId = Number(params.productId)
 
   const product = await db.query.products.findFirst({
@@ -30,8 +41,25 @@ export default async function ProductModal({ params }: ProductModalProps) {
   }
 
   return (
-    <Shell>
-      {/* <Header title={product.name} description={product.description} /> */}
-    </Shell>
+    <DialogShell>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button variant="outline">Show Dialog</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </DialogShell>
   )
 }
