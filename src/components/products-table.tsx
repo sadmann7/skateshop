@@ -217,11 +217,10 @@ export function ProductsTable({
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "10"
-  const sort = searchParams?.get("sort") ?? "createdAt"
-  const order = searchParams?.get("order") ?? "asc"
+  const sort = searchParams?.get("sort")
+  const [column, order] = sort?.split("-") ?? []
   const name = searchParams?.get("name")
-  const start_date = searchParams?.get("start_date")
-  const end_date = searchParams?.get("end_date")
+  const date_range = searchParams?.get("date_range")
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -246,10 +245,10 @@ export function ProductsTable({
 
   // Handle server-side column (date) filtering
   const [dateFilter, setDateFilter] = React.useState<DateRange | undefined>(
-    start_date && end_date
+    date_range
       ? {
-          from: new Date(start_date),
-          to: new Date(end_date),
+          from: dayjs(date_range.split("to")[0]).toDate(),
+          to: dayjs(date_range.split("to")[1]).toDate(),
         }
       : undefined
   )
@@ -258,7 +257,7 @@ export function ProductsTable({
   // Handle server-side column sorting
   const [sorting] = React.useState<ColumnSort[]>([
     {
-      id: sort,
+      id: column ?? "createdAt",
       desc: order === "desc" ? true : false,
     },
   ])
@@ -274,18 +273,13 @@ export function ProductsTable({
                 router.push(
                   `${pathname}?${createQueryString({
                     page: 1,
-                    start_date:
-                      dateFilter === undefined
-                        ? null
-                        : dayjs(dateFilter?.from).format(
-                            "YYYY-MM-DD HH:mm:ss.SSS"
-                          ),
-                    end_date:
-                      dateFilter === undefined
-                        ? null
-                        : dayjs(dateFilter?.to).format(
-                            "YYYY-MM-DD HH:mm:ss.SSS"
-                          ),
+                    date_range: dateFilter
+                      ? `${dayjs(dateFilter?.from).format(
+                          "YYYY-MM-DD HH:mm:ss.SSS"
+                        )}to${dayjs(dateFilter?.to).format(
+                          "YYYY-MM-DD HH:mm:ss.SSS"
+                        )}`
+                      : null,
                   })}`
                 )
               })
@@ -559,8 +553,10 @@ export function ProductsTable({
                     router.push(
                       `${pathname}?${createQueryString({
                         page,
-                        sort: nextSortDirection ? header.column.id : null,
-                        order: nextSortDirection ? nextSortDirection : null,
+                        sort:
+                          header.column.id && nextSortDirection
+                            ? `${header.column.id}-${nextSortDirection}`
+                            : null,
                       })}`
                     )
                   })
@@ -612,7 +608,6 @@ export function ProductsTable({
                               page: 1,
                               per_page: value,
                               sort,
-                              order,
                             })}`
                           )
                         })
@@ -646,7 +641,6 @@ export function ProductsTable({
                               page: 1,
                               per_page,
                               sort,
-                              order,
                             })}`
                           )
                         })
@@ -670,7 +664,6 @@ export function ProductsTable({
                               page: Number(page) - 1,
                               per_page,
                               sort,
-                              order,
                             })}`
                           )
                         })
@@ -694,7 +687,6 @@ export function ProductsTable({
                               page: Number(page) + 1,
                               per_page,
                               sort,
-                              order,
                             })}`
                           )
                         })
@@ -717,7 +709,6 @@ export function ProductsTable({
                             page: pageCount ?? 10,
                             per_page,
                             sort,
-                            order,
                           })}`
                         )
                       }}

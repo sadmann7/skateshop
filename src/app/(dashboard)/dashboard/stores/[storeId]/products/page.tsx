@@ -16,13 +16,7 @@ interface ProductsPageProps {
     storeId: string
   }
   searchParams: {
-    page?: string
-    per_page?: string
-    sort?: keyof Product
-    order?: "asc" | "desc"
-    name?: string
-    start_date?: string
-    end_date?: string
+    [key: string]: string | string[] | undefined
   }
 }
 
@@ -32,8 +26,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, order, name, start_date, end_date } =
-    searchParams
+  const { page, per_page, sort, name, date_range } = searchParams
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -48,10 +41,22 @@ export default async function ProductsPage({
   }
 
   // Number of skaters to show per page
-  const limit = per_page ? parseInt(per_page) : 10
+  const limit = typeof per_page === "string" ? Number(per_page) : 10
   // Number of skaters to skip
-  const offset = page ? (parseInt(page) - 1) * limit : 0
+  const offset = typeof page === "string" ? (Number(page) - 1) * limit : 0
+  // Column and order to sort by
+  const [column, order] =
+    typeof sort === "string"
+      ? (sort.split("-") as [
+          keyof Product | undefined,
+          "asc" | "desc" | undefined
+        ])
+      : []
+  // Date range for created date
+  const [start_date, end_date] =
+    typeof date_range === "string" ? date_range.split("to") : []
 
+  // Transaction is used to ensure both queries are executed in a single transaction
   const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
     const storeProducts = await tx
       .select()
@@ -62,7 +67,9 @@ export default async function ProductsPage({
         and(
           eq(products.storeId, storeId),
           // Filter by name
-          name ? like(products.name, `%${name}%`) : undefined,
+          typeof name === "string"
+            ? like(products.name, `%${name}%`)
+            : undefined,
           // Filter by created date
           start_date && end_date
             ? and(
@@ -73,10 +80,11 @@ export default async function ProductsPage({
         )
       )
       .orderBy(
-        // Sort by column
-        order === "desc"
-          ? desc(products[sort ?? "createdAt"])
-          : asc(products[sort ?? "createdAt"])
+        column && column in products
+          ? order === "asc"
+            ? asc(products[column])
+            : desc(products[column])
+          : desc(products.createdAt)
       )
     const totalProducts = await tx
       .select({
@@ -86,7 +94,9 @@ export default async function ProductsPage({
       .where(
         and(
           eq(products.storeId, storeId),
-          name ? like(products.name, `%${name}%`) : undefined,
+          typeof name === "string"
+            ? like(products.name, `%${name}%`)
+            : undefined,
           start_date && end_date
             ? and(
                 gte(products.createdAt, start_date),
