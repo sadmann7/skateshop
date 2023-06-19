@@ -6,6 +6,8 @@ import { Products } from "@/components/products"
 import { Shell } from "@/components/shell"
 import { getProductsAction } from "@/app/_actions/product"
 
+export const runtime = "edge"
+
 export const metadata: Metadata = {
   title: "Products",
   description: "Buy products from our stores",

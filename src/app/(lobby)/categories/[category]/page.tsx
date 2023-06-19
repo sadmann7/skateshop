@@ -7,6 +7,8 @@ import { Shell } from "@/components/shell"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
 
+export const runtime = "edge"
+
 interface CategoryPageProps {
   params: {
     category: Product["category"]
@@ -19,8 +21,6 @@ interface CategoryPageProps {
     store_ids?: string
   }
 }
-
-export const runtime = "edge"
 
 export function generateMetadata({ params }: CategoryPageProps) {
   return {

@@ -40,7 +40,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
@@ -130,108 +129,106 @@ export function Products({
               Filter
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-5/6 sm:w-1/2 lg:w-1/3">
+          <SheetContent className="flex h-screen w-5/6 flex-col sm:w-1/2 lg:w-1/3">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
-            <Separator className="my-4" />
+            <Separator />
             <div className="space-y-5">
-              <div className="space-y-5">
-                <h3 className="text-sm font-medium tracking-wide text-foreground">
-                  Price range ($)
-                </h3>
-                <Slider
-                  variant="range"
-                  thickness="thin"
-                  defaultValue={[0, 100]}
-                  max={100}
-                  step={1}
-                  value={priceRange}
-                  onValueChange={(value: typeof priceRange) => {
-                    setPriceRange(value)
+              <h3 className="text-sm font-medium tracking-wide text-foreground">
+                Price range ($)
+              </h3>
+              <Slider
+                variant="range"
+                thickness="thin"
+                defaultValue={[0, 100]}
+                max={100}
+                step={1}
+                value={priceRange}
+                onValueChange={(value: typeof priceRange) => {
+                  setPriceRange(value)
+                }}
+              />
+              <div className="flex items-center space-x-4">
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={priceRange[1]}
+                  className="h-9"
+                  value={priceRange[0]}
+                  onChange={(e) => {
+                    const value = Number(e.target.value)
+                    setPriceRange([value, priceRange[1]])
                   }}
                 />
-                <div className="flex items-center space-x-4">
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    min={0}
-                    max={priceRange[1]}
-                    className="h-9"
-                    value={priceRange[0]}
-                    onChange={(e) => {
-                      const value = Number(e.target.value)
-                      setPriceRange([value, priceRange[1]])
-                    }}
-                  />
-                  <span className="text-muted-foreground">-</span>
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    min={priceRange[0]}
-                    max={100}
-                    className="h-9"
-                    value={priceRange[1]}
-                    onChange={(e) => {
-                      const value = Number(e.target.value)
-                      setPriceRange([priceRange[0], value])
-                    }}
-                  />
-                </div>
+                <span className="text-muted-foreground">-</span>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={priceRange[0]}
+                  max={100}
+                  className="h-9"
+                  value={priceRange[1]}
+                  onChange={(e) => {
+                    const value = Number(e.target.value)
+                    setPriceRange([priceRange[0], value])
+                  }}
+                />
               </div>
-              {stores?.length ? (
-                <div className="h-[420px] space-y-5">
-                  <h3 className="text-sm font-medium tracking-wide text-foreground">
-                    Stores
-                  </h3>
-                  <ScrollArea className="h-full">
-                    <div className="space-y-4">
-                      {stores.map((store) => (
-                        <div
-                          key={store.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`store-${store.id}`}
-                            checked={storeIds?.includes(store.id) ?? false}
-                            onCheckedChange={(value) => {
-                              if (value) {
-                                setStoreIds([...(storeIds ?? []), store.id])
-                              } else {
-                                setStoreIds(
-                                  storeIds?.filter((id) => id !== store.id) ??
-                                    null
-                                )
-                              }
-                            }}
-                          />
-                          <Label
-                            htmlFor={`store-${store.id}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            {store.name}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-              ) : null}
-              {categories?.length ? (
-                <div className="space-y-5">
-                  <h3 className="text-sm font-medium tracking-wide text-foreground">
-                    Categories
-                  </h3>
-                  <MultiSelect
-                    options={categories.map((category) => ({
-                      label: category,
-                      value: category,
-                    }))}
-                  />
-                </div>
-              ) : null}
             </div>
-            <div className="absolute inset-x-6 bottom-6">
+            {stores?.length ? (
+              <div className="space-y-5">
+                <h3 className="text-sm font-medium tracking-wide text-foreground">
+                  Stores
+                </h3>
+                <ScrollArea className="h-[420px]">
+                  <div className="space-y-4">
+                    {stores.map((store) => (
+                      <div
+                        key={store.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Checkbox
+                          id={`store-${store.id}`}
+                          checked={storeIds?.includes(store.id) ?? false}
+                          onCheckedChange={(value) => {
+                            if (value) {
+                              setStoreIds([...(storeIds ?? []), store.id])
+                            } else {
+                              setStoreIds(
+                                storeIds?.filter((id) => id !== store.id) ??
+                                  null
+                              )
+                            }
+                          }}
+                        />
+                        <Label
+                          htmlFor={`store-${store.id}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {store.name}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            ) : null}
+            {categories?.length ? (
+              <div className="space-y-5">
+                <h3 className="text-sm font-medium tracking-wide text-foreground">
+                  Categories
+                </h3>
+                <MultiSelect
+                  options={categories.map((category) => ({
+                    label: category,
+                    value: category,
+                  }))}
+                />
+              </div>
+            ) : null}
+            <div className="mt-auto">
               <Separator className="my-4" />
               <SheetFooter>
                 <Button

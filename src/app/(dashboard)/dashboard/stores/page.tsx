@@ -15,6 +15,8 @@ import {
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
+export const runtime = "edge"
+
 export const metadata: Metadata = {
   title: "Stores",
   description: "Manage your stores",
