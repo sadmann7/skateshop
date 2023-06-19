@@ -45,17 +45,17 @@ export const getProductsSchema = z.object({
   category: z.enum(products.category.enumValues).optional().nullable(),
   sort: z
     .string()
-    .regex(/^[a-z]+_(asc|desc)$/i)
+    .regex(/^\w+-(asc|desc)$/)
     .optional()
     .nullable(),
   price_range: z
     .string()
-    .regex(/^\d+_\d+$/)
+    .regex(/^\d+-\d+$/)
     .optional()
     .nullable(),
   store_ids: z
     .string()
-    .regex(/^\d+_\d+$/)
+    .regex(/^\d+-\d+$/)
     .optional()
     .nullable(),
 })

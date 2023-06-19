@@ -69,6 +69,7 @@ export function Products({
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt-desc"
   const store_ids = searchParams?.get("store_ids")
+  const cursor = searchParams?.get("cursor")
 
   // Create query string
   const createQueryString = React.useCallback(

@@ -5,7 +5,7 @@ import { db } from "@/db"
 import { stores, type Store } from "@/db/schema"
 import { type UserRole } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
-import { asc, desc, eq } from "drizzle-orm"
+import { asc, desc, eq, gt } from "drizzle-orm"
 import type { z } from "zod"
 
 import { slugify } from "@/lib/utils"
@@ -13,7 +13,11 @@ import { type storeSchema } from "@/lib/validations/store"
 
 export async function getStoresAction(input: {
   sort?: `${keyof Store}-${"asc" | "desc"}`
+  limit?: number
+  cursor?: number
 }) {
+  const limit = input.limit ?? 10
+
   const [column, order] =
     (input.sort?.split("-") as [
       keyof Store | undefined,
@@ -26,8 +30,12 @@ export async function getStoresAction(input: {
       name: stores.name,
     })
     .from(stores)
+    .limit(limit)
+    .where(input.cursor ? gt(stores.id, input.cursor) : undefined)
     .orderBy(
-      column && column in stores
+      input.cursor
+        ? asc(stores.id)
+        : column && column in stores
         ? order === "asc"
           ? asc(stores[column])
           : desc(stores[column])

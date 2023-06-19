@@ -15,11 +15,7 @@ export const metadata: Metadata = {
 
 interface ProductsPageProps {
   searchParams: {
-    page?: string
-    per_page?: string
-    sort?: `${keyof Product}-${"asc" | "desc"}`
-    price_range?: string
-    store_ids?: string
+    [key: string]: string | string[] | undefined
   }
 }
 
@@ -28,15 +24,15 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const { page, per_page, sort, price_range, store_ids } = searchParams
 
-  const limit = per_page ? parseInt(per_page) : 8
-  const offset = page ? (parseInt(page) - 1) * limit : 0
+  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const offset = typeof page === "string" ? parseInt(page) * limit : 0
 
   const productsTransaction = await getProductsAction({
     limit,
     offset,
-    sort,
-    price_range,
-    store_ids,
+    sort: typeof sort === "string" ? sort : null,
+    price_range: typeof price_range === "string" ? price_range : null,
+    store_ids: typeof store_ids === "string" ? store_ids : null,
   })
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
