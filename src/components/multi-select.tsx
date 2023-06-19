@@ -94,7 +94,7 @@ export function MultiSelect<TData extends { label: string; value: string }>({
             onValueChange={setInputValue}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
-            placeholder="Select frameworks..."
+            placeholder="Select a option"
             className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
           />
         </div>
@@ -103,20 +103,20 @@ export function MultiSelect<TData extends { label: string; value: string }>({
         {open && selectables.length > 0 ? (
           <div className="absolute top-0 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
-              {selectables.map((framework) => {
+              {selectables.map((option) => {
                 return (
                   <CommandItem
-                    key={framework.value}
+                    key={option.value}
                     onMouseDown={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
                     }}
                     onSelect={(value) => {
                       setInputValue("")
-                      setSelected((prev) => [...prev, framework])
+                      setSelected((prev) => [...prev, option])
                     }}
                   >
-                    {framework.label}
+                    {option.label}
                   </CommandItem>
                 )
               })}

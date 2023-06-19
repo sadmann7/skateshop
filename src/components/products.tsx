@@ -45,6 +45,8 @@ import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
 
+import { MultiSelect } from "./multi-select"
+
 interface ProductsProps {
   products: Product[]
   pageCount: number
@@ -215,6 +217,19 @@ export function Products({
                   </ScrollArea>
                 </div>
               ) : null}
+              {categories?.length ? (
+                <div className="space-y-5">
+                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                    Categories
+                  </h3>
+                  <MultiSelect
+                    options={categories.map((category) => ({
+                      label: category,
+                      value: category,
+                    }))}
+                  />
+                </div>
+              ) : null}
             </div>
             <div className="absolute inset-x-6 bottom-6">
               <Separator className="my-4" />
@@ -274,99 +289,72 @@ export function Products({
         </div>
       ) : null}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {isPending
-          ? Array.from({ length: 8 }).map((_, i) => (
-              <Card key={i} className="rounded-sm">
-                <CardHeader className="border-b p-0">
-                  <AspectRatio ratio={4 / 3}>
+        {products.map((product) => (
+          <Card key={product.id} className="overflow-hidden rounded-sm">
+            <Link
+              aria-label={`View ${product.name} details`}
+              href={`/product/${product.id}`}
+            >
+              <CardHeader className="border-b p-0">
+                <AspectRatio ratio={4 / 3}>
+                  {product?.images?.length ? (
+                    <Image
+                      src={
+                        product.images[0]?.url ??
+                        '"/images/product-placeholder.webp"'
+                      }
+                      alt={product.images[0]?.name ?? "Product image"}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
                     <div className="flex h-full items-center justify-center bg-secondary">
                       <Icons.placeholder
                         className="h-9 w-9 text-muted-foreground"
                         aria-hidden="true"
                       />
                     </div>
-                  </AspectRatio>
-                </CardHeader>
-                <CardContent className="grid gap-2.5 p-4">
-                  <Skeleton className="h-4 w-1/2" />
-                  <Skeleton className="h-4 w-1/4" />
-                </CardContent>
-                <CardFooter className="p-4">
-                  <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
-                    <Skeleton className="h-8 w-full rounded-sm" />
-                    <Skeleton className="h-8 w-full rounded-sm" />
-                  </div>
-                </CardFooter>
-              </Card>
-            ))
-          : products.map((product) => (
-              <Card key={product.id} className="overflow-hidden rounded-sm">
+                  )}
+                </AspectRatio>
+              </CardHeader>
+            </Link>
+            <Link
+              aria-label={`View ${product.name} details`}
+              href={`/products/${product.id}`}
+            >
+              <CardContent className="grid gap-2.5 p-4">
+                <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+                <CardDescription className="line-clamp-2">
+                  {formatPrice(product.price)}
+                </CardDescription>
+              </CardContent>
+            </Link>
+            <CardFooter className="p-4">
+              <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
                 <Link
-                  aria-label={`View ${product.name} details`}
-                  href={`/product/${product.id}`}
+                  aria-label="Quick view"
+                  href={`/quickview/product/${product.id}`}
+                  className={buttonVariants({
+                    variant: "outline",
+                    size: "sm",
+                    className: "h-8 w-full rounded-sm",
+                  })}
                 >
-                  <CardHeader className="border-b p-0">
-                    <AspectRatio ratio={4 / 3}>
-                      {product?.images?.length ? (
-                        <Image
-                          src={
-                            product.images[0]?.url ??
-                            '"/images/product-placeholder.webp"'
-                          }
-                          alt={product.images[0]?.name ?? "Product image"}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center bg-secondary">
-                          <Icons.placeholder
-                            className="h-9 w-9 text-muted-foreground"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      )}
-                    </AspectRatio>
-                  </CardHeader>
+                  Quick view
                 </Link>
-                <Link
-                  aria-label={`View ${product.name} details`}
-                  href={`/products/${product.id}`}
+                <Button
+                  aria-label="Add to cart"
+                  size="sm"
+                  className="h-8 w-full rounded-sm"
                 >
-                  <CardContent className="grid gap-2.5 p-4">
-                    <CardTitle className="line-clamp-1">
-                      {product.name}
-                    </CardTitle>
-                    <CardDescription className="line-clamp-2">
-                      {formatPrice(product.price)}
-                    </CardDescription>
-                  </CardContent>
-                </Link>
-                <CardFooter className="p-4">
-                  <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
-                    <Link
-                      aria-label="Quick view"
-                      href={`/quickview/product/${product.id}`}
-                      className={buttonVariants({
-                        variant: "outline",
-                        size: "sm",
-                        className: "h-8 w-full rounded-sm",
-                      })}
-                    >
-                      Quick view
-                    </Link>
-                    <Button
-                      aria-label="Add to cart"
-                      size="sm"
-                      className="h-8 w-full rounded-sm"
-                    >
-                      Add to cart
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            ))}
+                  Add to cart
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
       </div>
       {products.length ? (
         <PaginationButton

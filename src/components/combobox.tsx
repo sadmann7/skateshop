@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation"
 import { type Product } from "@/db/schema"
 
 import { cn } from "@/lib/utils"
+import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import {
   CommandDialog,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
@@ -17,12 +19,11 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 import { filterProductsAction } from "@/app/_actions/product"
 
-import { DebounceCommandInput } from "./debounce-command-input"
-
 export function Combobox() {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
+  const debouncedQuery = useDebounce(query, 300)
   const [data, setData] = React.useState<
     | {
         category: Product["category"]
@@ -33,13 +34,15 @@ export function Combobox() {
   const [isPending, startTransition] = React.useTransition()
 
   React.useEffect(() => {
-    if (query.length === 0) setData(null)
+    if (debouncedQuery.length === 0) setData(null)
 
-    startTransition(async () => {
-      const data = await filterProductsAction(query)
-      setData(data)
-    })
-  }, [query])
+    if (debouncedQuery.length > 0) {
+      startTransition(async () => {
+        const data = await filterProductsAction(debouncedQuery)
+        setData(data)
+      })
+    }
+  }, [debouncedQuery])
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -78,7 +81,7 @@ export function Combobox() {
         </kbd>
       </Button>
       <CommandDialog align="top" open={isOpen} onOpenChange={setIsOpen}>
-        <DebounceCommandInput
+        <CommandInput
           placeholder="Search products..."
           value={query}
           onValueChange={setQuery}
