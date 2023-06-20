@@ -27,6 +27,10 @@ export const siteConfig = {
       title: "Build a Board",
       href: "/build-a-board",
     },
+    {
+      title: "Blog",
+      href: "/blog",
+    },
   ],
   links: {
     twitter: "https://twitter.com/sadmann17",

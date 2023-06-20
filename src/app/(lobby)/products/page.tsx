@@ -29,8 +29,8 @@ export default async function ProductsPage({
     sort,
     categories,
     price_range,
-    store_ids,
     store_page,
+    store_ids,
   } = searchParams
 
   // Products transaction

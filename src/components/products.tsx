@@ -43,9 +43,8 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
+import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagination-button"
-
-import { MultiSelect } from "./multi-select"
 
 interface ProductsProps {
   products: Product[]
@@ -71,8 +70,8 @@ export function Products({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt-desc"
-  const store_ids = searchParams?.get("store_ids")
   const store_page = searchParams?.get("store_page") ?? "1"
+  const store_ids = searchParams?.get("store_ids")
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -235,7 +234,7 @@ export function Products({
                             )
                           })
                         }}
-                        disabled={Number(store_page) === 1}
+                        disabled={Number(store_page) === 1 || isPending}
                       >
                         <Icons.chevronLeft
                           className="h-4 w-4"
@@ -255,7 +254,9 @@ export function Products({
                             )
                           })
                         }}
-                        disabled={Number(store_page) === storePageCount}
+                        disabled={
+                          Number(store_page) === storePageCount || isPending
+                        }
                       >
                         <Icons.chevronRight
                           className="h-4 w-4"
@@ -290,7 +291,7 @@ export function Products({
                           />
                           <Label
                             htmlFor={`store-${store.id}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            className="line-clamp-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
                             {store.name}
                           </Label>

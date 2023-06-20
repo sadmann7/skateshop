@@ -1,6 +1,7 @@
 import type { HandleOAuthCallbackParams } from "@clerk/types"
 
 import SSOCallback from "@/components/auth/sso-callback"
+import { Shell } from "@/components/shell"
 
 export const runtime = "edge"
 
@@ -11,5 +12,9 @@ export interface SSOCallbackPageProps {
 export default function SSOCallbackPage({
   searchParams,
 }: SSOCallbackPageProps) {
-  return <SSOCallback searchParams={searchParams} />
+  return (
+    <Shell layout="auth">
+      <SSOCallback searchParams={searchParams} />
+    </Shell>
+  )
 }
