@@ -65,7 +65,11 @@ export default async function ProductsPage({
 
   return (
     <Shell>
-      <Header title="Products" description="Buy products from our stores" />
+      <Header
+        title="Products"
+        description="Buy products from our stores"
+        size="sm"
+      />
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}

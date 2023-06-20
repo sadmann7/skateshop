@@ -256,7 +256,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                                   value={option}
                                   className="capitalize"
                                 >
-                                  {option ?? ""}
+                                  {option}
                                 </SelectItem>
                               )
                             )}

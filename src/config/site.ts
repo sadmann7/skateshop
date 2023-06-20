@@ -8,6 +8,10 @@ export const siteConfig = {
   ogImage: "https://skateshop13.vercel.app/opengraph-image.png",
   mainNav: [
     {
+      title: "Products",
+      href: "/products",
+    },
+    {
       title: "Skateboards",
       href: "/categories/skateboards",
     },

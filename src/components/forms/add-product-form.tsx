@@ -171,7 +171,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                                   value={option}
                                   className="capitalize"
                                 >
-                                  {option ?? ""}
+                                  {option}
                                 </SelectItem>
                               )
                             )}
