@@ -65,8 +65,9 @@ export async function getProductsAction(
   const [minPrice, maxPrice] = input.price_range?.includes("-")
     ? input.price_range?.split("-").map(Number) ?? []
     : []
-  const categories =
-    (input.categories?.split("-") as Product["category"][]) ?? []
+  const categories = input.store_ids?.includes("-")
+    ? (input.categories?.split("-") as Product["category"][]) ?? []
+    : []
   const storeIds = input.store_ids?.includes("-")
     ? input.store_ids?.split("-").map(Number) ?? []
     : []
@@ -79,7 +80,7 @@ export async function getProductsAction(
       .offset(input.offset)
       .where(
         and(
-          input.category ? eq(products.category, "shoes") : undefined,
+          input.category ? eq(products.category, input.category) : undefined,
           categories.length
             ? inArray(products.category, categories)
             : undefined,

@@ -1,5 +1,3 @@
-import { type Product } from "@/db/schema"
-
 export const sortOptions = [
   { label: "Date: Old to new", value: "createdAt-asc" },
   {
@@ -18,10 +16,7 @@ export const sortOptions = [
   },
 ]
 
-export const productCategories: {
-  name: Product["category"]
-  subcategories: string[]
-}[] = [
+export const productCategories = [
   {
     name: "skateboards",
     subcategories: [
