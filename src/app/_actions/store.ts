@@ -5,44 +5,59 @@ import { db } from "@/db"
 import { stores, type Store } from "@/db/schema"
 import { type UserRole } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
-import { asc, desc, eq, gt } from "drizzle-orm"
+import { asc, desc, eq, sql } from "drizzle-orm"
 import type { z } from "zod"
 
 import { slugify } from "@/lib/utils"
 import { type storeSchema } from "@/lib/validations/store"
 
 export async function getStoresAction(input: {
-  sort?: `${keyof Store}-${"asc" | "desc"}`
   limit?: number
-  cursor?: number
+  offset?: number
+  sort?: `${keyof Store}-${"asc" | "desc"}`
 }) {
   const limit = input.limit ?? 10
-
+  const offset = input.offset ?? 0
   const [column, order] =
     (input.sort?.split("-") as [
       keyof Store | undefined,
       "asc" | "desc" | undefined
     ]) ?? []
 
-  const allStores = await db
-    .select({
-      id: stores.id,
-      name: stores.name,
-    })
-    .from(stores)
-    .limit(limit)
-    .where(input.cursor ? gt(stores.id, input.cursor) : undefined)
-    .orderBy(
-      input.cursor
-        ? asc(stores.id)
-        : column && column in stores
-        ? order === "asc"
-          ? asc(stores[column])
-          : desc(stores[column])
-        : desc(stores.createdAt)
-    )
+  const { items, total } = await db.transaction(async (db) => {
+    const items = await db
+      .select({
+        id: stores.id,
+        name: stores.name,
+      })
+      .from(stores)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(
+        column && column in stores
+          ? order === "asc"
+            ? asc(stores[column])
+            : desc(stores[column])
+          : desc(stores.createdAt)
+      )
 
-  return allStores
+    const total = await db
+      .select({
+        count: sql<number>`count(${stores.id})`,
+      })
+      .from(stores)
+      .orderBy(
+        column && column in stores
+          ? order === "asc"
+            ? asc(stores[column])
+            : desc(stores[column])
+          : desc(stores.createdAt)
+      )
+
+    return { items, total: Number(total[0]?.count) ?? 0 }
+  })
+
+  return { items, total }
 }
 
 export async function addStoreAction(

@@ -1,4 +1,4 @@
-import { type Product } from "@/db/schema"
+import { products, type Product } from "@/db/schema"
 
 import { toTitleCase } from "@/lib/utils"
 import { Header } from "@/components/header"
@@ -14,11 +14,7 @@ interface CategoryPageProps {
     category: Product["category"]
   }
   searchParams: {
-    page?: string
-    per_page?: string
-    sort?: `${keyof Product}-${"asc" | "desc"}`
-    price_range?: string
-    store_ids?: string
+    [key: string]: string | string[] | undefined
   }
 }
 
@@ -34,25 +30,33 @@ export default async function CategoryPage({
   searchParams,
 }: CategoryPageProps) {
   const { category } = params
-  const { page, per_page, sort, price_range, store_ids } = searchParams
+  const { page, per_page, sort, price_range, store_ids, store_page } =
+    searchParams
 
-  const limit = per_page ? parseInt(per_page) : 8
-  const offset = page ? (parseInt(page) - 1) * limit : 0
+  const limit = typeof per_page === "string" ? parseInt(per_page) : 8
+  const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
   const productsTransaction = await getProductsAction({
     category,
     limit,
     offset,
-    sort,
-    price_range,
-    store_ids,
+    sort: typeof sort === "string" ? sort : null,
+    price_range: typeof price_range === "string" ? price_range : null,
+    store_ids: typeof store_ids === "string" ? store_ids : null,
   })
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
 
-  const allStores = await getStoresAction({
+  const storeLimit = 20
+
+  const storesTransaction = await getStoresAction({
+    limit: storeLimit,
+    offset:
+      typeof store_page === "string" ? (parseInt(store_page) - 1) * 20 : 0,
     sort: "name-asc",
   })
+
+  const storePageCount = Math.ceil(storesTransaction.total / storeLimit)
 
   return (
     <Shell>
@@ -64,7 +68,9 @@ export default async function CategoryPage({
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}
-        stores={allStores}
+        stores={storesTransaction.items}
+        storePageCount={storePageCount}
+        categories={Object.values(products.category.enumValues)}
       />
     </Shell>
   )

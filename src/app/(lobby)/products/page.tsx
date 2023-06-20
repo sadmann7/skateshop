@@ -1,5 +1,5 @@
 import { type Metadata } from "next"
-import { products, type Product } from "@/db/schema"
+import { products } from "@/db/schema"
 
 import { Header } from "@/components/header"
 import { Products } from "@/components/products"
@@ -24,8 +24,8 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const { page, per_page, sort, price_range, store_ids } = searchParams
 
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
-  const offset = typeof page === "string" ? parseInt(page) * limit : 0
+  const limit = typeof per_page === "string" ? parseInt(per_page) : 8
+  const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
   const productsTransaction = await getProductsAction({
     limit,

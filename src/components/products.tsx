@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product, type Store } from "@/db/schema"
 
 import { sortOptions } from "@/config/products"
-import { cn, formatPrice } from "@/lib/utils"
+import { cn, formatPrice, toTitleCase } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -50,6 +50,7 @@ interface ProductsProps {
   products: Product[]
   pageCount: number
   stores?: Pick<Store, "id" | "name">[]
+  storePageCount?: number
   categories?: Product["category"][]
 }
 
@@ -57,6 +58,7 @@ export function Products({
   products,
   pageCount,
   stores,
+  storePageCount,
   categories,
 }: ProductsProps) {
   const router = useRouter()
@@ -69,7 +71,7 @@ export function Products({
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt-desc"
   const store_ids = searchParams?.get("store_ids")
-  const cursor = searchParams?.get("cursor")
+  const store_page = searchParams?.get("store_page") ?? "1"
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -105,6 +107,14 @@ export function Products({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
 
+  // Category filter
+  const [selectedCategories, setSelectedCategories] = React.useState<
+    {
+      label: string
+      value: string
+    }[]
+  >([])
+
   // Store filter
   const [storeIds, setStoreIds] = React.useState<number[] | null>(
     store_ids?.split("-").map(Number) ?? null
@@ -130,7 +140,7 @@ export function Products({
               Filter
             </Button>
           </SheetTrigger>
-          <SheetContent className="flex h-screen w-5/6 flex-col sm:w-1/2 lg:w-1/3">
+          <SheetContent className="flex w-5/6 flex-col sm:w-1/2 lg:w-1/3">
             <SheetHeader>
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
@@ -178,12 +188,74 @@ export function Products({
                 />
               </div>
             </div>
-            {stores?.length ? (
+            {categories?.length ? (
               <div className="space-y-5">
                 <h3 className="text-sm font-medium tracking-wide text-foreground">
-                  Stores
+                  Categories
                 </h3>
-                <ScrollArea className="h-[420px]">
+                <MultiSelect
+                  placeholder="Select categories"
+                  selected={selectedCategories}
+                  setSelected={setSelectedCategories}
+                  options={categories.map((category) => ({
+                    label: toTitleCase(category),
+                    value: category,
+                  }))}
+                />
+              </div>
+            ) : null}
+            {stores?.length ? (
+              <div className="space-y-5">
+                <div className="flex items-center gap-2">
+                  <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
+                    Stores
+                  </h3>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        startTransition(() => {
+                          router.push(
+                            `${pathname}?${createQueryString({
+                              store_page: Number(store_page) - 1,
+                            })}`
+                          )
+                        })
+                      }}
+                      disabled={Number(store_page) === 1}
+                    >
+                      <Icons.chevronLeft
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Previous store page</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        startTransition(() => {
+                          router.push(
+                            `${pathname}?${createQueryString({
+                              store_page: Number(store_page) + 1,
+                            })}`
+                          )
+                        })
+                      }}
+                      disabled={Number(store_page) === storePageCount}
+                    >
+                      <Icons.chevronRight
+                        className="h-4 w-4"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Next store page</span>
+                    </Button>
+                  </div>
+                </div>
+                <ScrollArea
+                  className={cn(categories?.length ? "h-72" : "h-96")}
+                >
                   <div className="space-y-4">
                     {stores.map((store) => (
                       <div
@@ -214,19 +286,6 @@ export function Products({
                     ))}
                   </div>
                 </ScrollArea>
-              </div>
-            ) : null}
-            {categories?.length ? (
-              <div className="space-y-5">
-                <h3 className="text-sm font-medium tracking-wide text-foreground">
-                  Categories
-                </h3>
-                <MultiSelect
-                  options={categories.map((category) => ({
-                    label: category,
-                    value: category,
-                  }))}
-                />
               </div>
             ) : null}
             <div className="mt-auto">

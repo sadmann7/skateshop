@@ -70,7 +70,7 @@ export async function getProductsAction(
     : []
 
   const { items, total } = await db.transaction(async (tx) => {
-    const allProducts = await tx
+    const items = await tx
       .select()
       .from(products)
       .limit(input.limit)
@@ -106,7 +106,7 @@ export async function getProductsAction(
       )
 
     return {
-      items: allProducts,
+      items,
       total: Number(totalProducts[0]?.count) ?? 0,
     }
   })
