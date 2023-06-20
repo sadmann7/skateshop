@@ -20,34 +20,67 @@ export const productCategories = [
   {
     name: "skateboards",
     subcategories: [
-      "decks",
-      "wheels",
-      "trucks",
-      "bearings",
-      "griptape",
-      "hardware",
-      "tools",
+      {
+        title: "decks",
+        description: "The board itself.",
+      },
+      {
+        title: "wheels",
+        description: "The wheels that go on the board.",
+      },
+      {
+        title: "trucks",
+        description: "The trucks that go on the board.",
+      },
+      {
+        title: "bearings",
+        description: "The bearings that go in the wheels.",
+      },
+      {
+        title: "griptape",
+        description: "The griptape that goes on the board.",
+      },
+      {
+        title: "hardware",
+        description: "The hardware that goes on the board.",
+      },
+      {
+        title: "tools",
+        description: "The tools that go with the board.",
+      },
     ],
   },
   {
     name: "clothing",
-    subcategories: ["t-shirts", "sweatshirts", "pants", "shorts", "hats"],
+    subcategories: [
+      { title: "t-shirts", description: "Rad t-shirts." },
+      { title: "sweatshirts", description: "Rad sweatshirts." },
+      { title: "pants", description: "Rad pants." },
+      { title: "shorts", description: "Rad shorts." },
+      { title: "hats", description: "Rad hats." },
+    ],
   },
   {
     name: "shoes",
-    subcategories: ["low tops", "high tops", "slip ons", "pros", "classics"],
+    subcategories: [
+      { title: "low tops", description: "Rad low tops shoes." },
+      { title: "high tops", description: "Rad high tops shoes." },
+      { title: "slip ons", description: "Rad slip ons shoes." },
+      { title: "pros", description: "Rad pros shoes." },
+      { title: "classics", description: "Rad classics shoes." },
+    ],
   },
   {
     name: "accessories",
     subcategories: [
-      "skate tools",
-      "bushings",
-      "shock & riser pads",
-      "skate rails",
-      "wax",
-      "socks",
-      "backpacks",
-      "bags",
+      { title: "skate tools", description: "Rad skate tools." },
+      { title: "bushings", description: "Rad bushings." },
+      { title: "shock & riser pads", description: "Rad shock & riser pads." },
+      { title: "skate rails", description: "Rad skate rails." },
+      { title: "wax", description: "Rad wax." },
+      { title: "socks", description: "Rad socks." },
+      { title: "backpacks", description: "Rad backpacks." },
+      { title: "bags", description: "Rad bags." },
     ],
   },
 ]

@@ -46,6 +46,12 @@ export function toTitleCase(str: string) {
   )
 }
 
+export function toSentenceCase(str: string) {
+  return str
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (str) => str.toUpperCase())
+}
+
 export function isArrayOfFile(files: unknown): files is File[] {
   const isArray = Array.isArray(files)
   if (!isArray) return false

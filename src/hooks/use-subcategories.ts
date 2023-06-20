@@ -8,9 +8,9 @@ export function useSubcategories(category?: string) {
   React.useEffect(() => {
     if (!category) return
 
-    const subcategories = productCategories.find(
-      (c) => c.name === category
-    )?.subcategories
+    const subcategories = productCategories
+      .find((c) => c.name === category)
+      ?.subcategories.map((s) => s.title)
 
     setSubcategories(subcategories ?? [])
   }, [category])
