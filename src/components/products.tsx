@@ -5,10 +5,9 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product, type Store } from "@/db/schema"
-import { type Option } from "@/types"
 
 import { sortOptions } from "@/config/products"
-import { cn, formatPrice, toTitleCase } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -108,16 +107,16 @@ export function Products({
   }, [debouncedPrice])
 
   // Category filter
-  const [selectedCategories, setSelectedCategories] = React.useState<Option[]>(
-    []
-  )
+  const [selectedCategories, setSelectedCategories] = React.useState<
+    string[] | null
+  >(null)
 
   React.useEffect(() => {
     startTransition(() => {
       router.push(
         `${pathname}?${createQueryString({
           categories: selectedCategories?.length
-            ? selectedCategories.map(({ value }) => value).join("-")
+            ? selectedCategories.join("-")
             : null,
         })}`
       )
@@ -208,10 +207,7 @@ export function Products({
                     placeholder="Select categories"
                     selected={selectedCategories}
                     setSelected={setSelectedCategories}
-                    options={categories.map((category) => ({
-                      label: toTitleCase(category),
-                      value: category,
-                    }))}
+                    options={categories}
                   />
                 </div>
               ) : null}

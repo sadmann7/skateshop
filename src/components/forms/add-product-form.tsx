@@ -2,15 +2,14 @@
 
 import * as React from "react"
 import { products } from "@/db/schema"
-import type { FileWithPreview, Option } from "@/types"
+import type { FileWithPreview } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { productCategories } from "@/config/products"
-import { isArrayOfFile, toTitleCase } from "@/lib/utils"
+import { isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { useSubcategories } from "@/hooks/use-subcategories"
 import { Button } from "@/components/ui/button"
@@ -58,8 +57,8 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 export function AddProductForm({ storeId }: AddProductFormProps) {
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
   const [selectedSubcategories, setSelectedSubcategories] = React.useState<
-    Option[]
-  >([])
+    string[] | null
+  >(null)
   const [isPending, startTransition] = React.useTransition()
 
   // uploadthing
@@ -115,6 +114,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         // Reset form and files
         form.reset()
         setFiles(null)
+        setSelectedSubcategories([])
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
@@ -206,11 +206,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                       <MultiSelect
                         selected={selectedSubcategories}
                         setSelected={setSelectedSubcategories}
+                        onChange={field.onChange}
                         placeholder="Select subcategories"
-                        options={subcategories.map((subcategory) => ({
-                          value: subcategory,
-                          label: toTitleCase(subcategory),
-                        }))}
+                        options={subcategories}
                       />
                     </FormControl>
                     <FormMessage />

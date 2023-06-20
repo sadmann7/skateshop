@@ -56,7 +56,6 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.44.3",
-    "react-select": "^5.7.3",
     "sonner": "^0.4.0",
     "stripe": "^12.9.0",
     "tailwind-merge": "^1.13.1",

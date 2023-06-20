@@ -1,41 +1,47 @@
 "use client"
 
 import * as React from "react"
-import { type Option } from "@/types"
 import { Command as CommandPrimitive } from "cmdk"
 import { X } from "lucide-react"
 
+import { toTitleCase } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command"
 
 interface MultiSelectProps {
+  selected: string[] | null
+  setSelected: React.Dispatch<React.SetStateAction<string[] | null>>
+  onChange?: (value: string[] | null) => void
   placeholder?: string
-  selected: Option[]
-  setSelected: React.Dispatch<React.SetStateAction<Option[]>>
-  options: Option[]
+  options: string[]
 }
 
 export function MultiSelect({
-  placeholder = "Select options",
-  options,
   selected,
   setSelected,
+  onChange,
+  placeholder = "Select options",
+  options,
 }: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
+  React.useEffect(() => {
+    if (onChange) onChange(selected?.length ? selected : null)
+  }, [onChange, selected])
+
   const handleSelect = React.useCallback(
-    (option: Option) => {
-      setSelected((prev) => [...prev, option])
+    (option: string) => {
+      setSelected((prev) => [...(prev || []), option])
     },
     [setSelected]
   )
 
   const handleRemove = React.useCallback(
-    (option: Option) => {
-      setSelected((prev) => prev.filter((item) => item.value !== option.value))
+    (option: string) => {
+      setSelected((prev) => prev?.filter((item) => item !== option) ?? [])
     },
     [setSelected]
   )
@@ -45,7 +51,7 @@ export function MultiSelect({
       if (!inputRef.current) return
 
       if (event.key === "Backspace" || event.key === "Delete") {
-        setSelected((prev) => prev.slice(0, -1))
+        setSelected((prev) => prev?.slice(0, -1) ?? [])
       }
 
       // Blur input on escape
@@ -58,11 +64,11 @@ export function MultiSelect({
 
   const filteredOptions = React.useMemo(() => {
     return options.filter((option) => {
-      if (selected.find((item) => item.value === option.value)) return false
+      if (selected?.find((item) => item === option)) return false
 
       if (query.length === 0) return true
 
-      return option.label.toLowerCase().includes(query.toLowerCase())
+      return option.toLowerCase().includes(query.toLowerCase())
     })
   }, [options, query, selected])
 
@@ -73,14 +79,14 @@ export function MultiSelect({
     >
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <div className="flex flex-wrap gap-1">
-          {selected.map((option) => {
+          {selected?.map((option) => {
             return (
               <Badge
-                key={option.value}
+                key={option}
                 variant="secondary"
                 className="rounded hover:bg-secondary"
               >
-                {option.label}
+                {toTitleCase(option)}
                 <Button
                   aria-label="Remove option"
                   size="sm"
@@ -106,7 +112,7 @@ export function MultiSelect({
           <CommandPrimitive.Input
             ref={inputRef}
             placeholder={placeholder}
-            className="ml-2 flex-1 bg-transparent py-0.5 outline-none placeholder:text-muted-foreground"
+            className="flex-1 bg-transparent px-1 py-0.5 outline-none placeholder:text-muted-foreground"
             value={query}
             onValueChange={setQuery}
             onBlur={() => setIsOpen(false)}
@@ -121,7 +127,7 @@ export function MultiSelect({
               {filteredOptions.map((option) => {
                 return (
                   <CommandItem
-                    key={option.value}
+                    key={option}
                     onMouseDown={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -131,7 +137,7 @@ export function MultiSelect({
                       setQuery("")
                     }}
                   >
-                    {option.label}
+                    {toTitleCase(option)}
                   </CommandItem>
                 )
               })}
