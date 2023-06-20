@@ -14,7 +14,6 @@ interface MultiSelectProps {
   selected: Option[]
   setSelected: React.Dispatch<React.SetStateAction<Option[]>>
   options: Option[]
-  onItemSelect?: () => void
 }
 
 export function MultiSelect({
@@ -22,7 +21,6 @@ export function MultiSelect({
   options,
   selected,
   setSelected,
-  onItemSelect,
 }: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = React.useState(false)
@@ -49,6 +47,7 @@ export function MultiSelect({
       if (event.key === "Backspace" || event.key === "Delete") {
         setSelected((prev) => prev.slice(0, -1))
       }
+
       // Blur input on escape
       if (event.key === "Escape") {
         inputRef.current.blur()
@@ -129,7 +128,6 @@ export function MultiSelect({
                     }}
                     onSelect={() => {
                       handleSelect(option)
-                      if (onItemSelect) onItemSelect()
                       setQuery("")
                     }}
                   >

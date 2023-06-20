@@ -22,6 +22,13 @@
       "when": 1687257729390,
       "tag": "0002_romantic_lilandra",
       "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1687260162470,
+      "tag": "0003_parallel_bloodaxe",
+      "breakpoints": false
     }
   ]
 }

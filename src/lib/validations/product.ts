@@ -11,6 +11,7 @@ export const productSchema = z.object({
       required_error: "Must be a valid category",
     })
     .default(products.category.enumValues[0]),
+  subcategories: z.array(z.string()).optional().nullable().default(null),
   price: z.number().positive({
     message: "Must be a positive number",
   }),

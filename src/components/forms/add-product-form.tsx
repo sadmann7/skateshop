@@ -2,15 +2,17 @@
 
 import * as React from "react"
 import { products } from "@/db/schema"
-import type { FileWithPreview } from "@/types"
+import type { FileWithPreview, Option } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { isArrayOfFile } from "@/lib/utils"
+import { productCategories } from "@/config/products"
+import { isArrayOfFile, toTitleCase } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
+import { useSubcategories } from "@/hooks/use-subcategories"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -43,6 +45,8 @@ import { Icons } from "@/components/icons"
 import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
+import { MultiSelect } from "../multi-select"
+
 interface AddProductFormProps {
   storeId: number
 }
@@ -53,6 +57,9 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
+  const [selectedSubcategories, setSelectedSubcategories] = React.useState<
+    Option[]
+  >([])
   const [isPending, startTransition] = React.useTransition()
 
   // uploadthing
@@ -67,6 +74,12 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
       category: "skateboards",
     },
   })
+
+  // Update subcategories when category changes
+  const subcategories = useSubcategories(
+    form.watch("category"),
+    setSelectedSubcategories
+  )
 
   function onSubmit(data: Inputs) {
     console.log(data)
@@ -183,6 +196,29 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="subcategories"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Subcategories</FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        selected={selectedSubcategories}
+                        setSelected={setSelectedSubcategories}
+                        placeholder="Select subcategories"
+                        options={subcategories.map((subcategory) => ({
+                          value: subcategory,
+                          label: toTitleCase(subcategory),
+                        }))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormItem className="w-full">
                 <FormLabel>Price</FormLabel>
                 <FormControl>
@@ -199,8 +235,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   message={form.formState.errors.price?.message}
                 />
               </FormItem>
-            </div>
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormItem className="w-full">
                 <FormLabel>Quantity</FormLabel>
                 <FormControl>
@@ -217,6 +251,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   message={form.formState.errors.quantity?.message}
                 />
               </FormItem>
+            </div>
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormItem className="w-full">
                 <FormLabel>Inventory</FormLabel>
                 <FormControl>
@@ -233,25 +269,25 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   message={form.formState.errors.inventory?.message}
                 />
               </FormItem>
-            </div>
-            <FormItem className="flex flex-col gap-1.5">
-              <FormLabel>Images</FormLabel>
-              <FormControl>
-                <FileDialog
-                  setValue={form.setValue}
-                  name="images"
-                  maxFiles={3}
-                  maxSize={1024 * 1024 * 4}
-                  files={files}
-                  setFiles={setFiles}
-                  isUploading={isUploading}
-                  disabled={isPending}
+              <FormItem className="flex w-full flex-col gap-1.5">
+                <FormLabel>Images</FormLabel>
+                <FormControl>
+                  <FileDialog
+                    setValue={form.setValue}
+                    name="images"
+                    maxFiles={3}
+                    maxSize={1024 * 1024 * 4}
+                    files={files}
+                    setFiles={setFiles}
+                    isUploading={isUploading}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <UncontrolledFormMessage
+                  message={form.formState.errors.images?.message}
                 />
-              </FormControl>
-              <UncontrolledFormMessage
-                message={form.formState.errors.images?.message}
-              />
-            </FormItem>
+              </FormItem>
+            </div>
             <Button className="w-fit" disabled={isPending}>
               {isPending && (
                 <Icons.spinner

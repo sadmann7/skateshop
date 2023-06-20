@@ -41,6 +41,7 @@ export const products = mysqlTable("products", {
   ])
     .default("skateboards")
     .notNull(),
+  subcategories: json("subcategories").$type<string[] | null>().default(null),
   price: int("price").default(0).notNull(),
   quantity: int("quantity").default(1).notNull(),
   inventory: int("inventory").default(1).notNull(),
