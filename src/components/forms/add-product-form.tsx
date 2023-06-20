@@ -41,10 +41,9 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
+import { MultiSelect } from "@/components/multi-select"
 import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
-
-import { MultiSelect } from "../multi-select"
 
 interface AddProductFormProps {
   storeId: number
@@ -75,10 +74,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   })
 
   // Update subcategories when category changes
-  const subcategories = useSubcategories(
-    form.watch("category"),
-    setSelectedSubcategories
-  )
+  const subcategories = useSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
     console.log(data)
@@ -170,7 +166,10 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value)
+                          setSelectedSubcategories(null)
+                        }}
                       >
                         <SelectTrigger className="capitalize">
                           <SelectValue placeholder={field.value} />

@@ -79,7 +79,7 @@ export async function getProductsAction(
       .offset(input.offset)
       .where(
         and(
-          input.category ? eq(products.category, input.category) : undefined,
+          input.category ? eq(products.category, "shoes") : undefined,
           categories.length
             ? inArray(products.category, categories)
             : undefined,

@@ -49,6 +49,11 @@ export const getProductsSchema = z.object({
     .regex(/^\d+-\d+$/)
     .optional()
     .nullable(),
+  supercategories: z
+    .string()
+    .regex(/^\d+-\d+$/)
+    .optional()
+    .nullable(),
   sort: z
     .string()
     .regex(/^\w+-(asc|desc)$/)

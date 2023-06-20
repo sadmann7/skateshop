@@ -12,6 +12,7 @@ import { type z } from "zod"
 
 import { isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
+import { useSubcategories } from "@/hooks/use-subcategories"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -41,6 +42,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
+import { MultiSelect } from "@/components/multi-select"
 import {
   checkProductAction,
   deleteProductAction,
@@ -60,9 +62,13 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const router = useRouter()
+  const [selectedSubcategories, setSelectedSubcategories] = React.useState<
+    string[] | null
+  >(product.subcategories)
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
   const [isPending, startTransition] = React.useTransition()
 
+  // Set files from product
   React.useEffect(() => {
     if (product.images && product.images.length > 0) {
       setFiles(
@@ -90,8 +96,12 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     resolver: zodResolver(productSchema),
     defaultValues: {
       category: product.category,
+      subcategories: product.subcategories,
     },
   })
+
+  // Update subcategories when category changes
+  const subcategories = useSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
     console.log(data)
@@ -241,7 +251,14 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          field.onChange(value)
+                          if (value !== product.category) {
+                            setSelectedSubcategories(null)
+                          } else {
+                            setSelectedSubcategories(product.subcategories)
+                          }
+                        }}
                         defaultValue={product.category}
                       >
                         <SelectTrigger className="capitalize">
@@ -268,6 +285,27 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="subcategories"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Subcategories</FormLabel>
+                    <FormControl>
+                      <MultiSelect
+                        selected={selectedSubcategories}
+                        setSelected={setSelectedSubcategories}
+                        onChange={field.onChange}
+                        placeholder="Select subcategories"
+                        options={subcategories}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormItem className="w-full">
                 <FormLabel>Price</FormLabel>
                 <FormControl>
@@ -285,8 +323,6 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                   message={form.formState.errors.price?.message}
                 />
               </FormItem>
-            </div>
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormItem className="w-full">
                 <FormLabel>Quantity</FormLabel>
                 <FormControl>
@@ -304,6 +340,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                   message={form.formState.errors.quantity?.message}
                 />
               </FormItem>
+            </div>
+            <div className="flex flex-col items-start gap-6 sm:flex-row">
               <FormItem className="w-full">
                 <FormLabel>Inventory</FormLabel>
                 <FormControl>
@@ -321,25 +359,25 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                   message={form.formState.errors.inventory?.message}
                 />
               </FormItem>
-            </div>
-            <FormItem className="flex flex-col gap-1.5">
-              <FormLabel>Images</FormLabel>
-              <FormControl>
-                <FileDialog
-                  setValue={form.setValue}
-                  name="images"
-                  maxFiles={3}
-                  maxSize={1024 * 1024 * 4}
-                  files={files}
-                  setFiles={setFiles}
-                  isUploading={isUploading}
-                  disabled={isPending}
+              <FormItem className="flex w-full flex-col gap-1.5">
+                <FormLabel>Images</FormLabel>
+                <FormControl>
+                  <FileDialog
+                    setValue={form.setValue}
+                    name="images"
+                    maxFiles={3}
+                    maxSize={1024 * 1024 * 4}
+                    files={files}
+                    setFiles={setFiles}
+                    isUploading={isUploading}
+                    disabled={isPending}
+                  />
+                </FormControl>
+                <UncontrolledFormMessage
+                  message={form.formState.errors.images?.message}
                 />
-              </FormControl>
-              <UncontrolledFormMessage
-                message={form.formState.errors.images?.message}
-              />
-            </FormItem>
+              </FormItem>
+            </div>
             <div className="flex space-x-2">
               <Button disabled={isPending}>
                 {isPending && (
