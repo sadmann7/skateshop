@@ -24,15 +24,13 @@ export async function getStoresAction(input: {
       "asc" | "desc" | undefined
     ]) ?? []
 
-  const { items, total } = await db.transaction(async (db) => {
-    const items = await db
-      .select({
-        id: stores.id,
-        name: stores.name,
-      })
+  const { items, total } = await db.transaction(async (tx) => {
+    const items = await tx
+      .select()
       .from(stores)
       .limit(limit)
       .offset(offset)
+
       .orderBy(
         column && column in stores
           ? order === "asc"
@@ -41,23 +39,22 @@ export async function getStoresAction(input: {
           : desc(stores.createdAt)
       )
 
-    const total = await db
+    const total = await tx
       .select({
         count: sql<number>`count(${stores.id})`,
       })
       .from(stores)
-      .orderBy(
-        column && column in stores
-          ? order === "asc"
-            ? asc(stores[column])
-            : desc(stores[column])
-          : desc(stores.createdAt)
-      )
 
-    return { items, total: Number(total[0]?.count) ?? 0 }
+    return {
+      items,
+      total: Number(total[0]?.count) ?? 0,
+    }
   })
 
-  return { items, total }
+  return {
+    items,
+    total,
+  }
 }
 
 export async function addStoreAction(

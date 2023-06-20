@@ -43,6 +43,11 @@ export const getProductsSchema = z.object({
   limit: z.number().default(10),
   offset: z.number().default(0),
   category: z.enum(products.category.enumValues).optional().nullable(),
+  categories: z
+    .string()
+    .regex(/^\d+-\d+$/)
+    .optional()
+    .nullable(),
   sort: z
     .string()
     .regex(/^\w+-(asc|desc)$/)

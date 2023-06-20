@@ -65,6 +65,8 @@ export async function getProductsAction(
   const [minPrice, maxPrice] = input.price_range?.includes("-")
     ? input.price_range?.split("-").map(Number) ?? []
     : []
+  const categories =
+    (input.categories?.split("-") as Product["category"][]) ?? []
   const storeIds = input.store_ids?.includes("-")
     ? input.store_ids?.split("-").map(Number) ?? []
     : []
@@ -78,6 +80,9 @@ export async function getProductsAction(
       .where(
         and(
           input.category ? eq(products.category, input.category) : undefined,
+          categories.length
+            ? inArray(products.category, categories)
+            : undefined,
           minPrice ? gt(products.price, minPrice) : undefined,
           maxPrice ? lt(products.price, maxPrice) : undefined,
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
@@ -91,7 +96,7 @@ export async function getProductsAction(
           : desc(products.createdAt)
       )
 
-    const totalProducts = await tx
+    const total = await tx
       .select({
         count: sql<number>`count(${products.id})`,
       })
@@ -99,6 +104,9 @@ export async function getProductsAction(
       .where(
         and(
           input.category ? eq(products.category, input.category) : undefined,
+          categories.length
+            ? inArray(products.category, categories)
+            : undefined,
           minPrice ? gt(products.price, minPrice) : undefined,
           maxPrice ? lt(products.price, maxPrice) : undefined,
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
@@ -107,7 +115,7 @@ export async function getProductsAction(
 
     return {
       items,
-      total: Number(totalProducts[0]?.count) ?? 0,
+      total: Number(total[0]?.count) ?? 0,
     }
   })
 

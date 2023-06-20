@@ -138,7 +138,7 @@ export function SignInForm() {
           </form>
         </Form>
       </CardContent>
-      <CardFooter className="flex items-center space-x-2">
+      <CardFooter className="flex flex-wrap items-center space-x-2">
         <div className="flex-1 text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link

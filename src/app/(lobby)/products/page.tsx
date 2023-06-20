@@ -5,6 +5,7 @@ import { Header } from "@/components/header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shell"
 import { getProductsAction } from "@/app/_actions/product"
+import { getStoresAction } from "@/app/_actions/store"
 
 export const runtime = "edge"
 
@@ -22,8 +23,17 @@ interface ProductsPageProps {
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
-  const { page, per_page, sort, price_range, store_ids } = searchParams
+  const {
+    page,
+    per_page,
+    sort,
+    categories,
+    price_range,
+    store_ids,
+    store_page,
+  } = searchParams
 
+  // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
@@ -31,11 +41,27 @@ export default async function ProductsPage({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
+    categories: typeof categories === "string" ? categories : null,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
   })
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
+
+  // Stores transaction
+  const storesLimit = 25
+  const storesOffset =
+    typeof store_page === "string"
+      ? (parseInt(store_page) - 1) * storesLimit
+      : 0
+
+  const storesTransaction = await getStoresAction({
+    limit: storesLimit,
+    offset: storesOffset,
+    sort: "name-asc",
+  })
+
+  const storePageCount = Math.ceil(storesTransaction.total / storesLimit)
 
   return (
     <Shell>
@@ -43,6 +69,8 @@ export default async function ProductsPage({
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}
+        stores={storesTransaction.items}
+        storePageCount={storePageCount}
         categories={Object.values(products.category.enumValues)}
       />
     </Shell>

@@ -1,4 +1,4 @@
-import { products, type Product } from "@/db/schema"
+import { type Product } from "@/db/schema"
 
 import { toTitleCase } from "@/lib/utils"
 import { Header } from "@/components/header"
@@ -30,33 +30,38 @@ export default async function CategoryPage({
   searchParams,
 }: CategoryPageProps) {
   const { category } = params
-  const { page, per_page, sort, price_range, store_ids, store_page } =
+  const { page, per_page, sort, price_range, store_page, store_ids } =
     searchParams
 
+  // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
   const productsTransaction = await getProductsAction({
-    category,
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
+    category,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
   })
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
 
-  const storeLimit = 20
+  // Stores transaction
+  const storesLimit = 25
+  const storesOffset =
+    typeof store_page === "string"
+      ? (parseInt(store_page) - 1) * storesLimit
+      : 0
 
   const storesTransaction = await getStoresAction({
-    limit: storeLimit,
-    offset:
-      typeof store_page === "string" ? (parseInt(store_page) - 1) * 20 : 0,
+    limit: storesLimit,
+    offset: storesOffset,
     sort: "name-asc",
   })
 
-  const storePageCount = Math.ceil(storesTransaction.total / storeLimit)
+  const storePageCount = Math.ceil(storesTransaction.total / storesLimit)
 
   return (
     <Shell>
@@ -70,7 +75,6 @@ export default async function CategoryPage({
         pageCount={pageCount}
         stores={storesTransaction.items}
         storePageCount={storePageCount}
-        categories={Object.values(products.category.enumValues)}
       />
     </Shell>
   )

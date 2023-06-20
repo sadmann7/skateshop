@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { type Option } from "@/types"
 import { Command as CommandPrimitive } from "cmdk"
 import { X } from "lucide-react"
 
@@ -9,41 +10,33 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command"
 
 interface MultiSelectProps {
-  selected: {
-    label: string
-    value: string
-  }[]
-  setSelected: React.Dispatch<
-    React.SetStateAction<
-      {
-        label: string
-        value: string
-      }[]
-    >
-  >
-  options: { label: string; value: string }[]
   placeholder?: string
+  selected: Option[]
+  setSelected: React.Dispatch<React.SetStateAction<Option[]>>
+  options: Option[]
+  onItemSelect?: () => void
 }
 
 export function MultiSelect({
-  options,
   placeholder = "Select options",
+  options,
   selected,
   setSelected,
+  onItemSelect,
 }: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
   const handleSelect = React.useCallback(
-    (option: (typeof options)[number]) => {
+    (option: Option) => {
       setSelected((prev) => [...prev, option])
     },
     [setSelected]
   )
 
   const handleRemove = React.useCallback(
-    (option: (typeof options)[number]) => {
+    (option: Option) => {
       setSelected((prev) => prev.filter((item) => item.value !== option.value))
     },
     [setSelected]
@@ -51,16 +44,28 @@ export function MultiSelect({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!inputRef.current) return
+
       if (event.key === "Backspace" || event.key === "Delete") {
         setSelected((prev) => prev.slice(0, -1))
+      }
+      // Blur input on escape
+      if (event.key === "Escape") {
+        inputRef.current.blur()
       }
     },
     [setSelected]
   )
 
-  const seletableOptions = options.filter(
-    (option) => !selected.includes(option)
-  )
+  const filteredOptions = React.useMemo(() => {
+    return options.filter((option) => {
+      if (selected.find((item) => item.value === option.value)) return false
+
+      if (query.length === 0) return true
+
+      return option.label.toLowerCase().includes(query.toLowerCase())
+    })
+  }, [options, query, selected])
 
   return (
     <Command
@@ -81,6 +86,17 @@ export function MultiSelect({
                   aria-label="Remove option"
                   size="sm"
                   className="ml-2 h-auto bg-transparent p-0 text-primary hover:bg-transparent hover:text-destructive"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      handleRemove(option)
+                    }
+                  }}
+                  onMouseDown={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }}
                   onClick={() => handleRemove(option)}
                 >
                   <X className="h-3 w-3" aria-hidden="true" />
@@ -100,10 +116,10 @@ export function MultiSelect({
         </div>
       </div>
       <div className="relative z-50 mt-2">
-        {isOpen ? (
+        {isOpen && filteredOptions.length > 0 ? (
           <div className="absolute top-0 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
-              {seletableOptions.map((option) => {
+              {filteredOptions.map((option) => {
                 return (
                   <CommandItem
                     key={option.value}
@@ -113,6 +129,7 @@ export function MultiSelect({
                     }}
                     onSelect={() => {
                       handleSelect(option)
+                      if (onItemSelect) onItemSelect()
                       setQuery("")
                     }}
                   >

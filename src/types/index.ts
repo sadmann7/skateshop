@@ -31,6 +31,11 @@ export type StoredFile = {
   url: string
 }
 
+export type Option = {
+  label: string
+  value: string
+}
+
 export type SubscriptionPlan = {
   name: string
   description: string

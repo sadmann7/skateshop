@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product, type Store } from "@/db/schema"
+import { type Option } from "@/types"
 
 import { sortOptions } from "@/config/products"
 import { cn, formatPrice, toTitleCase } from "@/lib/utils"
@@ -108,12 +109,22 @@ export function Products({
   }, [debouncedPrice])
 
   // Category filter
-  const [selectedCategories, setSelectedCategories] = React.useState<
-    {
-      label: string
-      value: string
-    }[]
-  >([])
+  const [selectedCategories, setSelectedCategories] = React.useState<Option[]>(
+    []
+  )
+
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          categories: selectedCategories?.length
+            ? selectedCategories.map(({ value }) => value).join("-")
+            : null,
+        })}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategories])
 
   // Store filter
   const [storeIds, setStoreIds] = React.useState<number[] | null>(
@@ -140,155 +151,157 @@ export function Products({
               Filter
             </Button>
           </SheetTrigger>
-          <SheetContent className="flex w-5/6 flex-col sm:w-1/2 lg:w-1/3">
-            <SheetHeader>
+          <SheetContent className="flex h-full w-5/6 flex-col sm:w-1/2 lg:w-1/3">
+            <SheetHeader className="px-1">
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <Separator />
-            <div className="space-y-5">
-              <h3 className="text-sm font-medium tracking-wide text-foreground">
-                Price range ($)
-              </h3>
-              <Slider
-                variant="range"
-                thickness="thin"
-                defaultValue={[0, 100]}
-                max={100}
-                step={1}
-                value={priceRange}
-                onValueChange={(value: typeof priceRange) => {
-                  setPriceRange(value)
-                }}
-              />
-              <div className="flex items-center space-x-4">
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  min={0}
-                  max={priceRange[1]}
-                  className="h-9"
-                  value={priceRange[0]}
-                  onChange={(e) => {
-                    const value = Number(e.target.value)
-                    setPriceRange([value, priceRange[1]])
-                  }}
-                />
-                <span className="text-muted-foreground">-</span>
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  min={priceRange[0]}
-                  max={100}
-                  className="h-9"
-                  value={priceRange[1]}
-                  onChange={(e) => {
-                    const value = Number(e.target.value)
-                    setPriceRange([priceRange[0], value])
-                  }}
-                />
-              </div>
-            </div>
-            {categories?.length ? (
-              <div className="space-y-5">
+            <div className="flex flex-1 flex-col gap-5 overflow-hidden px-1">
+              <div className="space-y-4">
                 <h3 className="text-sm font-medium tracking-wide text-foreground">
-                  Categories
+                  Price range ($)
                 </h3>
-                <MultiSelect
-                  placeholder="Select categories"
-                  selected={selectedCategories}
-                  setSelected={setSelectedCategories}
-                  options={categories.map((category) => ({
-                    label: toTitleCase(category),
-                    value: category,
-                  }))}
+                <Slider
+                  variant="range"
+                  thickness="thin"
+                  defaultValue={[0, 100]}
+                  max={100}
+                  step={1}
+                  value={priceRange}
+                  onValueChange={(value: typeof priceRange) => {
+                    setPriceRange(value)
+                  }}
                 />
-              </div>
-            ) : null}
-            {stores?.length ? (
-              <div className="space-y-5">
-                <div className="flex items-center gap-2">
-                  <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
-                    Stores
-                  </h3>
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        startTransition(() => {
-                          router.push(
-                            `${pathname}?${createQueryString({
-                              store_page: Number(store_page) - 1,
-                            })}`
-                          )
-                        })
-                      }}
-                      disabled={Number(store_page) === 1}
-                    >
-                      <Icons.chevronLeft
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                      />
-                      <span className="sr-only">Previous store page</span>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        startTransition(() => {
-                          router.push(
-                            `${pathname}?${createQueryString({
-                              store_page: Number(store_page) + 1,
-                            })}`
-                          )
-                        })
-                      }}
-                      disabled={Number(store_page) === storePageCount}
-                    >
-                      <Icons.chevronRight
-                        className="h-4 w-4"
-                        aria-hidden="true"
-                      />
-                      <span className="sr-only">Next store page</span>
-                    </Button>
-                  </div>
+                <div className="flex items-center space-x-4">
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={priceRange[1]}
+                    className="h-9"
+                    value={priceRange[0]}
+                    onChange={(e) => {
+                      const value = Number(e.target.value)
+                      setPriceRange([value, priceRange[1]])
+                    }}
+                  />
+                  <span className="text-muted-foreground">-</span>
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    min={priceRange[0]}
+                    max={100}
+                    className="h-9"
+                    value={priceRange[1]}
+                    onChange={(e) => {
+                      const value = Number(e.target.value)
+                      setPriceRange([priceRange[0], value])
+                    }}
+                  />
                 </div>
-                <ScrollArea
-                  className={cn(categories?.length ? "h-72" : "h-96")}
-                >
-                  <div className="space-y-4">
-                    {stores.map((store) => (
-                      <div
-                        key={store.id}
-                        className="flex items-center space-x-2"
-                      >
-                        <Checkbox
-                          id={`store-${store.id}`}
-                          checked={storeIds?.includes(store.id) ?? false}
-                          onCheckedChange={(value) => {
-                            if (value) {
-                              setStoreIds([...(storeIds ?? []), store.id])
-                            } else {
-                              setStoreIds(
-                                storeIds?.filter((id) => id !== store.id) ??
-                                  null
-                              )
-                            }
-                          }}
-                        />
-                        <Label
-                          htmlFor={`store-${store.id}`}
-                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {store.name}
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
               </div>
-            ) : null}
-            <div className="mt-auto">
+              {categories?.length ? (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                    Categories
+                  </h3>
+                  <MultiSelect
+                    placeholder="Select categories"
+                    selected={selectedCategories}
+                    setSelected={setSelectedCategories}
+                    options={categories.map((category) => ({
+                      label: toTitleCase(category),
+                      value: category,
+                    }))}
+                  />
+                </div>
+              ) : null}
+              {stores?.length ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
+                      Stores
+                    </h3>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          startTransition(() => {
+                            router.push(
+                              `${pathname}?${createQueryString({
+                                store_page: Number(store_page) - 1,
+                              })}`
+                            )
+                          })
+                        }}
+                        disabled={Number(store_page) === 1}
+                      >
+                        <Icons.chevronLeft
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        <span className="sr-only">Previous store page</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          startTransition(() => {
+                            router.push(
+                              `${pathname}?${createQueryString({
+                                store_page: Number(store_page) + 1,
+                              })}`
+                            )
+                          })
+                        }}
+                        disabled={Number(store_page) === storePageCount}
+                      >
+                        <Icons.chevronRight
+                          className="h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        <span className="sr-only">Next store page</span>
+                      </Button>
+                    </div>
+                  </div>
+                  <ScrollArea
+                    className={cn(categories?.length ? "h-72" : "h-96")}
+                  >
+                    <div className="space-y-4">
+                      {stores.map((store) => (
+                        <div
+                          key={store.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            id={`store-${store.id}`}
+                            checked={storeIds?.includes(store.id) ?? false}
+                            onCheckedChange={(value) => {
+                              if (value) {
+                                setStoreIds([...(storeIds ?? []), store.id])
+                              } else {
+                                setStoreIds(
+                                  storeIds?.filter((id) => id !== store.id) ??
+                                    null
+                                )
+                              }
+                            }}
+                          />
+                          <Label
+                            htmlFor={`store-${store.id}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {store.name}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              ) : null}
+            </div>
+            <div>
               <Separator className="my-4" />
               <SheetFooter>
                 <Button
