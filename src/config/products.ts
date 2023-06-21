@@ -16,37 +16,47 @@ export const sortOptions = [
   },
 ]
 
-export const productCategories = [
+export const productCategories: {
+  name: string
+  subcategories: { title: string; description?: string; image?: string }[]
+}[] = [
   {
     name: "skateboards",
     subcategories: [
       {
         title: "decks",
         description: "The board itself.",
+        image: "/images/deck-one.webp",
       },
       {
         title: "wheels",
         description: "The wheels that go on the board.",
+        image: "/images/wheel-one.webp",
       },
       {
         title: "trucks",
         description: "The trucks that go on the board.",
+        image: "/images/truck-one.webp",
       },
       {
         title: "bearings",
         description: "The bearings that go in the wheels.",
+        image: "/images/bearing-one.webp",
       },
       {
         title: "griptape",
         description: "The griptape that goes on the board.",
+        image: "/images/griptape-one.webp",
       },
       {
         title: "hardware",
         description: "The hardware that goes on the board.",
+        image: "/images/hardware-one.webp",
       },
       {
         title: "tools",
         description: "The tools that go with the board.",
+        image: "/images/tool-one.webp",
       },
     ],
   },

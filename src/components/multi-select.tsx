@@ -4,7 +4,6 @@ import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
 import { X } from "lucide-react"
 
-import { toTitleCase } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command"
@@ -28,6 +27,7 @@ export function MultiSelect({
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
+  // Register as input field to be used in react-hook-form
   React.useEffect(() => {
     if (onChange) onChange(selected?.length ? selected : null)
   }, [onChange, selected])
@@ -62,6 +62,7 @@ export function MultiSelect({
     [setSelected]
   )
 
+  // Memoize filtered options to avoid unnecessary re-renders
   const filteredOptions = React.useMemo(() => {
     return options.filter((option) => {
       if (selected?.find((item) => item === option)) return false
@@ -84,9 +85,9 @@ export function MultiSelect({
               <Badge
                 key={option}
                 variant="secondary"
-                className="rounded hover:bg-secondary"
+                className="rounded capitalize hover:bg-secondary"
               >
-                {toTitleCase(option)}
+                {option}
                 <Button
                   aria-label="Remove option"
                   size="sm"
@@ -128,6 +129,7 @@ export function MultiSelect({
                 return (
                   <CommandItem
                     key={option}
+                    className="capitalize"
                     onMouseDown={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -137,7 +139,7 @@ export function MultiSelect({
                       setQuery("")
                     }}
                   >
-                    {toTitleCase(option)}
+                    {option}
                   </CommandItem>
                 )
               })}

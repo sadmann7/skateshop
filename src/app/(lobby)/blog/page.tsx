@@ -5,7 +5,7 @@ import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "Explore the latest news and updates from the community.",
+  description: "Explore the latest news and updates from the community",
 }
 
 export default function BlogPage() {
@@ -13,7 +13,8 @@ export default function BlogPage() {
     <Shell>
       <Header
         title="Blog"
-        description="Explore the latest news and updates from the community."
+        description="Explore the latest news and updates from the community"
+        size="sm"
       />
       <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
         <h2 className="text-2xl font-bold">Under construction</h2>

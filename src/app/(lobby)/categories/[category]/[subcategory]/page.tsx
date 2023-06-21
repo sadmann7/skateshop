@@ -68,8 +68,8 @@ export default async function SubcategoryPage({
   return (
     <Shell>
       <Header
-        title={toTitleCase(category)}
-        description={`Buy the best ${category}`}
+        title={toTitleCase(subcategory)}
+        description={`Buy the best ${subcategory}`}
         size="sm"
       />
       <Products
