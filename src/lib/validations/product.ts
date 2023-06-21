@@ -49,7 +49,7 @@ export const getProductsSchema = z.object({
     .regex(/^\d+-\d+$/)
     .optional()
     .nullable(),
-  supercategories: z
+  subcategories: z
     .string()
     .regex(/^\d+-\d+$/)
     .optional()

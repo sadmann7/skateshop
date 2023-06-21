@@ -62,15 +62,10 @@ export async function getProductsAction(
       keyof Product | undefined,
       "asc" | "desc" | undefined
     ]) ?? []
-  const [minPrice, maxPrice] = input.price_range?.includes("-")
-    ? input.price_range?.split("-").map(Number) ?? []
-    : []
-  const categories = input.store_ids?.includes("-")
-    ? (input.categories?.split("-") as Product["category"][]) ?? []
-    : []
-  const storeIds = input.store_ids?.includes("-")
-    ? input.store_ids?.split("-").map(Number) ?? []
-    : []
+  const [minPrice, maxPrice] = input.price_range?.split("-").map(Number) ?? []
+  const categories =
+    (input.categories?.split("-") as Product["category"][]) ?? []
+  const storeIds = input.store_ids?.split("-").map(Number) ?? []
 
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx

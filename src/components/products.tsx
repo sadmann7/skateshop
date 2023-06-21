@@ -9,6 +9,7 @@ import { type Product, type Store } from "@/db/schema"
 import { sortOptions } from "@/config/products"
 import { cn, formatPrice } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
+import { useSubcategories } from "@/hooks/use-subcategories"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -48,17 +49,19 @@ import { PaginationButton } from "@/components/pagination-button"
 interface ProductsProps {
   products: Product[]
   pageCount: number
+  category?: Product["category"]
+  categories?: Product["category"][]
   stores?: Pick<Store, "id" | "name">[]
   storePageCount?: number
-  categories?: Product["category"][]
 }
 
 export function Products({
   products,
   pageCount,
+  category,
+  categories,
   stores,
   storePageCount,
-  categories,
 }: ProductsProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -69,8 +72,8 @@ export function Products({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt-desc"
-  const store_page = searchParams?.get("store_page") ?? "1"
   const store_ids = searchParams?.get("store_ids")
+  const store_page = searchParams?.get("store_page") ?? "1"
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -123,6 +126,25 @@ export function Products({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories])
+
+  // Subcategory filter
+  const [selectedSubcategories, setSelectedSubcategories] = React.useState<
+    string[] | null
+  >(null)
+  const subcategories = useSubcategories(category)
+
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          subcategories: selectedSubcategories?.length
+            ? selectedSubcategories.join("-")
+            : null,
+        })}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSubcategories])
 
   // Store filter
   const [storeIds, setStoreIds] = React.useState<number[] | null>(
@@ -208,6 +230,19 @@ export function Products({
                     selected={selectedCategories}
                     setSelected={setSelectedCategories}
                     options={categories}
+                  />
+                </div>
+              ) : null}
+              {category ? (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                    Subcategories
+                  </h3>
+                  <MultiSelect
+                    placeholder="Select subcategories"
+                    selected={selectedSubcategories}
+                    setSelected={setSelectedSubcategories}
+                    options={subcategories}
                   />
                 </div>
               ) : null}
