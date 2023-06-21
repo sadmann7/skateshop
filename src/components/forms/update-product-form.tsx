@@ -313,9 +313,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                     type="number"
                     inputMode="numeric"
                     placeholder="Type product price here."
-                    {...form.register("price", {
-                      valueAsNumber: true,
-                    })}
+                    {...form.register("price")}
                     defaultValue={product.price}
                   />
                 </FormControl>

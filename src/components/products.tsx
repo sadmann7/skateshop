@@ -403,7 +403,7 @@ export function Products({
                     <Image
                       src={
                         product.images[0]?.url ??
-                        '"/images/product-placeholder.webp"'
+                        "/images/product-placeholder.webp"
                       }
                       alt={product.images[0]?.name ?? "Product image"}
                       fill

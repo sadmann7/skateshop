@@ -26,13 +26,7 @@ export async function seed() {
       name: faker.commerce.productName(),
       price: faker.commerce.price(),
       description: faker.commerce.productDescription(),
-      images: [
-        {
-          id: faker.string.uuid(),
-          url: "/images/deck-one.webp",
-          name: faker.commerce.productName(),
-        },
-      ],
+      images: null,
       category:
         faker.helpers.shuffle(
           productCategories.map((category) => category.title)

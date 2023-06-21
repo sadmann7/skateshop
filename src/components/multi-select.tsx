@@ -129,7 +129,7 @@ export function MultiSelect({
                 return (
                   <CommandItem
                     key={option}
-                    className="capitalize"
+                    className="px-2 py-1.5 text-sm capitalize"
                     onMouseDown={(e) => {
                       e.preventDefault()
                       e.stopPropagation()

@@ -220,12 +220,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                 <FormLabel>Price</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    inputMode="numeric"
                     placeholder="Type product price here."
-                    {...form.register("price", {
-                      valueAsNumber: true,
-                    })}
+                    {...form.register("price")}
                   />
                 </FormControl>
                 <UncontrolledFormMessage
