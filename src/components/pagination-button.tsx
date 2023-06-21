@@ -65,7 +65,13 @@ export function PaginationButton({
   }, [pageCount, page, siblingCount])
 
   return (
-    <div className={cn("flex items-center space-x-2", className)} {...props}>
+    <div
+      className={cn(
+        "flex flex-wrap items-center justify-center gap-2",
+        className
+      )}
+      {...props}
+    >
       <Button
         variant="outline"
         size="sm"

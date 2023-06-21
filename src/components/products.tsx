@@ -460,7 +460,6 @@ export function Products({
       </div>
       {products.length ? (
         <PaginationButton
-          className="mx-auto"
           pageCount={pageCount}
           page={page}
           per_page={per_page}
