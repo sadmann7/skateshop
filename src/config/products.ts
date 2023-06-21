@@ -1,3 +1,5 @@
+import { type Product } from "@/db/schema"
+
 export const sortOptions = [
   { label: "Date: Old to new", value: "createdAt-asc" },
   {
@@ -17,11 +19,11 @@ export const sortOptions = [
 ]
 
 export const productCategories: {
-  name: string
+  title: Product["category"]
   subcategories: { title: string; description?: string; image?: string }[]
 }[] = [
   {
-    name: "skateboards",
+    title: "skateboards",
     subcategories: [
       {
         title: "decks",
@@ -61,7 +63,7 @@ export const productCategories: {
     ],
   },
   {
-    name: "clothing",
+    title: "clothing",
     subcategories: [
       {
         title: "t-shirts",
@@ -83,7 +85,7 @@ export const productCategories: {
     ],
   },
   {
-    name: "shoes",
+    title: "shoes",
     subcategories: [
       {
         title: "low tops",
@@ -108,7 +110,7 @@ export const productCategories: {
     ],
   },
   {
-    name: "accessories",
+    title: "accessories",
     subcategories: [
       {
         title: "skate tools",
@@ -143,4 +145,15 @@ export const productCategories: {
       },
     ],
   },
+]
+
+export const productTags = [
+  "new",
+  "sale",
+  "bestseller",
+  "featured",
+  "popular",
+  "trending",
+  "limited",
+  "exclusive",
 ]

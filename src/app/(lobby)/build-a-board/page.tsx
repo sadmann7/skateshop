@@ -6,6 +6,7 @@ import { productCategories } from "@/config/products"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { Header } from "@/components/header"
+import { SeedButton } from "@/components/seed-button"
 import { Shell } from "@/components/shell"
 
 export const runtime = "edge"
@@ -23,6 +24,7 @@ export default function BuildABoadPage() {
         description="Select the components for your board"
         size="sm"
       />
+      <SeedButton />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {productCategories[0]?.subcategories.map((subcategory) => (
           <Link
@@ -40,7 +42,7 @@ export default function BuildABoadPage() {
                   <Image
                     src={
                       subcategory.image ??
-                      "https://source.unsplash.com/featured/?skateboard${subcategory.title}"
+                      `https://source.unsplash.com/featured/?skateboard${subcategory.title}`
                     }
                     alt={subcategory.title}
                     fill

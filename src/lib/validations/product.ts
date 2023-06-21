@@ -12,8 +12,8 @@ export const productSchema = z.object({
     })
     .default(products.category.enumValues[0]),
   subcategories: z.array(z.string()).optional().nullable().default(null),
-  price: z.number().positive({
-    message: "Must be a positive number",
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
+    message: "Must be a valid price",
   }),
   quantity: z.number().positive({
     message: "Must be a positive number",

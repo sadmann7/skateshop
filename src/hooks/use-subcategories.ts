@@ -9,7 +9,7 @@ export function useSubcategories(category?: string) {
     if (!category) return
 
     const subcategories = productCategories
-      .find((c) => c.name === category)
+      .find((c) => c.title === category)
       ?.subcategories.map((s) => s.title)
 
     setSubcategories(subcategories ?? [])

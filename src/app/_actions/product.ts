@@ -62,7 +62,7 @@ export async function getProductsAction(
       keyof Product | undefined,
       "asc" | "desc" | undefined
     ]) ?? []
-  const [minPrice, maxPrice] = input.price_range?.split("-").map(Number) ?? []
+  const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
   const categories =
     (input.categories?.split("-") as Product["category"][]) ?? []
   const subcategories = (input.subcategories?.split("-") ??

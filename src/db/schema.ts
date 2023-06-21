@@ -2,6 +2,7 @@ import type { StoredFile } from "@/types"
 import { relations, sql, type InferModel } from "drizzle-orm"
 import {
   datetime,
+  decimal,
   int,
   json,
   mysqlEnum,
@@ -18,8 +19,8 @@ export const stores = mysqlTable("stores", {
   description: text("description"),
   slug: text("slug"),
   createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
-    .default(sql`CURRENT_TIMESTAMP(3)`)
-    .notNull(),
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP(3)`),
 })
 
 export type Store = InferModel<typeof stores>
@@ -42,15 +43,15 @@ export const products = mysqlTable("products", {
     .default("skateboards")
     .notNull(),
   subcategories: json("subcategories").$type<string[] | null>().default(null),
-  price: int("price").default(0).notNull(),
-  quantity: int("quantity").default(1).notNull(),
-  inventory: int("inventory").default(1).notNull(),
-  rating: int("rating").default(0).notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
+  quantity: int("quantity").notNull().default(1),
+  inventory: int("inventory").notNull().default(0),
+  rating: int("rating").notNull().default(0),
   tags: json("tags").$type<string[] | null>().default(null),
   storeId: int("storeId").notNull(),
   createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
-    .default(sql`CURRENT_TIMESTAMP(3)`)
-    .notNull(),
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP(3)`),
 })
 
 export type Product = InferModel<typeof products>
