@@ -75,9 +75,9 @@ export default async function ProductsPage({
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}
+        categories={Object.values(products.category.enumValues)}
         stores={storesTransaction.items}
         storePageCount={storePageCount}
-        categories={Object.values(products.category.enumValues)}
       />
     </Shell>
   )

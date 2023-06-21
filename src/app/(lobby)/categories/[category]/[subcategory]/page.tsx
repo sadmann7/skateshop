@@ -9,36 +9,30 @@ import { getStoresAction } from "@/app/_actions/store"
 
 export const runtime = "edge"
 
-interface CategoryPageProps {
+interface SubcategoryPageProps {
   params: {
     category: Product["category"]
+    subcategory: string
   }
   searchParams: {
     [key: string]: string | string[] | undefined
   }
 }
 
-export function generateMetadata({ params }: CategoryPageProps) {
+export function generateMetadata({ params }: SubcategoryPageProps) {
   return {
-    title: toTitleCase(params.category),
-    description: `Buy products from the ${params.category} category`,
+    title: toTitleCase(params.subcategory),
+    description: `Buy the best ${params.subcategory}`,
   }
 }
 
-export default async function CategoryPage({
+export default async function SubcategoryPage({
   params,
   searchParams,
-}: CategoryPageProps) {
-  const { category } = params
-  const {
-    page,
-    per_page,
-    sort,
-    subcategories,
-    price_range,
-    store_ids,
-    store_page,
-  } = searchParams
+}: SubcategoryPageProps) {
+  const { category, subcategory } = params
+  const { page, per_page, sort, price_range, store_ids, store_page } =
+    searchParams
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
@@ -49,7 +43,7 @@ export default async function CategoryPage({
     offset,
     sort: typeof sort === "string" ? sort : null,
     category,
-    subcategories: typeof subcategories === "string" ? subcategories : null,
+    subcategories: subcategory,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
   })
@@ -75,13 +69,12 @@ export default async function CategoryPage({
     <Shell>
       <Header
         title={toTitleCase(category)}
-        description={`Buy ${category} from the best stores`}
+        description={`Buy the best ${category}`}
         size="sm"
       />
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}
-        category={category}
         stores={storesTransaction.items}
         storePageCount={storePageCount}
       />
