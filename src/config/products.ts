@@ -53,34 +53,84 @@ export const productCategories = [
   {
     name: "clothing",
     subcategories: [
-      { title: "t-shirts", description: "Rad t-shirts." },
-      { title: "sweatshirts", description: "Rad sweatshirts." },
-      { title: "pants", description: "Rad pants." },
-      { title: "shorts", description: "Rad shorts." },
-      { title: "hats", description: "Rad hats." },
+      {
+        title: "t-shirts",
+        description: "Cool and comfy tees for effortless style.",
+      },
+      { title: "sweatshirts", description: "Cozy up in trendy sweatshirts." },
+      {
+        title: "pants",
+        description: "Relaxed and stylish pants for everyday wear.",
+      },
+      {
+        title: "shorts",
+        description: "Stay cool with casual and comfortable shorts.",
+      },
+      {
+        title: "hats",
+        description: "Top off your look with stylish and laid-back hats.",
+      },
     ],
   },
   {
     name: "shoes",
     subcategories: [
-      { title: "low tops", description: "Rad low tops shoes." },
-      { title: "high tops", description: "Rad high tops shoes." },
-      { title: "slip ons", description: "Rad slip ons shoes." },
-      { title: "pros", description: "Rad pros shoes." },
-      { title: "classics", description: "Rad classics shoes." },
+      {
+        title: "low tops",
+        description: "Rad low tops shoes for a stylish low-profile look.",
+      },
+      {
+        title: "high tops",
+        description: "Elevate your style with rad high top shoes.",
+      },
+      {
+        title: "slip ons",
+        description: "Effortless style with rad slip-on shoes.",
+      },
+      {
+        title: "pros",
+        description: "Performance-driven rad shoes for the pros.",
+      },
+      {
+        title: "classics",
+        description: "Timeless style with rad classic shoes.",
+      },
     ],
   },
   {
     name: "accessories",
     subcategories: [
-      { title: "skate tools", description: "Rad skate tools." },
-      { title: "bushings", description: "Rad bushings." },
-      { title: "shock & riser pads", description: "Rad shock & riser pads." },
-      { title: "skate rails", description: "Rad skate rails." },
-      { title: "wax", description: "Rad wax." },
-      { title: "socks", description: "Rad socks." },
-      { title: "backpacks", description: "Rad backpacks." },
-      { title: "bags", description: "Rad bags." },
+      {
+        title: "skate tools",
+        description:
+          "Essential tools for maintaining your skateboard, all rad.",
+      },
+      {
+        title: "bushings",
+        description: "Upgrade your ride with our rad selection of bushings.",
+      },
+      {
+        title: "shock & riser pads",
+        description:
+          "Enhance your skateboard's performance with rad shock and riser pads.",
+      },
+      {
+        title: "skate rails",
+        description:
+          "Add creativity and style to your tricks with our rad skate rails.",
+      },
+      {
+        title: "wax",
+        description: "Keep your board gliding smoothly with our rad skate wax.",
+      },
+      {
+        title: "socks",
+        description: "Keep your feet comfy and stylish with our rad socks.",
+      },
+      {
+        title: "backpacks",
+        description: "Carry your gear in style with our rad backpacks.",
+      },
     ],
   },
 ]

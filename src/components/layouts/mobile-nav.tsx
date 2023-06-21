@@ -7,6 +7,12 @@ import type { MainNavItem, SidebarNavItem } from "@/types"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -33,57 +39,114 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
         </Button>
       </SheetTrigger>
       <SheetContent size="xl" position="left" className="pl-1 pr-0">
-        <Link
-          href="/"
-          className="flex items-center pl-6"
-          onClick={() => setIsOpen(false)}
-        >
-          <Icons.logo className="mr-2 h-4 w-4" />
-          <span className="font-bold">{siteConfig.name}</span>
-        </Link>
+        <div className="px-7">
+          <Link
+            aria-label="Home"
+            href="/"
+            className="flex items-center"
+            onClick={() => setIsOpen(false)}
+          >
+            <Icons.logo className="mr-2 h-4 w-4" aria-hidden="true" />
+            <span className="font-bold">{siteConfig.name}</span>
+          </Link>
+        </div>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
-          <div className="flex flex-col space-y-3">
-            <h4 className="font-medium">Main Menu</h4>
-            {mainNavItems?.map(
-              (item, index) =>
-                item.href && (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    className={cn(
-                      "ml-2.5 text-foreground/70 transition-colors hover:text-foreground",
-                      pathname === item.href && "text-foreground",
-                      item.disabled && "pointer-events-none opacity-60"
-                    )}
-                    onClick={() => setIsOpen(false)}
-                  >
+          <div className="pl-1 pr-7">
+            <Accordion type="single" collapsible className="w-full">
+              {mainNavItems?.map((item, index) => (
+                <AccordionItem value={item.title} key={index}>
+                  <AccordionTrigger className="text-sm capitalize">
                     {item.title}
-                  </Link>
-                )
-            )}
-          </div>
-          <div className="mt-4 flex flex-col space-y-3">
-            <h4 className="font-medium">Side Menu</h4>
-            {sidebarNavItems?.map(
-              (item, index) =>
-                item.href && (
-                  <Link
-                    key={index}
-                    href={item.href}
-                    className={cn(
-                      "ml-2.5 text-foreground/70 transition-colors hover:text-foreground",
-                      pathname === item.href && "text-foreground",
-                      item.disabled && "pointer-events-none opacity-60"
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-col space-y-2">
+                      {item.items?.map((subItem, index) =>
+                        subItem.href ? (
+                          <MobileLink
+                            key={index}
+                            href={String(subItem.href)}
+                            pathname={pathname}
+                            setIsOpen={setIsOpen}
+                            disabled={subItem.disabled}
+                          >
+                            {subItem.title}
+                          </MobileLink>
+                        ) : (
+                          <div
+                            key={index}
+                            className="text-foreground/70 transition-colors"
+                          >
+                            {item.title}
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+              <AccordionItem value="sidebar">
+                <AccordionTrigger className="text-sm capitalize">
+                  Sidebar Menu
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex flex-col space-y-2">
+                    {sidebarNavItems?.map((item, index) =>
+                      item.href ? (
+                        <MobileLink
+                          key={index}
+                          href={String(item.href)}
+                          pathname={pathname}
+                          setIsOpen={setIsOpen}
+                          disabled={item.disabled}
+                        >
+                          {item.title}
+                        </MobileLink>
+                      ) : (
+                        <div
+                          key={index}
+                          className="text-foreground/70 transition-colors"
+                        >
+                          {item.title}
+                        </div>
+                      )
                     )}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.title}
-                  </Link>
-                )
-            )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </ScrollArea>
       </SheetContent>
     </Sheet>
+  )
+}
+
+interface MobileLinkProps {
+  children?: React.ReactNode
+  href: string
+  disabled?: boolean
+  pathname: string
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function MobileLink({
+  children,
+  href,
+  disabled,
+  pathname,
+  setIsOpen,
+}: MobileLinkProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "capitalize text-foreground/70 transition-colors hover:text-foreground",
+        pathname === href && "text-foreground",
+        disabled && "pointer-events-none opacity-60"
+      )}
+      onClick={() => setIsOpen(false)}
+    >
+      {children}
+    </Link>
   )
 }
