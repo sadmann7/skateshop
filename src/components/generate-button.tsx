@@ -4,9 +4,9 @@ import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { seed } from "@/app/_actions/seed"
+import { generateProducts } from "@/app/_actions/generate"
 
-export function SeedButton() {
+export function GenerateButton() {
   const [isPending, startTransition] = React.useTransition()
 
   return (
@@ -14,7 +14,7 @@ export function SeedButton() {
       className="w-fit"
       onClick={() => {
         startTransition(async () => {
-          await seed()
+          await generateProducts()
         })
       }}
       disabled={isPending}

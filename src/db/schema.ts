@@ -40,9 +40,9 @@ export const products = mysqlTable("products", {
     "shoes",
     "accessories",
   ])
-    .default("skateboards")
-    .notNull(),
-  subcategories: json("subcategories").$type<string[] | null>().default(null),
+    .notNull()
+    .default("skateboards"),
+  subcategory: varchar("subcategory", { length: 191 }),
   price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
   quantity: int("quantity").notNull().default(1),
   inventory: int("inventory").notNull().default(0),

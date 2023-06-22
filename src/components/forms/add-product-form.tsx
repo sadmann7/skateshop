@@ -9,9 +9,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { isArrayOfFile } from "@/lib/utils"
+import { getSubcategories, isArrayOfFile, toTitleCase } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
-import { useSubcategories } from "@/hooks/use-subcategories"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -41,7 +40,6 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
-import { MultiSelect } from "@/components/multi-select"
 import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
@@ -55,9 +53,6 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
 export function AddProductForm({ storeId }: AddProductFormProps) {
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-  const [selectedSubcategories, setSelectedSubcategories] = React.useState<
-    string[] | null
-  >(null)
   const [isPending, startTransition] = React.useTransition()
 
   // uploadthing
@@ -73,8 +68,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     },
   })
 
-  // Update subcategories when category changes
-  const subcategories = useSubcategories(form.watch("category"))
+  // Get subcategories based on category
+  const subcategories = getSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
     console.log(data)
@@ -110,7 +105,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         // Reset form and files
         form.reset()
         setFiles(null)
-        setSelectedSubcategories([])
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
@@ -166,10 +160,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={(value) => {
-                          field.onChange(value)
-                          setSelectedSubcategories(null)
-                        }}
+                        onValueChange={field.onChange}
                       >
                         <SelectTrigger className="capitalize">
                           <SelectValue placeholder={field.value} />
@@ -178,12 +169,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                           <SelectGroup>
                             {Object.values(products.category.enumValues).map(
                               (option) => (
-                                <SelectItem
-                                  key={option}
-                                  value={option}
-                                  className="capitalize"
-                                >
-                                  {option}
+                                <SelectItem key={option} value={option}>
+                                  {toTitleCase(option)}
                                 </SelectItem>
                               )
                             )}
@@ -197,18 +184,28 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
               />
               <FormField
                 control={form.control}
-                name="subcategories"
+                name="subcategory"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Subcategories</FormLabel>
+                    <FormLabel>Subcategory</FormLabel>
                     <FormControl>
-                      <MultiSelect
-                        selected={selectedSubcategories}
-                        setSelected={setSelectedSubcategories}
-                        onChange={field.onChange}
-                        placeholder="Select subcategories"
-                        options={subcategories}
-                      />
+                      <Select
+                        value={field.value ?? ""}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a subcategory" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {subcategories.map((option) => (
+                              <SelectItem key={option} value={option}>
+                                {toTitleCase(option)}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

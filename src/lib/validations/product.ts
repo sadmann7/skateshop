@@ -11,7 +11,7 @@ export const productSchema = z.object({
       required_error: "Must be a valid category",
     })
     .default(products.category.enumValues[0]),
-  subcategories: z.array(z.string()).optional().nullable().default(null),
+  subcategory: z.string().optional().nullable(),
   price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
     message: "Must be a valid price",
   }),
