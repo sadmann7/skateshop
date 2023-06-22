@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import type { Option } from "@/types"
 import { Command as CommandPrimitive } from "cmdk"
 import { X } from "lucide-react"
 
@@ -9,11 +10,11 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandGroup, CommandItem } from "@/components/ui/command"
 
 interface MultiSelectProps {
-  selected: string[] | null
-  setSelected: React.Dispatch<React.SetStateAction<string[] | null>>
-  onChange?: (value: string[] | null) => void
+  selected: Option[] | null
+  setSelected: React.Dispatch<React.SetStateAction<Option[] | null>>
+  onChange?: (value: Option[] | null) => void
   placeholder?: string
-  options: string[]
+  options: Option[]
 }
 
 export function MultiSelect({
@@ -33,14 +34,14 @@ export function MultiSelect({
   }, [onChange, selected])
 
   const handleSelect = React.useCallback(
-    (option: string) => {
+    (option: Option) => {
       setSelected((prev) => [...(prev || []), option])
     },
     [setSelected]
   )
 
   const handleRemove = React.useCallback(
-    (option: string) => {
+    (option: Option) => {
       setSelected((prev) => prev?.filter((item) => item !== option) ?? [])
     },
     [setSelected]
@@ -65,11 +66,11 @@ export function MultiSelect({
   // Memoize filtered options to avoid unnecessary re-renders
   const filteredOptions = React.useMemo(() => {
     return options.filter((option) => {
-      if (selected?.find((item) => item === option)) return false
+      if (selected?.find((item) => item.value === option.value)) return false
 
       if (query.length === 0) return true
 
-      return option.toLowerCase().includes(query.toLowerCase())
+      return option.label.toLowerCase().includes(query.toLowerCase())
     })
   }, [options, query, selected])
 
@@ -83,11 +84,11 @@ export function MultiSelect({
           {selected?.map((option) => {
             return (
               <Badge
-                key={option}
+                key={option.value}
                 variant="secondary"
-                className="rounded capitalize hover:bg-secondary"
+                className="rounded hover:bg-secondary"
               >
-                {option}
+                {option.label}
                 <Button
                   aria-label="Remove option"
                   size="sm"
@@ -128,8 +129,8 @@ export function MultiSelect({
               {filteredOptions.map((option) => {
                 return (
                   <CommandItem
-                    key={option}
-                    className="px-2 py-1.5 text-sm capitalize"
+                    key={option.value}
+                    className="px-2 py-1.5 text-sm"
                     onMouseDown={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
@@ -139,7 +140,7 @@ export function MultiSelect({
                       setQuery("")
                     }}
                   >
-                    {option}
+                    {option.label}
                   </CommandItem>
                 )
               })}

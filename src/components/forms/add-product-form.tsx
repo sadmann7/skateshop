@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
-import { isArrayOfFile, toTitleCase } from "@/lib/utils"
+import { isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import {
@@ -171,7 +171,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                             {Object.values(products.category.enumValues).map(
                               (option) => (
                                 <SelectItem key={option} value={option}>
-                                  {toTitleCase(option)}
+                                  {option}
                                 </SelectItem>
                               )
                             )}
@@ -200,8 +200,11 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                         <SelectContent>
                           <SelectGroup>
                             {subcategories.map((option) => (
-                              <SelectItem key={option} value={option}>
-                                {toTitleCase(option)}
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
                               </SelectItem>
                             ))}
                           </SelectGroup>

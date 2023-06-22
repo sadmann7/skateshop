@@ -32,12 +32,12 @@ export default async function SubcategoryPage({
   params,
   searchParams,
 }: SubcategoryPageProps) {
-  const { category } = params
+  const { category, subcategory } = params
   const { page, per_page, sort, price_range, store_ids, store_page } =
     searchParams
 
   // Products transaction
-  const subcategory = unslugify(params.subcategory)
+
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
@@ -71,8 +71,8 @@ export default async function SubcategoryPage({
   return (
     <Shell>
       <Header
-        title={toTitleCase(subcategory)}
-        description={`Buy the best ${subcategory}`}
+        title={toTitleCase(unslugify(subcategory))}
+        description={`Buy the best ${unslugify(subcategory)}`}
         size="sm"
       />
       <Products

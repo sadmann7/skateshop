@@ -26,6 +26,11 @@ export type SidebarNavItem = NavItemWithChildren
 
 export type UserRole = "user" | "admin"
 
+export type Option = {
+  label: string
+  value: string
+}
+
 export type FileWithPreview = FileWithPath & {
   preview: string
 }
@@ -34,11 +39,6 @@ export type StoredFile = {
   id: string
   name: string
   url: string
-}
-
-export type Option = {
-  label: string
-  value: string
 }
 
 export type SubscriptionPlan = {

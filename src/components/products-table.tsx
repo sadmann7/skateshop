@@ -218,7 +218,7 @@ export function ProductsTable({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "10"
   const sort = searchParams?.get("sort")
-  const [column, order] = sort?.split("-") ?? []
+  const [column, order] = sort?.split(".") ?? []
   const name = searchParams?.get("name")
   const date_range = searchParams?.get("date_range")
 

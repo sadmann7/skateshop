@@ -16,7 +16,7 @@ export async function generateProducts() {
   for (let i = 0; i < 100; i++) {
     const category =
       faker.helpers.shuffle(productCategories)[0]?.title ?? "skateboards"
-    const subcategories = getSubcategories(category)
+    const subcategories = getSubcategories(category).map((s) => s.value)
 
     await db.insert(products).values({
       name: faker.commerce.productName(),

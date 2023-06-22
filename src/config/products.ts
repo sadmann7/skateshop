@@ -1,20 +1,23 @@
 import { type Product } from "@/db/schema"
+import type { Option } from "@/types"
+
+import { slugify, toTitleCase } from "@/lib/utils"
 
 export const sortOptions = [
-  { label: "Date: Old to new", value: "createdAt-asc" },
+  { label: "Date: Old to new", value: "createdAt.asc" },
   {
     label: "Date: New to old",
-    value: "createdAt-desc",
+    value: "createdAt.desc",
   },
-  { label: "Price: Low to high", value: "price-asc" },
-  { label: "Price: High to low", value: "price-desc" },
+  { label: "Price: Low to high", value: "price.asc" },
+  { label: "Price: High to low", value: "price.desc" },
   {
     label: "Alphabetical: A to Z",
-    value: "name-asc",
+    value: "name.asc",
   },
   {
     label: "Alphabetical: Z to A",
-    value: "name-desc",
+    value: "name.desc",
   },
 ]
 
@@ -158,13 +161,16 @@ export const productTags = [
   "exclusive",
 ]
 
-export function getSubcategories(category?: string) {
+export function getSubcategories(category?: string): Option[] {
   if (!category) return []
 
   const subcategories =
     productCategories
       .find((c) => c.title.toLowerCase() === category.toLowerCase())
-      ?.subcategories.map((s) => s.title) ?? []
+      ?.subcategories.map((s) => ({
+        label: toTitleCase(s.title),
+        value: slugify(s.title),
+      })) ?? []
 
   return subcategories
 }

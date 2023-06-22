@@ -58,17 +58,17 @@ export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
 ) {
   const [column, order] =
-    (input.sort?.split("-") as [
+    (input.sort?.split(".") as [
       keyof Product | undefined,
       "asc" | "desc" | undefined
     ]) ?? []
   const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
   const categories =
-    (input.categories
-      ?.replace(/-/g, " ")
-      .split(".") as Product["category"][]) ?? []
-  const subcategories = input.subcategories?.replace(/-/g, " ").split(".") ?? []
+    (input.categories?.split(".") as Product["category"][]) ?? []
+  const subcategories = input.subcategories?.split(".") ?? []
   const storeIds = input.store_ids?.split(".").map(Number) ?? []
+
+  console.log({ categories, subcategories })
 
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx

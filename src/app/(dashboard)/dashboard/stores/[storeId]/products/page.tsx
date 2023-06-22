@@ -47,7 +47,7 @@ export default async function ProductsPage({
   // Column and order to sort by
   const [column, order] =
     typeof sort === "string"
-      ? (sort.split("-") as [
+      ? (sort.split(".") as [
           keyof Product | undefined,
           "asc" | "desc" | undefined
         ])

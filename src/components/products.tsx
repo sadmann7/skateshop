@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product, type Store } from "@/db/schema"
+import type { Option } from "@/types"
 
 import { getSubcategories, sortOptions } from "@/config/products"
 import { cn, formatPrice } from "@/lib/utils"
@@ -110,7 +111,7 @@ export function Products({
 
   // Category filter
   const [selectedCategories, setSelectedCategories] = React.useState<
-    string[] | null
+    Option[] | null
   >(null)
 
   React.useEffect(() => {
@@ -119,7 +120,7 @@ export function Products({
         `${pathname}?${createQueryString({
           categories: selectedCategories?.length
             ? // Join categories with a dot to make search params prettier
-              selectedCategories.join(".")
+              selectedCategories.map((c) => c.value).join(".")
             : null,
         })}`
       )
@@ -129,7 +130,7 @@ export function Products({
 
   // Subcategory filter
   const [selectedSubcategories, setSelectedSubcategories] = React.useState<
-    string[] | null
+    Option[] | null
   >(null)
   const subcategories = getSubcategories(category)
 
@@ -138,7 +139,7 @@ export function Products({
       router.push(
         `${pathname}?${createQueryString({
           subcategories: selectedSubcategories?.length
-            ? selectedSubcategories.join(".")
+            ? selectedSubcategories.map((s) => s.value).join(".")
             : null,
         })}`
       )
@@ -229,7 +230,10 @@ export function Products({
                     placeholder="Select categories"
                     selected={selectedCategories}
                     setSelected={setSelectedCategories}
-                    options={categories}
+                    options={categories.map((c) => ({
+                      label: c,
+                      value: c,
+                    }))}
                   />
                 </div>
               ) : null}
@@ -342,9 +346,23 @@ export function Products({
                   size="sm"
                   className="w-full"
                   onClick={() => {
-                    setPriceRange([0, 100])
-                    setStoreIds(null)
+                    startTransition(() => {
+                      router.push(
+                        `${pathname}?${createQueryString({
+                          price_range: 0 - 100,
+                          store_ids: null,
+                          categories: null,
+                          subcategories: null,
+                        })}`
+                      )
+
+                      setPriceRange([0, 100])
+                      setSelectedCategories(null)
+                      setSelectedSubcategories(null)
+                      setStoreIds(null)
+                    })
                   }}
+                  disabled={isPending}
                 >
                   Clear Filters
                 </Button>
