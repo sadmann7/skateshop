@@ -6,8 +6,11 @@ import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -45,34 +48,54 @@ export default async function StoresPage() {
       <Header title="Stores" description="Manage your stores" size="sm" />
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {userStores.map((store) => (
-          <Link
-            aria-label={store.name}
-            key={store.id}
-            href={`/dashboard/stores/${store.id}`}
-          >
-            <Card className="h-full hover:bg-muted">
-              <CardHeader>
-                <CardTitle className="line-clamp-1">{store.name}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                  {store.description}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
+          <Card key={store.id} className="flex h-full flex-col">
+            <CardHeader className="flex-1">
+              <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+              <CardDescription className="line-clamp-2">
+                {store.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link key={store.id} href={`/dashboard/stores/${store.id}`}>
+                <div
+                  className={cn(
+                    buttonVariants({
+                      size: "sm",
+                      className: "h-8 w-full",
+                    })
+                  )}
+                >
+                  View products
+                  <span className="sr-only">{`${store.name} store products`}</span>
+                </div>
+              </Link>
+            </CardContent>
+          </Card>
         ))}
         {userStores.length < 3 && (
-          <Link aria-label="Create a new store" href="/dashboard/stores/new">
-            <Card className="h-full hover:bg-muted">
-              <CardHeader>
-                <CardTitle className="line-clamp-1">
-                  Create a new store
-                </CardTitle>
-                <CardDescription className="line-clamp-2">
-                  Create a new store to start selling your products.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </Link>
+          <Card className="flex h-full flex-col">
+            <CardHeader className="flex-1">
+              <CardTitle className="line-clamp-1">Create a new store</CardTitle>
+              <CardDescription className="line-clamp-2">
+                Create a new store to start selling your products.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/dashboard/stores/new">
+                <div
+                  className={cn(
+                    buttonVariants({
+                      size: "sm",
+                      className: "h-8 w-full",
+                    })
+                  )}
+                >
+                  Create a store
+                  <span className="sr-only">Create a new store</span>
+                </div>
+              </Link>
+            </CardContent>
+          </Card>
         )}
       </div>
     </Shell>

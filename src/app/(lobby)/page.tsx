@@ -2,10 +2,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
-import { desc, sql } from "drizzle-orm"
+import { desc } from "drizzle-orm"
 
+import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -29,11 +31,7 @@ export default async function IndexPage() {
     .orderBy(desc(products.createdAt))
 
   const allStores = await db
-    .select({
-      id: stores.id,
-      name: stores.name,
-      description: stores.description,
-    })
+    .select()
     .from(stores)
     .limit(4)
     .orderBy(desc(stores.createdAt))
@@ -47,7 +45,7 @@ export default async function IndexPage() {
           title="Buy rad skating goodies"
           description="We have a wide range of products to suit your needs"
         />
-        <div className="space-y-4">
+        <div className="space-y-5">
           <h2 className="text-2xl font-medium">Categories</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {Object.values(products.category.enumValues).map((category) => (
@@ -77,8 +75,8 @@ export default async function IndexPage() {
             ))}
           </div>
         </div>
-        <div className="flex flex-col items-center justify-center space-y-4 rounded-lg border px-4 py-16 text-center">
-          <h2 className="text-xl font-medium">
+        <Card className="mt-4 grid place-items-center gap-5 px-6 py-20 text-center">
+          <h2 className="text-2xl font-medium">
             Do you want to sell your products on our website?
           </h2>
           <Link href="/dashboard/stores">
@@ -93,47 +91,99 @@ export default async function IndexPage() {
             </div>
             <span className="sr-only">Create a store</span>
           </Link>
-        </div>
-        <div className="space-y-4">
-          <h2 className="text-2xl font-medium">Featured products</h2>
-          <div className="flex flex-col items-center justify-center space-y-6">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {allProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+        </Card>
+        <div className="space-y-5">
+          <div className="flex items-center">
+            <h2 className="flex-1 text-2xl font-medium">Featured products</h2>
             <Link href="/products">
               <div
                 className={cn(
                   buttonVariants({
                     size: "sm",
+                    className: "h-8",
                   })
                 )}
               >
-                View all products
+                View all
                 <span className="sr-only">View all products</span>
               </div>
             </Link>
           </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {allProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-5">
           <h2 className="text-2xl font-medium">Featured stores</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {allStores.map((store) => (
-              <Link
-                aria-label={`${store.name} store products`}
-                key={store.id}
-                href={`/products?store_ids=${store.id}`}
-              >
-                <Card key={store.id} className="hover:bg-muted">
-                  <CardHeader>
-                    <CardTitle>{store.name}</CardTitle>
-                    <CardDescription>{store.description}</CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
+              <Card key={store.id} className="flex h-full flex-col">
+                <CardHeader className="flex-1">
+                  <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+                  <CardDescription className="line-clamp-2">
+                    {store.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Link href={`/products?store_ids=${store.id}`}>
+                    <div
+                      className={cn(
+                        buttonVariants({
+                          size: "sm",
+                          className: "h-8 w-full",
+                        })
+                      )}
+                    >
+                      View products
+                      <span className="sr-only">{`${store.name} store products`}</span>
+                    </div>
+                  </Link>
+                </CardContent>
+              </Card>
             ))}
           </div>
+        </div>
+        <Card className="mt-4 grid place-items-center gap-5 px-6 py-20 text-center">
+          <h2 className="text-2xl font-medium">
+            Join our newsletter to get the latest news and updates
+          </h2>
+          <a
+            href="/https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div
+              className={cn(
+                buttonVariants({
+                  size: "sm",
+                })
+              )}
+            >
+              Join our newsletter
+            </div>
+            <span className="sr-only">
+              Join our newsletter to get the latest news and updates
+            </span>
+          </a>
+        </Card>
+        <div className="flex flex-wrap items-center justify-center gap-4">
+          {productCategories[
+            Math.floor(Math.random() * productCategories.length)
+          ]?.subcategories.map((subcategory) => (
+            <Link
+              key={subcategory.slug}
+              href={`/categories/${String(productCategories[0]?.title)}/${
+                subcategory.slug
+              }`}
+            >
+              <Badge variant="secondary" className="rounded-none px-3 py-1">
+                {subcategory.title}
+              </Badge>
+              <span className="sr-only">{subcategory.title}</span>
+            </Link>
+          ))}
         </div>
       </Shell>
     </div>

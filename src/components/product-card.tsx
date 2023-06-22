@@ -23,7 +23,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden rounded-sm">
+    <Card className="h-full overflow-hidden rounded-sm">
       <Link
         aria-label={`View ${product.name} details`}
         href={`/product/${product.id}`}
