@@ -68,8 +68,6 @@ export async function getProductsAction(
   const subcategories = input.subcategories?.split(".") ?? []
   const storeIds = input.store_ids?.split(".").map(Number) ?? []
 
-  console.log({ categories, subcategories })
-
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
       .select()

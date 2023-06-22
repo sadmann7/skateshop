@@ -26,11 +26,13 @@ export async function getStoresAction(input: {
 
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
-      .select()
+      .select({
+        id: stores.id,
+        name: stores.name,
+      })
       .from(stores)
       .limit(limit)
       .offset(offset)
-
       .orderBy(
         column && column in stores
           ? order === "asc"

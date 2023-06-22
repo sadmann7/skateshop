@@ -46,7 +46,7 @@ export default async function StoresPage() {
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {userStores.map((store) => (
           <Link
-            aria-label={`Go to ${store.name}`}
+            aria-label={store.name}
             key={store.id}
             href={`/dashboard/stores/${store.id}`}
           >
