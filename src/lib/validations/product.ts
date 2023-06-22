@@ -43,15 +43,14 @@ export const getProductSchema = z.object({
 export const getProductsSchema = z.object({
   limit: z.number().default(10),
   offset: z.number().default(0),
-  category: z.enum(products.category.enumValues).optional().nullable(),
   categories: z
     .string()
-    .regex(/^\d+-\d+$/)
+    .regex(/^\d+.\d+$/)
     .optional()
     .nullable(),
   subcategories: z
     .string()
-    .regex(/^\d+-\d+$/)
+    .regex(/^\d+.\d+$/)
     .optional()
     .nullable(),
   sort: z
@@ -66,7 +65,7 @@ export const getProductsSchema = z.object({
     .nullable(),
   store_ids: z
     .string()
-    .regex(/^\d+-\d+$/)
+    .regex(/^\d+.\d+$/)
     .optional()
     .nullable(),
 })

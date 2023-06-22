@@ -2,8 +2,6 @@ import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
 import { twMerge } from "tailwind-merge"
 
-import { productCategories } from "@/config/products"
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -41,6 +39,10 @@ export function slugify(str: string) {
     .replace(/--+/g, "-")
 }
 
+export function unslugify(str: string) {
+  return str.replace(/-/g, " ")
+}
+
 export function toTitleCase(str: string) {
   return str.replace(
     /\w\S*/g,
@@ -58,15 +60,4 @@ export function isArrayOfFile(files: unknown): files is File[] {
   const isArray = Array.isArray(files)
   if (!isArray) return false
   return files.every((file) => file instanceof File)
-}
-
-export function getSubcategories(category?: string) {
-  if (!category) return []
-
-  const subcategories =
-    productCategories
-      .find((c) => c.title.toLowerCase() === category.toLowerCase())
-      ?.subcategories.map((s) => s.title) ?? []
-
-  return subcategories
 }

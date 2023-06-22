@@ -48,7 +48,7 @@ export default async function CategoryPage({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
-    category,
+    categories: category,
     subcategories: typeof subcategories === "string" ? subcategories : null,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,

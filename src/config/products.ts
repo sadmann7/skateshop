@@ -157,3 +157,14 @@ export const productTags = [
   "limited",
   "exclusive",
 ]
+
+export function getSubcategories(category?: string) {
+  if (!category) return []
+
+  const subcategories =
+    productCategories
+      .find((c) => c.title.toLowerCase() === category.toLowerCase())
+      ?.subcategories.map((s) => s.title) ?? []
+
+  return subcategories
+}

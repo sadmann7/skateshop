@@ -6,10 +6,9 @@ import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product, type Store } from "@/db/schema"
 
-import { sortOptions } from "@/config/products"
+import { getSubcategories, sortOptions } from "@/config/products"
 import { cn, formatPrice } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
-import { useSubcategories } from "@/hooks/use-subcategories"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -119,7 +118,8 @@ export function Products({
       router.push(
         `${pathname}?${createQueryString({
           categories: selectedCategories?.length
-            ? selectedCategories.join("-")
+            ? // Join categories with a dot to make search params prettier
+              selectedCategories.join(".")
             : null,
         })}`
       )
@@ -131,14 +131,14 @@ export function Products({
   const [selectedSubcategories, setSelectedSubcategories] = React.useState<
     string[] | null
   >(null)
-  const subcategories = useSubcategories(category)
+  const subcategories = getSubcategories(category)
 
   React.useEffect(() => {
     startTransition(() => {
       router.push(
         `${pathname}?${createQueryString({
           subcategories: selectedSubcategories?.length
-            ? selectedSubcategories.join("-")
+            ? selectedSubcategories.join(".")
             : null,
         })}`
       )
@@ -148,14 +148,14 @@ export function Products({
 
   // Store filter
   const [storeIds, setStoreIds] = React.useState<number[] | null>(
-    store_ids?.split("-").map(Number) ?? null
+    store_ids?.split(".").map(Number) ?? null
   )
 
   React.useEffect(() => {
     startTransition(() => {
       router.push(
         `${pathname}?${createQueryString({
-          store_ids: storeIds?.length ? storeIds.join("-") : null,
+          store_ids: storeIds?.length ? storeIds.join(".") : null,
         })}`
       )
     })

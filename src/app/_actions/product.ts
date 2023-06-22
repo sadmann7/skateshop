@@ -64,9 +64,11 @@ export async function getProductsAction(
     ]) ?? []
   const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
   const categories =
-    (input.categories?.split("-") as Product["category"][]) ?? []
-  const subcategories = input.subcategories?.split("-") ?? []
-  const storeIds = input.store_ids?.split("-").map(Number) ?? []
+    (input.categories
+      ?.replace(/-/g, " ")
+      .split(".") as Product["category"][]) ?? []
+  const subcategories = input.subcategories?.replace(/-/g, " ").split(".") ?? []
+  const storeIds = input.store_ids?.split(".").map(Number) ?? []
 
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
@@ -76,7 +78,6 @@ export async function getProductsAction(
       .offset(input.offset)
       .where(
         and(
-          input.category ? eq(products.category, input.category) : undefined,
           categories.length
             ? inArray(products.category, categories)
             : undefined,
@@ -103,9 +104,11 @@ export async function getProductsAction(
       .from(products)
       .where(
         and(
-          input.category ? eq(products.category, input.category) : undefined,
           categories.length
             ? inArray(products.category, categories)
+            : undefined,
+          subcategories.length
+            ? inArray(products.subcategory, subcategories)
             : undefined,
           minPrice ? gt(products.price, minPrice) : undefined,
           maxPrice ? lt(products.price, maxPrice) : undefined,

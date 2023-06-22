@@ -25,8 +25,8 @@ export function GenerateButton() {
           aria-hidden="true"
         />
       )}
-      Seed
-      <span className="sr-only">Seed database</span>
+      Generate
+      <span className="sr-only">Generate products</span>
     </Button>
   )
 }
