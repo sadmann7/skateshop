@@ -14,7 +14,7 @@ import { type storeSchema } from "@/lib/validations/store"
 export async function getStoresAction(input: {
   limit?: number
   offset?: number
-  sort?: `${keyof Store}-${"asc" | "desc"}`
+  sort?: `${keyof Store}.${"asc" | "desc"}`
 }) {
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0

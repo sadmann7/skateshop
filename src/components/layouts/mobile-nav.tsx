@@ -85,7 +85,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
                 </AccordionItem>
               ))}
               <AccordionItem value="sidebar">
-                <AccordionTrigger className="text-sm capitalize">
+                <AccordionTrigger className="text-sm">
                   Sidebar Menu
                 </AccordionTrigger>
                 <AccordionContent>
@@ -140,7 +140,7 @@ function MobileLink({
     <Link
       href={href}
       className={cn(
-        "capitalize text-foreground/70 transition-colors hover:text-foreground",
+        "text-foreground/70 transition-colors hover:text-foreground",
         pathname === href && "text-foreground",
         disabled && "pointer-events-none opacity-60"
       )}

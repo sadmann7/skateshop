@@ -1,8 +1,6 @@
 import { type Product } from "@/db/schema"
 import type { Option } from "@/types"
 
-import { slugify, toTitleCase } from "@/lib/utils"
-
 export const sortOptions = [
   { label: "Date: Old to new", value: "createdAt.asc" },
   {
@@ -23,45 +21,57 @@ export const sortOptions = [
 
 export const productCategories: {
   title: Product["category"]
-  subcategories: { title: string; description?: string; image?: string }[]
+  subcategories: {
+    title: string
+    description?: string
+    image?: string
+    slug: string
+  }[]
 }[] = [
   {
     title: "skateboards",
     subcategories: [
       {
-        title: "decks",
+        title: "Decks",
         description: "The board itself.",
         image: "/images/deck-one.webp",
+        slug: "decks",
       },
       {
-        title: "wheels",
+        title: "Wheels",
         description: "The wheels that go on the board.",
         image: "/images/wheel-one.webp",
+        slug: "wheels",
       },
       {
-        title: "trucks",
+        title: "Trucks",
         description: "The trucks that go on the board.",
         image: "/images/truck-one.webp",
+        slug: "trucks",
       },
       {
-        title: "bearings",
+        title: "Bearings",
         description: "The bearings that go in the wheels.",
         image: "/images/bearing-one.webp",
+        slug: "bearings",
       },
       {
-        title: "griptape",
+        title: "Griptape",
         description: "The griptape that goes on the board.",
         image: "/images/griptape-one.webp",
+        slug: "griptape",
       },
       {
-        title: "hardware",
+        title: "Hardware",
         description: "The hardware that goes on the board.",
         image: "/images/hardware-one.webp",
+        slug: "hardware",
       },
       {
-        title: "tools",
+        title: "Tools",
         description: "The tools that go with the board.",
         image: "/images/tool-one.webp",
+        slug: "tools",
       },
     ],
   },
@@ -69,21 +79,29 @@ export const productCategories: {
     title: "clothing",
     subcategories: [
       {
-        title: "t-shirts",
+        title: "T-shirts",
         description: "Cool and comfy tees for effortless style.",
+        slug: "t-shirts",
       },
-      { title: "sweatshirts", description: "Cozy up in trendy sweatshirts." },
       {
-        title: "pants",
+        title: "Hoodies",
+        description: "Cozy up in trendy hoodies.",
+        slug: "hoodies",
+      },
+      {
+        title: "Pants",
         description: "Relaxed and stylish pants for everyday wear.",
+        slug: "pants",
       },
       {
-        title: "shorts",
+        title: "Shorts",
         description: "Stay cool with casual and comfortable shorts.",
+        slug: "shorts",
       },
       {
-        title: "hats",
+        title: "Hats",
         description: "Top off your look with stylish and laid-back hats.",
+        slug: "hats",
       },
     ],
   },
@@ -91,24 +109,29 @@ export const productCategories: {
     title: "shoes",
     subcategories: [
       {
-        title: "low tops",
+        title: "Low Tops",
         description: "Rad low tops shoes for a stylish low-profile look.",
+        slug: "low-tops",
       },
       {
-        title: "high tops",
+        title: "High Tops",
         description: "Elevate your style with rad high top shoes.",
+        slug: "high-tops",
       },
       {
-        title: "slip ons",
+        title: "Slip-ons",
         description: "Effortless style with rad slip-on shoes.",
+        slug: "slip-ons",
       },
       {
-        title: "pros",
+        title: "Pros",
         description: "Performance-driven rad shoes for the pros.",
+        slug: "pros",
       },
       {
-        title: "classics",
+        title: "Classics",
         description: "Timeless style with rad classic shoes.",
+        slug: "classics",
       },
     ],
   },
@@ -116,35 +139,42 @@ export const productCategories: {
     title: "accessories",
     subcategories: [
       {
-        title: "skate tools",
+        title: "Skate Tools",
         description:
           "Essential tools for maintaining your skateboard, all rad.",
+        slug: "skate-tools",
       },
       {
-        title: "bushings",
+        title: "Bushings",
         description: "Upgrade your ride with our rad selection of bushings.",
+        slug: "bushings",
       },
       {
-        title: "shock & riser pads",
+        title: "Shock & Riser Pads",
         description:
           "Enhance your skateboard's performance with rad shock and riser pads.",
+        slug: "shock-riser-pads",
       },
       {
-        title: "skate rails",
+        title: "Skate Rails",
         description:
           "Add creativity and style to your tricks with our rad skate rails.",
+        slug: "skate-rails",
       },
       {
-        title: "wax",
+        title: "Wax",
         description: "Keep your board gliding smoothly with our rad skate wax.",
+        slug: "wax",
       },
       {
-        title: "socks",
+        title: "Socks",
         description: "Keep your feet comfy and stylish with our rad socks.",
+        slug: "socks",
       },
       {
-        title: "backpacks",
+        title: "Backpacks",
         description: "Carry your gear in style with our rad backpacks.",
+        slug: "backpacks",
       },
     ],
   },
@@ -166,10 +196,10 @@ export function getSubcategories(category?: string): Option[] {
 
   const subcategories =
     productCategories
-      .find((c) => c.title.toLowerCase() === category.toLowerCase())
+      .find((c) => c.title === category)
       ?.subcategories.map((s) => ({
-        label: toTitleCase(s.title),
-        value: slugify(s.title),
+        label: s.title,
+        value: s.slug,
       })) ?? []
 
   return subcategories

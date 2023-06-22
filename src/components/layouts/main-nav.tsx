@@ -106,7 +106,7 @@ export function MainNav({ items }: MainNavProps) {
                         className={cn(
                           navigationMenuTriggerStyle(),
                           pathname === item.href && "bg-accent",
-                          "h-auto capitalize"
+                          "h-auto"
                         )}
                       >
                         {item.title}
@@ -137,9 +137,7 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-sm font-medium capitalize leading-none">
-            {title}
-          </div>
+          <div className="text-sm font-medium leading-none">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>

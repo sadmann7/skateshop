@@ -55,7 +55,7 @@ export const getProductsSchema = z.object({
     .nullable(),
   sort: z
     .string()
-    .regex(/^\w+-(asc|desc)$/)
+    .regex(/^\w+.(asc|desc)$/)
     .optional()
     .nullable(),
   price_range: z

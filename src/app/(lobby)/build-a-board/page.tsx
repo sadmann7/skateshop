@@ -5,7 +5,6 @@ import Link from "next/link"
 import { productCategories } from "@/config/products"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { GenerateButton } from "@/components/generate-button"
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
@@ -24,7 +23,6 @@ export default function BuildABoadPage() {
         description="Select the components for your board"
         size="sm"
       />
-      <GenerateButton />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {productCategories[0]?.subcategories.map((subcategory) => (
           <Link
