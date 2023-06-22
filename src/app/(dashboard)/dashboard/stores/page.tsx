@@ -65,8 +65,8 @@ export default async function StoresPage() {
                     })
                   )}
                 >
-                  View products
-                  <span className="sr-only">{`${store.name} store products`}</span>
+                  View store
+                  <span className="sr-only">View {store.name} store</span>
                 </div>
               </Link>
             </CardContent>

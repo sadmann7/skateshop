@@ -19,9 +19,17 @@ import { Icons } from "@/components/icons"
 
 interface ProductCardProps {
   product: Product
+  isPending?: boolean
+  variant?: "default" | "selectable"
+  onSelect?: () => void
 }
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({
+  product,
+  isPending = false,
+  variant = "default",
+  onSelect,
+}: ProductCardProps) {
   return (
     <Card className="h-full overflow-hidden rounded-sm">
       <Link
@@ -64,26 +72,45 @@ export function ProductCard({ product }: ProductCardProps) {
         </CardContent>
       </Link>
       <CardFooter className="p-4">
-        <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
-          <Link
-            aria-label="Quick view"
-            href={`/quickview/product/${product.id}`}
-            className={buttonVariants({
-              variant: "outline",
-              size: "sm",
-              className: "h-8 w-full rounded-sm",
-            })}
-          >
-            Quick view
-          </Link>
+        {variant === "default" ? (
+          <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
+            <Link
+              aria-label="Quick view"
+              href={`/quickview/product/${product.id}`}
+              className={buttonVariants({
+                variant: "outline",
+                size: "sm",
+                className: "h-8 w-full rounded-sm",
+              })}
+            >
+              Quick view
+            </Link>
+            <Button
+              aria-label="Add to cart"
+              size="sm"
+              className="h-8 w-full rounded-sm"
+              disabled={isPending}
+            >
+              Add to cart
+            </Button>
+          </div>
+        ) : (
           <Button
-            aria-label="Add to cart"
+            aria-label="Select product"
             size="sm"
             className="h-8 w-full rounded-sm"
+            onClick={onSelect}
+            disabled={isPending}
           >
-            Add to cart
+            {isPending && (
+              <Icons.spinner
+                className="mr-2 h-5 w-5 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Select
           </Button>
-        </div>
+        )}
       </CardFooter>
     </Card>
   )

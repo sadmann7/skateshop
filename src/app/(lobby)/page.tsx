@@ -54,7 +54,7 @@ export default async function IndexPage() {
                 key={category}
                 href={`/categories/${category}`}
               >
-                <div className="group relative overflow-hidden">
+                <div className="group relative overflow-hidden rounded">
                   <AspectRatio ratio={4 / 5}>
                     <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
                     <Image
@@ -100,7 +100,6 @@ export default async function IndexPage() {
                 className={cn(
                   buttonVariants({
                     size: "sm",
-                    className: "h-8",
                   })
                 )}
               >
@@ -178,7 +177,7 @@ export default async function IndexPage() {
                 subcategory.slug
               }`}
             >
-              <Badge variant="secondary" className="rounded-none px-3 py-1">
+              <Badge variant="secondary" className="rounded px-3 py-1">
                 {subcategory.title}
               </Badge>
               <span className="sr-only">{subcategory.title}</span>

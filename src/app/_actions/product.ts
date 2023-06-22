@@ -10,9 +10,11 @@ import {
   desc,
   eq,
   gt,
+  gte,
   inArray,
   like,
   lt,
+  lte,
   not,
   sql,
 } from "drizzle-orm"
@@ -82,8 +84,8 @@ export async function getProductsAction(
           subcategories.length
             ? inArray(products.subcategory, subcategories)
             : undefined,
-          minPrice ? gt(products.price, minPrice) : undefined,
-          maxPrice ? lt(products.price, maxPrice) : undefined,
+          minPrice ? gte(products.price, minPrice) : undefined,
+          maxPrice ? lte(products.price, maxPrice) : undefined,
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
@@ -107,6 +109,9 @@ export async function getProductsAction(
             : undefined,
           subcategories.length
             ? inArray(products.subcategory, subcategories)
+            : undefined,
+          input.subcategories
+            ? like(products.subcategory, `%${input.subcategories}%`)
             : undefined,
           minPrice ? gt(products.price, minPrice) : undefined,
           maxPrice ? lt(products.price, maxPrice) : undefined,

@@ -62,7 +62,7 @@ export function Products({
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
-  const sort = searchParams?.get("sort") ?? "createdAt-desc"
+  const sort = searchParams?.get("sort") ?? "createdAt.desc"
   const store_ids = searchParams?.get("store_ids")
   const store_page = searchParams?.get("store_page") ?? "1"
 
@@ -401,7 +401,11 @@ export function Products({
       ) : null}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            isPending={isPending}
+          />
         ))}
       </div>
       {products.length ? (
