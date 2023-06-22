@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { isClerkAPIResponseError, useSignUp } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -12,14 +11,6 @@ import type { z } from "zod"
 import { authSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   Form,
   FormControl,
   FormField,
@@ -28,7 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { OAuthSignIn } from "@/components/auth/oauth-signin"
 import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/password-input"
 
@@ -78,81 +68,48 @@ export function SignUpForm() {
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Sign up</CardTitle>
-        <CardDescription>Choose your preferred sign up method</CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <OAuthSignIn />
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
-            </span>
-          </div>
-        </div>
-        <Form {...form}>
-          <form
-            className="grid gap-4"
-            onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-          >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="rodneymullen180@gmail.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+    <Form {...form}>
+      <form
+        className="grid gap-4"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="rodneymullen180@gmail.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <PasswordInput placeholder="**********" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={isPending}>
+          {isPending && (
+            <Icons.spinner
+              className="mr-2 h-4 w-4 animate-spin"
+              aria-hidden="true"
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <PasswordInput placeholder="**********" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button disabled={isPending}>
-              {isPending && (
-                <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Continue
-              <span className="sr-only">
-                Continue to email verification page
-              </span>
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="grid gap-4">
-        <div className="text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link
-            aria-label="Sign in"
-            href="/signin"
-            className="text-primary underline-offset-4 transition-colors hover:underline"
-          >
-            Sign in
-          </Link>
-        </div>
-      </CardFooter>
-    </Card>
+          )}
+          Continue
+          <span className="sr-only">Continue to email verification page</span>
+        </Button>
+      </form>
+    </Form>
   )
 }

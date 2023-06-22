@@ -6,7 +6,7 @@ export const runtime = "edge"
 
 export default function SignOutPage() {
   return (
-    <Shell layout="auth" className="max-w-sm">
+    <Shell layout="auth" className="max-w-xs">
       <Header
         title="Sign out"
         description="Are you sure you want to sign out?"

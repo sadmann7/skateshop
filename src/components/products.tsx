@@ -8,7 +8,7 @@ import { type Product, type Store } from "@/db/schema"
 import type { Option } from "@/types"
 
 import { getSubcategories, sortOptions } from "@/config/products"
-import { cn, formatPrice } from "@/lib/utils"
+import { cn, formatPrice, toTitleCase } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -231,7 +231,7 @@ export function Products({
                     selected={selectedCategories}
                     setSelected={setSelectedCategories}
                     options={categories.map((c) => ({
-                      label: c,
+                      label: toTitleCase(c),
                       value: c,
                     }))}
                   />
@@ -251,8 +251,8 @@ export function Products({
                 </div>
               ) : null}
               {stores?.length ? (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
+                <div className="space-y-3">
+                  <div className="flex gap-2">
                     <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
                       Stores
                     </h3>
