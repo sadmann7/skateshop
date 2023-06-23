@@ -36,6 +36,13 @@
       "when": 1687408786496,
       "tag": "0004_faulty_hellcat",
       "breakpoints": false
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1687498151885,
+      "tag": "0005_powerful_golden_guardian",
+      "breakpoints": false
     }
   ]
 }

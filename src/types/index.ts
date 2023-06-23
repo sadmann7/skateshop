@@ -41,6 +41,11 @@ export type StoredFile = {
   url: string
 }
 
+export type CartItem = {
+  productId: number
+  quantity: number
+}
+
 export type SubscriptionPlan = {
   name: string
   description: string

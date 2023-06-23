@@ -54,13 +54,7 @@ export function BoardBuilder({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt.desc"
-  const decks = searchParams?.get("decks") ?? null
-  const trucks = searchParams?.get("trucks") ?? null
-  const wheels = searchParams?.get("wheels") ?? null
-  const bearings = searchParams?.get("bearings") ?? null
-  const griptape = searchParams?.get("griptape") ?? null
-  const hardware = searchParams?.get("hardware") ?? null
-  const tools = searchParams?.get("tools") ?? null
+  const product_ids = searchParams?.get("product_ids") ?? null
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -95,6 +89,22 @@ export function BoardBuilder({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
+
+  // Product filter
+  const [productIds, setProductIds] = React.useState<number[] | null>(
+    product_ids?.split(".").map(Number) ?? null
+  )
+
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          product_ids: productIds?.length ? productIds.join(".") : null,
+        })}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productIds])
 
   return (
     <div className="flex flex-col space-y-6">
@@ -226,15 +236,7 @@ export function BoardBuilder({
             key={product.id}
             product={product}
             variant="selectable"
-            onSelect={() => {
-              startTransition(() => {
-                router.push(
-                  `${pathname}?${createQueryString({
-                    decks: decks ?? null,
-                  })}`
-                )
-              })
-            }}
+            isPending={isPending}
           />
         ))}
       </div>

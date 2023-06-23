@@ -63,6 +63,11 @@ export const getProductsSchema = z.object({
     .regex(/^\d+-\d+$/)
     .optional()
     .nullable(),
+  product_ids: z
+    .string()
+    .regex(/^\d+.\d+$/)
+    .optional()
+    .nullable(),
   store_ids: z
     .string()
     .regex(/^\d+.\d+$/)

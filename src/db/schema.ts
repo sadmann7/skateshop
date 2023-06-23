@@ -1,4 +1,4 @@
-import type { StoredFile } from "@/types"
+import type { CartItem, StoredFile } from "@/types"
 import { relations, sql, type InferModel } from "drizzle-orm"
 import {
   datetime,
@@ -9,6 +9,7 @@ import {
   mysqlTable,
   serial,
   text,
+  timestamp,
   varchar,
 } from "drizzle-orm/mysql-core"
 
@@ -44,7 +45,6 @@ export const products = mysqlTable("products", {
     .default("skateboards"),
   subcategory: varchar("subcategory", { length: 191 }),
   price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
-  quantity: int("quantity").notNull().default(1),
   inventory: int("inventory").notNull().default(0),
   rating: int("rating").notNull().default(0),
   tags: json("tags").$type<string[] | null>().default(null),
@@ -56,6 +56,22 @@ export const products = mysqlTable("products", {
 
 export type Product = InferModel<typeof products>
 
-export const productsRelations = relations(products, ({ one }) => ({
+export const productsRelations = relations(products, ({ one, many }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
+  carts: many(carts),
+}))
+
+export const carts = mysqlTable("carts", {
+  id: serial("id").primaryKey(),
+  userId: varchar("userId", { length: 191 }),
+  paymentIntentId: varchar("paymentIntentId", { length: 191 }),
+  clientSecret: varchar("clientSecret", { length: 191 }),
+  items: json("items").$type<CartItem[] | null>().default(null),
+  createdAt: timestamp("createdAt").defaultNow(),
+})
+
+export type Cart = InferModel<typeof carts>
+
+export const cartsRelations = relations(carts, ({ many }) => ({
+  products: many(products),
 }))
