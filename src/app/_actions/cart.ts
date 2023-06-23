@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, products, stores } from "@/db/schema"
@@ -7,14 +8,12 @@ import type { CartItem, CartLineItem } from "@/types"
 import { eq, inArray } from "drizzle-orm"
 
 export async function getCartAction(): Promise<CartLineItem[]> {
-  const cardId = cookies().get("cartId")?.value
-    ? Number(cookies().get("cartId")?.value)
-    : undefined
+  const cartId = cookies().get("cartId")?.value
 
-  if (!cardId) return []
+  if (!cartId) return []
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cardId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   const productIds = cart?.items?.map((item) => item.productId) ?? []
@@ -38,37 +37,40 @@ export async function getCartAction(): Promise<CartLineItem[]> {
   return cartLineItems
 }
 
-export async function updateCartAction({ productId, quantity }: CartItem) {
-  const cartId = cookies().get("cartId")?.value
-    ? Number(cookies().get("cartId")?.value)
-    : undefined
+export async function addToCartAction(input: CartItem) {
+  const cookieStore = cookies()
+  const cartId = cookieStore.get("cartId")?.value
 
   if (!cartId) {
     const cart = await db.insert(carts).values({
-      items: [{ productId, quantity }],
+      items: [input],
     })
-    return cart
+
+    cookieStore.set("cartId", String(cart.insertId), {
+      path: "/",
+      sameSite: "strict",
+    })
+
+    revalidatePath("/")
+    return
   }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   if (!cart) {
-    const cart = await db.insert(carts).values({
-      items: [{ productId, quantity }],
-    })
-    return cart
+    throw new Error("Cart not found, please try again.")
   }
 
-  const cartItem = cart.items?.find((item) => item.productId === productId)
-
-  if (cartItem) {
-    cartItem.quantity = quantity
-  }
+  const cartItem = cart.items?.find(
+    (item) => item.productId === input.productId
+  )
 
   if (!cartItem) {
-    cart.items?.push({ productId, quantity })
+    cart.items?.push(input)
+  } else {
+    cartItem.quantity += input.quantity
   }
 
   await db
@@ -76,40 +78,39 @@ export async function updateCartAction({ productId, quantity }: CartItem) {
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, cartId))
+    .where(eq(carts.id, Number(cartId)))
 
-  return cart
+  revalidatePath("/")
 }
 
 export async function deleteCartAction() {
   const cartId = cookies().get("cartId")?.value
-    ? Number(cookies().get("cartId")?.value)
-    : undefined
 
   if (!cartId) return
 
-  await db.delete(carts).where(eq(carts.id, cartId))
+  await db.delete(carts).where(eq(carts.id, Number(cartId)))
 }
 
-export async function deleteCartItemAction(productId: number) {
+export async function deleteCartItemAction(input: { productId: number }) {
   const cartId = cookies().get("cartId")?.value
-    ? Number(cookies().get("cartId")?.value)
-    : undefined
 
   if (!cartId) return
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   if (!cart) return
 
-  cart.items = cart.items?.filter((item) => item.productId !== productId) ?? []
+  cart.items =
+    cart.items?.filter((item) => item.productId !== input.productId) ?? []
 
   await db
     .update(carts)
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, cartId))
+    .where(eq(carts.id, Number(cartId)))
+
+  revalidatePath("/")
 }

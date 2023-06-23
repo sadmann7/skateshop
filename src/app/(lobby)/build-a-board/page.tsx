@@ -26,8 +26,7 @@ interface BuildABoadPageProps {
 export default async function BuildABoardPage({
   searchParams,
 }: BuildABoadPageProps) {
-  const { page, per_page, sort, subcategory, price_range, product_ids } =
-    searchParams
+  const { page, per_page, sort, subcategory, price_range } = searchParams
 
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
@@ -39,7 +38,6 @@ export default async function BuildABoardPage({
     sort: typeof sort === "string" ? sort : null,
     subcategories: activeSubcategory,
     price_range: typeof price_range === "string" ? price_range : null,
-    product_ids: typeof product_ids === "string" ? product_ids : null,
   })
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
@@ -79,8 +77,6 @@ export default async function BuildABoardPage({
       <BoardBuilder
         products={productsTransaction.items}
         pageCount={pageCount}
-        category="skateboards"
-        subcategory={activeSubcategory}
       />
     </Shell>
   )

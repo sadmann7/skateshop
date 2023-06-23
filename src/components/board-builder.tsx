@@ -30,23 +30,16 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
-import { updateCartAction } from "@/app/_actions/cart"
+import { addToCartAction } from "@/app/_actions/cart"
 
 import { ProductCard } from "./product-card"
 
 interface BoardBuilderProps {
   products: Product[]
   pageCount: number
-  category?: Product["category"]
-  subcategory?: Product["subcategory"]
 }
 
-export function BoardBuilder({
-  products,
-  pageCount,
-  category,
-  subcategory,
-}: BoardBuilderProps) {
+export function BoardBuilder({ products, pageCount }: BoardBuilderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -225,10 +218,11 @@ export function BoardBuilder({
             onSelect={() => {
               startTransition(async () => {
                 try {
-                  await updateCartAction({
+                  await addToCartAction({
                     productId: product.id,
                     quantity: 1,
                   })
+                  toast.success("Added to cart.")
                 } catch (error) {
                   error instanceof Error
                     ? toast.error(error.message)

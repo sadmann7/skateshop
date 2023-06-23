@@ -68,7 +68,6 @@ export async function getProductsAction(
   const categories =
     (input.categories?.split(".") as Product["category"][]) ?? []
   const subcategories = input.subcategories?.split(".") ?? []
-  const productIds = input.product_ids?.split(".").map(Number) ?? []
   const storeIds = input.store_ids?.split(".").map(Number) ?? []
 
   const { items, total } = await db.transaction(async (tx) => {
@@ -87,7 +86,6 @@ export async function getProductsAction(
             : undefined,
           minPrice ? gte(products.price, minPrice) : undefined,
           maxPrice ? lte(products.price, maxPrice) : undefined,
-          productIds.length ? inArray(products.id, productIds) : undefined,
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
@@ -112,8 +110,8 @@ export async function getProductsAction(
           subcategories.length
             ? inArray(products.subcategory, subcategories)
             : undefined,
-          minPrice ? gt(products.price, minPrice) : undefined,
-          maxPrice ? lt(products.price, maxPrice) : undefined,
+          minPrice ? gte(products.price, minPrice) : undefined,
+          maxPrice ? lte(products.price, maxPrice) : undefined,
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
