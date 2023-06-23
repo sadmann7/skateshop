@@ -93,7 +93,7 @@ export function BoardBuilder({ products, pageCount }: BoardBuilderProps) {
               Filter
             </Button>
           </SheetTrigger>
-          <SheetContent className="flex h-full w-5/6 flex-col sm:w-1/2 lg:w-1/3">
+          <SheetContent className="flex flex-col">
             <SheetHeader className="px-1">
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>

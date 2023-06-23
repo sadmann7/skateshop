@@ -11,7 +11,7 @@
     "postinstall": "drizzle-kit generate:mysql",
     "db:push": "drizzle-kit push:mysql",
     "db:introspect": "drizzle-kit introspect:mysql",
-    "shadcn:add": "pnpm dlx shadcn-ui add",
+    "shadcn:add": "pnpm dlx shadcn-ui@latest add",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest",
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",

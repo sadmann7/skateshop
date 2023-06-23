@@ -163,7 +163,7 @@ export function Products({
               Filter
             </Button>
           </SheetTrigger>
-          <SheetContent className="flex h-full w-5/6 flex-col sm:w-1/2 lg:w-1/3">
+          <SheetContent className="flex flex-col">
             <SheetHeader className="px-1">
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
@@ -292,9 +292,7 @@ export function Products({
                       </Button>
                     </div>
                   </div>
-                  <ScrollArea
-                    className={cn(categories?.length ? "h-72" : "h-96")}
-                  >
+                  <ScrollArea className="h-96">
                     <div className="space-y-4">
                       {stores.map((store) => (
                         <div

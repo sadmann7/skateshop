@@ -1,4 +1,3 @@
-/** app/api/uploadthing/core.ts */
 import { currentUser } from "@clerk/nextjs"
 import { createUploadthing, type FileRouter } from "uploadthing/next"
 

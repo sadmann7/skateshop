@@ -80,7 +80,7 @@ export function Combobox() {
           <span className="text-xs">Ctrl</span>K
         </kbd>
       </Button>
-      <CommandDialog align="top" open={isOpen} onOpenChange={setIsOpen}>
+      <CommandDialog position="top" open={isOpen} onOpenChange={setIsOpen}>
         <CommandInput
           placeholder="Search products..."
           value={query}

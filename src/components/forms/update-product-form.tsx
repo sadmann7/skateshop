@@ -83,9 +83,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   }, [product])
 
   // uploadthing
-  const { isUploading, startUpload } = useUploadThing({
-    endpoint: "productImage",
-  })
+  const { isUploading, startUpload } = useUploadThing("productImage")
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -247,7 +245,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(value: typeof field.value) =>
+                          field.onChange(value)
+                        }
                         defaultValue={product.category}
                       >
                         <SelectTrigger className="capitalize">
@@ -257,7 +257,11 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                           <SelectGroup>
                             {Object.values(products.category.enumValues).map(
                               (option) => (
-                                <SelectItem key={option} value={option}>
+                                <SelectItem
+                                  key={option}
+                                  value={option}
+                                  className="capitalize"
+                                >
                                   {option}
                                 </SelectItem>
                               )
@@ -278,7 +282,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                     <FormLabel>Subcategory</FormLabel>
                     <FormControl>
                       <Select
-                        value={field.value ?? ""}
+                        value={field.value?.toString()}
                         onValueChange={field.onChange}
                       >
                         <SelectTrigger className="capitalize">

@@ -57,9 +57,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   const [isPending, startTransition] = React.useTransition()
 
   // uploadthing
-  const { isUploading, startUpload } = useUploadThing({
-    endpoint: "productImage",
-  })
+  const { isUploading, startUpload } = useUploadThing("productImage")
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -161,7 +159,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                     <FormControl>
                       <Select
                         value={field.value}
-                        onValueChange={field.onChange}
+                        onValueChange={(value: typeof field.value) =>
+                          field.onChange(value)
+                        }
                       >
                         <SelectTrigger className="capitalize">
                           <SelectValue placeholder={field.value} />
@@ -170,7 +170,11 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                           <SelectGroup>
                             {Object.values(products.category.enumValues).map(
                               (option) => (
-                                <SelectItem key={option} value={option}>
+                                <SelectItem
+                                  key={option}
+                                  value={option}
+                                  className="capitalize"
+                                >
                                   {option}
                                 </SelectItem>
                               )
@@ -191,7 +195,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                     <FormLabel>Subcategory</FormLabel>
                     <FormControl>
                       <Select
-                        value={field.value ?? ""}
+                        value={field.value?.toString()}
                         onValueChange={field.onChange}
                       >
                         <SelectTrigger>

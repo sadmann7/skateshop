@@ -38,7 +38,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent size="xl" position="left" className="pl-1 pr-0">
+      <SheetContent side="left" className="pl-1 pr-0">
         <div className="px-7">
           <Link
             aria-label="Home"
