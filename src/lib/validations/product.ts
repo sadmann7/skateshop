@@ -15,9 +15,6 @@ export const productSchema = z.object({
   price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
     message: "Must be a valid price",
   }),
-  quantity: z.number().positive({
-    message: "Must be a positive number",
-  }),
   inventory: z.number(),
   images: z
     .unknown()

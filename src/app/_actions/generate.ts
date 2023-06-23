@@ -27,7 +27,6 @@ export async function generateProducts() {
       subcategory: faker.helpers.shuffle(subcategories)[0] ?? null,
       inventory: faker.number.int({ min: 1, max: 100 }),
       rating: faker.number.int({ min: 1, max: 5 }),
-      quantity: faker.number.int({ min: 1, max: 100 }),
       tags: faker.helpers.shuffle(productTags).slice(0, 3),
       storeId: 24,
       createdAt: new Date().toISOString().slice(0, 19).replace("T", " "),

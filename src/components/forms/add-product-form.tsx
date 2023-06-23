@@ -230,24 +230,6 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                 />
               </FormItem>
               <FormItem className="w-full">
-                <FormLabel>Quantity</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    placeholder="Type product quantity here."
-                    {...form.register("quantity", {
-                      valueAsNumber: true,
-                    })}
-                  />
-                </FormControl>
-                <UncontrolledFormMessage
-                  message={form.formState.errors.quantity?.message}
-                />
-              </FormItem>
-            </div>
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
-              <FormItem className="w-full">
                 <FormLabel>Inventory</FormLabel>
                 <FormControl>
                   <Input
@@ -263,25 +245,25 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   message={form.formState.errors.inventory?.message}
                 />
               </FormItem>
-              <FormItem className="flex w-full flex-col gap-1.5">
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <FileDialog
-                    setValue={form.setValue}
-                    name="images"
-                    maxFiles={3}
-                    maxSize={1024 * 1024 * 4}
-                    files={files}
-                    setFiles={setFiles}
-                    isUploading={isUploading}
-                    disabled={isPending}
-                  />
-                </FormControl>
-                <UncontrolledFormMessage
-                  message={form.formState.errors.images?.message}
-                />
-              </FormItem>
             </div>
+            <FormItem className="flex w-full flex-col gap-1.5">
+              <FormLabel>Images</FormLabel>
+              <FormControl>
+                <FileDialog
+                  setValue={form.setValue}
+                  name="images"
+                  maxFiles={3}
+                  maxSize={1024 * 1024 * 4}
+                  files={files}
+                  setFiles={setFiles}
+                  isUploading={isUploading}
+                  disabled={isPending}
+                />
+              </FormControl>
+              <UncontrolledFormMessage
+                message={form.formState.errors.images?.message}
+              />
+            </FormItem>
             <Button className="w-fit" disabled={isPending}>
               {isPending && (
                 <Icons.spinner

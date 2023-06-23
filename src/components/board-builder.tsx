@@ -3,6 +3,7 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
+import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -29,6 +30,7 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
+import { updateCartAction } from "@/app/_actions/cart"
 
 import { ProductCard } from "./product-card"
 
@@ -54,7 +56,6 @@ export function BoardBuilder({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt.desc"
-  const product_ids = searchParams?.get("product_ids") ?? null
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -89,22 +90,6 @@ export function BoardBuilder({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
-
-  // Product filter
-  const [productIds, setProductIds] = React.useState<number[] | null>(
-    product_ids?.split(".").map(Number) ?? null
-  )
-
-  React.useEffect(() => {
-    startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          product_ids: productIds?.length ? productIds.join(".") : null,
-        })}`
-      )
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productIds])
 
   return (
     <div className="flex flex-col space-y-6">
@@ -237,6 +222,20 @@ export function BoardBuilder({
             product={product}
             variant="selectable"
             isPending={isPending}
+            onSelect={() => {
+              startTransition(async () => {
+                try {
+                  await updateCartAction({
+                    productId: product.id,
+                    quantity: 1,
+                  })
+                } catch (error) {
+                  error instanceof Error
+                    ? toast.error(error.message)
+                    : toast.error("Something went wrong, please try again.")
+                }
+              })
+            }}
           />
         ))}
       </div>
