@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
 import { cookies } from "next/headers"
 import Link from "next/link"
+import { db } from "@/db"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -42,10 +43,8 @@ export default async function BuildABoardPage({
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
 
-  // await addToCartAction({
-  //   productId: 451,
-  //   quantity: 1,
-  // })
+  const carts = await db.query.carts.findMany()
+  console.log(carts)
 
   return (
     <Shell className="gap-0">

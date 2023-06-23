@@ -10,8 +10,6 @@ import { eq, inArray } from "drizzle-orm"
 export async function getCartAction(): Promise<CartLineItem[]> {
   const cartId = cookies().get("cartId")?.value
 
-  console.log("do a kickflip")
-
   if (!cartId) return []
 
   const cart = await db.query.carts.findFirst({
@@ -41,24 +39,21 @@ export async function getCartAction(): Promise<CartLineItem[]> {
 
 export async function addToCartAction(input: CartItem) {
   const cookieStore = cookies()
-  const cartId = cookieStore.get("cartId")?.value
+  const cartId = Number(cookieStore.get("cartId")?.value)
 
   if (!cartId) {
     const cart = await db.insert(carts).values({
       items: [input],
     })
 
-    cookieStore.set("cartId", String(cart.insertId), {
-      path: "/",
-      sameSite: "strict",
-    })
+    cookieStore.set("cartId", String(cart.insertId))
 
     revalidatePath("/")
     return
   }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, Number(cartId)),
+    where: eq(carts.id, cartId),
   })
 
   if (!cart) {
@@ -80,7 +75,7 @@ export async function addToCartAction(input: CartItem) {
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, Number(cartId)))
+    .where(eq(carts.id, cartId))
 
   revalidatePath("/")
 }

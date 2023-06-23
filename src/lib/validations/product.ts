@@ -1,5 +1,5 @@
 import { products } from "@/db/schema"
-import { z } from "zod"
+import * as z from "zod"
 
 export const productSchema = z.object({
   name: z.string().min(1, {
