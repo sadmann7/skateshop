@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { cookies } from "next/headers"
 import Link from "next/link"
 
 import { productCategories } from "@/config/products"
@@ -8,9 +9,8 @@ import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
+import { addToCartAction } from "@/app/_actions/cart"
 import { getProductsAction } from "@/app/_actions/product"
-
-export const runtime = "edge"
 
 export const metadata: Metadata = {
   title: "Build a Board",
@@ -42,6 +42,11 @@ export default async function BuildABoardPage({
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
 
+  // await addToCartAction({
+  //   productId: 451,
+  //   quantity: 1,
+  // })
+
   return (
     <Shell className="gap-0">
       <Header
@@ -50,7 +55,7 @@ export default async function BuildABoardPage({
         size="sm"
       />
       <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background pb-7 pt-8">
-        <div className="flex w-full items-center justify-between gap-4 overflow-x-auto">
+        <div className="flex w-full items-center justify-between gap-4 overflow-x-auto pb-1">
           {productCategories[0]?.subcategories.map((subcategory) => (
             <Link
               aria-label={`Go to ${subcategory.title}`}

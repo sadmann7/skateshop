@@ -10,6 +10,8 @@ import { eq, inArray } from "drizzle-orm"
 export async function getCartAction(): Promise<CartLineItem[]> {
   const cartId = cookies().get("cartId")?.value
 
+  console.log("do a kickflip")
+
   if (!cartId) return []
 
   const cart = await db.query.carts.findFirst({
