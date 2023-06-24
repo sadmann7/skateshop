@@ -37,6 +37,26 @@ export async function getCartAction(): Promise<CartLineItem[]> {
   return cartLineItems
 }
 
+export async function getCartItemsAction() {
+  const cartId = Number(cookies().get("cartId")?.value)
+
+  if (!cartId) {
+    throw new Error("cartId not found, please try again.")
+  }
+
+  if (isNaN(cartId)) {
+    throw new Error("Invalid cartId, please try again.")
+  }
+
+  const cart = await db.query.carts.findFirst({
+    where: eq(carts.id, cartId),
+  })
+
+  if (!cart) return []
+
+  return cart.items
+}
+
 export async function addToCartAction(input: CartItem) {
   const cookieStore = cookies()
   const cartId = Number(cookieStore.get("cartId")?.value)

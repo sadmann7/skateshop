@@ -27,13 +27,12 @@ export function SiteFooter() {
             <div
               className={cn(
                 buttonVariants({
-                  size: "sm",
+                  size: "icon",
                   variant: "ghost",
-                }),
-                "w-9 px-0"
+                })
               )}
             >
-              <Icons.gitHub className="h-5 w-5" />
+              <Icons.gitHub className="h-5 w-5" aria-hidden="true" />
               <span className="sr-only">GitHub</span>
             </div>
           </Link>

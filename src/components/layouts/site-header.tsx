@@ -4,6 +4,7 @@ import type { User } from "@clerk/nextjs/dist/types/server"
 import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -19,18 +20,21 @@ import { Combobox } from "@/components/combobox"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
+import { getCartItemsAction } from "@/app/_actions/cart"
 
 interface SiteHeaderProps {
   user: User | null
 }
 
-export function SiteHeader({ user }: SiteHeaderProps) {
+export async function SiteHeader({ user }: SiteHeaderProps) {
   const initials = `${user?.firstName?.charAt(0) ?? ""} ${
     user?.lastName?.charAt(0) ?? ""
   }`
   const email =
     user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
       ?.emailAddress ?? ""
+
+  const cartItems = await getCartItemsAction()
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -41,15 +45,23 @@ export function SiteHeader({ user }: SiteHeaderProps) {
           sidebarNavItems={dashboardConfig.sidebarNav}
         />
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <nav className="flex items-center space-x-1">
+          <nav className="flex items-center space-x-2">
             <Combobox />
             <Button
               aria-label="Cart"
               variant="outline"
-              size="sm"
-              className="w-9 px-0"
+              size="icon"
+              className="relative"
             >
-              <Icons.cart className="h-5 w-5" />
+              {cartItems?.length && (
+                <Badge
+                  variant="secondary"
+                  className="absolute -right-2 -top-2 h-6 w-6 rounded-full p-2"
+                >
+                  {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                </Badge>
+              )}
+              <Icons.cart className="h-5 w-5" aria-hidden="true" />
             </Button>
             {user ? (
               <DropdownMenu>

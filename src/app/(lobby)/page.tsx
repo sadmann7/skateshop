@@ -148,8 +148,8 @@ export default async function IndexPage() {
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>
-          <a
-            href="/https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          <Link
+            href={"/https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -165,7 +165,7 @@ export default async function IndexPage() {
             <span className="sr-only">
               Join our newsletter to get the latest news and updates
             </span>
-          </a>
+          </Link>
         </Card>
         <div className="flex flex-wrap items-center justify-center gap-4">
           {productCategories[

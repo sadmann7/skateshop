@@ -20,6 +20,7 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 ## Features
 
 - Authentication with Clerk
+- File uploads with uploadthing
 - Subscription, payment, and billing with Stripe
 - Storefront with products and categories
 - Seller and customer workflows

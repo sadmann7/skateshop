@@ -7,10 +7,8 @@ import { eq } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
-import { Card, CardTitle } from "@/components/ui/card"
 import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
-import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
 import { getProductsAction } from "@/app/_actions/product"
 
@@ -33,7 +31,8 @@ export default async function BuildABoardPage({
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
-  const activeSubcategory = typeof subcategory === "string" ? subcategory : 'decks'
+  const activeSubcategory =
+    typeof subcategory === "string" ? subcategory : "decks"
 
   const productsTransaction = await getProductsAction({
     limit,
@@ -53,37 +52,33 @@ export default async function BuildABoardPage({
     },
     where: eq(carts.id, cartId),
   })
-  const cartItemProductIds = cart?.items?.map((item) => item.productId) ?? []
-  console.log(cartItemProductIds)
+  const cartProductIds = cart?.items?.map((item) => item.productId) ?? []
+  console.log(cartProductIds)
 
   return (
-    <Shell className="gap-0">
+    <Shell className="gap-4">
       <Header
         title="Build a Board"
         description="Select the components for your board"
         size="sm"
       />
-      <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background pb-7 pt-8">
-        <div className="flex w-full items-center justify-between gap-4 overflow-x-auto pb-1">
+      <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background pt-4">
+        <div className="inline-flex w-full items-center overflow-x-auto border-b p-1 text-muted-foreground shadow-2xl">
           {productCategories[0]?.subcategories.map((subcategory) => (
             <Link
-              aria-label={`Go to ${subcategory.title}`}
+              aria-label={subcategory.title}
               key={subcategory.title}
               href={`/build-a-board?subcategory=${subcategory.slug}`}
             >
-              <Card
+              <div
                 className={cn(
-                  "grid h-24 w-44 place-items-center gap-2 p-6 hover:bg-muted",
-                  subcategory.slug === activeSubcategory && "bg-muted"
+                  "inline-flex items-center justify-center whitespace-nowrap rounded border-b-2 border-transparent px-3 py-1.5 text-sm font-medium ring-offset-background transition-all hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  subcategory.slug === activeSubcategory &&
+                    "rounded-none border-primary text-foreground shadow hover:rounded-t"
                 )}
               >
-                {subcategory.slug === searchParams?.[subcategory.slug] ? (
-                  <Icons.check className="h-4 w-4" />
-                ) : (
-                  <Icons.circle className="h-4 w-4" />
-                )}
-                <CardTitle>{subcategory.title}</CardTitle>
-              </Card>
+                {subcategory.title}
+              </div>
             </Link>
           ))}
         </div>
@@ -92,7 +87,7 @@ export default async function BuildABoardPage({
         products={productsTransaction.items}
         pageCount={pageCount}
         subcategory={activeSubcategory}
-        cartItemProductIds={cartItemProductIds}
+        cartProductIds={cartProductIds}
       />
     </Shell>
   )

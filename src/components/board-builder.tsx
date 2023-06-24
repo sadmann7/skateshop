@@ -37,14 +37,14 @@ interface BoardBuilderProps {
   products: Product[]
   pageCount: number
   subcategory: string | null
-  cartItemProductIds: number[]
+  cartProductIds: number[]
 }
 
 export function BoardBuilder({
   products,
   pageCount,
   subcategory,
-  cartItemProductIds,
+  cartProductIds,
 }: BoardBuilderProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -93,10 +93,12 @@ export function BoardBuilder({
   // Add to cart
   const addToCart = React.useCallback(
     async (product: Product) => {
+      console.log(product.id)
+
       try {
-        if (!cartItemProductIds.includes(product.id)) {
+        if (!cartProductIds.includes(product.id)) {
           // Only allow one product per subcategory in cart
-          const productIdWithSameSubcategory = cartItemProductIds.find(
+          const productIdWithSameSubcategory = cartProductIds.find(
             (id) =>
               product.subcategory &&
               products.find(
@@ -131,11 +133,11 @@ export function BoardBuilder({
           : toast.error("Something went wrong, please try again.")
       }
     },
-    [cartItemProductIds, products, subcategory]
+    [cartProductIds, products, subcategory]
   )
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="mt-4 flex flex-col space-y-6">
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
@@ -264,7 +266,7 @@ export function BoardBuilder({
             key={product.id}
             variant="switchable"
             product={product}
-            isAddedToCart={cartItemProductIds.includes(product.id)}
+            isAddedToCart={cartProductIds.includes(product.id)}
             onSwitch={() => addToCart(product)}
           />
         ))}

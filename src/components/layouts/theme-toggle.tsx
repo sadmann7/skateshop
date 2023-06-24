@@ -11,8 +11,7 @@ export function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="sm"
-      className="w-9 px-0"
+      size="icon"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
     >
       <Icons.sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
