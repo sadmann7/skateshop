@@ -21,6 +21,7 @@ import { Combobox } from "@/components/combobox"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
+import { getCartItemsAction } from "@/app/_actions/cart"
 
 interface SiteHeaderProps {
   user: User | null
@@ -34,6 +35,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
     user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
       ?.emailAddress ?? ""
 
+  // const cartItems = await getCartItemsAction()
   const cartItems: CartItem[] = []
 
   return (
