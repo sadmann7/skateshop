@@ -11,13 +11,6 @@ import type { z } from "zod"
 import { verfifyEmailSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   Form,
   FormControl,
   FormField,
@@ -72,52 +65,42 @@ export function VerifyEmailForm() {
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Verify email</CardTitle>
-        <CardDescription>
-          Verify your email address to complete your account creation
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <Form {...form}>
-          <form
-            className="grid gap-4"
-            onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-          >
-            <FormField
-              control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Verification Code</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="169420"
-                      {...field}
-                      onChange={(e) => {
-                        e.target.value = e.target.value.trim()
-                        field.onChange(e)
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button disabled={isPending}>
-              {isPending && (
-                <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
+    <Form {...form}>
+      <form
+        className="grid gap-4"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <FormField
+          control={form.control}
+          name="code"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Verification Code</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="169420"
+                  {...field}
+                  onChange={(e) => {
+                    e.target.value = e.target.value.trim()
+                    field.onChange(e)
+                  }}
                 />
-              )}
-              Create account
-              <span className="sr-only">Create account</span>
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={isPending}>
+          {isPending && (
+            <Icons.spinner
+              className="mr-2 h-4 w-4 animate-spin"
+              aria-hidden="true"
+            />
+          )}
+          Create account
+          <span className="sr-only">Create account</span>
+        </Button>
+      </form>
+    </Form>
   )
 }
