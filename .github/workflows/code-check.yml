@@ -1,16 +1,18 @@
 name: Code check
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches: ["*"]
 
 env:
   DATABASE_URL: "fake"
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
   CLERK_SECRET_KEY: "fake"
   UPLOADTHING_SECRET: "fake"
   UPLOADTHING_APP_ID: "fake"
   STRIPE_API_KEY: "fake"
   STRIPE_WEBHOOK_SECRET: "fake"
   STRIPE_PRO_STORE_PRICE_ID: "fake"
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
 
 jobs:
   lint:
@@ -30,7 +32,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8.6.0
+          version: 8.6.1
           run_install: false
 
       - name: Get pnpm store directory
@@ -71,7 +73,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 8.6.0
+          version: 8.6.1
           run_install: false
 
       - name: Get pnpm store directory
