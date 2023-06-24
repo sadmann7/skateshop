@@ -74,7 +74,7 @@ export default async function BuildABoardPage({
                 className={cn(
                   "inline-flex items-center justify-center whitespace-nowrap rounded border-b-2 border-transparent px-3 py-1.5 text-sm font-medium ring-offset-background transition-all hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   subcategory.slug === activeSubcategory &&
-                    "rounded-none border-primary text-foreground shadow hover:rounded-t"
+                    "rounded-none border-primary text-foreground hover:rounded-t"
                 )}
               >
                 {subcategory.title}

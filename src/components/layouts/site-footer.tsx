@@ -32,7 +32,7 @@ export function SiteFooter() {
                 })
               )}
             >
-              <Icons.gitHub className="h-5 w-5" aria-hidden="true" />
+              <Icons.gitHub className="h-4 w-4" aria-hidden="true" />
               <span className="sr-only">GitHub</span>
             </div>
           </Link>

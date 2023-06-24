@@ -61,7 +61,7 @@ export async function SiteHeader({ user }: SiteHeaderProps) {
                   {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                 </Badge>
               )}
-              <Icons.cart className="h-5 w-5" aria-hidden="true" />
+              <Icons.cart className="h-4 w-4" aria-hidden="true" />
             </Button>
             {user ? (
               <DropdownMenu>
