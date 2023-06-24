@@ -1,6 +1,5 @@
 import { type Product } from "@/db/schema"
-import type { FileWithPath } from "react-dropzone"
-
+import { type FileWithPath } from "react-dropzone"
 import { type Icons } from "@/components/icons"
 
 export interface NavItem {
