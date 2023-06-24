@@ -14,11 +14,11 @@ const config = {
     serverActions: true,
   },
   /** Linting and typechecking are already done as separate tasks in the CI pipeline */
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
 }
 export default config
