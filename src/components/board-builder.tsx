@@ -3,7 +3,6 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
-import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -30,16 +29,20 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
-import { addToCartAction } from "@/app/_actions/cart"
 
 import { ProductCard } from "./product-card"
 
 interface BoardBuilderProps {
   products: Product[]
   pageCount: number
+  cartItemProductIds: number[]
 }
 
-export function BoardBuilder({ products, pageCount }: BoardBuilderProps) {
+export function BoardBuilder({
+  products,
+  pageCount,
+  cartItemProductIds,
+}: BoardBuilderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -213,23 +216,8 @@ export function BoardBuilder({ products, pageCount }: BoardBuilderProps) {
           <ProductCard
             key={product.id}
             product={product}
-            variant="selectable"
-            isPending={isPending}
-            onSelect={() => {
-              startTransition(async () => {
-                try {
-                  await addToCartAction({
-                    productId: product.id,
-                    quantity: 1,
-                  })
-                  toast.success("Added to cart.")
-                } catch (error) {
-                  error instanceof Error
-                    ? toast.error(error.message)
-                    : toast.error("Something went wrong, please try again.")
-                }
-              })
-            }}
+            variant="switchable"
+            isAddedToCart={cartItemProductIds.some((id) => id === product.id)}
           />
         ))}
       </div>

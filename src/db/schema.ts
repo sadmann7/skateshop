@@ -56,9 +56,8 @@ export const products = mysqlTable("products", {
 
 export type Product = InferModel<typeof products>
 
-export const productsRelations = relations(products, ({ one, many }) => ({
+export const productsRelations = relations(products, ({ one }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
-  carts: many(carts),
 }))
 
 export const carts = mysqlTable("carts", {
@@ -71,7 +70,3 @@ export const carts = mysqlTable("carts", {
 })
 
 export type Cart = InferModel<typeof carts>
-
-export const cartsRelations = relations(carts, ({ many }) => ({
-  products: many(products),
-}))

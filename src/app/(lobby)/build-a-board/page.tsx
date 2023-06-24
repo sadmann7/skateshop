@@ -2,6 +2,8 @@ import { type Metadata } from "next"
 import { cookies } from "next/headers"
 import Link from "next/link"
 import { db } from "@/db"
+import { carts } from "@/db/schema"
+import { eq } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -10,7 +12,6 @@ import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
-import { addToCartAction } from "@/app/_actions/cart"
 import { getProductsAction } from "@/app/_actions/product"
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default async function BuildABoardPage({
 }: BuildABoadPageProps) {
   const { page, per_page, sort, subcategory, price_range } = searchParams
 
+  // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
   const activeSubcategory = typeof subcategory === "string" ? subcategory : null
@@ -43,8 +45,15 @@ export default async function BuildABoardPage({
 
   const pageCount = Math.ceil(productsTransaction.total / limit)
 
-  const carts = await db.query.carts.findMany()
-  console.log(carts)
+  // Get cart items
+  const cartId = Number(cookies().get("cartId")?.value)
+  const cart = await db.query.carts.findFirst({
+    columns: {
+      items: true,
+    },
+    where: eq(carts.id, cartId),
+  })
+  const cartItemProductIds = cart?.items?.map((item) => item.productId) ?? []
 
   return (
     <Shell className="gap-0">
@@ -81,6 +90,7 @@ export default async function BuildABoardPage({
       <BoardBuilder
         products={productsTransaction.items}
         pageCount={pageCount}
+        cartItemProductIds={cartItemProductIds}
       />
     </Shell>
   )

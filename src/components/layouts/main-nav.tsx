@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import type { MainNavItem } from "@/types"
 
 import { siteConfig } from "@/config/site"
@@ -23,8 +22,6 @@ interface MainNavProps {
 }
 
 export function MainNav({ items }: MainNavProps) {
-  const pathname = usePathname()
-
   return (
     <div className="hidden gap-6 lg:flex">
       <Link
@@ -103,11 +100,7 @@ export function MainNav({ items }: MainNavProps) {
                   <NavigationMenuItem key={item.title}>
                     <Link href={item.href} legacyBehavior passHref>
                       <NavigationMenuLink
-                        className={cn(
-                          navigationMenuTriggerStyle(),
-                          pathname === item.href && "bg-accent",
-                          "h-auto"
-                        )}
+                        className={cn(navigationMenuTriggerStyle(), "h-auto")}
                       >
                         {item.title}
                       </NavigationMenuLink>

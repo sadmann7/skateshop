@@ -81,20 +81,32 @@ export async function addToCartAction(input: CartItem) {
 }
 
 export async function deleteCartAction() {
-  const cartId = cookies().get("cartId")?.value
+  const cartId = Number(cookies().get("cartId")?.value)
 
-  if (!cartId) return
+  if (!cartId) {
+    throw new Error("cartId not found, please try again.")
+  }
 
-  await db.delete(carts).where(eq(carts.id, Number(cartId)))
+  if (isNaN(cartId)) {
+    throw new Error("Invalid cartId, please try again.")
+  }
+
+  await db.delete(carts).where(eq(carts.id, cartId))
 }
 
 export async function deleteCartItemAction(input: { productId: number }) {
-  const cartId = cookies().get("cartId")?.value
+  const cartId = Number(cookies().get("cartId")?.value)
 
-  if (!cartId) return
+  if (!cartId) {
+    throw new Error("cartId not found, please try again.")
+  }
+
+  if (isNaN(cartId)) {
+    throw new Error("Invalid cartId, please try again.")
+  }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, Number(cartId)),
+    where: eq(carts.id, cartId),
   })
 
   if (!cart) return
@@ -107,7 +119,7 @@ export async function deleteCartItemAction(input: { productId: number }) {
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, Number(cartId)))
+    .where(eq(carts.id, cartId))
 
   revalidatePath("/")
 }
