@@ -4,7 +4,6 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { type Product } from "@/db/schema"
-import { toast } from "sonner"
 
 import { formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -18,18 +17,19 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
-import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
 interface ProductCardProps {
   product: Product
   variant?: "default" | "switchable"
   isAddedToCart?: boolean
+  onSwitch?: () => Promise<void>
 }
 
 export function ProductCard({
   product,
   variant = "default",
   isAddedToCart = false,
+  onSwitch,
 }: ProductCardProps) {
   const [isPending, startTransition] = React.useTransition()
 
@@ -99,43 +99,25 @@ export function ProductCard({
           </div>
         ) : (
           <Button
-            aria-label="Select product"
+            aria-label={isAddedToCart ? "Remove from cart" : "Add to cart"}
             size="sm"
             className="h-8 w-full rounded-sm"
             onClick={() => {
               startTransition(async () => {
-                try {
-                  if (!isAddedToCart) {
-                    await addToCartAction({
-                      productId: product.id,
-                      quantity: 1,
-                    })
-                    toast.success("Added to cart.")
-                    return
-                  } else {
-                    await deleteCartItemAction({
-                      productId: product.id,
-                    })
-                    toast.success("Removed from cart.")
-                  }
-                } catch (error) {
-                  error instanceof Error
-                    ? toast.error(error.message)
-                    : toast.error("Something went wrong, please try again.")
-                }
+                await onSwitch?.()
               })
             }}
             disabled={isPending}
           >
             {isPending ? (
               <Icons.spinner
-                className="mr-2 h-5 w-5 animate-spin"
+                className="mr-2 h-4 w-4 animate-spin"
                 aria-hidden="true"
               />
             ) : isAddedToCart ? (
-              <Icons.check className="mr-2 h-5 w-5" aria-hidden="true" />
+              <Icons.check className="mr-2 h-4 w-4" aria-hidden="true" />
             ) : (
-              <Icons.add className="mr-2 h-5 w-5" aria-hidden="true" />
+              <Icons.add className="mr-2 h-4 w-4" aria-hidden="true" />
             )}
             {isAddedToCart ? "Added" : "Add to cart"}
           </Button>

@@ -33,7 +33,7 @@ export default async function BuildABoardPage({
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
-  const activeSubcategory = typeof subcategory === "string" ? subcategory : null
+  const activeSubcategory = typeof subcategory === "string" ? subcategory : 'decks'
 
   const productsTransaction = await getProductsAction({
     limit,
@@ -54,6 +54,7 @@ export default async function BuildABoardPage({
     where: eq(carts.id, cartId),
   })
   const cartItemProductIds = cart?.items?.map((item) => item.productId) ?? []
+  console.log(cartItemProductIds)
 
   return (
     <Shell className="gap-0">
@@ -90,6 +91,7 @@ export default async function BuildABoardPage({
       <BoardBuilder
         products={productsTransaction.items}
         pageCount={pageCount}
+        subcategory={activeSubcategory}
         cartItemProductIds={cartItemProductIds}
       />
     </Shell>

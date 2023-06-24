@@ -3,6 +3,7 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
+import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -29,18 +30,20 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
-
-import { ProductCard } from "./product-card"
+import { ProductCard } from "@/components/product-card"
+import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
 interface BoardBuilderProps {
   products: Product[]
   pageCount: number
+  subcategory: string | null
   cartItemProductIds: number[]
 }
 
 export function BoardBuilder({
   products,
   pageCount,
+  subcategory,
   cartItemProductIds,
 }: BoardBuilderProps) {
   const router = useRouter()
@@ -86,6 +89,50 @@ export function BoardBuilder({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
+
+  // Add to cart
+  const addToCart = React.useCallback(
+    async (product: Product) => {
+      try {
+        if (!cartItemProductIds.includes(product.id)) {
+          // Only allow one product per subcategory in cart
+          const productIdWithSameSubcategory = cartItemProductIds.find(
+            (id) =>
+              product.subcategory &&
+              products.find(
+                (p) =>
+                  p.id === id &&
+                  (p.subcategory === product.subcategory ?? subcategory)
+              )
+          )
+
+          if (productIdWithSameSubcategory) {
+            await deleteCartItemAction({
+              productId: productIdWithSameSubcategory,
+            })
+          }
+
+          await addToCartAction({
+            productId: product.id,
+            quantity: 1,
+          })
+
+          toast.success("Added to cart.")
+          return
+        }
+
+        await deleteCartItemAction({
+          productId: product.id,
+        })
+        toast.success("Removed from cart.")
+      } catch (error) {
+        error instanceof Error
+          ? toast.error(error.message)
+          : toast.error("Something went wrong, please try again.")
+      }
+    },
+    [cartItemProductIds, products, subcategory]
+  )
 
   return (
     <div className="flex flex-col space-y-6">
@@ -215,9 +262,10 @@ export function BoardBuilder({
         {products.map((product) => (
           <ProductCard
             key={product.id}
-            product={product}
             variant="switchable"
-            isAddedToCart={cartItemProductIds.some((id) => id === product.id)}
+            product={product}
+            isAddedToCart={cartItemProductIds.includes(product.id)}
+            onSwitch={() => addToCart(product)}
           />
         ))}
       </div>
