@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { CartItem } from "@/types"
 import type { User } from "@clerk/nextjs/dist/types/server"
 
 import { dashboardConfig } from "@/config/dashboard"
@@ -20,13 +21,12 @@ import { Combobox } from "@/components/combobox"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
-import { getCartItemsAction } from "@/app/_actions/cart"
 
 interface SiteHeaderProps {
   user: User | null
 }
 
-export async function SiteHeader({ user }: SiteHeaderProps) {
+export function SiteHeader({ user }: SiteHeaderProps) {
   const initials = `${user?.firstName?.charAt(0) ?? ""} ${
     user?.lastName?.charAt(0) ?? ""
   }`
@@ -34,7 +34,7 @@ export async function SiteHeader({ user }: SiteHeaderProps) {
     user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
       ?.emailAddress ?? ""
 
-  const cartItems = await getCartItemsAction()
+  const cartItems: CartItem[] = []
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -53,7 +53,7 @@ export async function SiteHeader({ user }: SiteHeaderProps) {
               size="icon"
               className="relative"
             >
-              {cartItems?.length && (
+              {cartItems && cartItems.length > 0 && (
                 <Badge
                   variant="secondary"
                   className="absolute -right-2 -top-2 h-6 w-6 rounded-full p-2"
