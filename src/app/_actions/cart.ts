@@ -44,7 +44,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
     .leftJoin(stores, eq(stores.id, products.storeId))
     .where(inArray(products.id, uniqueProductIds))
 
-  const cartItems = cartLineItems.map((item) => {
+  const allCartLineItems = cartLineItems.map((item) => {
     const quantity = cart?.items?.find(
       (cartItem) => cartItem.productId === item.id
     )?.quantity
@@ -55,7 +55,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
     }
   })
 
-  return cartItems
+  return allCartLineItems
 }
 
 export async function getCartItemsAction() {
@@ -87,6 +87,7 @@ export async function addToCartAction(input: CartItem) {
       items: [input],
     })
 
+    // Convert to string because cookieStore.set() only accepts string values
     cookieStore.set("cartId", String(cart.insertId))
 
     revalidatePath("/")
@@ -105,10 +106,17 @@ export async function addToCartAction(input: CartItem) {
     (item) => item.productId === input.productId
   )
 
-  if (!cartItem) {
+  if (cartItem && input.quantity > 0) {
+    cartItem.quantity = input.quantity
+  }
+
+  if (!cartItem && input.quantity > 0) {
     cart.items?.push(input)
-  } else {
-    cartItem.quantity += input.quantity
+  }
+
+  if (cartItem && input.quantity <= 0) {
+    cart.items =
+      cart.items?.filter((item) => item.productId !== input.productId) ?? []
   }
 
   await db
@@ -154,6 +162,37 @@ export async function deleteCartItemAction(input: { productId: number }) {
 
   cart.items =
     cart.items?.filter((item) => item.productId !== input.productId) ?? []
+
+  await db
+    .update(carts)
+    .set({
+      items: cart.items,
+    })
+    .where(eq(carts.id, cartId))
+
+  revalidatePath("/")
+}
+
+export async function deleteCartItemsAction(input: { productIds: number[] }) {
+  const cartId = Number(cookies().get("cartId")?.value)
+
+  if (!cartId) {
+    throw new Error("cartId not found, please try again.")
+  }
+
+  if (isNaN(cartId)) {
+    throw new Error("Invalid cartId, please try again.")
+  }
+
+  const cart = await db.query.carts.findFirst({
+    where: eq(carts.id, cartId),
+  })
+
+  if (!cart) return
+
+  cart.items =
+    cart.items?.filter((item) => !input.productIds.includes(item.productId)) ??
+    []
 
   await db
     .update(carts)

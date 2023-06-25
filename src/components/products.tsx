@@ -329,8 +329,7 @@ export function Products({
               <Separator className="my-4" />
               <SheetFooter>
                 <Button
-                  aria-label="Clear Filters"
-                  variant="secondary"
+                  aria-label="Clear filters"
                   size="sm"
                   className="w-full"
                   onClick={() => {

@@ -22,9 +22,15 @@ import { getCartAction } from "@/app/_actions/cart"
 export async function CartSheet() {
   await new Promise((resolve) => setTimeout(resolve, 1000))
   const cartLineItems: CartLineItem[] = []
+  const itemCount = 0
   const cartTotal = 0
 
   // const cartLineItems = await getCartAction()
+
+  // const itemCount = cartLineItems.reduce(
+  //   (total, item) => total + Number(item.quantity),
+  //   0
+  // )
 
   // const cartTotal = cartLineItems.reduce(
   //   (total, item) => total + Number(item.quantity) * Number(item.price),
@@ -40,12 +46,12 @@ export async function CartSheet() {
           size="icon"
           className="relative"
         >
-          {cartLineItems.length > 0 && (
+          {itemCount > 0 && (
             <Badge
               variant="secondary"
               className="absolute -right-2 -top-2 h-6 w-6 rounded-full p-2"
             >
-              {cartLineItems.length}
+              {itemCount}
             </Badge>
           )}
           <Icons.cart className="h-4 w-4" aria-hidden="true" />
@@ -54,18 +60,18 @@ export async function CartSheet() {
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="px-1">
           <SheetTitle>
-            Cart {cartLineItems.length > 0 && `(${cartLineItems.length})`}
+            Cart {itemCount > 0 && `(${cartLineItems.length})`}
           </SheetTitle>
         </SheetHeader>
         <Separator />
-        {cartLineItems.length > 0 ? (
+        {itemCount > 0 ? (
           <>
-            <div className="flex flex-1 flex-col gap-5 overflow-hidden pt-2.5">
+            <div className="flex flex-1 flex-col gap-5 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="flex flex-col gap-5 pr-6">
                   {cartLineItems.map((item) => (
                     <div key={item.id} className="space-y-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center space-x-4">
                         <div className="relative h-16 w-16 overflow-hidden rounded">
                           {item?.images?.length ? (
                             <Image
@@ -89,10 +95,15 @@ export async function CartSheet() {
                         </div>
                         <div className="flex flex-1 flex-col gap-1 self-start text-sm">
                           <span className="line-clamp-1">{item.name}</span>
-                          <span className="text-muted-foreground">
-                            {formatPrice(item.price)}
+                          <span className="line-clamp-1 text-muted-foreground">
+                            {formatPrice(item.price)} x {item.quantity} ={" "}
+                            {formatPrice(
+                              (
+                                Number(item.price) * Number(item.quantity)
+                              ).toFixed(2)
+                            )}
                           </span>
-                          <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
+                          <span className="line-clamp-1 capitalize text-muted-foreground">
                             {`${item.category} ${
                               item.subcategory ? `/ ${item.subcategory}` : ""
                             }`}
@@ -106,8 +117,8 @@ export async function CartSheet() {
                 </div>
               </ScrollArea>
             </div>
-            <div className="grid gap-2 pr-6 text-sm">
-              <Separator className="my-2" />
+            <div className="grid gap-1.5 pr-6 text-sm">
+              <Separator className="mb-2" />
               <div className="flex">
                 <span className="flex-1">Subtotal</span>
                 <span>{formatPrice(cartTotal.toFixed(2))}</span>
@@ -120,15 +131,14 @@ export async function CartSheet() {
                 <span className="flex-1">Taxes</span>
                 <span>Calculated at checkout</span>
               </div>
-              <Separator className="my-2" />
+              <Separator className="mt-2" />
               <div className="flex">
                 <span className="flex-1">Total</span>
                 <span>{formatPrice(cartTotal.toFixed(2))}</span>
               </div>
-              <SheetFooter>
+              <SheetFooter className="mt-1.5">
                 <Button
                   aria-label="Proceed to checkout"
-                  variant="secondary"
                   size="sm"
                   className="w-full"
                 >

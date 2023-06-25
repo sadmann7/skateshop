@@ -55,6 +55,8 @@ export default async function BuildABoardPage({
     where: eq(carts.id, Number(cartId)),
   })
 
+  console.log(cart?.items)
+
   return (
     <Shell className="gap-4">
       <Header
@@ -62,7 +64,7 @@ export default async function BuildABoardPage({
         description="Select the components for your board"
         size="sm"
       />
-      <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-sm">
+      <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-md">
         <div className="grid place-items-center overflow-x-auto">
           <div className="inline-flex w-fit items-center rounded border bg-background p-1 text-muted-foreground shadow-2xl">
             {productCategories[0]?.subcategories.map((subcategory) => (
