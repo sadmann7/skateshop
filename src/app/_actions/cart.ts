@@ -34,6 +34,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
       name: products.name,
       images: products.images,
       category: products.category,
+      subcategory: products.subcategory,
       price: products.price,
       inventory: products.inventory,
       storeId: products.storeId,

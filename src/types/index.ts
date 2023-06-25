@@ -54,7 +54,14 @@ export interface CheckoutItem extends CartItem {
 export interface CartLineItem
   extends Pick<
     Product,
-    "id" | "name" | "images" | "category" | "price" | "inventory" | "storeId"
+    | "id"
+    | "name"
+    | "images"
+    | "category"
+    | "subcategory"
+    | "price"
+    | "inventory"
+    | "storeId"
   > {
   quantity?: number
   storeName: string | null

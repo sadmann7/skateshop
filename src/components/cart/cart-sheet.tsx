@@ -1,3 +1,4 @@
+import * as React from "react"
 import Image from "next/image"
 import type { CartLineItem } from "@/types"
 
@@ -14,20 +15,21 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { UpdateCart } from "@/components/cart/update-cart"
 import { Icons } from "@/components/icons"
 import { getCartAction } from "@/app/_actions/cart"
 
 export async function CartSheet() {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  const cartLineItems: CartLineItem[] = []
-  const cartTotal = 0
+  // await new Promise((resolve) => setTimeout(resolve, 1000))
+  // const cartLineItems: CartLineItem[] = []
+  // const cartTotal = 0
 
-  // const cartLineItems = await getCartAction()
+  const cartLineItems = await getCartAction()
 
-  // const cartTotal = cartLineItems.reduce(
-  //   (total, item) => total + Number(item.quantity) * Number(item.price),
-  //   0
-  // )
+  const cartTotal = cartLineItems.reduce(
+    (total, item) => total + Number(item.quantity) * Number(item.price),
+    0
+  )
 
   return (
     <Sheet>
@@ -46,19 +48,20 @@ export async function CartSheet() {
               {cartLineItems.length}
             </Badge>
           )}
-
           <Icons.cart className="h-4 w-4" aria-hidden="true" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex flex-col pr-0">
+      <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="px-1">
-          <SheetTitle>Cart</SheetTitle>
+          <SheetTitle>
+            Cart {cartLineItems.length > 0 && `(${cartLineItems.length})`}
+          </SheetTitle>
         </SheetHeader>
         <Separator />
         {cartLineItems.length > 0 ? (
           <>
-            <div className="flex flex-1 flex-col gap-5 overflow-hidden">
-              <ScrollArea className="h-[calc(100vh-8rem)]">
+            <div className="flex flex-1 flex-col gap-5 overflow-hidden pt-2.5">
+              <ScrollArea className="h-full">
                 <div className="flex flex-col gap-5 pr-6">
                   {cartLineItems.map((item) => (
                     <div key={item.id} className="space-y-2.5">
@@ -89,19 +92,13 @@ export async function CartSheet() {
                           <span className="text-muted-foreground">
                             {formatPrice(item.price)}
                           </span>
+                          <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
+                            {`${item.category} ${
+                              item.subcategory ? `/ ${item.subcategory}` : ""
+                            }`}
+                          </span>
                         </div>
-                        <div className="flex flex-col gap-1">
-                          <Button
-                            aria-label="Remove item"
-                            variant="destructive"
-                            size="icon"
-                          >
-                            <Icons.trash
-                              className="h-3 w-3"
-                              aria-hidden="true"
-                            />
-                          </Button>
-                        </div>
+                        <UpdateCart cartLineItem={item} />
                       </div>
                       <Separator />
                     </div>
@@ -109,8 +106,8 @@ export async function CartSheet() {
                 </div>
               </ScrollArea>
             </div>
-            <div className="pr-6">
-              <Separator className="my-4" />
+            <div className="grid gap-2 pr-6 text-sm">
+              <Separator className="my-2" />
               <div className="flex">
                 <span className="flex-1">Subtotal</span>
                 <span>{formatPrice(cartTotal.toFixed(2))}</span>
@@ -123,12 +120,12 @@ export async function CartSheet() {
                 <span className="flex-1">Taxes</span>
                 <span>Calculated at checkout</span>
               </div>
-              <Separator className="my-4" />
+              <Separator className="my-2" />
               <div className="flex">
                 <span className="flex-1">Total</span>
                 <span>{formatPrice(cartTotal.toFixed(2))}</span>
               </div>
-              <SheetFooter className="mt-4">
+              <SheetFooter>
                 <Button
                   aria-label="Proceed to checkout"
                   variant="secondary"
@@ -141,7 +138,7 @@ export async function CartSheet() {
             </div>
           </>
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center">
+          <div className="flex h-full flex-col items-center justify-center space-y-2">
             <Icons.cart
               className="h-12 w-12 text-muted-foreground"
               aria-hidden="true"

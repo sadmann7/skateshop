@@ -93,8 +93,6 @@ export function BoardBuilder({
   // Add to cart
   const addToCart = React.useCallback(
     async (product: Product) => {
-      console.log(product.id)
-
       try {
         if (!cartProductIds.includes(product.id)) {
           // Only allow one product per subcategory in cart
