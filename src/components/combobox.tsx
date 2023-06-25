@@ -4,6 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { type Product } from "@/db/schema"
 
+import { filterProductsAction } from "@/lib/actions/product"
 import { cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/command"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
-import { filterProductsAction } from "@/app/_actions/product"
 
 export function Combobox() {
   const router = useRouter()

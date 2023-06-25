@@ -2,6 +2,7 @@ import * as React from "react"
 import Image from "next/image"
 import type { CartLineItem } from "@/types"
 
+import { getCartAction } from "@/lib/actions/cart"
 import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -17,7 +18,6 @@ import {
 } from "@/components/ui/sheet"
 import { UpdateCart } from "@/components/cart/update-cart"
 import { Icons } from "@/components/icons"
-import { getCartAction } from "@/app/_actions/cart"
 
 export async function CartSheet() {
   await new Promise((resolve) => setTimeout(resolve, 1000))

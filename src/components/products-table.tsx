@@ -16,6 +16,10 @@ import {
   type ColumnSort,
 } from "unstyled-table"
 
+import {
+  deleteProductAction,
+  deleteProductsAction,
+} from "@/lib/actions/product"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -53,10 +57,6 @@ import {
 } from "@/components/ui/table"
 import { DebounceInput } from "@/components/debounce-input"
 import { Icons } from "@/components/icons"
-import {
-  deleteProductAction,
-  deleteProductsAction,
-} from "@/app/_actions/product"
 
 interface ProductsTableProps {
   data: Product[]
