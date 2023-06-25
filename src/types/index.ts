@@ -1,5 +1,6 @@
 import { type Product } from "@/db/schema"
 import { type FileWithPath } from "react-dropzone"
+
 import { type Icons } from "@/components/icons"
 
 export interface NavItem {
@@ -53,8 +54,9 @@ export interface CheckoutItem extends CartItem {
 export interface CartLineItem
   extends Pick<
     Product,
-    "id" | "name" | "images" | "price" | "inventory" | "storeId"
+    "id" | "name" | "images" | "category" | "price" | "inventory" | "storeId"
   > {
+  quantity?: number
   storeName: string | null
 }
 

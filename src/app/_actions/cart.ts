@@ -8,23 +8,32 @@ import type { CartItem, CartLineItem } from "@/types"
 import { eq, inArray } from "drizzle-orm"
 
 export async function getCartAction(): Promise<CartLineItem[]> {
-  const cartId = cookies().get("cartId")?.value
+  const cartId = Number(cookies().get("cartId")?.value)
 
-  if (!cartId) return []
+  if (!cartId) {
+    throw new Error("cartId not found, please try again.")
+  }
+
+  if (isNaN(cartId)) {
+    throw new Error("Invalid cartId, please try again.")
+  }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, Number(cartId)),
+    where: eq(carts.id, cartId),
   })
 
   const productIds = cart?.items?.map((item) => item.productId) ?? []
 
-  if (!productIds.length) return []
+  if (productIds.length === 0) return []
+
+  const uniqueProductIds = [...new Set(productIds)]
 
   const cartLineItems = await db
     .select({
       id: products.id,
       name: products.name,
       images: products.images,
+      category: products.category,
       price: products.price,
       inventory: products.inventory,
       storeId: products.storeId,
@@ -32,9 +41,20 @@ export async function getCartAction(): Promise<CartLineItem[]> {
     })
     .from(products)
     .leftJoin(stores, eq(stores.id, products.storeId))
-    .where(inArray(products.id, productIds))
+    .where(inArray(products.id, uniqueProductIds))
 
-  return cartLineItems
+  const cartItems = cartLineItems.map((item) => {
+    const quantity = cart?.items?.find(
+      (cartItem) => cartItem.productId === item.id
+    )?.quantity
+
+    return {
+      ...item,
+      quantity,
+    }
+  })
+
+  return cartItems
 }
 
 export async function getCartItemsAction() {

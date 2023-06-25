@@ -34,8 +34,7 @@ import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagination-button"
-
-import { ProductCard } from "./product-card"
+import { ProductCard } from "@/components/product-card"
 
 interface ProductsProps {
   products: Product[]

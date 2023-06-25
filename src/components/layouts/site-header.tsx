@@ -1,11 +1,9 @@
 import Link from "next/link"
-import type { CartItem } from "@/types"
 import type { User } from "@clerk/nextjs/dist/types/server"
 
 import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -17,11 +15,11 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { CartSheet } from "@/components/cart-sheet"
 import { Combobox } from "@/components/combobox"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
-import { getCartItemsAction } from "@/app/_actions/cart"
 
 interface SiteHeaderProps {
   user: User | null
@@ -35,9 +33,6 @@ export function SiteHeader({ user }: SiteHeaderProps) {
     user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
       ?.emailAddress ?? ""
 
-  // const cartItems = await getCartItemsAction()
-  const cartItems: CartItem[] = []
-
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center">
@@ -49,27 +44,12 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
             <Combobox />
-            <Button
-              aria-label="Cart"
-              variant="outline"
-              size="icon"
-              className="relative"
-            >
-              {cartItems && cartItems.length > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="absolute -right-2 -top-2 h-6 w-6 rounded-full p-2"
-                >
-                  {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                </Badge>
-              )}
-              <Icons.cart className="h-4 w-4" aria-hidden="true" />
-            </Button>
+            <CartSheet />
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     className="relative h-8 w-8 rounded-full"
                   >
                     <Avatar className="h-8 w-8">
