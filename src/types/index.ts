@@ -45,6 +45,7 @@ export type StoredFile = {
 export type CartItem = {
   productId: number
   quantity: number
+  productSubcategory?: string | null
 }
 
 export interface CheckoutItem extends CartItem {

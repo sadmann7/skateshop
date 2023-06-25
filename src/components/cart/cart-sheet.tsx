@@ -64,7 +64,7 @@ export async function CartSheet() {
               <ScrollArea className="h-full">
                 <div className="flex flex-col gap-5 pr-6">
                   {cartLineItems.map((item) => (
-                    <div key={item.id} className="space-y-2.5">
+                    <div key={item.id} className="space-y-3">
                       <div className="flex items-center gap-2">
                         <div className="relative h-16 w-16 overflow-hidden rounded">
                           {item?.images?.length ? (

@@ -3,6 +3,7 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
+import type { CartItem } from "@/types"
 import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
@@ -37,14 +38,14 @@ interface BoardBuilderProps {
   products: Product[]
   pageCount: number
   subcategory: string | null
-  cartProductIds: number[]
+  cartItems: CartItem[]
 }
 
 export function BoardBuilder({
   products,
   pageCount,
   subcategory,
-  cartProductIds,
+  cartItems,
 }: BoardBuilderProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -94,17 +95,11 @@ export function BoardBuilder({
   const addToCart = React.useCallback(
     async (product: Product) => {
       try {
-        if (!cartProductIds.includes(product.id)) {
+        if (!cartItems.map((item) => item.productId).includes(product.id)) {
           // Only allow one product per subcategory in cart
-          const productIdWithSameSubcategory = cartProductIds.find(
-            (id) =>
-              product.subcategory &&
-              products.find(
-                (p) =>
-                  p.id === id &&
-                  (p.subcategory === product.subcategory ?? subcategory)
-              )
-          )
+          const productIdWithSameSubcategory = cartItems.find(
+            (item) => item.productSubcategory === product.subcategory
+          )?.productId
 
           if (productIdWithSameSubcategory) {
             await deleteCartItemAction({
@@ -115,6 +110,7 @@ export function BoardBuilder({
           await addToCartAction({
             productId: product.id,
             quantity: 1,
+            productSubcategory: product.subcategory ?? subcategory,
           })
 
           toast.success("Added to cart.")
@@ -131,11 +127,11 @@ export function BoardBuilder({
           : toast.error("Something went wrong, please try again.")
       }
     },
-    [cartProductIds, products, subcategory]
+    [subcategory, cartItems]
   )
 
   return (
-    <div className="mt-4 flex flex-col space-y-6">
+    <div className="flex flex-col space-y-6">
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
@@ -264,7 +260,9 @@ export function BoardBuilder({
             key={product.id}
             variant="switchable"
             product={product}
-            isAddedToCart={cartProductIds.includes(product.id)}
+            isAddedToCart={cartItems
+              .map((item) => item.productId)
+              .includes(product.id)}
             onSwitch={() => addToCart(product)}
           />
         ))}
