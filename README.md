@@ -15,6 +15,7 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 - [Clerk Auth](https://clerk.dev)
 - [Drizzle ORM](https://orm.drizzle.team)
 - [Tailwind CSS](https://tailwindcss.com)
+- [uploadthing](https://uploadthing.com)
 - [Stripe](https://stripe.com)
 
 ## Features

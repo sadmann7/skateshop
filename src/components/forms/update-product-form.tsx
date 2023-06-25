@@ -48,7 +48,7 @@ import {
   getNextProductIdAction,
   getPreviousProductIdAction,
   updateProductAction,
-} from "@/app/actions/product"
+} from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface UpdateProductFormProps {

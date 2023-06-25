@@ -41,7 +41,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
-import { addProductAction, checkProductAction } from "@/app/actions/product"
+import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {

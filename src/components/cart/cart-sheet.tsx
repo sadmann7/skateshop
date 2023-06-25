@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet"
 import { UpdateCart } from "@/components/cart/update-cart"
 import { Icons } from "@/components/icons"
-import { getCartAction } from "@/app/actions/cart"
+import { getCartAction } from "@/app/_actions/cart"
 
 export async function CartSheet() {
   await new Promise((resolve) => setTimeout(resolve, 1000))

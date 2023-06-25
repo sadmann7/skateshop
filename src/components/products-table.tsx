@@ -56,7 +56,7 @@ import { Icons } from "@/components/icons"
 import {
   deleteProductAction,
   deleteProductsAction,
-} from "@/app/actions/product"
+} from "@/app/_actions/product"
 
 interface ProductsTableProps {
   data: Product[]
@@ -330,7 +330,7 @@ export function ProductsTable({
         // The inline `[]` prevents re-rendering the table when the data changes.
         data={data ?? []}
         // Rows per page
-        itemsCount={Number(per_page)}
+        pageCount={pageCount ?? 0}
         // States controlled by the table
         state={{ sorting }}
         // Enable controlled states

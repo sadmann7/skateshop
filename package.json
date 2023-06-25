@@ -38,7 +38,7 @@
     "@radix-ui/react-slider": "^1.1.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
-    "@t3-oss/env-nextjs": "^0.4.1",
+    "@t3-oss/env-nextjs": "^0.5.1",
     "@uploadthing/react": "^5.0.0",
     "@vercel/og": "^0.5.8",
     "class-variance-authority": "^0.6.0",
@@ -61,7 +61,7 @@
     "stripe": "^12.10.0",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
-    "unstyled-table": "0.0.3-alpha-2",
+    "unstyled-table": "0.0.3-alpha-3",
     "uploadthing": "^5.0.0",
     "zact": "^0.0.2",
     "zod": "^3.21.4"

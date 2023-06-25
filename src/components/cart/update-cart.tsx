@@ -5,7 +5,7 @@ import type { CartLineItem } from "@/types"
 
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { addToCartAction, deleteCartItemAction } from "@/app/actions/cart"
+import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
 import { Input } from "../ui/input"
 
