@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
-import { addStoreAction } from "@/app/_actions/store"
+import { addStoreAction } from "@/app/actions/store"
 
 interface AddStoreFormProps {
   userId: string

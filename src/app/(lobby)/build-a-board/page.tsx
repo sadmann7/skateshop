@@ -11,7 +11,7 @@ import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
-import { getProductsAction } from "@/app/_actions/product"
+import { getProductsAction } from "@/app/actions/product"
 
 export const metadata: Metadata = {
   title: "Build a Board",

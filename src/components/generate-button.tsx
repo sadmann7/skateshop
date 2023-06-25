@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { generateProducts } from "@/app/_actions/generate"
+import { generateProducts } from "@/app/actions/generate"
 
 export function GenerateButton() {
   const [isPending, startTransition] = React.useTransition()

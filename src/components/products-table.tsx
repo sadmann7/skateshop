@@ -56,7 +56,7 @@ import { Icons } from "@/components/icons"
 import {
   deleteProductAction,
   deleteProductsAction,
-} from "@/app/_actions/product"
+} from "@/app/actions/product"
 
 interface ProductsTableProps {
   data: Product[]
