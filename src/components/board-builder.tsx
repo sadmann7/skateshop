@@ -7,7 +7,6 @@ import type { CartItem } from "@/types"
 import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
-import { addToCartAction, deleteCartItemAction } from "@/lib/actions/cart"
 import { cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -33,6 +32,7 @@ import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
 import { ProductCard } from "@/components/product-card"
+import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
 interface BoardBuilderProps {
   products: Product[]

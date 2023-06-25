@@ -1,11 +1,11 @@
 import { type Product } from "@/db/schema"
 
-import { getProductsAction } from "@/lib/actions/product"
-import { getStoresAction } from "@/lib/actions/store"
 import { toTitleCase } from "@/lib/utils"
 import { Header } from "@/components/header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shell"
+import { getProductsAction } from "@/app/_actions/product"
+import { getStoresAction } from "@/app/_actions/store"
 
 export const runtime = "edge"
 

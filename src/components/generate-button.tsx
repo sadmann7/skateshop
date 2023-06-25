@@ -2,9 +2,9 @@
 
 import * as React from "react"
 
-import { generateProducts } from "@/lib/actions/generate"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
+import { generateProducts } from "@/app/_actions/generate"
 
 export function GenerateButton() {
   const [isPending, startTransition] = React.useTransition()
