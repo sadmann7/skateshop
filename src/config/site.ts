@@ -9,8 +9,8 @@ export const siteConfig = {
   name: "Skateshop13",
   description:
     "An open source e-commerce skateshop build with everything new in Next.js 13.",
-  url: "https://skateshop13.vercel.app/",
-  ogImage: "https://skateshop13.vercel.app/opengraph-image.png",
+  url: "https://skateshop.sadmn.com/",
+  ogImage: "https://skateshop.sadmn.com/opengraph-image.png",
   mainNav: [
     {
       title: "Lobby",

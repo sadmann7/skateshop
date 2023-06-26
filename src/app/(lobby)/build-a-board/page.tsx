@@ -11,6 +11,7 @@ import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
+import { getCartItemsAction } from "@/app/_actions/cart"
 import { getProductsAction } from "@/app/_actions/product"
 
 export const metadata: Metadata = {
@@ -46,16 +47,7 @@ export default async function BuildABoardPage({
   const pageCount = Math.ceil(productsTransaction.total / limit)
 
   // Get cart items
-  const cartId = cookies().get("cartId")?.value
-
-  const cart = await db.query.carts.findFirst({
-    columns: {
-      items: true,
-    },
-    where: eq(carts.id, Number(cartId)),
-  })
-
-  console.log(cart?.items)
+  const cartItems = await getCartItemsAction()
 
   return (
     <Shell className="gap-4">
@@ -80,7 +72,7 @@ export default async function BuildABoardPage({
                       "rounded-none border-primary text-foreground hover:rounded-t"
                   )}
                 >
-                  {cart?.items
+                  {cartItems
                     ?.map((item) => item.productSubcategory)
                     ?.includes(subcategory.slug) ? (
                     <Icons.check className="mr-2 h-4 w-4" aria-hidden="true" />
@@ -98,7 +90,7 @@ export default async function BuildABoardPage({
         products={productsTransaction.items}
         pageCount={pageCount}
         subcategory={activeSubcategory}
-        cartItems={cart?.items ?? []}
+        cartItems={cartItems ?? []}
       />
     </Shell>
   )
