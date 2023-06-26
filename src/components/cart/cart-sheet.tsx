@@ -20,22 +20,22 @@ import { Icons } from "@/components/icons"
 import { getCartAction } from "@/app/_actions/cart"
 
 export async function CartSheet() {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  const cartLineItems: CartLineItem[] = []
-  const itemCount = 0
-  const cartTotal = 0
+  // await new Promise((resolve) => setTimeout(resolve, 1000))
+  // const cartLineItems: CartLineItem[] = []
+  // const itemCount = 0
+  // const cartTotal = 0
 
-  // const cartLineItems = await getCartAction()
+  const cartLineItems = await getCartAction()
 
-  // const itemCount = cartLineItems.reduce(
-  //   (total, item) => total + Number(item.quantity),
-  //   0
-  // )
+  const itemCount = cartLineItems.reduce(
+    (total, item) => total + Number(item.quantity),
+    0
+  )
 
-  // const cartTotal = cartLineItems.reduce(
-  //   (total, item) => total + Number(item.quantity) * Number(item.price),
-  //   0
-  // )
+  const cartTotal = cartLineItems.reduce(
+    (total, item) => total + Number(item.quantity) * Number(item.price),
+    0
+  )
 
   return (
     <Sheet>

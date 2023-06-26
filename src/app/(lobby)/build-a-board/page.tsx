@@ -48,7 +48,6 @@ export default async function BuildABoardPage({
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value
-  // const cartItems = await getCartItemsAction(cartId)
 
   return (
     <Shell className="gap-4">

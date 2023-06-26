@@ -8,18 +8,12 @@ import type { CartItem, CartLineItem } from "@/types"
 import { eq, inArray } from "drizzle-orm"
 
 export async function getCartAction(): Promise<CartLineItem[]> {
-  const cartId = Number(cookies().get("cartId")?.value)
+  const cartId = cookies().get("cartId")?.value
 
-  if (!cartId) {
-    throw new Error("cartId not found, please try again.")
-  }
-
-  if (isNaN(cartId)) {
-    throw new Error("Invalid cartId, please try again.")
-  }
+  if (!cartId) return []
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   const productIds = cart?.items?.map((item) => item.productId) ?? []
@@ -83,7 +77,7 @@ export async function getCartItemsAction(cartId?: string) {
 
 export async function addToCartAction(input: CartItem) {
   const cookieStore = cookies()
-  const cartId = Number(cookieStore.get("cartId")?.value)
+  const cartId = cookieStore.get("cartId")?.value
 
   if (!cartId) {
     const cart = await db.insert(carts).values({
@@ -98,7 +92,7 @@ export async function addToCartAction(input: CartItem) {
   }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   if (!cart) {
@@ -127,7 +121,7 @@ export async function addToCartAction(input: CartItem) {
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, cartId))
+    .where(eq(carts.id, Number(cartId)))
 
   revalidatePath("/")
 }
