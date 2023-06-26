@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import type { CartLineItem } from "@/types"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
@@ -26,10 +27,16 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           className="h-8 w-8"
           onClick={() => {
             startTransition(async () => {
-              await addToCartAction({
-                productId: cartLineItem.id,
-                quantity: Number(cartLineItem.quantity) - 1,
-              })
+              try {
+                await addToCartAction({
+                  productId: cartLineItem.id,
+                  quantity: Number(cartLineItem.quantity) - 1,
+                })
+              } catch (error) {
+                error instanceof Error
+                  ? toast.error(error.message)
+                  : toast.error("Something went wrong.")
+              }
             })
           }}
           disabled={isPending}
@@ -44,10 +51,16 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           value={cartLineItem.quantity}
           onChange={(e) => {
             startTransition(async () => {
-              await addToCartAction({
-                productId: cartLineItem.id,
-                quantity: Number(e.target.value),
-              })
+              try {
+                await addToCartAction({
+                  productId: cartLineItem.id,
+                  quantity: Number(e.target.value),
+                })
+              } catch (error) {
+                error instanceof Error
+                  ? toast.error(error.message)
+                  : toast.error("Something went wrong.")
+              }
             })
           }}
           disabled={isPending}
@@ -58,10 +71,16 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           className="h-8 w-8"
           onClick={() => {
             startTransition(async () => {
-              await addToCartAction({
-                productId: cartLineItem.id,
-                quantity: Number(cartLineItem.quantity) + 1,
-              })
+              try {
+                await addToCartAction({
+                  productId: cartLineItem.id,
+                  quantity: Number(cartLineItem.quantity) + 1,
+                })
+              } catch (error) {
+                error instanceof Error
+                  ? toast.error(error.message)
+                  : toast.error("Something went wrong.")
+              }
             })
           }}
           disabled={isPending}
@@ -76,9 +95,15 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         className="h-8 w-8"
         onClick={() => {
           startTransition(async () => {
-            await deleteCartItemAction({
-              productId: cartLineItem.id,
-            })
+            try {
+              await deleteCartItemAction({
+                productId: cartLineItem.id,
+              })
+            } catch (error) {
+              error instanceof Error
+                ? toast.error(error.message)
+                : toast.error("Something went wrong.")
+            }
           })
         }}
         disabled={isPending}

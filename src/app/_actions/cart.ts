@@ -52,22 +52,11 @@ export async function getCartAction(): Promise<CartLineItem[]> {
   return allCartLineItems
 }
 
-export async function getCartItemsAction(cartId?: string) {
-  // if (isNaN(cartId)) {
-  //   throw new Error("Invalid cartId, please try again.")
-  // }
-
-  if (!cartId) {
-    const cart = await db.insert(carts).values({
-      items: [],
-    })
-
-    // Convert to string because cookieStore.set() only accepts string values
-    cookies().set("cartId", String(cart.insertId))
-  }
+export async function getCartItemsAction(input: { cartId?: string }) {
+  if (!input.cartId) return []
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, Number(cartId)),
+    where: eq(carts.id, Number(input.cartId)),
   })
 
   if (!cart) return []
@@ -171,18 +160,18 @@ export async function deleteCartItemAction(input: { productId: number }) {
 }
 
 export async function deleteCartItemsAction(input: { productIds: number[] }) {
-  const cartId = Number(cookies().get("cartId")?.value)
+  const cartId = cookies().get("cartId")?.value
 
   if (!cartId) {
     throw new Error("cartId not found, please try again.")
   }
 
-  if (isNaN(cartId)) {
+  if (isNaN(Number(cartId))) {
     throw new Error("Invalid cartId, please try again.")
   }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   if (!cart) return
@@ -196,7 +185,7 @@ export async function deleteCartItemsAction(input: { productIds: number[] }) {
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, cartId))
+    .where(eq(carts.id, Number(cartId)))
 
   revalidatePath("/")
 }

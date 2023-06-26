@@ -133,7 +133,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
-          : toast.error("Something went wrong")
+          : toast.error("Something went wrong, please try again.")
       }
     })
   }

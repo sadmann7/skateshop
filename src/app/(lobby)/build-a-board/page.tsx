@@ -1,9 +1,6 @@
 import { type Metadata } from "next"
 import { cookies } from "next/headers"
 import Link from "next/link"
-import { db } from "@/db"
-import { carts } from "@/db/schema"
-import { eq } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -49,6 +46,8 @@ export default async function BuildABoardPage({
   // Get cart items
   const cartId = cookies().get("cartId")?.value
 
+  const cartItems = await getCartItemsAction({ cartId })
+
   return (
     <Shell className="gap-4">
       <Header
@@ -56,7 +55,7 @@ export default async function BuildABoardPage({
         description="Select the components for your board"
         size="sm"
       />
-      {/* <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-md">
+      <div className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-md">
         <div className="grid place-items-center overflow-x-auto">
           <div className="inline-flex w-fit items-center rounded border bg-background p-1 text-muted-foreground shadow-2xl">
             {productCategories[0]?.subcategories.map((subcategory) => (
@@ -91,7 +90,7 @@ export default async function BuildABoardPage({
         pageCount={pageCount}
         subcategory={activeSubcategory}
         cartItems={cartItems ?? []}
-      /> */}
+      />
     </Shell>
   )
 }

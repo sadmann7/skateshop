@@ -58,7 +58,9 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
         router.push("/dashboard/stores")
         router.refresh() // Workaround for the inconsistency of cache revalidation
       } catch (error) {
-        error instanceof Error && toast.error(error.message)
+        error instanceof Error
+          ? toast.error(error.message)
+          : toast.error("Something went wrong, please try again.")
       }
     })
   }

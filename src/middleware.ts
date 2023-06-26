@@ -9,7 +9,7 @@ export default authMiddleware({
     "/api(.*)",
     "/categories(.*)",
     "/products(.*)",
-    // "/build-a-board(.*)",
+    "/build-a-board(.*)",
   ],
 })
 
