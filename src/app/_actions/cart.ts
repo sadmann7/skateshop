@@ -58,10 +58,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
   return allCartLineItems
 }
 
-export async function getCartItemsAction() {
-  const cookieStore = cookies()
-  const cartId = Number(cookieStore.get("cartId")?.value)
-
+export async function getCartItemsAction(cartId?: string) {
   // if (isNaN(cartId)) {
   //   throw new Error("Invalid cartId, please try again.")
   // }
@@ -72,11 +69,11 @@ export async function getCartItemsAction() {
     })
 
     // Convert to string because cookieStore.set() only accepts string values
-    cookieStore.set("cartId", String(cart.insertId))
+    cookies().set("cartId", String(cart.insertId))
   }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   if (!cart) return []
