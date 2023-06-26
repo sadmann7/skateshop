@@ -1,6 +1,4 @@
-import * as React from "react"
 import Image from "next/image"
-import type { CartLineItem } from "@/types"
 
 import { formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -20,11 +18,6 @@ import { Icons } from "@/components/icons"
 import { getCartAction } from "@/app/_actions/cart"
 
 export async function CartSheet() {
-  // await new Promise((resolve) => setTimeout(resolve, 1000))
-  // const cartLineItems: CartLineItem[] = []
-  // const itemCount = 0
-  // const cartTotal = 0
-
   const cartLineItems = await getCartAction()
 
   const itemCount = cartLineItems.reduce(
@@ -59,9 +52,7 @@ export async function CartSheet() {
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
         <SheetHeader className="px-1">
-          <SheetTitle>
-            Cart {itemCount > 0 && `(${cartLineItems.length})`}
-          </SheetTitle>
+          <SheetTitle>Cart {itemCount > 0 && `(${itemCount})`}</SheetTitle>
         </SheetHeader>
         <Separator />
         {itemCount > 0 ? (
@@ -103,7 +94,7 @@ export async function CartSheet() {
                               ).toFixed(2)
                             )}
                           </span>
-                          <span className="line-clamp-1 capitalize text-muted-foreground">
+                          <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
                             {`${item.category} ${
                               item.subcategory ? `/ ${item.subcategory}` : ""
                             }`}

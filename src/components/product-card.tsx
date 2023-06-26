@@ -4,6 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { type Product } from "@/db/schema"
+import { toast } from "sonner"
 
 import { formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -17,6 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
+import { addToCartAction } from "@/app/_actions/cart"
 
 interface ProductCardProps {
   product: Product
@@ -92,8 +94,28 @@ export function ProductCard({
               aria-label="Add to cart"
               size="sm"
               className="h-8 w-full rounded-sm"
+              // onClick={() => {
+              //   startTransition(async () => {
+              //     try {
+              //       await addToCartAction({
+              //         productId: product.id,
+              //         quantity: 1,
+              //       })
+              //     } catch (error) {
+              //       error instanceof Error
+              //         ? toast.error(error.message)
+              //         : toast.error("Something went wrong, please try again.")
+              //     }
+              //   })
+              // }}
               disabled={isPending}
             >
+              {isPending && (
+                <Icons.spinner
+                  className="mr-2 h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
               Add to cart
             </Button>
           </div>

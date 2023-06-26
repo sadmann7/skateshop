@@ -14,13 +14,6 @@ import { isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   Form,
   FormControl,
   FormField,
@@ -113,174 +106,163 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   }
 
   return (
-    <Card>
-      <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Add product</CardTitle>
-        <CardDescription>Add a new product to your store</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form
-            className="grid w-full max-w-2xl gap-5"
-            onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-          >
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  aria-invalid={!!form.formState.errors.name}
-                  placeholder="Type product name here."
-                  {...form.register("name")}
-                />
-              </FormControl>
-              <UncontrolledFormMessage
-                message={form.formState.errors.name?.message}
-              />
-            </FormItem>
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Type product description here."
-                  {...form.register("description")}
-                />
-              </FormControl>
-              <UncontrolledFormMessage
-                message={form.formState.errors.description?.message}
-              />
-            </FormItem>
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={(value: typeof field.value) =>
-                          field.onChange(value)
-                        }
-                      >
-                        <SelectTrigger className="capitalize">
-                          <SelectValue placeholder={field.value} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {Object.values(products.category.enumValues).map(
-                              (option) => (
-                                <SelectItem
-                                  key={option}
-                                  value={option}
-                                  className="capitalize"
-                                >
-                                  {option}
-                                </SelectItem>
-                              )
-                            )}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="subcategory"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Subcategory</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value?.toString()}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a subcategory" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            {subcategories.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="flex flex-col items-start gap-6 sm:flex-row">
+    <Form {...form}>
+      <form
+        className="grid w-full max-w-2xl gap-5"
+        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+      >
+        <FormItem>
+          <FormLabel>Name</FormLabel>
+          <FormControl>
+            <Input
+              aria-invalid={!!form.formState.errors.name}
+              placeholder="Type product name here."
+              {...form.register("name")}
+            />
+          </FormControl>
+          <UncontrolledFormMessage
+            message={form.formState.errors.name?.message}
+          />
+        </FormItem>
+        <FormItem>
+          <FormLabel>Description</FormLabel>
+          <FormControl>
+            <Textarea
+              placeholder="Type product description here."
+              {...form.register("description")}
+            />
+          </FormControl>
+          <UncontrolledFormMessage
+            message={form.formState.errors.description?.message}
+          />
+        </FormItem>
+        <div className="flex flex-col items-start gap-6 sm:flex-row">
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Price</FormLabel>
+                <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Type product price here."
-                    {...form.register("price")}
-                  />
+                  <Select
+                    value={field.value}
+                    onValueChange={(value: typeof field.value) =>
+                      field.onChange(value)
+                    }
+                  >
+                    <SelectTrigger className="capitalize">
+                      <SelectValue placeholder={field.value} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {Object.values(products.category.enumValues).map(
+                          (option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                              className="capitalize"
+                            >
+                              {option}
+                            </SelectItem>
+                          )
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
-                <UncontrolledFormMessage
-                  message={form.formState.errors.price?.message}
-                />
+                <FormMessage />
               </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subcategory"
+            render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Inventory</FormLabel>
+                <FormLabel>Subcategory</FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    placeholder="Type product inventory here."
-                    {...form.register("inventory", {
-                      valueAsNumber: true,
-                    })}
-                  />
+                  <Select
+                    value={field.value?.toString()}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a subcategory" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {subcategories.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </FormControl>
-                <UncontrolledFormMessage
-                  message={form.formState.errors.inventory?.message}
-                />
+                <FormMessage />
               </FormItem>
-            </div>
-            <FormItem className="flex w-full flex-col gap-1.5">
-              <FormLabel>Images</FormLabel>
-              <FormControl>
-                <FileDialog
-                  setValue={form.setValue}
-                  name="images"
-                  maxFiles={3}
-                  maxSize={1024 * 1024 * 4}
-                  files={files}
-                  setFiles={setFiles}
-                  isUploading={isUploading}
-                  disabled={isPending}
-                />
-              </FormControl>
-              <UncontrolledFormMessage
-                message={form.formState.errors.images?.message}
+            )}
+          />
+        </div>
+        <div className="flex flex-col items-start gap-6 sm:flex-row">
+          <FormItem className="w-full">
+            <FormLabel>Price</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Type product price here."
+                {...form.register("price")}
               />
-            </FormItem>
-            <Button className="w-fit" disabled={isPending}>
-              {isPending && (
-                <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Add Product
-              <span className="sr-only">Add Product</span>
-            </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+            </FormControl>
+            <UncontrolledFormMessage
+              message={form.formState.errors.price?.message}
+            />
+          </FormItem>
+          <FormItem className="w-full">
+            <FormLabel>Inventory</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                inputMode="numeric"
+                placeholder="Type product inventory here."
+                {...form.register("inventory", {
+                  valueAsNumber: true,
+                })}
+              />
+            </FormControl>
+            <UncontrolledFormMessage
+              message={form.formState.errors.inventory?.message}
+            />
+          </FormItem>
+        </div>
+        <FormItem className="flex w-full flex-col gap-1.5">
+          <FormLabel>Images</FormLabel>
+          <FormControl>
+            <FileDialog
+              setValue={form.setValue}
+              name="images"
+              maxFiles={3}
+              maxSize={1024 * 1024 * 4}
+              files={files}
+              setFiles={setFiles}
+              isUploading={isUploading}
+              disabled={isPending}
+            />
+          </FormControl>
+          <UncontrolledFormMessage
+            message={form.formState.errors.images?.message}
+          />
+        </FormItem>
+        <Button className="w-fit" disabled={isPending}>
+          {isPending && (
+            <Icons.spinner
+              className="mr-2 h-4 w-4 animate-spin"
+              aria-hidden="true"
+            />
+          )}
+          Add Product
+          <span className="sr-only">Add Product</span>
+        </Button>
+      </form>
+    </Form>
   )
 }

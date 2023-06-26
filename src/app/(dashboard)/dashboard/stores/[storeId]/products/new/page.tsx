@@ -2,6 +2,13 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { AddProductForm } from "@/components/forms/add-product-form"
 
 export const metadata: Metadata = {
@@ -24,5 +31,15 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
     redirect("/sigin")
   }
 
-  return <AddProductForm storeId={storeId} />
+  return (
+    <Card>
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl">Add product</CardTitle>
+        <CardDescription>Add a new product to your store</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <AddProductForm storeId={storeId} />
+      </CardContent>
+    </Card>
+  )
 }

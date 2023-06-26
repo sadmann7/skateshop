@@ -59,9 +59,7 @@ export async function getCartItemsAction(input: { cartId?: string }) {
     where: eq(carts.id, Number(input.cartId)),
   })
 
-  if (!cart) return []
-
-  return cart.items
+  return cart?.items
 }
 
 export async function addToCartAction(input: CartItem) {
@@ -73,7 +71,7 @@ export async function addToCartAction(input: CartItem) {
       items: [input],
     })
 
-    // Convert to string because cookieStore.set() only accepts string values
+    // Note: .set() is only available in a Server Action or Route Handler
     cookieStore.set("cartId", String(cart.insertId))
 
     revalidatePath("/")

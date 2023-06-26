@@ -4,7 +4,15 @@ import { db } from "@/db"
 import { products } from "@/db/schema"
 import { and, eq } from "drizzle-orm"
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { UpdateProductForm } from "@/components/forms/update-product-form"
+import { ProductNavigator } from "@/components/product-navigator"
 
 export const metadata: Metadata = {
   title: "Manage Product",
@@ -32,5 +40,20 @@ export default async function UpdateProductPage({
     notFound()
   }
 
-  return <UpdateProductForm product={product} />
+  return (
+    <Card>
+      <CardHeader className="space-y-1">
+        <div className="flex items-center justify-between space-x-2">
+          <CardTitle className="text-2xl">Update product</CardTitle>
+          <ProductNavigator product={product} />
+        </div>
+        <CardDescription>
+          Update your product information, or delete it
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <UpdateProductForm product={product} />
+      </CardContent>
+    </Card>
+  )
 }
