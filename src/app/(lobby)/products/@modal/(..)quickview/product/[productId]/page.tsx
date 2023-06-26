@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { DialogShell } from "@/components/dialog-shell"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Product",
   description: "Product description",
 }

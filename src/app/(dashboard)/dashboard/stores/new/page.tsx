@@ -4,8 +4,10 @@ import { currentUser } from "@clerk/nextjs"
 
 import { AddStoreForm } from "@/components/forms/add-store-form"
 import { Header } from "@/components/header"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "New Store",
   description: "Add a new store",
 }

@@ -1,6 +1,7 @@
 import "@/styles/globals.css"
 
 import type { Metadata } from "next"
+import { env } from "@/env.mjs"
 import { ClerkProvider } from "@clerk/nextjs"
 
 import { siteConfig } from "@/config/site"
@@ -11,6 +12,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,

@@ -16,8 +16,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { LoadingButton } from "@/components/ui/loading-button"
 import { Textarea } from "@/components/ui/textarea"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Manage Store",
   description: "Manage your store",
 }

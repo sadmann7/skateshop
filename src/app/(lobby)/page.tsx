@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { desc } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
@@ -21,7 +22,7 @@ import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
 
-export const runtime = "edge"
+export const runtime = env.NEXTJS_RUNTIME
 
 export default async function IndexPage() {
   const allProducts = await db
@@ -29,6 +30,7 @@ export default async function IndexPage() {
     .from(products)
     .limit(8)
     .orderBy(desc(products.createdAt))
+
 
   const allStores = await db
     .select()

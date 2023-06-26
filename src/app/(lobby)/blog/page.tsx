@@ -2,8 +2,10 @@ import { type Metadata } from "next"
 
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Blog",
   description: "Explore the latest news and updates from the community",
 }

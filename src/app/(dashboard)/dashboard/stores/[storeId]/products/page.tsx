@@ -5,8 +5,10 @@ import { products, stores, type Product } from "@/db/schema"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { ProductsTable } from "@/components/products-table"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Products",
   description: "Manage your products",
 }

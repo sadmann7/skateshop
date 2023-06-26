@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/card"
 import { ResetPasswordStep2Form } from "@/components/forms/reset-password-form-step2"
 import { Shell } from "@/components/shell"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Reset Password",
   description: "Enter your email to reset your password",
 }

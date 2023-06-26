@@ -6,8 +6,9 @@ import { Products } from "@/components/products"
 import { Shell } from "@/components/shell"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
+import { env } from "@/env.mjs"
 
-export const runtime = "edge"
+export const runtime = env.NEXTJS_RUNTIME
 
 interface SubcategoryPageProps {
   params: {

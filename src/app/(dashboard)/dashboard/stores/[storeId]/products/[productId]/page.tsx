@@ -13,8 +13,10 @@ import {
 } from "@/components/ui/card"
 import { UpdateProductForm } from "@/components/forms/update-product-form"
 import { ProductNavigator } from "@/components/product-navigator"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Manage Product",
   description: "Manage your product",
 }

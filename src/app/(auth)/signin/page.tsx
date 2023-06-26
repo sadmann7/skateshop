@@ -12,8 +12,10 @@ import {
 import { OAuthSignIn } from "@/components/auth/oauth-signin"
 import { SignInForm } from "@/components/forms/signin-form"
 import { Shell } from "@/components/shell"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Sign In",
   description: "Sign in to your account",
 }

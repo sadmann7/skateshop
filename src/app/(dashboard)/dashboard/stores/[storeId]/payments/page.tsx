@@ -6,8 +6,10 @@ import { eq } from "drizzle-orm"
 import { Activity, CreditCard, DollarSign, Users } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Payments",
   description: "Manage your payments",
 }

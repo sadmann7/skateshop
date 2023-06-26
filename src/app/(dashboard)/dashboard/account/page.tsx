@@ -3,8 +3,10 @@ import { UserProfile } from "@clerk/nextjs"
 
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Account",
   description: "Manage your account settings",
 }

@@ -10,8 +10,10 @@ import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
 import { getCartItemsAction } from "@/app/_actions/cart"
 import { getProductsAction } from "@/app/_actions/product"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Build a Board",
   description: "Select the components for your board",
 }

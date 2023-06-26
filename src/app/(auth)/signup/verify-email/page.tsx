@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/card"
 import { VerifyEmailForm } from "@/components/forms/verify-email-form"
 import { Shell } from "@/components/shell"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "Verify Email",
   description: "Verify your email address to continue with your sign up",
 }

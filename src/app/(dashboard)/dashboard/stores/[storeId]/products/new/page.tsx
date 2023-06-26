@@ -10,8 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { AddProductForm } from "@/components/forms/add-product-form"
+import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.METADATA_BASE),
   title: "New Product",
   description: "Add a new product",
 }

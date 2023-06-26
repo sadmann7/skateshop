@@ -1,9 +1,10 @@
 import type { ServerRuntime } from "next"
+import { env } from "@/env.mjs"
 import { ImageResponse } from "@vercel/og"
 
 import { ogImageSchema } from "@/lib/validations/og"
 
-export const runtime: ServerRuntime = "edge"
+export const runtime: ServerRuntime = env.NEXTJS_RUNTIME as ServerRuntime
 
 export function GET(req: Request) {
   try {
