@@ -101,6 +101,7 @@ export function ProductCard({
                       productId: product.id,
                       quantity: 1,
                     })
+                    toast.success("Added to cart.")
                   } catch (error) {
                     error instanceof Error
                       ? toast.error(error.message)

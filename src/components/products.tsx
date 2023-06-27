@@ -84,7 +84,7 @@ export function Products({
   )
 
   // Price filter
-  const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 100])
+  const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 500])
   const debouncedPrice = useDebounce(priceRange, 500)
 
   React.useEffect(() => {
@@ -175,8 +175,8 @@ export function Products({
                 <Slider
                   variant="range"
                   thickness="thin"
-                  defaultValue={[0, 100]}
-                  max={100}
+                  defaultValue={[0, 500]}
+                  max={500}
                   step={1}
                   value={priceRange}
                   onValueChange={(value: typeof priceRange) => {
@@ -201,7 +201,7 @@ export function Products({
                     type="number"
                     inputMode="numeric"
                     min={priceRange[0]}
-                    max={100}
+                    max={500}
                     className="h-9"
                     value={priceRange[1]}
                     onChange={(e) => {
