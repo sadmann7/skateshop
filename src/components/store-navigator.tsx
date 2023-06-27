@@ -2,21 +2,21 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { type Product } from "@/db/schema"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import {
-  getNextProductIdAction,
-  getPreviousProductIdAction,
-} from "@/app/_actions/product"
+  getNextStoreIdAction,
+  getPreviousStoreIdAction,
+} from "@/app/_actions/store"
 
-interface ProductNavigatorProps {
-  product: Product
+interface StoreNavigatorProps {
+  storeId: number
+  userId: string
 }
 
-export function ProductNavigator({ product }: ProductNavigatorProps) {
+export function StoreNavigator({ storeId, userId }: StoreNavigatorProps) {
   const router = useRouter()
   const [isPending, startTransition] = React.useTransition()
 
@@ -28,13 +28,11 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
         onClick={() => {
           startTransition(async () => {
             try {
-              const prevProductId = await getPreviousProductIdAction({
-                id: product.id,
-                storeId: product.storeId,
+              const prevStoreId = await getPreviousStoreIdAction({
+                id: storeId,
+                userId,
               })
-              router.push(
-                `/dashboard/stores/${product.storeId}/products/${prevProductId}`
-              )
+              router.push(`/dashboard/stores/${prevStoreId}`)
             } catch (error) {
               error instanceof Error
                 ? toast.error(error.message)
@@ -45,7 +43,7 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
         disabled={isPending}
       >
         <Icons.chevronLeft className="h-4 w-4" aria-hidden="true" />
-        <span className="sr-only">Previous product</span>
+        <span className="sr-only">Previous store</span>
       </Button>
       <Button
         variant="ghost"
@@ -53,13 +51,11 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
         onClick={() => {
           startTransition(async () => {
             try {
-              const nextProductId = await getNextProductIdAction({
-                id: product.id,
-                storeId: product.storeId,
+              const nextStoreId = await getNextStoreIdAction({
+                id: storeId,
+                userId,
               })
-              router.push(
-                `/dashboard/stores/${product.storeId}/products/${nextProductId}`
-              )
+              router.push(`/dashboard/stores/${nextStoreId}`)
             } catch (error) {
               error instanceof Error
                 ? toast.error(error.message)
@@ -70,7 +66,7 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
         disabled={isPending}
       >
         <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
-        <span className="sr-only">Next product</span>
+        <span className="sr-only">Next store</span>
       </Button>
     </div>
   )

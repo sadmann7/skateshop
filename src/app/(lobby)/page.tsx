@@ -163,9 +163,7 @@ export default async function IndexPage() {
             >
               Join our newsletter
             </div>
-            <span className="sr-only">
-              Join our newsletter to get the latest news and updates
-            </span>
+            <span className="sr-only">Join our newsletter</span>
           </a>
         </Card>
         <div className="flex flex-wrap items-center justify-center gap-4">
