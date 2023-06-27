@@ -21,7 +21,7 @@ export function StoreNavigator({ storeId, userId }: StoreNavigatorProps) {
   const [isPending, startTransition] = React.useTransition()
 
   return (
-    <div className="flex space-x-0.5">
+    <div className="flex space-x-0.5 pr-1">
       <Button
         variant="ghost"
         size="icon"

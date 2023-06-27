@@ -10,7 +10,7 @@ import { eq, inArray } from "drizzle-orm"
 export async function getCartAction(): Promise<CartLineItem[]> {
   const cartId = cookies().get("cartId")?.value
 
-  if (!cartId) return []
+  if (!cartId || isNaN(Number(cartId))) return []
 
   const cart = await db.query.carts.findFirst({
     where: eq(carts.id, Number(cartId)),
@@ -52,11 +52,11 @@ export async function getCartAction(): Promise<CartLineItem[]> {
   return allCartLineItems
 }
 
-export async function getCartItemsAction(input: { cartId?: string }) {
-  if (!input.cartId) return []
+export async function getCartItemsAction(input: { cartId?: number }) {
+  if (!input.cartId || isNaN(input.cartId)) return []
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, Number(input.cartId)),
+    where: eq(carts.id, input.cartId),
   })
 
   return cart?.items
@@ -90,15 +90,20 @@ export async function addToCartAction(input: CartItem) {
     (item) => item.productId === input.productId
   )
 
-  if (cartItem && input.quantity > 0) {
-    cartItem.quantity = input.quantity
+  // If this is a new product, create a new cart item. Otherwise, update the quantity of the existing cart item
+  if (input.quantity > 0) {
+    if (cartItem) {
+      if (input.quantity === 1) {
+        cartItem.quantity += 1
+      } else {
+        cartItem.quantity = input.quantity
+      }
+    } else {
+      cart.items?.push(input)
+    }
   }
-
-  if (!cartItem && input.quantity > 0) {
-    cart.items?.push(input)
-  }
-
-  if (cartItem && input.quantity <= 0) {
+  // If the quantity is 0, remove the item from the cart
+  else if (cartItem) {
     cart.items =
       cart.items?.filter((item) => item.productId !== input.productId) ?? []
   }

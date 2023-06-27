@@ -249,7 +249,7 @@ export function Products({
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         onClick={() => {
                           startTransition(() => {
                             router.push(
@@ -269,7 +269,7 @@ export function Products({
                       </Button>
                       <Button
                         variant="ghost"
-                        size="sm"
+                        size="icon"
                         onClick={() => {
                           startTransition(() => {
                             router.push(
