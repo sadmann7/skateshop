@@ -14,6 +14,7 @@ import {
   Table as ShadcnTable,
   type ColumnDef,
   type ColumnSort,
+  type PaginationState,
 } from "unstyled-table"
 
 import { cn, formatDate, formatPrice } from "@/lib/utils"
@@ -272,6 +273,12 @@ export function ProductsTable({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
+  // Handle server-side pagination
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageIndex: Number(page) - 1,
+    pageSize: Number(per_page),
+  })
+
   return (
     <div className="w-full overflow-hidden">
       <div className={cn("grid gap-2 px-1 pb-1")}>
@@ -342,11 +349,12 @@ export function ProductsTable({
         // Rows per page
         pageCount={pageCount ?? 0}
         // States controlled by the table
-        state={{ sorting }}
-        setSorting={setSorting}
-        // Enable controlled states
+        state={{ sorting, pagination }}
+        // Manually controlled states
         manualPagination
         manualSorting
+        setSorting={setSorting}
+        setPagination={setPagination}
         // Table renderers
         renders={{
           table: ({ children, tableInstance }) => {
@@ -414,6 +422,7 @@ export function ProductsTable({
                           isPending
                         }
                       >
+                        <Icons.trash className="mr-2 h-4 w-4" aria-hidden />
                         Delete (
                         {tableInstance.getSelectedRowModel().rows.length})
                       </Button>
@@ -508,7 +517,11 @@ export function ProductsTable({
                     </DropdownMenu>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="ml-auto h-8">
+                        <Button
+                          aria-label="Control view"
+                          variant="outline"
+                          className="ml-auto h-8"
+                        >
                           <Icons.horizontalSliders className="mr-2 h-4 w-4" />
                           View
                         </Button>
@@ -549,50 +562,8 @@ export function ProductsTable({
           },
           header: ({ children }) => <TableHeader>{children}</TableHeader>,
           headerRow: ({ children }) => <TableRow>{children}</TableRow>,
-          headerCell: ({ children, header }) => (
-            <TableHead
-              className="whitespace-nowrap"
-              // Handle server-side column sorting
-              // onClick={() => {
-              //   const isSortable = header.column.getCanSort()
-              //   const nextSortDirection = header.column.getNextSortingOrder()
-
-              //   console.log({
-              //     isSortable,
-              //     nextSortDirection,
-              //   })
-
-              //   nextSortDirection
-              //     ? setSorting([
-              //         {
-              //           id: header.column.id,
-              //           desc: nextSortDirection === "desc" ? true : false,
-              //         },
-              //       ])
-              //     : setSorting([
-              //         {
-              //           id: "",
-              //           desc: false,
-              //         },
-              //       ])
-
-              //   // Update the URL with the new sort order if the column is sortable
-              //   isSortable &&
-              //     startTransition(() => {
-              //       router.push(
-              //         `${pathname}?${createQueryString({
-              //           page,
-              //           sort:
-              //             header.column.id && nextSortDirection
-              //               ? `${header.column.id}.${nextSortDirection}`
-              //               : null,
-              //         })}`
-              //       )
-              //     })
-              // }}
-            >
-              {children}
-            </TableHead>
+          headerCell: ({ children }) => (
+            <TableHead className="whitespace-nowrap">{children}</TableHead>
           ),
           body: ({ children }) => (
             <TableBody>

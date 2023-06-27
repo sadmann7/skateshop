@@ -54,6 +54,7 @@ export function OAuthSignIn() {
             variant="outline"
             className="w-full bg-background sm:w-auto"
             onClick={() => void oauthSignIn(provider.strategy)}
+            disabled={isLoading !== null}
           >
             {isLoading === provider.strategy ? (
               <Icons.spinner
