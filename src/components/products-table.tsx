@@ -258,6 +258,20 @@ export function ProductsTable({
     },
   ])
 
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          page,
+          sort: sorting[0]?.id
+            ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
+            : null,
+        })}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sorting])
+
   return (
     <div className="w-full overflow-hidden">
       <div className={cn("grid gap-2 px-1 pb-1")}>
@@ -329,6 +343,7 @@ export function ProductsTable({
         pageCount={pageCount ?? 0}
         // States controlled by the table
         state={{ sorting }}
+        setSorting={setSorting}
         // Enable controlled states
         manualPagination
         manualSorting
@@ -538,43 +553,43 @@ export function ProductsTable({
             <TableHead
               className="whitespace-nowrap"
               // Handle server-side column sorting
-              onClick={() => {
-                const isSortable = header.column.getCanSort()
-                const nextSortDirection = header.column.getNextSortingOrder()
+              // onClick={() => {
+              //   const isSortable = header.column.getCanSort()
+              //   const nextSortDirection = header.column.getNextSortingOrder()
 
-                console.log({
-                  isSortable,
-                  nextSortDirection,
-                })
+              //   console.log({
+              //     isSortable,
+              //     nextSortDirection,
+              //   })
 
-                nextSortDirection
-                  ? setSorting([
-                      {
-                        id: header.column.id,
-                        desc: nextSortDirection === "desc" ? true : false,
-                      },
-                    ])
-                  : setSorting([
-                      {
-                        id: "",
-                        desc: false,
-                      },
-                    ])
+              //   nextSortDirection
+              //     ? setSorting([
+              //         {
+              //           id: header.column.id,
+              //           desc: nextSortDirection === "desc" ? true : false,
+              //         },
+              //       ])
+              //     : setSorting([
+              //         {
+              //           id: "",
+              //           desc: false,
+              //         },
+              //       ])
 
-                // Update the URL with the new sort order if the column is sortable
-                isSortable &&
-                  startTransition(() => {
-                    router.push(
-                      `${pathname}?${createQueryString({
-                        page,
-                        sort:
-                          header.column.id && nextSortDirection
-                            ? `${header.column.id}.${nextSortDirection}`
-                            : null,
-                      })}`
-                    )
-                  })
-              }}
+              //   // Update the URL with the new sort order if the column is sortable
+              //   isSortable &&
+              //     startTransition(() => {
+              //       router.push(
+              //         `${pathname}?${createQueryString({
+              //           page,
+              //           sort:
+              //             header.column.id && nextSortDirection
+              //               ? `${header.column.id}.${nextSortDirection}`
+              //               : null,
+              //         })}`
+              //       )
+              //     })
+              // }}
             >
               {children}
             </TableHead>

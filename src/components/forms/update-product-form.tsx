@@ -116,10 +116,10 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           ...data,
           storeId: product.storeId,
           id: product.id,
-          images: images,
+          images: images ?? product.images,
         })
 
-        toast.success("Product updated successfully")
+        toast.success("Product updated successfully.")
         setFiles(null)
       } catch (error) {
         error instanceof Error
