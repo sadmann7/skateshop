@@ -128,10 +128,6 @@ export function ProductsTable({
         cell: ({ cell }) => formatPrice(cell.getValue() as number),
       },
       {
-        accessorKey: "quantity",
-        header: "Quantity",
-      },
-      {
         accessorKey: "inventory",
         header: "Inventory",
       },
@@ -255,7 +251,7 @@ export function ProductsTable({
   const [isDateChanged, setIsDateChanged] = React.useState(false)
 
   // Handle server-side column sorting
-  const [sorting] = React.useState<ColumnSort[]>([
+  const [sorting, setSorting] = React.useState<ColumnSort[]>([
     {
       id: column ?? "createdAt",
       desc: order === "desc" ? true : false,
@@ -335,6 +331,7 @@ export function ProductsTable({
         state={{ sorting }}
         // Enable controlled states
         manualPagination
+        manualSorting
         // Table renderers
         renders={{
           table: ({ children, tableInstance }) => {
@@ -545,6 +542,25 @@ export function ProductsTable({
                 const isSortable = header.column.getCanSort()
                 const nextSortDirection = header.column.getNextSortingOrder()
 
+                console.log({
+                  isSortable,
+                  nextSortDirection,
+                })
+
+                nextSortDirection
+                  ? setSorting([
+                      {
+                        id: header.column.id,
+                        desc: nextSortDirection === "desc" ? true : false,
+                      },
+                    ])
+                  : setSorting([
+                      {
+                        id: "",
+                        desc: false,
+                      },
+                    ])
+
                 // Update the URL with the new sort order if the column is sortable
                 isSortable &&
                   startTransition(() => {
@@ -553,7 +569,7 @@ export function ProductsTable({
                         page,
                         sort:
                           header.column.id && nextSortDirection
-                            ? `${header.column.id}-${nextSortDirection}`
+                            ? `${header.column.id}.${nextSortDirection}`
                             : null,
                       })}`
                     )

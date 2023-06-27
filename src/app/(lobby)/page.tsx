@@ -21,7 +21,8 @@ import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
 
-export const runtime = "edge"
+// Running out of edge function execution units on vercel free plan
+// export const runtime = "edge"
 
 export default async function IndexPage() {
   const allProducts = await db
