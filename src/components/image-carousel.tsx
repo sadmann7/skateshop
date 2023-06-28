@@ -13,7 +13,7 @@ interface ImageCarouselProps
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  images: { name: string; url: string }[]
+  images: { name: string; url: string }[] | null
 }
 
 export function ImageCarousel({
@@ -24,6 +24,8 @@ export function ImageCarousel({
   const [currentImage, setCurrentImage] = React.useState(0)
 
   function getNextImage() {
+    if (images === null) return null
+
     if (currentImage === images.length - 1) {
       setCurrentImage(0)
     } else {
@@ -32,6 +34,8 @@ export function ImageCarousel({
   }
 
   function getPreviousImage() {
+    if (images === null) return null
+
     if (currentImage === 0) {
       setCurrentImage(images.length - 1)
     } else {
@@ -45,58 +49,72 @@ export function ImageCarousel({
         <div className="relative h-full w-full">
           <AspectRatio ratio={16 / 9}>
             <div className="absolute inset-0 z-10 bg-black/40" />
-            <Image
-              src={
-                images[currentImage]?.url ?? "/images/product-placeholder.webp"
-              }
-              alt={images[currentImage]?.name ?? "Carousel image"}
-              fill
-              className="object-cover"
-            />
+            {images ? (
+              <Image
+                src={
+                  images[currentImage]?.url ??
+                  "/images/product-placeholder.webp"
+                }
+                alt={images[currentImage]?.name ?? "Carousel image"}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full flex-1 items-center justify-center bg-secondary">
+                <Icons.placeholder
+                  className="h-9 w-9 text-muted-foreground"
+                  aria-hidden="true"
+                />
+              </div>
+            )}
           </AspectRatio>
         </div>
-        <div className="absolute left-0 top-0 z-20 h-full w-full px-4">
-          <div className="flex h-full w-full items-center justify-between">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-zinc-100 transition-transform hover:scale-110 hover:bg-transparent active:scale-95"
-              onClick={getPreviousImage}
-            >
-              <Icons.chevronLeft
-                className="h-10 w-10 scale-125"
-                aria-hidden="true"
-              />
-              <span className="sr-only">Previous</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-zinc-100 transition-transform hover:scale-110 hover:bg-transparent active:scale-95"
-              onClick={getNextImage}
-            >
-              <Icons.chevronRight
-                className="h-10 w-10 scale-125"
-                aria-hidden="true"
-              />
-              <span className="sr-only">Next</span>
-            </Button>
+        {images ? (
+          <div className="absolute left-0 top-0 z-20 h-full w-full px-4">
+            <div className="flex h-full w-full items-center justify-between">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-zinc-100 transition-transform hover:scale-110 hover:bg-transparent active:scale-95"
+                onClick={getPreviousImage}
+              >
+                <Icons.chevronLeft
+                  className="h-10 w-10 scale-125"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Previous</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-zinc-100 transition-transform hover:scale-110 hover:bg-transparent active:scale-95"
+                onClick={getNextImage}
+              >
+                <Icons.chevronRight
+                  className="h-10 w-10 scale-125"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Next</span>
+              </Button>
+            </div>
           </div>
+        ) : null}
+      </div>
+      {images ? (
+        <div className="flex items-center space-x-2.5">
+          {images.map((image, index) => (
+            <PaginationCard
+              key={image.name}
+              index={index}
+              image={image}
+              currentImage={currentImage}
+              setCurrentImage={setCurrentImage}
+              getNextImage={getNextImage}
+              getPreviousImage={getPreviousImage}
+            />
+          ))}
         </div>
-      </div>
-      <div className="flex items-center space-x-2.5">
-        {images.map((image, index) => (
-          <PaginationCard
-            key={image.name}
-            index={index}
-            image={image}
-            currentImage={currentImage}
-            setCurrentImage={setCurrentImage}
-            getNextImage={getNextImage}
-            getPreviousImage={getPreviousImage}
-          />
-        ))}
-      </div>
+      ) : null}
     </div>
   )
 }

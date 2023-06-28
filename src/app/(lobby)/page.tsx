@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { JoinNewsletterForm } from "@/components/forms/join-newsletter-form"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
@@ -149,22 +150,7 @@ export default async function IndexPage() {
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>
-          <a
-            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <div
-              className={cn(
-                buttonVariants({
-                  size: "sm",
-                })
-              )}
-            >
-              Join our newsletter
-            </div>
-            <span className="sr-only">Join our newsletter</span>
-          </a>
+          <JoinNewsletterForm />
         </Card>
         <div className="flex flex-wrap items-center justify-center gap-4">
           {productCategories[
