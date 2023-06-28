@@ -1,8 +1,8 @@
+import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { newsletterSubscriptions } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
-import { eq } from "drizzle-orm"
 import { Resend } from "resend"
 
 import { checkEmailSchema } from "@/lib/validations/auth"
@@ -16,17 +16,9 @@ export async function POST(req: Request) {
   try {
     const user = await currentUser()
 
-    const existingEmail = await db.query.newsletterSubscriptions.findFirst({
-      where: eq(newsletterSubscriptions.email, input.email),
-    })
-
-    if (existingEmail) {
-      throw new Error("You are already subscribed to the newsletter.")
-    }
-
     // Using the resend provider to send the email
     // We can also use nodemailer, sendgrid, postmark, aws ses, mailersend, or plunk
-    await resend.emails.send({
+    const data = await resend.emails.send({
       from: env.EMAIL_FROM_ADDRESS,
       to: input.email,
       subject: "Welcome to the newsletter!",
@@ -42,14 +34,8 @@ export async function POST(req: Request) {
       userId: user?.id,
     })
 
-    return new Response("You have successfully joined our newsletter.", {
-      status: 200,
-    })
+    return NextResponse.json({ data })
   } catch (error) {
-    error instanceof Error ? console.error(error.message) : console.error(error)
-
-    return new Response("Something went wrong, please try again.", {
-      status: 400,
-    })
+    return NextResponse.json({ error }, { status: 400 })
   }
 }

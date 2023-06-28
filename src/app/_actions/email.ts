@@ -12,11 +12,22 @@ import { type z } from "zod"
 import { type checkEmailSchema } from "@/lib/validations/auth"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
-const resend = new Resend(env.RESEND_API_KEY)
+export async function checkExistingEmailAction(
+  input: z.infer<typeof checkEmailSchema>
+) {
+  const existingEmail = await db.query.newsletterSubscriptions.findFirst({
+    where: eq(newsletterSubscriptions.email, input.email),
+  })
+
+  if (existingEmail) {
+    throw new Error("You are already subscribed to the newsletter.")
+  }
+}
 
 export async function joinNewsletterAction(
   input: z.infer<typeof checkEmailSchema>
 ) {
+  const resend = new Resend(env.RESEND_API_KEY)
   const user = await currentUser()
 
   const existingEmail = await db.query.newsletterSubscriptions.findFirst({
