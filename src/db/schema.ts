@@ -70,3 +70,12 @@ export const carts = mysqlTable("carts", {
 })
 
 export type Cart = InferModel<typeof carts>
+
+export const newsletterSubscriptions = mysqlTable("newsletter_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: varchar("userId", { length: 191 }),
+  email: varchar("email", { length: 191 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow(),
+})
+
+export type NewsletterSubscription = InferModel<typeof newsletterSubscriptions>

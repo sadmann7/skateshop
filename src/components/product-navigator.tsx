@@ -24,8 +24,7 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
     <div className="flex space-x-0.5">
       <Button
         variant="ghost"
-        size="sm"
-        className="w-9 px-0"
+        size="icon"
         onClick={() => {
           startTransition(async () => {
             try {
@@ -39,7 +38,7 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
             } catch (error) {
               error instanceof Error
                 ? toast.error(error.message)
-                : toast.error("Something went wrong")
+                : toast.error("Something went wrong, please try again.")
             }
           })
         }}
@@ -50,8 +49,7 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
       </Button>
       <Button
         variant="ghost"
-        size="sm"
-        className="w-9 px-0"
+        size="icon"
         onClick={() => {
           startTransition(async () => {
             try {
@@ -65,7 +63,7 @@ export function ProductNavigator({ product }: ProductNavigatorProps) {
             } catch (error) {
               error instanceof Error
                 ? toast.error(error.message)
-                : toast.error("Something went wrong")
+                : toast.error("Something went wrong, please try again.")
             }
           })
         }}

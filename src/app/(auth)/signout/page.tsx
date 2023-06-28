@@ -3,6 +3,7 @@ import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 import { env } from "@/env.mjs"
 
+// Running out of edge function execution units on vercel free plan
 export const runtime = env.NEXTJS_RUNTIME
 
 export default function SignOutPage() {

@@ -94,20 +94,21 @@ export function ProductCard({
               aria-label="Add to cart"
               size="sm"
               className="h-8 w-full rounded-sm"
-              // onClick={() => {
-              //   startTransition(async () => {
-              //     try {
-              //       await addToCartAction({
-              //         productId: product.id,
-              //         quantity: 1,
-              //       })
-              //     } catch (error) {
-              //       error instanceof Error
-              //         ? toast.error(error.message)
-              //         : toast.error("Something went wrong, please try again.")
-              //     }
-              //   })
-              // }}
+              onClick={() => {
+                startTransition(async () => {
+                  try {
+                    await addToCartAction({
+                      productId: product.id,
+                      quantity: 1,
+                    })
+                    toast.success("Added to cart.")
+                  } catch (error) {
+                    error instanceof Error
+                      ? toast.error(error.message)
+                      : toast.error("Something went wrong, please try again.")
+                  }
+                })
+              }}
               disabled={isPending}
             >
               {isPending && (

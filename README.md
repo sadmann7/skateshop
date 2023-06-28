@@ -12,9 +12,10 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 ## Tech Stack
 
 - [Next.js](https://nextjs.org)
+- [Tailwind CSS](https://tailwindcss.com)
 - [Clerk Auth](https://clerk.dev)
 - [Drizzle ORM](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
+- [React Email](https://react.email)
 - [uploadthing](https://uploadthing.com)
 - [Stripe](https://stripe.com)
 
@@ -22,6 +23,7 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 
 - Authentication with Clerk
 - File uploads with uploadthing
+- Newsletter subscription with React Email and Resend
 - Subscription, payment, and billing with Stripe
 - Storefront with products and categories
 - Seller and customer workflows

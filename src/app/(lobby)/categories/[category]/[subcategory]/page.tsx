@@ -8,7 +8,9 @@ import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
 import { env } from "@/env.mjs"
 
+// Running out of edge function execution units on vercel free plan
 export const runtime = env.NEXTJS_RUNTIME
+
 
 interface SubcategoryPageProps {
   params: {

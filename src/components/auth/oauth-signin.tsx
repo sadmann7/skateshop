@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs"
-import type { OAuthStrategy } from "@clerk/types"
+import { type OAuthStrategy } from "@clerk/types"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
@@ -11,7 +11,7 @@ import { Icons } from "@/components/icons"
 const oauthProviders = [
   { name: "Google", strategy: "oauth_google", icon: "google" },
   { name: "Facebook", strategy: "oauth_facebook", icon: "facebook" },
-  { name: "Apple", strategy: "oauth_apple", icon: "apple" },
+  { name: "Discord", strategy: "oauth_discord", icon: "discord" },
 ] satisfies {
   name: string
   icon: keyof typeof Icons
@@ -54,9 +54,13 @@ export function OAuthSignIn() {
             variant="outline"
             className="w-full bg-background sm:w-auto"
             onClick={() => void oauthSignIn(provider.strategy)}
+            disabled={isLoading !== null}
           >
             {isLoading === provider.strategy ? (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
             ) : (
               <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
             )}

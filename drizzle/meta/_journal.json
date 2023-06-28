@@ -43,6 +43,27 @@
       "when": 1687498151885,
       "tag": "0005_powerful_golden_guardian",
       "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1687915971685,
+      "tag": "0006_familiar_payback",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1687918985272,
+      "tag": "0007_condemned_morgan_stark",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1687919020550,
+      "tag": "0008_bouncy_korg",
+      "breakpoints": true
     }
   ]
 }

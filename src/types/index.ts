@@ -25,7 +25,7 @@ export type MainNavItem = NavItemWithOptionalChildren
 
 export type SidebarNavItem = NavItemWithChildren
 
-export type UserRole = "user" | "admin"
+export type UserRole = "user" | "admin" | "superadmin"
 
 export type Option = {
   label: string

@@ -4,7 +4,10 @@ import { db } from "@/db"
 import { products } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Header } from "@/components/header"
+import { Icons } from "@/components/icons"
+import { ImageCarousel } from "@/components/image-carousel"
 import { Shell } from "@/components/shell"
 import { env } from "@/env.mjs"
 
@@ -33,7 +36,10 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
 
   return (
     <Shell>
-      <Header title={product.name} description={product.description} />
+      <div className="flex flex-col gap-4 md:flex-row">
+        <ImageCarousel className="flex-1" images={product.images} />
+        <Header title={product.name} description={product.description} />
+      </div>
     </Shell>
   )
 }

@@ -19,7 +19,9 @@ import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 import { env } from "@/env.mjs"
 
+// Running out of edge function execution units on vercel free plan
 export const runtime = env.NEXTJS_RUNTIME
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.METADATA_BASE),
