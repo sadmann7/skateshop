@@ -31,8 +31,10 @@ export async function joinNewsletterAction(
   //   userId: user?.id,
   // })
 
-  await resend.sendEmail({
-    from: env.RESEND_API_KEY,
+  await resend.emails.send({
+    // For testing purposes, using the email provided by resend
+    // from: "onboarding@resend.dev",
+    from: env.EMAIL_FROM,
     to: input.email,
     subject: "Welcome to the newsletter!",
     react: NewsletterWelcomeEmail({
