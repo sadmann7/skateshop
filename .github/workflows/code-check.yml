@@ -5,9 +5,12 @@ on:
     branches: ["*"]
 
 env:
+  NEXT_PUBLIC_APP_URL: "fake"
   DATABASE_URL: "fake"
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
   CLERK_SECRET_KEY: "fake"
+  RESEND_API_KEY: "fake"
+  EMAIL_FROM_ADDRESS: "fake"
   UPLOADTHING_SECRET: "fake"
   UPLOADTHING_APP_ID: "fake"
   STRIPE_API_KEY: "fake"

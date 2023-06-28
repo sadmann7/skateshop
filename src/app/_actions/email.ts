@@ -11,34 +11,36 @@ import { type z } from "zod"
 import { type checkEmailSchema } from "@/lib/validations/auth"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(env.RESEND_API_KEY)
 
 export async function joinNewsletterAction(
-  input: z.infer<typeof checkEmailSchema> & { name?: string }
+  input: z.infer<typeof checkEmailSchema> & { firstName?: string }
 ) {
-  // const user = await currentUser()
+  const user = await currentUser()
 
-  // const existingEmail = await db.query.newsletterSubscriptions.findFirst({
-  //   where: eq(newsletterSubscriptions.email, input.email),
-  // })
+  const existingEmail = await db.query.newsletterSubscriptions.findFirst({
+    where: eq(newsletterSubscriptions.email, input.email),
+  })
 
-  // if (existingEmail) {
-  //   throw new Error("You are already subscribed to the newsletter.")
-  // }
+  if (existingEmail) {
+    throw new Error("You are already subscribed to the newsletter.")
+  }
 
-  // await db.insert(newsletterSubscriptions).values({
-  //   email: input.email,
-  //   userId: user?.id,
-  // })
-
+  // Using the resend provider to send the email
+  // We can also use nodemailer, sendgrid, postmark, aws ses, mailersend, or plunk
   await resend.emails.send({
-    // For testing purposes, using the email provided by resend
-    // from: "onboarding@resend.dev",
-    from: env.EMAIL_FROM,
+    from: env.EMAIL_FROM_ADDRESS,
     to: input.email,
     subject: "Welcome to the newsletter!",
     react: NewsletterWelcomeEmail({
-      name: input.name,
+      firstName: input.firstName,
+      fromEmail: env.EMAIL_FROM_ADDRESS,
     }),
+  })
+
+  // Save the email and user id to the database
+  await db.insert(newsletterSubscriptions).values({
+    email: input.email,
+    userId: user?.id,
   })
 }

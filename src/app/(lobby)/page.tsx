@@ -1,8 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/db"
-import { products, stores } from "@/db/schema"
-import { desc } from "drizzle-orm"
+import { newsletterSubscriptions, products, stores } from "@/db/schema"
+import dayjs from "dayjs"
+import { desc, gt, sql } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -37,6 +38,13 @@ export default async function IndexPage() {
     .from(stores)
     .limit(4)
     .orderBy(desc(stores.createdAt))
+
+  const dailyNewsletterCount = await db
+    .select({
+      count: sql<number>`count(${newsletterSubscriptions.id})`,
+    })
+    .from(newsletterSubscriptions)
+  gt(newsletterSubscriptions.createdAt, dayjs().subtract(1, "day").toDate())
 
   return (
     <div>
@@ -147,6 +155,10 @@ export default async function IndexPage() {
           </div>
         </div>
         <Card className="mt-4 grid place-items-center gap-4 px-6 py-20 text-center">
+          <p className="text-sm text-muted-foreground">
+            {dailyNewsletterCount[0]?.count ?? 0} newsletters sent out of 100
+            daily limit of the resend free plan
+          </p>
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>

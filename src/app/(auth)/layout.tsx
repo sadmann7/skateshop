@@ -14,7 +14,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
     <div className="grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2">
       <AspectRatio ratio={16 / 9}>
         <Image
-          src="https://source.unsplash.com/OS2WODdxy1A"
+          src="/images/auth-layout.webp"
           alt="A skateboarder doing a high drop"
           priority
           fill
@@ -28,6 +28,22 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <Icons.logo className="mr-2 h-6 w-6" aria-hidden="true" />
           <span>{siteConfig.name}</span>
         </Link>
+        <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-base">
+          Photo by{" "}
+          <a
+            href="https://unsplash.com/ja/@pixelperfektion?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+            className="hover:underline"
+          >
+            pixelperfektion
+          </a>
+          {" on "}
+          <a
+            href="https://unsplash.com/photos/OS2WODdxy1A?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"
+            className="hover:underline"
+          >
+            Unsplash
+          </a>
+        </div>
       </AspectRatio>
       <main className="container absolute top-1/2 col-span-1 flex -translate-y-1/2 items-center md:static md:top-0 md:col-span-2 md:flex md:translate-y-0 lg:col-span-1">
         {children}

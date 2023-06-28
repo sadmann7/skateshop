@@ -96,7 +96,7 @@ export const Icons = {
   alarm: AlarmClock,
   calendar: CalendarDays,
   user: User,
-  dashboard: FileTerminal,
+  terminal: FileTerminal,
   settings: Settings,
   logout: LogOut,
   volumne: Volume2,
