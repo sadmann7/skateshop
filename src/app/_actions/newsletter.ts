@@ -24,6 +24,8 @@ export async function checkExistingEmailAction(
   }
 }
 
+// Resend doesn't work in the server action in production
+// So using route handler instead
 export async function joinNewsletterAction(
   input: z.infer<typeof checkEmailSchema>
 ) {

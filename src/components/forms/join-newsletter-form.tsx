@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -18,14 +19,12 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import {
-  checkExistingEmailAction,
-  joinNewsletterAction,
-} from "@/app/_actions/email"
+import { checkExistingEmailAction } from "@/app/_actions/newsletter"
 
 type Inputs = z.infer<typeof checkEmailSchema>
 
 export function JoinNewsletterForm() {
+  const router = useRouter()
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
@@ -41,21 +40,20 @@ export function JoinNewsletterForm() {
 
     startTransition(async () => {
       try {
-        // resend doesn't work in server action in production
-        await joinNewsletterAction({
-          email: data.email,
+        await checkExistingEmailAction(data)
+
+        const response = await fetch("/api/newsletter", {
+          method: "POST",
+          body: JSON.stringify(data),
         })
+
+        if (!response.ok) {
+          toast.error("Something went wrong, please try again.")
+        }
+
         form.reset()
         toast.success("You have successfully joined our newsletter.")
-
-        // await checkExistingEmailAction(data)
-
-        // const response = await fetch("/api/newsletter", {
-        //   method: "POST",
-        //   body: JSON.stringify(data),
-        // })
-        // response.status === 200 &&
-        //   toast.success("You have successfully joined our newsletter.")
+        router.refresh()
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
