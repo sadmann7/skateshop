@@ -43,6 +43,13 @@
       "when": 1687498151885,
       "tag": "0005_powerful_golden_guardian",
       "breakpoints": false
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1687921102471,
+      "tag": "0006_famous_dexter_bennett",
+      "breakpoints": true
     }
   ]
 }

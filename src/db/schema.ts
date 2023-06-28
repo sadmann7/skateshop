@@ -15,9 +15,10 @@ import {
 
 export const stores = mysqlTable("stores", {
   id: serial("id").primaryKey(),
-  userId: varchar("userId", { length: 191 }).notNull(),
   name: varchar("name", { length: 191 }).notNull(),
+  userId: varchar("userId", { length: 191 }).notNull(),
   description: text("description"),
+  images: json("images").$type<StoredFile[] | null>().default(null),
   slug: text("slug"),
   createdAt: datetime("createdAt", { mode: "string", fsp: 3 })
     .notNull()

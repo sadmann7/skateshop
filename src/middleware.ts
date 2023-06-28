@@ -12,7 +12,10 @@ export default authMiddleware({
     "/sso-callback(.*)",
     "/api(.*)",
     "/categories(.*)",
+    "/product(.*)",
     "/products(.*)",
+    "/store(.*)",
+    "/stores(.*)",
     "/build-a-board(.*)",
   ],
   async afterAuth(auth, req) {
