@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { newsletterSubscriptions } from "@/db/schema"
 import { env } from "@/env.mjs"
@@ -14,7 +15,7 @@ import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email
 const resend = new Resend(env.RESEND_API_KEY)
 
 export async function joinNewsletterAction(
-  input: z.infer<typeof checkEmailSchema> & { firstName?: string }
+  input: z.infer<typeof checkEmailSchema>
 ) {
   const user = await currentUser()
 
@@ -33,7 +34,7 @@ export async function joinNewsletterAction(
     to: input.email,
     subject: "Welcome to the newsletter!",
     react: NewsletterWelcomeEmail({
-      firstName: input.firstName,
+      firstName: user?.firstName ?? undefined,
       fromEmail: env.EMAIL_FROM_ADDRESS,
     }),
   })
@@ -43,4 +44,6 @@ export async function joinNewsletterAction(
     email: input.email,
     userId: user?.id,
   })
+
+  revalidatePath("/")
 }

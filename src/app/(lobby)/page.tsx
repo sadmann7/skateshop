@@ -157,7 +157,7 @@ export default async function IndexPage() {
         <Card className="mt-4 grid place-items-center gap-4 px-6 py-20 text-center">
           <p className="text-sm text-muted-foreground">
             {dailyNewsletterCount[0]?.count ?? 0} newsletters sent out of 100
-            daily limit of the resend free plan
+            daily limit of the Resend free plan
           </p>
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates

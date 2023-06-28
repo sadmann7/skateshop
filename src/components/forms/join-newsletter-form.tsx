@@ -38,10 +38,16 @@ export function JoinNewsletterForm() {
 
     startTransition(async () => {
       try {
-        await joinNewsletterAction({
-          email: data.email,
+        // await joinNewsletterAction({
+        //   email: data.email,
+        // })
+        // form.reset()
+        // toast.success("You have successfully joined our newsletter.")
+
+        await fetch("/api/newsletter", {
+          method: "POST",
+          body: JSON.stringify(data),
         })
-        form.reset()
         toast.success("You have successfully joined our newsletter.")
       } catch (error) {
         error instanceof Error
