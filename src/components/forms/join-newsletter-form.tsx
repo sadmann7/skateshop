@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { joinNewsletterAction } from "@/app/_actions/newsletter"
+import { joinNewsletterAction } from "@/app/_actions/email"
 
 type Inputs = z.infer<typeof checkEmailSchema>
 

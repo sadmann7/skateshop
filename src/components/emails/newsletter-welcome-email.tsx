@@ -2,7 +2,15 @@ import { Button } from "@react-email/button"
 import { Html } from "@react-email/html"
 import { Tailwind } from "@react-email/tailwind"
 
-export default function NewsletterWelcomeEmail() {
+interface NewsletterWelcomeEmailProps {
+  name?: string
+}
+
+export default function NewsletterWelcomeEmail({
+  name = "there",
+}: NewsletterWelcomeEmailProps) {
+  const previewText = `Hi ${name}, welcome to our newsletter!`
+
   return (
     <Html>
       <Tailwind
