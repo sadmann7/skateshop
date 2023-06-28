@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
-import { checkEmailSchema } from "@/lib/validations/auth"
+import { subscribeToNewsletterSchema } from "@/lib/validations/email"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -19,20 +18,16 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import {
-  checkExistingEmailAction,
-  joinNewsletterAction,
-} from "@/app/_actions/newsletter"
+import { subscribeToNewsletterAction } from "@/app/_actions/email"
 
-type Inputs = z.infer<typeof checkEmailSchema>
+type Inputs = z.infer<typeof subscribeToNewsletterSchema>
 
-export function JoinNewsletterForm() {
-  const router = useRouter()
+export function SubscribeToNewsletterForm() {
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(checkEmailSchema),
+    resolver: zodResolver(subscribeToNewsletterSchema),
     defaultValues: {
       email: "",
     },
@@ -43,23 +38,8 @@ export function JoinNewsletterForm() {
 
     startTransition(async () => {
       try {
-        await joinNewsletterAction(data)
+        await subscribeToNewsletterAction(data)
         toast.success("You have successfully joined our newsletter.")
-
-        // await checkExistingEmailAction(data)
-
-        // const response = await fetch("/api/newsletter", {
-        //   method: "POST",
-        //   body: JSON.stringify(data),
-        // })
-
-        // if (!response.ok) {
-        //   toast.error("Something went wrong, please try again.")
-        // }
-
-        // form.reset()
-        // toast.success("You have successfully joined our newsletter.")
-        // router.refresh()
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)

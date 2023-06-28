@@ -75,6 +75,7 @@ export const newsletterSubscriptions = mysqlTable("newsletter_subscriptions", {
   id: serial("id").primaryKey(),
   userId: varchar("userId", { length: 191 }),
   email: varchar("email", { length: 191 }).notNull(),
+  token: varchar("token", { length: 191 }).notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
 })
 

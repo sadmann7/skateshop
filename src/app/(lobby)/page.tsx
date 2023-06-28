@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { JoinNewsletterForm } from "@/components/forms/join-newsletter-form"
+import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
@@ -162,7 +162,7 @@ export default async function IndexPage() {
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>
-          <JoinNewsletterForm />
+          <SubscribeToNewsletterForm />
         </Card>
         <div className="flex flex-wrap items-center justify-center gap-4">
           {productCategories[

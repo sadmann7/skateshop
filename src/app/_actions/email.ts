@@ -6,10 +6,14 @@ import { newsletterSubscriptions } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
-import { Resend } from "resend"
 import { type z } from "zod"
 
+import { resend } from "@/lib/resend"
 import { type checkEmailSchema } from "@/lib/validations/auth"
+import type {
+  subscribeToNewsletterSchema,
+  unsubscribeFromNewsletterSchema,
+} from "@/lib/validations/email"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
 export async function checkExistingEmailAction(
@@ -24,12 +28,9 @@ export async function checkExistingEmailAction(
   }
 }
 
-// Resend doesn't work in the server action in production
-// So using route handler instead
-export async function joinNewsletterAction(
-  input: z.infer<typeof checkEmailSchema>
+export async function subscribeToNewsletterAction(
+  input: z.infer<typeof subscribeToNewsletterSchema>
 ) {
-  const resend = new Resend(env.RESEND_API_KEY)
   const user = await currentUser()
 
   const existingEmail = await db.query.newsletterSubscriptions.findFirst({
@@ -45,10 +46,11 @@ export async function joinNewsletterAction(
   await resend.emails.send({
     from: env.EMAIL_FROM_ADDRESS,
     to: input.email,
-    subject: "Welcome to the newsletter!",
+    subject: "Welcome to skateshop",
     react: NewsletterWelcomeEmail({
       firstName: user?.firstName ?? undefined,
       fromEmail: env.EMAIL_FROM_ADDRESS,
+      token: crypto.randomUUID(),
     }),
   })
 
@@ -56,7 +58,26 @@ export async function joinNewsletterAction(
   await db.insert(newsletterSubscriptions).values({
     email: input.email,
     userId: user?.id,
+    token: crypto.randomUUID(),
   })
+
+  revalidatePath("/")
+}
+
+export async function unsubscribeFromNewsletterAction(
+  input: z.infer<typeof unsubscribeFromNewsletterSchema>
+) {
+  const subscription = await db.query.newsletterSubscriptions.findFirst({
+    where: eq(newsletterSubscriptions.token, input.token),
+  })
+
+  if (!subscription) {
+    throw new Error("You are not subscribed to the newsletter.")
+  }
+
+  await db
+    .delete(newsletterSubscriptions)
+    .where(eq(newsletterSubscriptions.token, input.token))
 
   revalidatePath("/")
 }
