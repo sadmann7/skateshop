@@ -7,7 +7,8 @@ import { Shell } from "@/components/shell"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
 
-export const runtime = "edge"
+// Running out of edge function execution units on vercel free plan
+// export const runtime = "edge"
 
 interface CategoryPageProps {
   params: {

@@ -146,7 +146,7 @@ export default async function IndexPage() {
             ))}
           </div>
         </div>
-        <Card className="mt-4 grid place-items-center gap-5 px-6 py-20 text-center">
+        <Card className="mt-4 grid place-items-center gap-4 px-6 py-20 text-center">
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>

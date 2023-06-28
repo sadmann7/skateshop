@@ -56,6 +56,7 @@
     "react-day-picker": "^8.8.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-email": "^1.9.4",
     "react-hook-form": "^7.45.0",
     "sonner": "^0.5.0",
     "stripe": "^12.10.0",

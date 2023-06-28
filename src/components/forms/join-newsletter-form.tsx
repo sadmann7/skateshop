@@ -54,7 +54,7 @@ export function JoinNewsletterForm() {
   return (
     <Form {...form}>
       <form
-        className="grid w-full max-w-sm gap-5"
+        className="grid w-full max-w-xs gap-5"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
         <FormField
@@ -64,13 +64,17 @@ export function JoinNewsletterForm() {
             <FormItem className="relative">
               <FormLabel className="sr-only">Email</FormLabel>
               <FormControl>
-                <Input placeholder="rodneymullen180@gmail.com" {...field} />
+                <Input
+                  placeholder="rodneymullen180@gmail.com"
+                  className="pr-12"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
               <Button
-                className="absolute right-[5.5px] top-[5.5px] h-7 w-7"
+                className="absolute right-[5.2px] top-[5.5px] h-7 w-7"
                 size="icon"
-                disabled={isPending || !form.formState.isValid}
+                disabled={isPending}
               >
                 {isPending ? (
                   <Icons.spinner
