@@ -2,14 +2,14 @@ lockfileVersion: '6.0'
 
 dependencies:
   '@clerk/nextjs':
-    specifier: ^4.21.10
-    version: 4.21.10(next@13.4.7)(react-dom@18.2.0)(react@18.2.0)
+    specifier: ^4.21.12
+    version: 4.21.12(next@13.4.7)(react-dom@18.2.0)(react@18.2.0)
   '@clerk/types':
-    specifier: ^3.46.0
-    version: 3.46.0
+    specifier: ^3.46.1
+    version: 3.46.1
   '@hookform/resolvers':
     specifier: ^3.1.1
-    version: 3.1.1(react-hook-form@7.45.0)
+    version: 3.1.1(react-hook-form@7.45.1)
   '@planetscale/database':
     specifier: ^1.7.0
     version: 1.7.0
@@ -76,6 +76,9 @@ dependencies:
   '@react-email/button':
     specifier: 0.0.9
     version: 0.0.9
+  '@react-email/components':
+    specifier: ^0.0.7
+    version: 0.0.7
   '@react-email/html':
     specifier: 0.0.4
     version: 0.0.4
@@ -89,14 +92,14 @@ dependencies:
     specifier: ^0.6.0
     version: 0.6.0(typescript@4.9.3)(zod@3.21.4)
   '@uploadthing/react':
-    specifier: ^5.0.0
-    version: 5.0.0(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@5.0.0)(zod@3.21.4)
+    specifier: ^5.1.0
+    version: 5.1.0(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@5.1.0)(zod@3.21.4)
   '@vercel/og':
     specifier: ^0.5.8
     version: 0.5.8
   class-variance-authority:
-    specifier: ^0.6.0
-    version: 0.6.0(typescript@4.9.3)
+    specifier: ^0.6.1
+    version: 0.6.1
   classnames:
     specifier: 2.3.2
     version: 2.3.2
@@ -122,8 +125,8 @@ dependencies:
     specifier: ^3.5.29
     version: 3.5.29(jspdf@2.5.1)
   lucide-react:
-    specifier: ^0.252.0
-    version: 0.252.0(react@18.2.0)
+    specifier: ^0.256.0
+    version: 0.256.0(react@18.2.0)
   next:
     specifier: ^13.4.7
     version: 13.4.7(react-dom@18.2.0)(react@18.2.0)
@@ -152,8 +155,8 @@ dependencies:
     specifier: ^1.9.4
     version: 1.9.4
   react-hook-form:
-    specifier: ^7.45.0
-    version: 7.45.0(react@18.2.0)
+    specifier: ^7.45.1
+    version: 7.45.1(react@18.2.0)
   resend:
     specifier: ^0.16.0
     version: 0.16.0
@@ -173,8 +176,8 @@ dependencies:
     specifier: 0.0.3-alpha-3
     version: 0.0.3-alpha-3(react-dom@18.2.0)(react@18.2.0)
   uploadthing:
-    specifier: ^5.0.0
-    version: 5.0.0(zod@3.21.4)
+    specifier: ^5.1.0
+    version: 5.1.0(zod@3.21.4)
   zact:
     specifier: ^0.0.2
     version: 0.0.2(next@13.4.7)
@@ -260,11 +263,11 @@ packages:
     dependencies:
       regenerator-runtime: 0.13.11
 
-  /@clerk/backend@0.23.5:
-    resolution: {integrity: sha512-x+NCRvgaVFbAQX2r5hJ6SRI1JnQWD8HAfKxZb+op0KBuKvnk1shpDX67n/23ehx+YG5rQ7FbbKHXyrO5chM5Mw==}
+  /@clerk/backend@0.23.6:
+    resolution: {integrity: sha512-+JnG9jmqoqPPKCHEtGf7vhFj2G8qNXmkPR8cDycjbUje/rXGNzxYAkgGaOahD9gXj5oZYMTKfGAebPf5i24JuA==}
     engines: {node: '>=14'}
     dependencies:
-      '@clerk/types': 3.46.0
+      '@clerk/types': 3.46.1
       '@peculiar/webcrypto': 1.4.1
       '@types/node': 16.18.6
       deepmerge: 4.2.2
@@ -273,25 +276,25 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /@clerk/clerk-react@4.20.5(react@18.2.0):
-    resolution: {integrity: sha512-y5edxot+7adnyUqOGNgS7bEA3eoM53FMC8jV8VmUFvKLkOOMQpgfdo3/I7PWoTrRaNwqNWmhQGy1J3uqw8gv4g==}
+  /@clerk/clerk-react@4.21.0(react@18.2.0):
+    resolution: {integrity: sha512-wd8BDGIh8zMx6R9uTmAQdgtTBzx7B7hlWlWSxZ+oJVcz8MqT7gcmmYGgqnr5RuDtaWK9Z2jzya6CvVodzJi/Wg==}
     engines: {node: '>=14'}
     peerDependencies:
       react: '>=16'
     dependencies:
       '@clerk/shared': 0.19.1(react@18.2.0)
-      '@clerk/types': 3.46.0
+      '@clerk/types': 3.46.1
       react: 18.2.0
       swr: 1.3.0(react@18.2.0)
       tslib: 2.4.1
     dev: false
 
-  /@clerk/clerk-sdk-node@4.10.12:
-    resolution: {integrity: sha512-6LzLFEMZMnUE4O19XOW/6LAoAnHP7mZ2scMCib4dOvTRQxcZz1ql34ZMzewNYKrS6V5loQlslc1bnPlJ2zoX3g==}
+  /@clerk/clerk-sdk-node@4.10.13:
+    resolution: {integrity: sha512-Yy7N/DT1GdW+oI3/PxYqgjIgHCIEPI97dDUYn1xpG82y9aIQMVI69/W7KRK940559GDl4CmgZm1Taon+SOdDmQ==}
     engines: {node: '>=14'}
     dependencies:
-      '@clerk/backend': 0.23.5
-      '@clerk/types': 3.46.0
+      '@clerk/backend': 0.23.6
+      '@clerk/types': 3.46.1
       '@types/cookies': 0.7.7
       '@types/express': 4.17.14
       '@types/node-fetch': 2.6.2
@@ -301,18 +304,18 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /@clerk/nextjs@4.21.10(next@13.4.7)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-5G02qZOBwbYvBxbHVPKpINyhZ1a3TLZ3noBExx5JHo8+UbpEp7ENd1TyFF/oO0EWG/VTbloP1Gegjm2XG9KeKw==}
+  /@clerk/nextjs@4.21.12(next@13.4.7)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-KjdKaDaDAaVFBXnXVoHC/PSycHHmATzLizhvC0BVmpsOKFdcWarnOltd5uXaHekUI79nFYLIAZLGMiOZRgZLPg==}
     engines: {node: '>=14'}
     peerDependencies:
       next: '>=10'
       react: ^17.0.2 || ^18.0.0-0
       react-dom: ^17.0.2 || ^18.0.0-0
     dependencies:
-      '@clerk/backend': 0.23.5
-      '@clerk/clerk-react': 4.20.5(react@18.2.0)
-      '@clerk/clerk-sdk-node': 4.10.12
-      '@clerk/types': 3.46.0
+      '@clerk/backend': 0.23.6
+      '@clerk/clerk-react': 4.21.0(react@18.2.0)
+      '@clerk/clerk-sdk-node': 4.10.13
+      '@clerk/types': 3.46.1
       next: 13.4.7(react-dom@18.2.0)(react@18.2.0)
       path-to-regexp: 6.2.1
       react: 18.2.0
@@ -331,8 +334,8 @@ packages:
       swr: 1.3.0(react@18.2.0)
     dev: false
 
-  /@clerk/types@3.46.0:
-    resolution: {integrity: sha512-IooGZ64uARKg+GS6b38usrWqhzU0PcrDbZBaZm4JmtYd5CZbWABklBNkiXQhnnaKYdvHr5K8vhJd5spsJarNpw==}
+  /@clerk/types@3.46.1:
+    resolution: {integrity: sha512-IA/iSXJJZym4Z6f9OcT9OJayK2opVhxUVJky15aY4iVsJCPScgApBuuzC7N4vfXwA6RI/wGebFbvmsEQ3oI/UA==}
     engines: {node: '>=14'}
     dependencies:
       csstype: 3.1.1
@@ -639,12 +642,12 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@hookform/resolvers@3.1.1(react-hook-form@7.45.0):
+  /@hookform/resolvers@3.1.1(react-hook-form@7.45.1):
     resolution: {integrity: sha512-tS16bAUkqjITNSvbJuO1x7MXbn7Oe8ZziDTJdA9mMvsoYthnOOiznOTGBYwbdlYBgU+tgpI/BtTU3paRbCuSlg==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
-      react-hook-form: 7.45.0(react@18.2.0)
+      react-hook-form: 7.45.1(react@18.2.0)
     dev: false
 
   /@humanwhocodes/config-array@0.11.10:
@@ -972,14 +975,14 @@ packages:
     dependencies:
       asn1js: 3.0.5
       pvtsutils: 1.3.2
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /@peculiar/json-schema@1.1.12:
     resolution: {integrity: sha512-coUfuoMeIB7B8/NMekxaDzLhaYmp0HZNPEjYRm9goRou8UZIC3z21s0sL9AWoCw4EG876QyO3kYrc61WNF9B/w==}
     engines: {node: '>=8.0.0'}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /@peculiar/webcrypto@1.4.1:
@@ -989,7 +992,7 @@ packages:
       '@peculiar/asn1-schema': 2.3.6
       '@peculiar/json-schema': 1.1.12
       pvtsutils: 1.3.2
-      tslib: 2.4.1
+      tslib: 2.6.0
       webcrypto-core: 1.7.7
     dev: false
 
@@ -2389,8 +2392,82 @@ packages:
       '@babel/runtime': 7.22.5
     dev: false
 
+  /@react-email/body@0.0.2:
+    resolution: {integrity: sha512-SqZrZdxZlH7viwnrLvrMnVzOKpiofVAtho09bmm2siDzy0VMDGItXRzUPLcpg9vcbVJCHZRCIKoNXqA+PtokzQ==}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /@react-email/button@0.0.9:
     resolution: {integrity: sha512-eYWQ1X4RFlkKYYSPgSrT6rk98wuLOieEAGENrp9j37t1v/1C+jMmBu0UjZvwHsHWdbOMRjbVDFeMI/+MxWKSEg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/column@0.0.7:
+    resolution: {integrity: sha512-B29wVXyIcuVprgGpLkR23waPh/twlqmugZQsCKk05JlMCQ80/Puv4Lgj4dRsIJzgyTLMwG6xq17+Uxc5iGfuaQ==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/components@0.0.7:
+    resolution: {integrity: sha512-GpRKV8E7EvK9OPf61f5Z8hliB3p0hTot8tslmEUVCTtX7tdL0wM2YEcZiDWU4PJcudJ/QWHJ7Y5wGzNEARcooA==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@react-email/body': 0.0.2
+      '@react-email/button': 0.0.9
+      '@react-email/column': 0.0.7
+      '@react-email/container': 0.0.8
+      '@react-email/font': 0.0.2
+      '@react-email/head': 0.0.5
+      '@react-email/heading': 0.0.8
+      '@react-email/hr': 0.0.5
+      '@react-email/html': 0.0.4
+      '@react-email/img': 0.0.5
+      '@react-email/link': 0.0.5
+      '@react-email/preview': 0.0.6
+      '@react-email/render': 0.0.7
+      '@react-email/row': 0.0.5
+      '@react-email/section': 0.0.9
+      '@react-email/tailwind': 0.0.8
+      '@react-email/text': 0.0.5
+      react: 18.2.0
+    transitivePeerDependencies:
+      - ts-node
+    dev: false
+
+  /@react-email/container@0.0.8:
+    resolution: {integrity: sha512-MQZQxvTOoLWjJR+Jm689jltm0I/mtZbEaDnwZbNkkHKgccr++wwb9kOKMgXG777Y7tGa1JATAsZpvFYiCITwUg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/font@0.0.2:
+    resolution: {integrity: sha512-mmkyOCAcbgytE7DfIuOBVG1YVDUZY9rPCor4o7pUEzGJiU2y/TNuV8CgNPSU/VgXeBKL/94QDjB62OrGHlFNMQ==}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/head@0.0.5:
+    resolution: {integrity: sha512-s84OxJxZMee2z5b1a+RVwY1NOSUNNf1ecjPf6n64aZmMNcNUyn4gOl7RO6xbfBrZko7TigBwsFB1Cgjxtn/ydg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/heading@0.0.8:
+    resolution: {integrity: sha512-7atATmoHBHTk7hFYFsFFzOIBV3u1zPpsSOWkLBojdjSUdenpk2SbX8GP8/3aBhWl/tuFX9RBGcu1Xes+ZijFLg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      '@radix-ui/react-slot': 1.0.0(react@18.2.0)
+      react: 18.2.0
+    dev: false
+
+  /@react-email/hr@0.0.5:
+    resolution: {integrity: sha512-nwB8GmSdvPlR/bWjDS07yHtgdfJqtvCaPXee3SVUY69YYP7NeDO/VACJlgrS9V2l79bj1lUpH0MJMU6MNAk5FQ==}
     engines: {node: '>=16.0.0'}
     dependencies:
       react: 18.2.0
@@ -2399,6 +2476,27 @@ packages:
   /@react-email/html@0.0.4:
     resolution: {integrity: sha512-7tRYSnudYAWez+NkPWOM8yLZH7EuYFtYdiLPnzpD+pf4cdk16Gz4up531DaIX6dNBbfbyEFpQxhXZxGeJ5ZkfQ==}
     engines: {node: '>=16.0.0'}
+    dev: false
+
+  /@react-email/img@0.0.5:
+    resolution: {integrity: sha512-9ziFgBfrIAL+DpVlsraFcd2KwsTRyobLpqTnoiBYCcVZGod59xbYkmsmB3CbUosmLwPYg6AeD7Q7e+hCiwkWgg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/link@0.0.5:
+    resolution: {integrity: sha512-z+QW9f4gXBdyfhl7iYMY3td+rXKeZYK/2AGElEMsxVoywn5D0b6cF8m5w2jbf0U2V3enT+zy9yc1R6AyT59NOg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
+  /@react-email/preview@0.0.6:
+    resolution: {integrity: sha512-mXDCc3NGpm/4W7gowBtjsTxYXowLNOLsJsYhIfrsjNJWGlVhVFB9uEHm55LjBLpxSG020g6/8LIrpJU6g22qvg==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@react-email/render@0.0.6:
@@ -2421,6 +2519,18 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@react-email/row@0.0.5:
+    resolution: {integrity: sha512-dir5l1M7Z/1BQqQkUrKUPIIDPt6ueEf6ScMGoBOcUh+VNNqmnqJE2Q2CH5X3w2uo6a5X7tnVhoJHGa2KTKe8Sw==}
+    engines: {node: '>=16.0.0'}
+    dev: false
+
+  /@react-email/section@0.0.9:
+    resolution: {integrity: sha512-3EbcWJ1jUZrzquWSvXrv8Hbk9V+BGvLcMWQIli4NdIpQlddmlGKUYfXU2mB2d2pf+5ojqkGcFZZ9fWxycB84jQ==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /@react-email/tailwind@0.0.8:
     resolution: {integrity: sha512-0BLjD5GpiyBK7YDlaDrjHIpj9eTrrZrMJud3f1UPoCZhS+0S/M8LcR8WMbQsR+8/aLGmiy4F4TGZuRQcsJEsFw==}
     engines: {node: '>=16.0.0'}
@@ -2431,6 +2541,13 @@ packages:
       tw-to-css: 0.0.11
     transitivePeerDependencies:
       - ts-node
+    dev: false
+
+  /@react-email/text@0.0.5:
+    resolution: {integrity: sha512-LXhHiaC6oRRsNAfOzJDos4wQA22eIdVJvR6G7uu4QzUvYNOAatDMf89jRQcKGrxX7InkS640v8sHd9jl5ztM5w==}
+    engines: {node: '>=16.0.0'}
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@resvg/resvg-wasm@2.4.1:
@@ -2723,8 +2840,8 @@ packages:
     resolution: {integrity: sha512-nRcdyM622+GYT9SdaJIVLknqoc8i7krItinfuBPtvmPc+UNGDJ+pMkr4AatYp88cEc4iYtPlN8flJvZ3dNtgrg==}
     dev: false
 
-  /@uploadthing/react@5.0.0(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@5.0.0)(zod@3.21.4):
-    resolution: {integrity: sha512-rWqL9V/gyCa+rWB0XNPSUEdy0w9Mlx/I/LxQkmzC2NCAwIUeub11pecdMwlKdVsogg45oMhzEI3odA2g9a5Scw==}
+  /@uploadthing/react@5.1.0(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@5.1.0)(zod@3.21.4):
+    resolution: {integrity: sha512-gBcw7A6I3/1APqSB2tRk81JNRYdopurt5cHrTdlrLQakH2XnCTs+1Ptl+Tx6MP/zVPajJHdW5B3JB8iQc4SHoQ==}
     peerDependencies:
       react: ^17.0.2 || ^18.0.0
       react-dropzone: ^14.2.3
@@ -2733,7 +2850,7 @@ packages:
       '@uploadthing/shared': 5.0.1(@uploadthing/mime-types@0.2.0)(zod@3.21.4)
       react: 18.2.0
       react-dropzone: 14.2.3(react@18.2.0)
-      uploadthing: 5.0.0(zod@3.21.4)
+      uploadthing: 5.1.0(zod@3.21.4)
     transitivePeerDependencies:
       - '@uploadthing/mime-types'
       - zod
@@ -2912,7 +3029,7 @@ packages:
     dependencies:
       pvtsutils: 1.3.2
       pvutils: 1.1.3
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /ast-types-flow@0.0.7:
@@ -3186,16 +3303,10 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
 
-  /class-variance-authority@0.6.0(typescript@4.9.3):
-    resolution: {integrity: sha512-qdRDgfjx3GRb9fpwpSvn+YaidnT7IUJNe4wt5/SWwM+PmUwJUhQRk/8zAyNro0PmVfmen2635UboTjIBXXxy5A==}
-    peerDependencies:
-      typescript: '>= 4.5.5 < 6'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
+  /class-variance-authority@0.6.1:
+    resolution: {integrity: sha512-eurOEGc7YVx3majOrOb099PNKgO3KnKSApOprXI4BTq6bcfbqbQXPN2u+rPPmIJ2di23bMwhk0SxCCthBmszEQ==}
     dependencies:
       clsx: 1.2.1
-      typescript: 4.9.3
     dev: false
 
   /classnames@2.3.2:
@@ -3560,7 +3671,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /drizzle-orm@0.27.0(@planetscale/database@1.7.0):
@@ -5046,7 +5157,7 @@ packages:
   /lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /lru-cache@4.1.5:
@@ -5063,8 +5174,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /lucide-react@0.252.0(react@18.2.0):
-    resolution: {integrity: sha512-98hUdm23F3YlC3UN4mzv1FAsWr81YYdxF31cYhm19c51FwOph4dn5B4NjKp45UXBiR1Xx+cKrdmSIZX0ldS8zw==}
+  /lucide-react@0.256.0(react@18.2.0):
+    resolution: {integrity: sha512-uqw4MijZS29zePSBtkEIdOAp2Mn2mE6lVgFxaUd/MpclVUOuwacpRF67s1y3ErEIcR9aSBO0F1e6G56Ci8VUKA==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:
@@ -5209,7 +5320,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /node-fetch-native@1.0.1:
@@ -5712,7 +5823,7 @@ packages:
   /pvtsutils@1.3.2:
     resolution: {integrity: sha512-+Ipe2iNUyrZz+8K/2IOo+kKikdtfhRKzNpQbruF2URmqPtoqAs8g3xS7TJvFF2GcPXjh7DkqMnpVveRFq4PgEQ==}
     dependencies:
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /pvutils@1.1.3:
@@ -5812,8 +5923,8 @@ packages:
       - encoding
     dev: false
 
-  /react-hook-form@7.45.0(react@18.2.0):
-    resolution: {integrity: sha512-AbHeZ4ad+0dEIknSW9dBgIwcvRDfZ1O97sgj75WaMdOX0eg8TBiUf9wxzVkIjZbk76BBIE9lmFOzyD4PN80ZQg==}
+  /react-hook-form@7.45.1(react@18.2.0):
+    resolution: {integrity: sha512-6dWoFJwycbuFfw/iKMcl+RdAOAOHDiF11KWYhNDRN/OkUt+Di5qsZHwA0OwsVnu9y135gkHpTw9DJA+WzCeR9w==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
@@ -6173,7 +6284,7 @@ packages:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /snakecase-keys@3.2.1:
@@ -6691,8 +6802,8 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /uploadthing@5.0.0(zod@3.21.4):
-    resolution: {integrity: sha512-ahWcBKkcOrEF3NpTH9bpZWS4ZDim92lezd3+uSLkvhUg5kKoGT1+lyOWUUWgiIq9HlYwN8oXIb8LFvg6jLv05Q==}
+  /uploadthing@5.1.0(zod@3.21.4):
+    resolution: {integrity: sha512-adWd3D0/r25EspS1s+p2RLvSpDPLOQC+AM+mH1JomsTdEDiderjxMeo6juZUWnq96O/Dsumh97SeFJXDLWI+Qw==}
     dependencies:
       '@uploadthing/mime-types': 0.2.0
       '@uploadthing/shared': 5.0.1(@uploadthing/mime-types@0.2.0)(zod@3.21.4)
@@ -6788,7 +6899,7 @@ packages:
       '@peculiar/json-schema': 1.1.12
       asn1js: 3.0.5
       pvtsutils: 1.3.2
-      tslib: 2.4.1
+      tslib: 2.6.0
     dev: false
 
   /webidl-conversions@3.0.1:

@@ -85,16 +85,25 @@ export async function getNextStoreIdAction(
     throw new Error("Invalid input.")
   }
 
-  const store = await db.query.stores.findFirst({
+  const nextStore = await db.query.stores.findFirst({
     where: and(eq(stores.userId, input.userId), gt(stores.id, input.id)),
     orderBy: asc(stores.id),
   })
 
-  if (!store) {
-    throw new Error("Store not found.")
+  if (!nextStore) {
+    const firstStore = await db.query.stores.findFirst({
+      where: eq(stores.userId, input.userId),
+      orderBy: asc(stores.id),
+    })
+
+    if (!firstStore) {
+      throw new Error("Store not found.")
+    }
+
+    return firstStore.id
   }
 
-  return store.id
+  return nextStore.id
 }
 
 export async function getPreviousStoreIdAction(
@@ -104,14 +113,23 @@ export async function getPreviousStoreIdAction(
     throw new Error("Invalid input.")
   }
 
-  const store = await db.query.stores.findFirst({
+  const previousStore = await db.query.stores.findFirst({
     where: and(eq(stores.userId, input.userId), lt(stores.id, input.id)),
     orderBy: desc(stores.id),
   })
 
-  if (!store) {
-    throw new Error("Store not found.")
+  if (!previousStore) {
+    const lastStore = await db.query.stores.findFirst({
+      where: eq(stores.userId, input.userId),
+      orderBy: desc(stores.id),
+    })
+
+    if (!lastStore) {
+      throw new Error("Store not found.")
+    }
+
+    return lastStore.id
   }
 
-  return store.id
+  return previousStore.id
 }

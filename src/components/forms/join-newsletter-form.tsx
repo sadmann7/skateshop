@@ -19,7 +19,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { checkExistingEmailAction } from "@/app/_actions/newsletter"
+import {
+  checkExistingEmailAction,
+  joinNewsletterAction,
+} from "@/app/_actions/newsletter"
 
 type Inputs = z.infer<typeof checkEmailSchema>
 
@@ -40,20 +43,23 @@ export function JoinNewsletterForm() {
 
     startTransition(async () => {
       try {
-        await checkExistingEmailAction(data)
-
-        const response = await fetch("/api/newsletter", {
-          method: "POST",
-          body: JSON.stringify(data),
-        })
-
-        if (!response.ok) {
-          toast.error("Something went wrong, please try again.")
-        }
-
-        form.reset()
+        await joinNewsletterAction(data)
         toast.success("You have successfully joined our newsletter.")
-        router.refresh()
+
+        // await checkExistingEmailAction(data)
+
+        // const response = await fetch("/api/newsletter", {
+        //   method: "POST",
+        //   body: JSON.stringify(data),
+        // })
+
+        // if (!response.ok) {
+        //   toast.error("Something went wrong, please try again.")
+        // }
+
+        // form.reset()
+        // toast.success("You have successfully joined our newsletter.")
+        // router.refresh()
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)

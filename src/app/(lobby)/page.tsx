@@ -154,7 +154,7 @@ export default async function IndexPage() {
             ))}
           </div>
         </div>
-        <Card className="mt-4 grid place-items-center gap-4 px-6 py-20 text-center">
+        <Card className="mt-4 grid place-items-center gap-4 px-6 py-16 text-center">
           <p className="text-sm text-muted-foreground">
             {dailyNewsletterCount[0]?.count ?? 0} newsletters sent out of 100
             daily limit of the Resend free plan
