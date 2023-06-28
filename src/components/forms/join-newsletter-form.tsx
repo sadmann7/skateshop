@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { revalidatePath } from "next/cache"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -38,17 +39,24 @@ export function JoinNewsletterForm() {
 
     startTransition(async () => {
       try {
-        // await joinNewsletterAction({
-        //   email: data.email,
-        // })
-        // form.reset()
-        // toast.success("You have successfully joined our newsletter.")
-
-        await fetch("/api/newsletter", {
-          method: "POST",
-          body: JSON.stringify(data),
+        // resend doesn't work on in server action in production
+        await joinNewsletterAction({
+          email: data.email,
         })
+        form.reset()
         toast.success("You have successfully joined our newsletter.")
+
+        // const response = await fetch("/api/newsletter", {
+        //   method: "POST",
+        //   body: JSON.stringify(data),
+        // })
+
+        // if (!response.ok) {
+        //   toast.error("Something went wrong, please try again.")
+        //   return
+        // }
+
+        // toast.success("You have successfully joined our newsletter.")
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
