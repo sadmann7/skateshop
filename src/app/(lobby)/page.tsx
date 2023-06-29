@@ -1,9 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/db"
-import { newsletterSubscriptions, products, stores } from "@/db/schema"
-import dayjs from "dayjs"
-import { desc, gt, sql } from "drizzle-orm"
+import { products, stores } from "@/db/schema"
+import { desc, eq, sql } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -33,18 +32,18 @@ export default async function IndexPage() {
     .limit(8)
     .orderBy(desc(products.createdAt))
 
-  const allStores = await db
-    .select()
+  const allStoresWithProductCount = await db
+    .select({
+      id: stores.id,
+      name: stores.name,
+      description: stores.description,
+      productCount: sql<number>`count(${products.id})`,
+    })
     .from(stores)
     .limit(4)
-    .orderBy(desc(stores.createdAt))
-
-  const dailyNewsletterCount = await db
-    .select({
-      count: sql<number>`count(${newsletterSubscriptions.id})`,
-    })
-    .from(newsletterSubscriptions)
-  gt(newsletterSubscriptions.createdAt, dayjs().subtract(1, "day").toDate())
+    .leftJoin(products, eq(products.storeId, stores.id))
+    .groupBy(stores.id)
+    .orderBy(desc(sql<number>`count(${products.id})`))
 
   return (
     <div>
@@ -127,7 +126,7 @@ export default async function IndexPage() {
         <div className="space-y-5">
           <h2 className="text-2xl font-medium">Featured stores</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {allStores.map((store) => (
+            {allStoresWithProductCount.map((store) => (
               <Card key={store.id} className="flex h-full flex-col">
                 <CardHeader className="flex-1">
                   <CardTitle className="line-clamp-1">{store.name}</CardTitle>
@@ -145,7 +144,7 @@ export default async function IndexPage() {
                         })
                       )}
                     >
-                      View products
+                      View products ({store.productCount})
                       <span className="sr-only">{`${store.name} store products`}</span>
                     </div>
                   </Link>
@@ -155,10 +154,10 @@ export default async function IndexPage() {
           </div>
         </div>
         <Card className="mt-4 grid place-items-center gap-4 px-6 py-16 text-center">
-          <p className="text-sm text-muted-foreground">
+          {/* <p className="text-sm text-muted-foreground">
             {dailyNewsletterCount[0]?.count ?? 0} newsletters sent out of 100
             daily limit of the Resend free plan
-          </p>
+          </p> */}
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>

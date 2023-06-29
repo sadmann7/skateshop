@@ -71,6 +71,13 @@
       "when": 1687987519499,
       "tag": "0009_tearful_warlock",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1688009834283,
+      "tag": "0010_clever_leper_queen",
+      "breakpoints": true
     }
   ]
 }

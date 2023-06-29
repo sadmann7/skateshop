@@ -1,6 +1,7 @@
 import type { CartItem, StoredFile } from "@/types"
 import { relations, sql, type InferModel } from "drizzle-orm"
 import {
+  boolean,
   datetime,
   decimal,
   int,
@@ -71,12 +72,15 @@ export const carts = mysqlTable("carts", {
 
 export type Cart = InferModel<typeof carts>
 
-export const newsletterSubscriptions = mysqlTable("newsletter_subscriptions", {
+export const emailPreferences = mysqlTable("email_preferences", {
   id: serial("id").primaryKey(),
   userId: varchar("userId", { length: 191 }),
   email: varchar("email", { length: 191 }).notNull(),
   token: varchar("token", { length: 191 }).notNull(),
+  newsletter: boolean("newsletter").notNull().default(false),
+  marketing: boolean("marketing").notNull().default(false),
+  transactional: boolean("transactional").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type NewsletterSubscription = InferModel<typeof newsletterSubscriptions>
+export type EmailPreference = InferModel<typeof emailPreferences>

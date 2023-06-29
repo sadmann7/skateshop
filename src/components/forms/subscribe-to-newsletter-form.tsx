@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
-import { subscribeToNewsletterSchema } from "@/lib/validations/email"
+import { emailSchema } from "@/lib/validations/email"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -18,16 +18,16 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { subscribeToNewsletterAction } from "@/app/_actions/email"
+import { manageEmailAction } from "@/app/_actions/email"
 
-type Inputs = z.infer<typeof subscribeToNewsletterSchema>
+type Inputs = z.infer<typeof emailSchema>
 
 export function SubscribeToNewsletterForm() {
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(subscribeToNewsletterSchema),
+    resolver: zodResolver(emailSchema),
     defaultValues: {
       email: "",
     },
@@ -38,7 +38,11 @@ export function SubscribeToNewsletterForm() {
 
     startTransition(async () => {
       try {
-        await subscribeToNewsletterAction(data)
+        await manageEmailAction({
+          email: data.email,
+          token: crypto.randomUUID(),
+          newsletter: true,
+        })
         toast.success("You have successfully joined our newsletter.")
       } catch (error) {
         error instanceof Error

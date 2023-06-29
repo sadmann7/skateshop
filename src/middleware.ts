@@ -14,6 +14,7 @@ export default authMiddleware({
     "/categories(.*)",
     "/products(.*)",
     "/build-a-board(.*)",
+    "/email-preferences(.*)",
   ],
   async afterAuth(auth, req) {
     if (auth.isPublicRoute) {
