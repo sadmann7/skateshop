@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { manageEmailSchema } from "@/lib/validations/email"
+import { updateEmailPreferencesSchema } from "@/lib/validations/email"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -19,23 +19,23 @@ import {
 } from "@/components/ui/form"
 import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
-import { manageEmailAction } from "@/app/_actions/email"
+import { updateEmailPreferencesAction } from "@/app/_actions/email"
 
-interface ManageEmailFormProps {
-  email: string
+interface UpdateEmailPreferencesFormProps {
   token: string
 }
 
-type Inputs = z.infer<typeof manageEmailSchema>
+type Inputs = z.infer<typeof updateEmailPreferencesSchema>
 
-export function ManageEmailForm({ email, token }: ManageEmailFormProps) {
+export function UpdateEmailPreferencesForm({
+  token,
+}: UpdateEmailPreferencesFormProps) {
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(manageEmailSchema),
+    resolver: zodResolver(updateEmailPreferencesSchema),
     defaultValues: {
-      email: "",
       token: "",
       newsletter: false,
       transactional: false,
@@ -46,9 +46,8 @@ export function ManageEmailForm({ email, token }: ManageEmailFormProps) {
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        await manageEmailAction({
+        await updateEmailPreferencesAction({
           ...data,
-          email,
           token,
         })
       } catch (error) {
@@ -69,11 +68,14 @@ export function ManageEmailForm({ email, token }: ManageEmailFormProps) {
           control={form.control}
           name="newsletter"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Newsletter</FormLabel>
-              <FormDescription>
-                Receive our monthly newsletter with the latest news and updates.
-              </FormDescription>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Newsletter</FormLabel>
+                <FormDescription>
+                  Receive our monthly newsletter with the latest news and
+                  updates.
+                </FormDescription>
+              </div>
               <FormControl>
                 <Switch
                   checked={field.value}
@@ -88,11 +90,13 @@ export function ManageEmailForm({ email, token }: ManageEmailFormProps) {
           control={form.control}
           name="transactional"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Transactional</FormLabel>
-              <FormDescription>
-                Receive transactional emails, order confirmations, and more.
-              </FormDescription>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Transactional</FormLabel>
+                <FormDescription>
+                  Receive transactional emails, order confirmations, and more.
+                </FormDescription>
+              </div>
               <FormControl>
                 <Switch
                   checked={field.value}
@@ -107,12 +111,14 @@ export function ManageEmailForm({ email, token }: ManageEmailFormProps) {
           control={form.control}
           name="marketing"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Marketing</FormLabel>
-              <FormDescription>
-                Receive marketing emails, including promotions, discounts, and
-                more.
-              </FormDescription>
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Marketing</FormLabel>
+                <FormDescription>
+                  Receive marketing emails, including promotions, discounts, and
+                  more.
+                </FormDescription>
+              </div>
               <FormControl>
                 <Switch
                   checked={field.value}

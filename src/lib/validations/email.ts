@@ -6,8 +6,12 @@ export const emailSchema = z.object({
   }),
 })
 
-export const manageEmailSchema = z.object({
+export const subscribeToNewsletterSchema = z.object({
   email: emailSchema.shape.email,
+  token: z.string(),
+})
+
+export const updateEmailPreferencesSchema = z.object({
   token: z.string(),
   newsletter: z.boolean().default(false).optional(),
   transactional: z.boolean().default(false).optional(),

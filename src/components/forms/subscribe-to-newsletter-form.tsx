@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -18,11 +19,11 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { manageEmailAction } from "@/app/_actions/email"
 
 type Inputs = z.infer<typeof emailSchema>
 
 export function SubscribeToNewsletterForm() {
+  const router = useRouter()
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
@@ -37,17 +38,27 @@ export function SubscribeToNewsletterForm() {
     console.log(data)
 
     startTransition(async () => {
-      try {
-        await manageEmailAction({
+      const response = await fetch("/api/email/newsletter", {
+        method: "POST",
+        body: JSON.stringify({
           email: data.email,
+          // This token is used to manage the subscription on the email-preferences page as the search param.
           token: crypto.randomUUID(),
-          newsletter: true,
-        })
+        }),
+      })
+
+      if (response.status === 409) {
+        toast.error("You are already subscribed to our newsletter.")
+      }
+
+      if (response.status === 500) {
+        toast.error("Something went wrong. Please try again later.")
+      }
+
+      if (response.ok) {
         toast.success("You have successfully joined our newsletter.")
-      } catch (error) {
-        error instanceof Error
-          ? toast.error(error.message)
-          : toast.error("Something went wrong, please try again.")
+        form.reset()
+        router.refresh()
       }
     })
   }

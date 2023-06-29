@@ -9,22 +9,59 @@ import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
 import { resend } from "@/lib/resend"
-import type { manageEmailSchema } from "@/lib/validations/email"
+import type {
+  subscribeToNewsletterSchema,
+  updateEmailPreferencesSchema,
+} from "@/lib/validations/email"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
-export async function manageEmailAction(
-  input: z.infer<typeof manageEmailSchema>
+// This server action doesn't work in production because it is returning an email component maybe?
+// So we are using the route handler instead.
+export async function subscribeToNewsletterAction(
+  input: z.infer<typeof subscribeToNewsletterSchema>
 ) {
   const emailPreference = await db.query.emailPreferences.findFirst({
     where: eq(emailPreferences.email, input.email),
   })
 
-  if (!emailPreference) {
-    throw new Error("Email not found.")
+  console.log(emailPreference)
+
+  if (emailPreference) {
+    throw new Error("You are already subscribed to the newsletter.")
   }
 
-  if (emailPreference.email !== input.token) {
-    throw new Error("Invalid token.")
+  const user = await currentUser()
+
+  await resend.emails.send({
+    from: env.EMAIL_FROM_ADDRESS,
+    to: input.email,
+    subject: "Welcome to skateshop",
+    react: NewsletterWelcomeEmail({
+      firstName: user?.firstName ?? undefined,
+      fromEmail: env.EMAIL_FROM_ADDRESS,
+      token: input.token,
+    }),
+  })
+
+  await db.insert(emailPreferences).values({
+    email: input.email,
+    token: input.token,
+    userId: user?.id,
+    newsletter: true,
+  })
+
+  revalidatePath("/")
+}
+
+export async function updateEmailPreferencesAction(
+  input: z.infer<typeof updateEmailPreferencesSchema>
+) {
+  const emailPreference = await db.query.emailPreferences.findFirst({
+    where: eq(emailPreferences.token, input.token),
+  })
+
+  if (!emailPreference) {
+    throw new Error("Email not found.")
   }
 
   const user = await currentUser()
@@ -32,12 +69,12 @@ export async function manageEmailAction(
   if (input.newsletter && !emailPreference.newsletter) {
     await resend.emails.send({
       from: env.EMAIL_FROM_ADDRESS,
-      to: input.email,
+      to: emailPreference.email,
       subject: "Welcome to skateshop",
       react: NewsletterWelcomeEmail({
         firstName: user?.firstName ?? undefined,
         fromEmail: env.EMAIL_FROM_ADDRESS,
-        token: crypto.randomUUID(),
+        token: input.token,
       }),
     })
   }
@@ -48,7 +85,7 @@ export async function manageEmailAction(
       ...input,
       userId: user?.id,
     })
-    .where(eq(emailPreferences.email, input.email))
+    .where(eq(emailPreferences.token, input.token))
 
   revalidatePath("/")
 }
