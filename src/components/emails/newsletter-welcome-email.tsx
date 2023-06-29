@@ -81,7 +81,7 @@ export default function NewsletterWelcomeEmail({
                   <Text className="text-center">
                     <Link
                       className="text-blue-500"
-                      href={`${env.NEXT_PUBLIC_APP_URL}/unsubscribe/${token}`}
+                      href={`${env.NEXT_PUBLIC_APP_URL}/email-preferences?token=${token}`}
                     >
                       Unsubscribe
                     </Link>

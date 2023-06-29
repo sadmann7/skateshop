@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { type EmailPreference } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -22,13 +23,13 @@ import { Icons } from "@/components/icons"
 import { updateEmailPreferencesAction } from "@/app/_actions/email"
 
 interface UpdateEmailPreferencesFormProps {
-  token: string
+  emailPreference: EmailPreference
 }
 
 type Inputs = z.infer<typeof updateEmailPreferencesSchema>
 
 export function UpdateEmailPreferencesForm({
-  token,
+  emailPreference,
 }: UpdateEmailPreferencesFormProps) {
   const [isPending, startTransition] = React.useTransition()
 
@@ -36,20 +37,24 @@ export function UpdateEmailPreferencesForm({
   const form = useForm<Inputs>({
     resolver: zodResolver(updateEmailPreferencesSchema),
     defaultValues: {
-      token: "",
-      newsletter: false,
-      transactional: false,
-      marketing: false,
+      token: emailPreference.token,
+      newsletter: emailPreference.newsletter,
+      transactional: emailPreference.transactional,
+      marketing: emailPreference.marketing,
     },
   })
 
   function onSubmit(data: Inputs) {
+    console.log(data)
     startTransition(async () => {
       try {
         await updateEmailPreferencesAction({
-          ...data,
-          token,
+          token: data.token,
+          newsletter: data.newsletter,
+          transactional: data.transactional,
+          marketing: data.marketing,
         })
+        toast.success("Email preferences updated.")
       } catch (error) {
         error instanceof Error
           ? toast.error(error.message)
@@ -61,14 +66,14 @@ export function UpdateEmailPreferencesForm({
   return (
     <Form {...form}>
       <form
-        className="grid gap-4"
+        className="grid w-full gap-4"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
         <FormField
           control={form.control}
           name="newsletter"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex w-full flex-row items-center justify-between space-x-2 rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Newsletter</FormLabel>
                 <FormDescription>
@@ -90,7 +95,7 @@ export function UpdateEmailPreferencesForm({
           control={form.control}
           name="transactional"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex w-full flex-row items-center justify-between space-x-2 rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Transactional</FormLabel>
                 <FormDescription>
@@ -111,7 +116,7 @@ export function UpdateEmailPreferencesForm({
           control={form.control}
           name="marketing"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex w-full flex-row items-center justify-between space-x-2 rounded-lg border p-4">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Marketing</FormLabel>
                 <FormDescription>
@@ -129,7 +134,7 @@ export function UpdateEmailPreferencesForm({
             </FormItem>
           )}
         />
-        <Button disabled={isPending}>
+        <Button className="w-full" disabled={isPending}>
           {isPending && (
             <Icons.spinner
               className="mr-2 h-4 w-4 animate-spin"

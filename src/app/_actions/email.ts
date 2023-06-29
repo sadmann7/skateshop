@@ -16,7 +16,7 @@ import type {
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
 // This server action doesn't work in production because it is returning an email component maybe?
-// So we are using the route handler instead.
+// So we are using the route handler /api/email/newsletter instead
 export async function subscribeToNewsletterAction(
   input: z.infer<typeof subscribeToNewsletterSchema>
 ) {

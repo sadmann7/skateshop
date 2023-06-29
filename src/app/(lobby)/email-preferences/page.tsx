@@ -1,4 +1,8 @@
 import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+import { db } from "@/db"
+import { emailPreferences } from "@/db/schema"
+import { eq } from "drizzle-orm"
 
 import {
   Card,
@@ -22,13 +26,21 @@ interface EmailPreferencesPageProps {
   }
 }
 
-export default function EmailPreferencesPage({
+export default async function EmailPreferencesPage({
   searchParams,
 }: EmailPreferencesPageProps) {
   const token = typeof searchParams.token === "string" ? searchParams.token : ""
 
+  const emailPreference = await db.query.emailPreferences.findFirst({
+    where: eq(emailPreferences.token, token),
+  })
+
+  if (!emailPreference) {
+    notFound()
+  }
+
   return (
-    <Shell className="place-items-center">
+    <Shell className="max-w-2xl justify-center">
       <Header title="Email Preferences" className="text-center" />
       <Card>
         <CardHeader>
@@ -36,7 +48,7 @@ export default function EmailPreferencesPage({
           <CardDescription>Manage your email preferences</CardDescription>
         </CardHeader>
         <CardContent>
-          <UpdateEmailPreferencesForm token={token} />
+          <UpdateEmailPreferencesForm emailPreference={emailPreference} />
         </CardContent>
       </Card>
     </Shell>
