@@ -67,7 +67,7 @@ export default async function CategoryPage({
   const storesTransaction = await getStoresAction({
     limit: storesLimit,
     offset: storesOffset,
-    sort: "name.asc",
+    sort: "productCount.desc",
   })
 
   const storePageCount = Math.ceil(storesTransaction.total / storesLimit)

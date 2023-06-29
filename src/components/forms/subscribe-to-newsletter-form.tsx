@@ -42,13 +42,17 @@ export function SubscribeToNewsletterForm() {
         method: "POST",
         body: JSON.stringify({
           email: data.email,
-          // This token is used to manage the subscription on the email-preferences page as the search param.
+          // This token is used as a search param in the email preferences page to identify the subscriber.
           token: crypto.randomUUID(),
         }),
       })
 
       if (response.status === 409) {
         toast.error("You are already subscribed to our newsletter.")
+      }
+
+      if (response.status === 422) {
+        toast.error("Inavlid input.")
       }
 
       if (response.status === 500) {

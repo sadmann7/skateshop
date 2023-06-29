@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { stores, type Store } from "@/db/schema"
+import { products, stores, type Store } from "@/db/schema"
 import { and, asc, desc, eq, gt, lt, sql } from "drizzle-orm"
 import { type z } from "zod"
 
@@ -12,7 +12,7 @@ import type { getStoreSchema, storeSchema } from "@/lib/validations/store"
 export async function getStoresAction(input: {
   limit?: number
   offset?: number
-  sort?: `${keyof Store}.${"asc" | "desc"}`
+  sort?: `${keyof Store | "productCount"}.${"asc" | "desc"}`
 }) {
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0
@@ -27,12 +27,19 @@ export async function getStoresAction(input: {
       .select({
         id: stores.id,
         name: stores.name,
+        productCount: sql<number>`count(${products.id})`,
       })
       .from(stores)
       .limit(limit)
       .offset(offset)
+      .leftJoin(products, eq(stores.id, products.storeId))
+      .groupBy(stores.id)
       .orderBy(
-        column && column in stores
+        input.sort === "productCount.asc"
+          ? asc(sql<number>`count(${products.id})`)
+          : input.sort === "productCount.desc"
+          ? desc(sql<number>`count(${products.id})`)
+          : column && column in stores
           ? order === "asc"
             ? asc(stores[column])
             : desc(stores[column])

@@ -69,7 +69,6 @@
     "tailwindcss-animate": "^1.0.6",
     "unstyled-table": "0.0.3-alpha-3",
     "uploadthing": "^5.1.0",
-    "zact": "^0.0.2",
     "zod": "^3.21.4"
   },
   "devDependencies": {

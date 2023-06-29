@@ -1,4 +1,3 @@
-import { env } from "@/env.mjs"
 import {
   Body,
   Column,
@@ -7,6 +6,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Row,
@@ -21,72 +21,61 @@ interface NewsletterWelcomeEmailProps {
   token: string
 }
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
+
+const newsletterImages = [
+  {
+    id: 1,
+    src: `${baseUrl}/images/deck-1.webp`,
+    alt: "Skateboard deck",
+  },
+
+  {
+    id: 2,
+    src: `${baseUrl}/images/shoe-1.webp`,
+    alt: "Skate shoes",
+  },
+]
+
 export default function NewsletterWelcomeEmail({
   firstName = "there",
   fromEmail,
   token,
 }: NewsletterWelcomeEmailProps) {
-  const previewText = `Hi ${firstName}, welcome to skateshop!`
+  const previewText = `Hi ${firstName}, welcome to Skateshop13!`
 
   return (
     <Html>
       <Head>
-        <title>Welcome to skateshop!</title>
+        <title>Skateshop13 Newsletter</title>
       </Head>
       <Preview>{previewText}</Preview>
       <Tailwind>
-        <Body className="m-auto bg-white font-sans">
+        <Body className="m-auto bg-zinc-50 font-sans">
           <Container className="mx-auto my-[40px] max-w-xl rounded p-4">
-            <Section className="mt-[32px]">
+            <Section>
               <Row>
-                <Column className="w-full">
-                  <Heading className="text-center text-2xl font-bold">
-                    Welcome to skateshop!
-                  </Heading>
-                  <Hr className="my-4" />
-                  <Text className="text-center">{previewText}</Text>
-                  <Text className="text-center">
-                    {`We'll`} be sending you the latest news and updates from
-                    our blog.
-                  </Text>
-                  <Text className="text-center">
-                    If you have any questions, please{" "}
-                    <Link
-                      className="text-blue-500"
-                      href={`mailto:${fromEmail}`}
-                    >
-                      contact us
-                    </Link>
-                    .
-                  </Text>
-                  <Text className="text-center">Thanks for subscribing!</Text>
-                  <Text className="text-center">
-                    <Link
-                      className="text-blue-500"
-                      href="https://skateshop.sadmn.com"
-                    >
-                      skateshop
-                    </Link>
-                  </Text>
-                  <Text className="text-center">
-                    <Link
-                      className="text-blue-500"
-                      href="https://skateshop.sadmn.com"
-                    >
-                      skateshop.sadmn.com
-                    </Link>
+                <Column className="text-center">
+                  <Heading className="text-2xl font-bold">Skateshop13</Heading>
+                  <Text className="text-zinc-500">
+                    An open source e-commerce skateshop build with everything
+                    new in Next.js 13.
                   </Text>
                 </Column>
-                <Column className="w-full">
-                  <Text className="text-center">
-                    <Link
-                      className="text-blue-500"
-                      href={`${env.NEXT_PUBLIC_APP_URL}/email-preferences?token=${token}`}
-                    >
-                      Unsubscribe
-                    </Link>
-                  </Text>
-                </Column>
+              </Row>
+            </Section>
+            <Section className="mt-4">
+              <Row>
+                {newsletterImages.map((image) => (
+                  <Img
+                    key={image.id}
+                    src={image.src}
+                    alt={image.alt}
+                    width={400}
+                    height={400}
+                    className="rounded"
+                  />
+                ))}
               </Row>
             </Section>
           </Container>
