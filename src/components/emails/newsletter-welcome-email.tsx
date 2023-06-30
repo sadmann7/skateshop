@@ -59,7 +59,7 @@ export default function NewsletterWelcomeEmail({
       <Tailwind>
         <Body className="mx-auto bg-zinc-50 font-sans">
           <Container className="mx-auto my-[40px] max-w-2xl rounded p-4">
-            <Section className="mb-6 mt-4">
+            <Section className="mt-4">
               <Heading className="text-center text-2xl font-semibold text-zinc-950">
                 Skateshop13
               </Heading>
@@ -75,7 +75,7 @@ export default function NewsletterWelcomeEmail({
                 {`We'll`} be sending you a newsletter every month.
               </Text>
             </Section>
-            <Section className="mt-8">
+            <Section className="mt-6">
               {newsletterImages.map((item) => (
                 <Row key={item.alt} className="mt-10">
                   <Img
