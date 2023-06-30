@@ -1,6 +1,8 @@
 import { type Product } from "@/db/schema"
 import { type FileWithPath } from "react-dropzone"
+import { type z } from "zod"
 
+import type { cartItemSchema, checkoutItemSchema } from "@/lib/validations/cart"
 import { type Icons } from "@/components/icons"
 
 export interface NavItem {
@@ -42,15 +44,9 @@ export type StoredFile = {
   url: string
 }
 
-export type CartItem = {
-  productId: number
-  quantity: number
-  productSubcategory?: string | null
-}
+export type CartItem = z.infer<typeof cartItemSchema>
 
-export interface CheckoutItem extends CartItem {
-  price: number
-}
+export type CheckoutItem = z.infer<typeof checkoutItemSchema>
 
 export interface CartLineItem
   extends Pick<

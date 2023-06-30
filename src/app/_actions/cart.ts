@@ -4,8 +4,15 @@ import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, products, stores } from "@/db/schema"
-import type { CartItem, CartLineItem } from "@/types"
+import type { CartLineItem } from "@/types"
 import { eq, inArray } from "drizzle-orm"
+import { type z } from "zod"
+
+import type {
+  cartItemSchema,
+  deleteCartItemSchema,
+  deleteCartItemsSchema,
+} from "@/lib/validations/cart"
 
 export async function getCartAction(): Promise<CartLineItem[]> {
   const cartId = cookies().get("cartId")?.value
@@ -62,7 +69,7 @@ export async function getCartItemsAction(input: { cartId?: number }) {
   return cart?.items
 }
 
-export async function addToCartAction(input: CartItem) {
+export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
   const cookieStore = cookies()
   const cartId = cookieStore.get("cartId")?.value
 
@@ -132,7 +139,9 @@ export async function deleteCartAction() {
   await db.delete(carts).where(eq(carts.id, cartId))
 }
 
-export async function deleteCartItemAction(input: { productId: number }) {
+export async function deleteCartItemAction(
+  input: z.infer<typeof deleteCartItemSchema>
+) {
   const cartId = Number(cookies().get("cartId")?.value)
 
   if (!cartId) {
@@ -162,7 +171,9 @@ export async function deleteCartItemAction(input: { productId: number }) {
   revalidatePath("/")
 }
 
-export async function deleteCartItemsAction(input: { productIds: number[] }) {
+export async function deleteCartItemsAction(
+  input: z.infer<typeof deleteCartItemsSchema>
+) {
   const cartId = cookies().get("cartId")?.value
 
   if (!cartId) {

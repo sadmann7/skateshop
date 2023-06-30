@@ -6,7 +6,7 @@ import Link from "next/link"
 import { type Product } from "@/db/schema"
 import { toast } from "sonner"
 
-import { formatPrice } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -20,7 +20,7 @@ import {
 import { Icons } from "@/components/icons"
 import { addToCartAction } from "@/app/_actions/cart"
 
-interface ProductCardProps {
+interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Product
   variant?: "default" | "switchable"
   isAddedToCart?: boolean
@@ -32,11 +32,16 @@ export function ProductCard({
   variant = "default",
   isAddedToCart = false,
   onSwitch,
+  className,
+  ...props
 }: ProductCardProps) {
   const [isPending, startTransition] = React.useTransition()
 
   return (
-    <Card className="h-full overflow-hidden rounded-sm">
+    <Card
+      className={cn("h-full overflow-hidden rounded-sm", className)}
+      {...props}
+    >
       <Link
         aria-label={`View ${product.name} details`}
         href={`/product/${product.id}`}
@@ -55,7 +60,12 @@ export function ProductCard({
                 loading="lazy"
               />
             ) : (
-              <div className="flex h-full items-center justify-center bg-secondary">
+              <div
+                aria-label="Placeholder"
+                role="img"
+                aria-roledescription="placeholder"
+                className="flex h-full items-center justify-center bg-secondary"
+              >
                 <Icons.placeholder
                   className="h-9 w-9 text-muted-foreground"
                   aria-hidden="true"
