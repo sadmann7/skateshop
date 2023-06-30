@@ -48,16 +48,16 @@ export function SubscribeToNewsletterForm() {
         }),
       })
 
-      if (response.status === 400) {
-        toast.error("The daily email limit has been reached.")
-      }
-
       if (response.status === 409) {
         toast.error("You are already subscribed to our newsletter.")
       }
 
       if (response.status === 422) {
         toast.error("Inavlid input.")
+      }
+
+      if (response.status === 429) {
+        toast.error("The daily email limit has been reached.")
       }
 
       if (response.status === 500) {

@@ -3,7 +3,7 @@ import { emailPreferences } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
-import { ErrorResponse } from "resend"
+import { type ErrorResponse } from "resend"
 import { z } from "zod"
 
 import { resend } from "@/lib/resend"
@@ -14,8 +14,6 @@ export async function POST(req: Request) {
   const input = subscribeToNewsletterSchema.parse(await req.json())
 
   try {
-    await db.delete(emailPreferences)
-
     const emailPreference = await db.query.emailPreferences.findFirst({
       where: eq(emailPreferences.email, input.email),
     })
@@ -59,7 +57,7 @@ export async function POST(req: Request) {
     const resendError = error as ErrorResponse
 
     if (resendError?.error?.message) {
-      return new Response(resendError.error.message, { status: 400 })
+      return new Response(resendError.error.message, { status: 429 })
     }
 
     if (error instanceof Error) {

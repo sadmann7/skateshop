@@ -20,9 +20,7 @@ interface NewsletterWelcomeEmailProps {
   token: string
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-  ? `https://${process.env.NEXT_PUBLIC_APP_URL}`
-  : ""
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
 
 // For previewing we need to put images in the .react-email/public folder
 // In production we need to put images in the root public folder
@@ -100,9 +98,11 @@ export default function NewsletterWelcomeEmail({
                   </Text>
                 </Row>
               ))}
-              <Text className="mb-0 mt-4 text-center text-base">
-                If you have any questions, please {`don't`} hesitate to reach
-                out to us at{" "}
+            </Section>
+            <Section className="mt-4 text-center text-zinc-400">
+              <Text className="my-4">
+                {`We're`} looking forward to seeing you around! If you have any
+                questions, please {`don't`} hesitate to reach out to us at{" "}
                 <Link
                   href={`mailto:${fromEmail}`}
                   className="text-blue-500 underline"
@@ -110,9 +110,7 @@ export default function NewsletterWelcomeEmail({
                   {fromEmail}
                 </Link>
               </Text>
-            </Section>
-            <Section className="mt-4 text-center text-zinc-400">
-              <Text className="m-0">
+              <Text className="mb-0 mt-4">
                 @ Skateshop13 {new Date().getFullYear()}
               </Text>
               <Text className="m-0">
