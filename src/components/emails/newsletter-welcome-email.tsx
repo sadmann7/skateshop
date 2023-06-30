@@ -23,6 +23,25 @@ interface NewsletterWelcomeEmailProps {
 
 const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
 
+const newsletterImages = [
+  {
+    src: `${baseUrl}/static/skateboarder-flying-high.webp`,
+    alt: "Skateboarder flying high",
+    credit: "ALLAN FRANCA CARMO",
+    creditUrl:
+      "https://www.pexels.com/photo/time-lapse-photography-of-man-doing-skateboard-trick-3133685/",
+    description: `Skateboarding is a sport that has been around for decades. It's not just about the tricks, but also about the culture and community that surrounds it. So we decided to create a newsletter to share our passion with others who love skateboarding as much as we do!`,
+  },
+  {
+    src: `${baseUrl}/static/skateboarder-landing-on-half-pipe.webp`,
+    alt: "Skateboarder landing on half pipe",
+    credit: "cottonbro studio",
+    creditUrl:
+      "https://www.pexels.com/photo/skateboarder-jumping-a-skateboard-5037502/",
+    description: `${`We'll`} be keeping you up to date with the latest skateboarding news, events, and more. Stay up to date with the latest trends and tricks. Stay tuned for more!`,
+  },
+]
+
 export default function NewsletterWelcomeEmail({
   firstName = "there",
   fromEmail,
@@ -37,7 +56,7 @@ export default function NewsletterWelcomeEmail({
       </Head>
       <Preview>{previewText}</Preview>
       <Tailwind>
-        <Body className="m-auto bg-zinc-50 font-sans">
+        <Body className="mx-auto bg-zinc-50 font-sans">
           <Container className="mx-auto my-[40px] max-w-2xl rounded p-4">
             <Section className="mt-4">
               <Heading className="text-center text-2xl font-semibold text-zinc-950">
@@ -55,25 +74,32 @@ export default function NewsletterWelcomeEmail({
                 {`We'll`} be sending you a newsletter every month.
               </Text>
             </Section>
-            <Section>
-              <Img
-                src={`${baseUrl}/static/skateboarder-landing-on-half-pipe.webp`}
-                alt="Skateboard laying on the ground"
-                height={424}
-                className="mt-8 aspect-video w-full object-cover"
-              />
-              <Text className="my-2.5 text-center text-zinc-400">
-                Photo by{" "}
-                <Link
-                  href="https://www.pexels.com/photo/skateboarder-jumping-a-skateboard-5037502/"
-                  className="text-blue-500 underline"
-                >
-                  cottonbro studio
-                </Link>
-              </Text>
+            <Section className="mb-0 mt-8">
+              {newsletterImages.map((item) => (
+                <Row key={item.alt} className="mb-0 mt-4">
+                  <Img
+                    src={item.src}
+                    alt={item.alt}
+                    height={424}
+                    className="aspect-video w-full object-cover"
+                  />
+                  <Text className="my-2.5 text-center text-zinc-400">
+                    Photo by{" "}
+                    <Link
+                      href={item.creditUrl}
+                      className="text-blue-500 underline"
+                    >
+                      {item.credit}
+                    </Link>
+                  </Text>
+                  <Text className="mb-0 text-center text-base">
+                    {item.description}
+                  </Text>
+                </Row>
+              ))}
             </Section>
             <Section className="mt-4 text-center text-zinc-400">
-              <Text>
+              <Text className="mt-0">
                 {`We're`} looking forward to seeing you around! If you have any
                 questions, please {`don't`} hesitate to reach out to us at{" "}
                 <Link
