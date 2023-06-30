@@ -25,10 +25,12 @@ export async function POST(req: Request) {
 
     const user = await currentUser()
 
+    const subject = input.subject ?? "Welcome to our newsletter"
+
     await resend.emails.send({
       from: env.EMAIL_FROM_ADDRESS,
       to: input.email,
-      subject: "Welcome to skateshop",
+      subject,
       react: NewsletterWelcomeEmail({
         firstName: user?.firstName ?? undefined,
         fromEmail: env.EMAIL_FROM_ADDRESS,

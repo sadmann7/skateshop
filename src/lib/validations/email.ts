@@ -9,6 +9,7 @@ export const emailSchema = z.object({
 export const subscribeToNewsletterSchema = z.object({
   email: emailSchema.shape.email,
   token: z.string(),
+  subject: z.string().optional(),
 })
 
 export const updateEmailPreferencesSchema = z.object({

@@ -34,10 +34,10 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
 
   return (
     <Shell>
-      <div className="flex flex-col gap-4 md:flex-row">
+      <Header title={product.name} description={product.description} />
+      {/* <div className="flex flex-col gap-4 md:flex-row">
         <ImageCarousel className="flex-1" images={product.images} />
-        <Header title={product.name} description={product.description} />
-      </div>
+      </div> */}
     </Shell>
   )
 }

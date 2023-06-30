@@ -80,15 +80,15 @@ export function ProductCard({
         {variant === "default" ? (
           <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
             <Link
-              aria-label="Quick view"
-              href={`/quickview/product/${product.id}`}
+              aria-label="Preview"
+              href={`/preview/product/${product.id}`}
               className={buttonVariants({
                 variant: "outline",
                 size: "sm",
                 className: "h-8 w-full rounded-sm",
               })}
             >
-              Quick view
+              Preview
             </Link>
             <Button
               aria-label="Add to cart"
