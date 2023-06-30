@@ -1,6 +1,5 @@
 import {
   Body,
-  Column,
   Container,
   Head,
   Heading,
@@ -25,7 +24,7 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
 
 const newsletterImages = [
   {
-    src: `${baseUrl}/static/skateboarder-flying-high.webp`,
+    src: `${baseUrl}/images/skateboarder-flying-high.webp`,
     alt: "Skateboarder flying high",
     credit: "ALLAN FRANCA CARMO",
     creditUrl:
@@ -33,7 +32,7 @@ const newsletterImages = [
     description: `Skateboarding is a sport that has been around for decades. It's not just about the tricks, but also about the culture and community that surrounds it. So we decided to create a newsletter to share our passion with others who love skateboarding as much as we do!`,
   },
   {
-    src: `${baseUrl}/static/skateboarder-landing-on-half-pipe.webp`,
+    src: `${baseUrl}/images/skateboarder-landing-on-half-pipe.webp`,
     alt: "Skateboarder landing on half pipe",
     credit: "cottonbro studio",
     creditUrl:
@@ -58,7 +57,7 @@ export default function NewsletterWelcomeEmail({
       <Tailwind>
         <Body className="mx-auto bg-zinc-50 font-sans">
           <Container className="mx-auto my-[40px] max-w-2xl rounded p-4">
-            <Section className="mt-4">
+            <Section className="mb-12 mt-4">
               <Heading className="text-center text-2xl font-semibold text-zinc-950">
                 Skateshop13
               </Heading>
@@ -74,16 +73,16 @@ export default function NewsletterWelcomeEmail({
                 {`We'll`} be sending you a newsletter every month.
               </Text>
             </Section>
-            <Section className="mb-0 mt-8">
+            <Section className="mt-8">
               {newsletterImages.map((item) => (
-                <Row key={item.alt} className="mb-0 mt-4">
+                <Row key={item.alt} className="mb-0 mt-10">
                   <Img
                     src={item.src}
                     alt={item.alt}
                     height={424}
                     className="aspect-video w-full object-cover"
                   />
-                  <Text className="my-2.5 text-center text-zinc-400">
+                  <Text className="mb-0 mt-2 text-center text-zinc-400">
                     Photo by{" "}
                     <Link
                       href={item.creditUrl}
@@ -92,7 +91,7 @@ export default function NewsletterWelcomeEmail({
                       {item.credit}
                     </Link>
                   </Text>
-                  <Text className="mb-0 text-center text-base">
+                  <Text className="mb-0 mt-4 text-center text-base">
                     {item.description}
                   </Text>
                 </Row>
