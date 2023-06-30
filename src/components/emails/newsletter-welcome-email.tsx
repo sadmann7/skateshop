@@ -20,8 +20,12 @@ interface NewsletterWelcomeEmailProps {
   token: string
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+  ? `https://${process.env.NEXT_PUBLIC_APP_URL}`
+  : ""
 
+// For previewing we need to put images in the .react-email/public folder
+// In production we need to put images in the root public folder
 const newsletterImages = [
   {
     src: `${baseUrl}/images/skateboarder-flying-high.webp`,
@@ -57,7 +61,7 @@ export default function NewsletterWelcomeEmail({
       <Tailwind>
         <Body className="mx-auto bg-zinc-50 font-sans">
           <Container className="mx-auto my-[40px] max-w-2xl rounded p-4">
-            <Section className="mb-12 mt-4">
+            <Section className="mb-6 mt-4">
               <Heading className="text-center text-2xl font-semibold text-zinc-950">
                 Skateshop13
               </Heading>
@@ -75,7 +79,7 @@ export default function NewsletterWelcomeEmail({
             </Section>
             <Section className="mt-8">
               {newsletterImages.map((item) => (
-                <Row key={item.alt} className="mb-0 mt-10">
+                <Row key={item.alt} className="mt-10">
                   <Img
                     src={item.src}
                     alt={item.alt}
@@ -96,11 +100,9 @@ export default function NewsletterWelcomeEmail({
                   </Text>
                 </Row>
               ))}
-            </Section>
-            <Section className="mt-4 text-center text-zinc-400">
-              <Text className="mt-0">
-                {`We're`} looking forward to seeing you around! If you have any
-                questions, please {`don't`} hesitate to reach out to us at{" "}
+              <Text className="mb-0 mt-4 text-center text-base">
+                If you have any questions, please {`don't`} hesitate to reach
+                out to us at{" "}
                 <Link
                   href={`mailto:${fromEmail}`}
                   className="text-blue-500 underline"
@@ -108,6 +110,8 @@ export default function NewsletterWelcomeEmail({
                   {fromEmail}
                 </Link>
               </Text>
+            </Section>
+            <Section className="mt-4 text-center text-zinc-400">
               <Text className="m-0">
                 @ Skateshop13 {new Date().getFullYear()}
               </Text>

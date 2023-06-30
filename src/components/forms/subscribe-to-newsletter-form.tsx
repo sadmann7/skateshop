@@ -48,6 +48,10 @@ export function SubscribeToNewsletterForm() {
         }),
       })
 
+      if (response.status === 400) {
+        toast.error("The daily email limit has been reached.")
+      }
+
       if (response.status === 409) {
         toast.error("You are already subscribed to our newsletter.")
       }
@@ -89,7 +93,7 @@ export function SubscribeToNewsletterForm() {
               </FormControl>
               <FormMessage />
               <Button
-                className="absolute right-[5.2px] top-[5.5px] h-7 w-7"
+                className="absolute right-[5.2px] top-[5.5px] z-20 h-7 w-7"
                 size="icon"
                 disabled={isPending}
               >
