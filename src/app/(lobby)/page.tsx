@@ -97,8 +97,8 @@ export default async function IndexPage() {
               )}
             >
               Create a store
+              <span className="sr-only">Create a store</span>
             </div>
-            <span className="sr-only">Create a store</span>
           </Link>
         </Card>
         <div className="space-y-5">

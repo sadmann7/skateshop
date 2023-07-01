@@ -28,17 +28,7 @@ export async function POST(req: Request) {
 
     const subject = input.subject ?? "Welcome to our newsletter"
 
-    await resend.emails.send({
-      from: env.EMAIL_FROM_ADDRESS,
-      to: input.email,
-      subject,
-      react: NewsletterWelcomeEmail({
-        firstName: user?.firstName ?? undefined,
-        fromEmail: env.EMAIL_FROM_ADDRESS,
-        token: input.token,
-      }),
-    })
-
+    // If email preference exists, update it and send the email
     if (emailPreference) {
       await db
         .update(emailPreferences)
@@ -46,7 +36,30 @@ export async function POST(req: Request) {
           newsletter: true,
         })
         .where(eq(emailPreferences.email, input.email))
+
+      await resend.emails.send({
+        from: env.EMAIL_FROM_ADDRESS,
+        to: input.email,
+        subject,
+        react: NewsletterWelcomeEmail({
+          firstName: user?.firstName ?? undefined,
+          fromEmail: env.EMAIL_FROM_ADDRESS,
+          token: emailPreference.token,
+        }),
+      })
     } else {
+      // If email preference does not exist, create it and send the email
+      await resend.emails.send({
+        from: env.EMAIL_FROM_ADDRESS,
+        to: input.email,
+        subject,
+        react: NewsletterWelcomeEmail({
+          firstName: user?.firstName ?? undefined,
+          fromEmail: env.EMAIL_FROM_ADDRESS,
+          token: input.token,
+        }),
+      })
+
       await db.insert(emailPreferences).values({
         email: input.email,
         token: input.token,
