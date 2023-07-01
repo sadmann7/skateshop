@@ -100,11 +100,7 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
   // If this is a new product, create a new cart item. Otherwise, update the quantity of the existing cart item
   if (input.quantity > 0) {
     if (cartItem) {
-      if (input.quantity === 1) {
-        cartItem.quantity += 1
-      } else {
-        cartItem.quantity = input.quantity
-      }
+      cartItem.quantity = input.quantity
     } else {
       cart.items?.push(input)
     }
