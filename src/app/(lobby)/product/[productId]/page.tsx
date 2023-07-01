@@ -13,7 +13,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Separator } from "@/components/ui/separator"
-import { UpdateCartItemForm } from "@/components/forms/update-cart-item-form"
+import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { Icons } from "@/components/icons"
 import { ImageCarousel } from "@/components/image-carousel"
 import { ProductCard } from "@/components/product-card"
@@ -98,7 +98,7 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
             ) : null}
           </div>
           <Separator className="my-1.5" />
-          <UpdateCartItemForm productId={productId} />
+          <AddToCartForm productId={productId} />
           <Separator className="mt-5" />
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="description">

@@ -38,7 +38,7 @@ export function SubscribeToNewsletterForm() {
     console.log(data)
 
     startTransition(async () => {
-      const response = await fetch("/api/email/newsletter", {
+      const response = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         body: JSON.stringify({
           email: data.email,

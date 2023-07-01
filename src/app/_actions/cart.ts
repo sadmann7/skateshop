@@ -97,18 +97,56 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
     (item) => item.productId === input.productId
   )
 
-  // If this is a new product, create a new cart item. Otherwise, update the quantity of the existing cart item
-  if (input.quantity > 0) {
-    if (cartItem) {
-      cartItem.quantity = input.quantity
-    } else {
-      cart.items?.push(input)
-    }
+  if (cartItem) {
+    cartItem.quantity += input.quantity
+  } else {
+    cart.items?.push(input)
   }
-  // If the quantity is 0, remove the item from the cart
-  else if (cartItem) {
+
+  await db
+    .update(carts)
+    .set({
+      items: cart.items,
+    })
+    .where(eq(carts.id, Number(cartId)))
+
+  revalidatePath("/")
+}
+
+export async function updateCartItemAction(
+  input: z.infer<typeof cartItemSchema>
+) {
+  const cartId = cookies().get("cartId")?.value
+
+  if (!cartId) {
+    throw new Error("cartId not found, please try again.")
+  }
+
+  if (isNaN(Number(cartId))) {
+    throw new Error("Invalid cartId, please try again.")
+  }
+
+  const cart = await db.query.carts.findFirst({
+    where: eq(carts.id, Number(cartId)),
+  })
+
+  if (!cart) {
+    throw new Error("Cart not found, please try again.")
+  }
+
+  const cartItem = cart.items?.find(
+    (item) => item.productId === input.productId
+  )
+
+  if (!cartItem) {
+    throw new Error("CartItem not found, please try again.")
+  }
+
+  if (input.quantity === 0) {
     cart.items =
       cart.items?.filter((item) => item.productId !== input.productId) ?? []
+  } else {
+    cartItem.quantity = input.quantity
   }
 
   await db
@@ -138,18 +176,18 @@ export async function deleteCartAction() {
 export async function deleteCartItemAction(
   input: z.infer<typeof deleteCartItemSchema>
 ) {
-  const cartId = Number(cookies().get("cartId")?.value)
+  const cartId = cookies().get("cartId")?.value
 
   if (!cartId) {
     throw new Error("cartId not found, please try again.")
   }
 
-  if (isNaN(cartId)) {
+  if (isNaN(Number(cartId))) {
     throw new Error("Invalid cartId, please try again.")
   }
 
   const cart = await db.query.carts.findFirst({
-    where: eq(carts.id, cartId),
+    where: eq(carts.id, Number(cartId)),
   })
 
   if (!cart) return
@@ -162,7 +200,7 @@ export async function deleteCartItemAction(
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, cartId))
+    .where(eq(carts.id, Number(cartId)))
 
   revalidatePath("/")
 }

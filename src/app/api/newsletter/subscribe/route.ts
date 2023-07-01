@@ -39,12 +39,21 @@ export async function POST(req: Request) {
       }),
     })
 
-    await db.insert(emailPreferences).values({
-      email: input.email,
-      token: input.token,
-      userId: user?.id,
-      newsletter: true,
-    })
+    if (emailPreference) {
+      await db
+        .update(emailPreferences)
+        .set({
+          newsletter: true,
+        })
+        .where(eq(emailPreferences.email, input.email))
+    } else {
+      await db.insert(emailPreferences).values({
+        email: input.email,
+        token: input.token,
+        userId: user?.id,
+        newsletter: true,
+      })
+    }
 
     return new Response(null, { status: 200 })
   } catch (error) {

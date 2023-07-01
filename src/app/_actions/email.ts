@@ -24,8 +24,6 @@ export async function subscribeToNewsletterAction(
     where: eq(emailPreferences.email, input.email),
   })
 
-  console.log(emailPreference)
-
   if (emailPreference) {
     throw new Error("You are already subscribed to the newsletter.")
   }
@@ -45,12 +43,21 @@ export async function subscribeToNewsletterAction(
     }),
   })
 
-  await db.insert(emailPreferences).values({
-    email: input.email,
-    token: input.token,
-    userId: user?.id,
-    newsletter: true,
-  })
+  if (emailPreference) {
+    await db
+      .update(emailPreferences)
+      .set({
+        newsletter: true,
+      })
+      .where(eq(emailPreferences.email, input.email))
+  } else {
+    await db.insert(emailPreferences).values({
+      email: input.email,
+      token: input.token,
+      userId: user?.id,
+      newsletter: true,
+    })
+  }
 
   revalidatePath("/")
 }

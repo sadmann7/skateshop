@@ -20,13 +20,13 @@ import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 import { addToCartAction } from "@/app/_actions/cart"
 
-interface UpdateCartItemFormProps {
+interface AddToCartFromProps {
   productId: number
 }
 
 type Inputs = z.infer<typeof updateCartItemSchema>
 
-export function UpdateCartItemForm({ productId }: UpdateCartItemFormProps) {
+export function AddToCartForm({ productId }: AddToCartFromProps) {
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
