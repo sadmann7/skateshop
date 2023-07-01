@@ -5,10 +5,9 @@ import type { CartLineItem } from "@/types"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 import { deleteCartItemAction, updateCartItemAction } from "@/app/_actions/cart"
-
-import { Input } from "../ui/input"
 
 interface UpdateCartProps {
   cartLineItem: CartLineItem
@@ -18,7 +17,6 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
   const [isPending, startTransition] = React.useTransition()
 
   return (
-    // plus and minus buttons, input field, delete button
     <div className="flex items-center space-x-1">
       <div className="flex items-center space-x-1">
         <Button

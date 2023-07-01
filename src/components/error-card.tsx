@@ -26,7 +26,7 @@ export function ErrorCard({
   title,
   description,
   retryLink,
-  retryLinkText = "Try Again",
+  retryLinkText = "Go back",
   className,
   ...props
 }: ErrorCardProps) {
