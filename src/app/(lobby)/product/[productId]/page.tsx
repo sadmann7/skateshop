@@ -5,18 +5,19 @@ import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { and, desc, eq, not } from "drizzle-orm"
 
-import { cn, formatPrice } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { LoadingButton } from "@/components/ui/loading-button"
+import { formatPrice } from "@/lib/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Separator } from "@/components/ui/separator"
 import { UpdateCartItemForm } from "@/components/forms/update-cart-item-form"
-import { Header } from "@/components/header"
+import { Icons } from "@/components/icons"
 import { ImageCarousel } from "@/components/image-carousel"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
-import { addToCartAction } from "@/app/_actions/cart"
 
 export const metadata: Metadata = {
   title: "Product",
@@ -64,14 +65,24 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
 
   return (
     <Shell>
-      <Header title="Product" size="sm" />
-      <div className="flex flex-col gap-6 md:flex-row md:gap-10">
+      <div className="flex items-center space-x-1 text-sm capitalize text-muted-foreground">
+        <div className="truncate">Products</div>
+        <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
+        <div>{product.category}</div>
+        {product.subcategory ? (
+          <>
+            <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
+            <div className="text-foreground">{product.subcategory}</div>
+          </>
+        ) : null}
+      </div>
+      <div className="flex flex-col gap-8 md:flex-row md:gap-16">
         <ImageCarousel
-          className="w-full md:w-2/5"
+          className="w-full md:w-1/2"
           data={product.images ?? []}
-          asChild
         />
-        <div className="flex w-full flex-col space-y-4 md:w-3/5">
+        <Separator className="mt-4 md:hidden" />
+        <div className="flex w-full flex-col gap-4 md:w-1/2">
           <div className="space-y-2">
             <h2 className="line-clamp-1 text-2xl font-bold">{product.name}</h2>
             <p className="text-base text-muted-foreground">
@@ -86,16 +97,25 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
               </Link>
             ) : null}
           </div>
-          <Separator className="my-6" />
+          <Separator className="my-1.5" />
           <UpdateCartItemForm productId={productId} />
+          <Separator className="mt-5" />
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="description">
+              <AccordionTrigger>Description</AccordionTrigger>
+              <AccordionContent>
+                {product.description ??
+                  "No description is available for this product."}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
       {store && productsFromStore.length > 0 ? (
-        <div className="overflow-hidden pt-6">
+        <div className="overflow-hidden md:pt-6">
           <h2 className="line-clamp-1 flex-1 text-2xl font-bold">
             More products from {store.name}
           </h2>
-
           <div className="overflow-x-auto pb-2 pt-6">
             <div className="flex w-fit gap-4">
               {productsFromStore.map((product) => (

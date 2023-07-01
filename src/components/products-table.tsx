@@ -632,8 +632,8 @@ export function ProductsTable({
                   <div className="flex items-center space-x-2">
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="h-8 w-8 px-0"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={() => {
                         startTransition(() => {
                           router.push(
@@ -655,8 +655,8 @@ export function ProductsTable({
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="h-8 w-8 px-0"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={() => {
                         startTransition(() => {
                           router.push(
@@ -678,8 +678,8 @@ export function ProductsTable({
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="h-8 w-8 px-0"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={() => {
                         startTransition(() => {
                           router.push(
@@ -701,8 +701,8 @@ export function ProductsTable({
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="h-8 w-8 px-0"
+                      size="icon"
+                      className="h-8 w-8"
                       onClick={() => {
                         router.push(
                           `${pathname}?${createQueryString({

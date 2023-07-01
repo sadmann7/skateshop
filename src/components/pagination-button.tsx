@@ -74,8 +74,8 @@ export function PaginationButton({
     >
       <Button
         variant="outline"
-        size="sm"
-        className="h-8 w-8 px-0"
+        size="icon"
+        className="h-8 w-8"
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -94,8 +94,8 @@ export function PaginationButton({
       </Button>
       <Button
         variant="outline"
-        size="sm"
-        className="h-8 w-8 px-0"
+        size="icon"
+        className="h-8 w-8"
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -118,8 +118,8 @@ export function PaginationButton({
             aria-label="Page separator"
             key={i}
             variant="outline"
-            size="sm"
-            className="h-8 w-8 px-0"
+            size="icon"
+            className="h-8 w-8"
             disabled
           >
             ...
@@ -129,8 +129,8 @@ export function PaginationButton({
             aria-label={`Page ${pageNumber}`}
             key={i}
             variant={Number(page) === pageNumber ? "default" : "outline"}
-            size="sm"
-            className="h-8 w-8 px-0"
+            size="icon"
+            className="h-8 w-8"
             onClick={() => {
               startTransition(() => {
                 router.push(
@@ -150,8 +150,8 @@ export function PaginationButton({
       )}
       <Button
         variant="outline"
-        size="sm"
-        className="h-8 w-8 px-0"
+        size="icon"
+        className="h-8 w-8"
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -170,8 +170,8 @@ export function PaginationButton({
       </Button>
       <Button
         variant="outline"
-        size="sm"
-        className="h-8 w-8 px-0"
+        size="icon"
+        className="h-8 w-8"
         onClick={() => {
           router.push(
             `${pathname}?${createQueryString({

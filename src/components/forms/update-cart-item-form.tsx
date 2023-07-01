@@ -56,7 +56,7 @@ export function UpdateCartItemForm({ productId }: UpdateCartItemFormProps) {
   return (
     <Form {...form}>
       <form
-        className="grid max-w-[240px] gap-4"
+        className="grid gap-4 sm:max-w-[240px]"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
         <FormField
