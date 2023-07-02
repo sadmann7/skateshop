@@ -13,7 +13,7 @@ import { getProductsAction } from "@/app/_actions/product"
 import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.METADATA_BASE),
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Build a Board",
   description: "Select the components for your board",
 }

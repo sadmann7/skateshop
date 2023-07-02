@@ -17,7 +17,6 @@ export const env = createEnv({
     STRIPE_API_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
     STRIPE_PRO_STORE_PRICE_ID: z.string(),
-    METADATA_BASE: z.string(),
     NEXTJS_RUNTIME: z.string(),
   },
 
@@ -49,7 +48,6 @@ export const env = createEnv({
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     STRIPE_PRO_STORE_PRICE_ID: process.env.STRIPE_PRO_STORE_PRICE_ID,
-    METADATA_BASE: process.env.METADATA_BASE,
     NEXTJS_RUNTIME: process.env.NEXTJS_RUNTIME,
   },
   /**

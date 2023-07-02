@@ -24,7 +24,7 @@ export const runtime = env.NEXTJS_RUNTIME
 
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.METADATA_BASE),
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Stores",
   description: "Manage your stores",
 }

@@ -20,7 +20,7 @@ import { DialogShell } from "@/components/dialog-shell"
 import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.METADATA_BASE),
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Product",
   description: "Product description",
 }

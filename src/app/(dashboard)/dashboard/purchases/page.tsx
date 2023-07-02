@@ -7,7 +7,7 @@ import { Shell } from "@/components/shell"
 import { env } from "@/env.mjs"
 
 export const metadata: Metadata = {
-  metadataBase: new URL(env.METADATA_BASE),
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Purchases",
   description: "Manage your purchases",
 }
