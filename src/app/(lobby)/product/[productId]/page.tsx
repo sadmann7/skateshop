@@ -5,7 +5,7 @@ import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { and, desc, eq, not } from "drizzle-orm"
 
-import { formatPrice } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
@@ -68,7 +68,9 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
       <div className="flex items-center space-x-1 text-sm capitalize text-muted-foreground">
         <div className="truncate">Products</div>
         <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
-        <div>{product.category}</div>
+        <div className={cn(!product.subcategory && "text-foreground")}>
+          {product.category}
+        </div>
         {product.subcategory ? (
           <>
             <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />

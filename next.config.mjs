@@ -8,7 +8,7 @@ await import("./src/env.mjs")
 const config = {
   reactStrictMode: true,
   images: {
-    domains: ["uploadthing.com", "source.unsplash.com"],
+    domains: ["uploadthing.com"],
   },
   experimental: {
     serverActions: true,

@@ -19,17 +19,10 @@ export const sortOptions = [
   },
 ]
 
-export const productCategories: {
-  title: Product["category"]
-  subcategories: {
-    title: string
-    description?: string
-    image?: string
-    slug: string
-  }[]
-}[] = [
+export const productCategories = [
   {
     title: "skateboards",
+    image: "/images/skateboard-one.webp",
     subcategories: [
       {
         title: "Decks",
@@ -77,6 +70,7 @@ export const productCategories: {
   },
   {
     title: "clothing",
+    image: "/images/clothing-one.webp",
     subcategories: [
       {
         title: "T-shirts",
@@ -107,6 +101,7 @@ export const productCategories: {
   },
   {
     title: "shoes",
+    image: "/images/shoe-one.webp",
     subcategories: [
       {
         title: "Low Tops",
@@ -137,6 +132,7 @@ export const productCategories: {
   },
   {
     title: "accessories",
+    image: "/images/backpack-one.webp",
     subcategories: [
       {
         title: "Skate Tools",
@@ -178,7 +174,16 @@ export const productCategories: {
       },
     ],
   },
-]
+] satisfies {
+  title: Product["category"]
+  image: string
+  subcategories: {
+    title: string
+    description?: string
+    image?: string
+    slug: string
+  }[]
+}[]
 
 export const productTags = [
   "new",

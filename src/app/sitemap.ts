@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productsTransaction = await getProductsAction({
     limit: 10,
     offset: 0,
-    sort: "createdAt.asc",
+    sort: "createdAt.desc",
   })
 
   const products = productsTransaction.items.map((product) => ({
