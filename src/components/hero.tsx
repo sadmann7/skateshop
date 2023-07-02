@@ -1,102 +1,62 @@
-"use client"
-
-import * as React from "react"
 import Image from "next/image"
+import Link from "next/link"
+import Balance from "react-wrap-balancer"
 
+import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-const heroImages = [
-  {
-    title: "Hero Image One",
-    src: "/images/hero-image-one.webp",
-  },
-  {
-    title: "Hero Image Two",
-    src: "/images/hero-image-two.webp",
-  },
-  {
-    title: "Hero Image Three",
-    src: "/images/hero-image-three.webp",
-  },
-]
-
 export function Hero() {
-  // hero carousel with pagination
-  const [currentImage, setCurrentImage] = React.useState(0)
-
-  // function nextImage() {
-  //   if (currentImage === heroImages.length - 1) {
-  //     setCurrentImage(0)
-  //   } else {
-  //     setCurrentImage(currentImage + 1)
-  //   }
-  // }
-
-  // function prevImage() {
-  //   if (currentImage === 0) {
-  //     setCurrentImage(heroImages.length - 1)
-  //   } else {
-  //     setCurrentImage(currentImage - 1)
-  //   }
-  // }
-
   return (
-    <div
-      role="region"
-      aria-label="Hero"
-      aria-roledescription="carousel"
-      aria-live="polite"
-      aria-atomic="true"
-      aria-relevant="additions removals"
-      aria-describedby="hero-carousel"
-      className="relative"
-    >
-      <AspectRatio ratio={16 / 9}>
-        <div className="absolute inset-0 z-10 bg-black/60" />
-        <Image
-          src={heroImages[currentImage]?.src ?? "/images/hero-image-one.webp"}
-          alt={heroImages[currentImage]?.title ?? "Hero Image One"}
-          fill
-          className="object-cover"
-        />
-      </AspectRatio>
-      <div className="absolute inset-x-0 bottom-2 z-20 flex justify-center gap-2 pb-2">
-        {heroImages.map((image, index) => (
-          <Button
-            key={image.title}
-            className={cn(
-              "h-1.5 w-10 rounded-none p-0 hover:bg-white",
-              index === currentImage ? "bg-white" : "bg-zinc-500"
-            )}
-            onClick={() => setCurrentImage(index)}
-          >
-            <span className="sr-only">
-              Slide {index + 1} of {heroImages.length}
-            </span>
-          </Button>
-        ))}
+    <AspectRatio ratio={16 / 9}>
+      <div className="absolute inset-0 z-20 bg-black/80" />
+      <Image
+        src="/images/hero-one.webp"
+        alt="Hero"
+        fill
+        className="object-cover"
+        priority
+      />
+      <div className="absolute inset-0 z-30 grid h-full w-full place-items-center">
+        <div className="flex h-full w-full max-w-[980px] flex-col items-center justify-center px-4 py-8 text-center">
+          <h1 className="text-3xl font-bold leading-tight tracking-tighter text-zinc-50 md:text-5xl lg:leading-[1.1]">
+            Buy rad skating goodies
+          </h1>
+          <Balance className="mt-2.5 max-w-[750px] text-lg text-zinc-400 sm:text-xl">
+            Explore our collection of skateboards, wheels, trucks, bearings, and
+            more
+          </Balance>
+          <div className="mt-2.5 flex w-full items-center justify-center space-x-4 pb-8 pt-4 md:pb-10">
+            <Link
+              href="/products"
+              className={cn(
+                buttonVariants({
+                  className: "bg-zinc-50 text-zinc-950 hover:bg-zinc-50/90",
+                })
+              )}
+            >
+              Shop Now
+            </Link>
+            <Link
+              target="_blank"
+              rel="noreferrer"
+              href={siteConfig.links.github}
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  className:
+                    "bg-transparent text-zinc-50 hover:bg-zinc-950 hover:text-zinc-50",
+                })
+              )}
+            >
+              <Icons.gitHub className="mr-2 h-4 w-4" />
+              GitHub
+            </Link>
+          </div>
+        </div>
       </div>
-      {/* <div className="absolute inset-x-0 inset-y-1/2 z-20 hidden justify-between px-4 py-2 md:flex">
-        <Button
-          size="sm"
-          className="w-9 rounded-full bg-zinc-500 p-0 text-white hover:bg-zinc-600"
-          onClick={prevImage}
-        >
-          <Icons.chevronLeft className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Previous slide</span>
-        </Button>
-        <Button
-          size="sm"
-          className="w-9 rounded-full bg-zinc-500 p-0 text-white hover:bg-zinc-600"
-          onClick={nextImage}
-        >
-          <Icons.chevronRight className="h-6 w-6" aria-hidden="true" />
-          <span className="sr-only">Next slide</span>
-        </Button>
-      </div> */}
-    </div>
+    </AspectRatio>
   )
 }

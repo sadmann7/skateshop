@@ -8,19 +8,19 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-interface ImageCarouselProps
+interface ProductImageCarouselProps
   extends React.DetailedHTMLProps<
     React.HTMLAttributes<HTMLDivElement>,
     HTMLDivElement
   > {
-  data: StoredFile[]
+  images: StoredFile[]
 }
 
-export function ImageCarousel({
-  data,
+export function ProductImageCarousel({
+  images,
   className,
   ...props
-}: ImageCarouselProps) {
+}: ProductImageCarouselProps) {
   const imagesRef = React.useRef<HTMLDivElement>(null)
   const [currentImage, setCurrentImage] = React.useState(0)
 
@@ -33,20 +33,20 @@ export function ImageCarousel({
   }, [])
 
   const getNextSlide = React.useCallback(() => {
-    if (currentImage === data.length - 1) {
+    if (currentImage === images.length - 1) {
       goToSlide(0)
       return
     }
     goToSlide(currentImage + 1)
-  }, [currentImage, data.length, goToSlide])
+  }, [currentImage, images.length, goToSlide])
 
   const getPrevSlide = React.useCallback(() => {
     if (currentImage === 0) {
-      goToSlide(data.length - 1)
+      goToSlide(images.length - 1)
       return
     }
     goToSlide(currentImage - 1)
-  }, [currentImage, data.length, goToSlide])
+  }, [currentImage, images.length, goToSlide])
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -61,7 +61,7 @@ export function ImageCarousel({
 
   return (
     <div
-      aria-label="Image carousel"
+      aria-label="Product image carousel"
       className={cn("flex flex-col gap-2", className)}
       {...props}
     >
@@ -71,10 +71,10 @@ export function ImageCarousel({
           className="flex transition-transform duration-500 ease-in-out"
           ref={imagesRef}
         >
-          {data.length > 0 ? (
-            data.map((image, index) => (
+          {images.length > 0 ? (
+            images.map((image, index) => (
               <Image
-                aria-label={`Slide ${index + 1} of ${data.length}`}
+                aria-label={`Slide ${index + 1} of ${images.length}`}
                 role="group"
                 aria-roledescription="slide"
                 key={index}
@@ -100,7 +100,7 @@ export function ImageCarousel({
           )}
         </div>
       </div>
-      {data.length > 1 ? (
+      {images.length > 1 ? (
         <div className="flex w-full items-center justify-center gap-2">
           <Button
             variant="outline"
@@ -114,7 +114,7 @@ export function ImageCarousel({
             />
             <span className="sr-only">Previous slide</span>
           </Button>
-          {data.map((image, i) => (
+          {images.map((image, i) => (
             <Button
               key={i}
               variant="outline"
@@ -129,7 +129,7 @@ export function ImageCarousel({
               <div className="absolute inset-0 z-10 bg-zinc-950/20 group-hover:bg-zinc-950/40" />
               <Image src={image.url} alt={image.name} fill />
               <span className="sr-only">
-                Slide {i + 1} of {data.length}
+                Slide {i + 1} of {images.length}
               </span>
             </Button>
           ))}

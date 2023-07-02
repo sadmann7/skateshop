@@ -17,7 +17,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
-import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
@@ -49,11 +48,6 @@ export default async function IndexPage() {
     <div>
       <Hero />
       <Shell>
-        <Header
-          className="place-items-center text-center"
-          title="Buy rad skating goodies"
-          description="We have a wide range of products to suit your needs"
-        />
         <div className="space-y-5">
           <h2 className="text-2xl font-medium">Categories</h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -154,10 +148,6 @@ export default async function IndexPage() {
           </div>
         </div>
         <Card className="mt-4 grid place-items-center gap-4 px-6 py-16 text-center">
-          {/* <p className="text-sm text-muted-foreground">
-            {dailyNewsletterCount[0]?.count ?? 0} newsletters sent out of 100
-            daily limit of the Resend free plan
-          </p> */}
           <h2 className="text-2xl font-medium">
             Join our newsletter to get the latest news and updates
           </h2>

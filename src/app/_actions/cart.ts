@@ -90,6 +90,11 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
   })
 
   if (!cart) {
+    cookieStore.set({
+      name: "cartId",
+      value: "",
+      expires: new Date(0),
+    })
     throw new Error("Cart not found, please try again.")
   }
 

@@ -15,8 +15,8 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { Icons } from "@/components/icons"
-import { ImageCarousel } from "@/components/image-carousel"
 import { ProductCard } from "@/components/product-card"
+import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
@@ -79,9 +79,9 @@ export default async function ProductPage({ params }: PrdouctPageProps) {
         ) : null}
       </div>
       <div className="flex flex-col gap-8 md:flex-row md:gap-16">
-        <ImageCarousel
+        <ProductImageCarousel
           className="w-full md:w-1/2"
-          data={product.images ?? []}
+          images={product.images ?? []}
         />
         <Separator className="mt-4 md:hidden" />
         <div className="flex w-full flex-col gap-4 md:w-1/2">

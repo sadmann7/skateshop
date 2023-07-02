@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { revalidatePath } from "next/cache"
 import { notFound, redirect } from "next/navigation"
 import { db } from "@/db"
-import { stores } from "@/db/schema"
+import { products, stores } from "@/db/schema"
 import { and, eq, not } from "drizzle-orm"
 
 import {
@@ -73,6 +73,9 @@ export default async function UpdateStorePage({
     }
 
     await db.delete(stores).where(eq(stores.id, storeId))
+
+    // Delete all products of this store
+    await db.delete(products).where(eq(products.storeId, storeId))
 
     const path = "/dashboard/stores"
     revalidatePath(path)
