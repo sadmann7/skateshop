@@ -7,12 +7,12 @@ on:
     branches: ["main"]
 
 env:
-  NEXT_PUBLIC_APP_URL: "fake"
+  NEXT_PUBLIC_APP_URL: "https://fake.com"
   DATABASE_URL: "fake"
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
   CLERK_SECRET_KEY: "fake"
   RESEND_API_KEY: "fake"
-  EMAIL_FROM_ADDRESS: "fake"
+  EMAIL_FROM_ADDRESS: "fake@fake.com"
   UPLOADTHING_SECRET: "fake"
   UPLOADTHING_APP_ID: "fake"
   STRIPE_API_KEY: "fake"
