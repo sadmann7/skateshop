@@ -1,8 +1,7 @@
 import type { CartItem, StoredFile } from "@/types"
-import { relations, sql, type InferModel } from "drizzle-orm"
+import { relations, type InferModel } from "drizzle-orm"
 import {
   boolean,
-  datetime,
   decimal,
   int,
   json,

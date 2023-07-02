@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
+import dayjs from "dayjs"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { ProductsTable } from "@/components/products-table"
@@ -54,7 +55,9 @@ export default async function ProductsPage({
       : []
   // Date range for created date
   const [start_date, end_date] =
-    typeof date_range === "string" ? date_range.split("to") : []
+    typeof date_range === "string"
+      ? date_range.split("to").map((date) => dayjs(date).toDate())
+      : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
   const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
@@ -71,8 +74,12 @@ export default async function ProductsPage({
             ? like(products.name, `%${name}%`)
             : undefined,
           // Filter by created date
-          start_date ? gte(products.createdAt, start_date) : undefined,
-          end_date ? lte(products.createdAt, end_date) : undefined
+          start_date && end_date
+            ? and(
+                gte(products.createdAt, start_date),
+                lte(products.createdAt, end_date)
+              )
+            : undefined
         )
       )
       .orderBy(

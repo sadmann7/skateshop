@@ -249,6 +249,7 @@ export function ProductsTable({
         }
       : undefined
   )
+
   const [isDateChanged, setIsDateChanged] = React.useState(false)
 
   // Handle server-side column sorting
@@ -291,11 +292,9 @@ export function ProductsTable({
                   `${pathname}?${createQueryString({
                     page: 1,
                     date_range: dateFilter
-                      ? `${dayjs(dateFilter?.from).format(
-                          "YYYY-MM-DD HH:mm:ss.SSS"
-                        )}to${dayjs(dateFilter?.to).format(
-                          "YYYY-MM-DD HH:mm:ss.SSS"
-                        )}`
+                      ? `${dayjs(dateFilter.from).format(
+                          "YYYY-MM-DD"
+                        )}to${dayjs(dateFilter.to).format("YYYY-MM-DD")}`
                       : null,
                   })}`
                 )
