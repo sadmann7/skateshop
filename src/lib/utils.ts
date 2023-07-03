@@ -61,29 +61,3 @@ export function isArrayOfFile(files: unknown): files is File[] {
   if (!isArray) return false
   return files.every((file) => file instanceof File)
 }
-
-export async function getGithubStars(): Promise<number | null> {
-  try {
-    const response = await fetch(
-      "https://api.github.com/repos/sadmann7/skateshop",
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-        },
-        next: {
-          revalidate: 60,
-        },
-      }
-    )
-
-    if (!response.ok) {
-      return null
-    }
-
-    const data = (await response.json()) as { stargazers_count: number }
-
-    return data.stargazers_count
-  } catch (error) {
-    return null
-  }
-}
