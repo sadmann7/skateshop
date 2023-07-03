@@ -1,4 +1,5 @@
 import { env } from "@/env.mjs"
+
 import "@/styles/globals.css"
 
 import type { Metadata } from "next"
@@ -54,6 +55,9 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [`${siteConfig.url}/og.jpg`],
     creator: "@sadmann7",
+  },
+  icons: {
+    icon: "/favicon.ico",
   },
 }
 

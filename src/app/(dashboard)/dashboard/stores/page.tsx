@@ -1,9 +1,9 @@
-import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
@@ -20,7 +20,7 @@ import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
 // Running out of edge function execution units on vercel free plan
-export const runtime = env.NEXTJS_RUNTIME
+// export const runtime = "edge"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

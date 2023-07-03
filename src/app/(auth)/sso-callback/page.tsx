@@ -1,11 +1,10 @@
-import { env } from "@/env.mjs"
-import type { HandleOAuthCallbackParams } from "@clerk/types"
+import { type HandleOAuthCallbackParams } from "@clerk/types"
 
 import SSOCallback from "@/components/auth/sso-callback"
 import { Shell } from "@/components/shell"
 
 // Running out of edge function execution units on vercel free plan
-export const runtime = env.NEXTJS_RUNTIME
+// export const runtime = "edge"
 
 export interface SSOCallbackPageProps {
   searchParams: HandleOAuthCallbackParams

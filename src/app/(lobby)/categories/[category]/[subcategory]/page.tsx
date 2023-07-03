@@ -1,4 +1,3 @@
-import { env } from "@/env.mjs"
 import { type Product } from "@/db/schema"
 
 import { toTitleCase, unslugify } from "@/lib/utils"
@@ -9,7 +8,7 @@ import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
 
 // Running out of edge function execution units on vercel free plan
-export const runtime = env.NEXTJS_RUNTIME
+// export const runtime = "edge"
 
 interface SubcategoryPageProps {
   params: {
