@@ -90,7 +90,7 @@ export function ProductImageCarousel({
               aria-label="Placeholder"
               role="img"
               aria-roledescription="placeholder"
-              className="flex aspect-square h-full flex-1 items-center justify-center bg-secondary"
+              className="flex aspect-square h-full w-full flex-1 items-center justify-center bg-secondary"
             >
               <Icons.placeholder
                 className="h-9 w-9 text-muted-foreground"
@@ -127,9 +127,9 @@ export function ProductImageCarousel({
               onKeyDown={handleKeyDown}
             >
               <div className="absolute inset-0 z-10 bg-zinc-950/20 group-hover:bg-zinc-950/40" />
-              <Image 
-                src={image.url} 
-                alt={image.name} 
+              <Image
+                src={image.url}
+                alt={image.name}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 fill
               />

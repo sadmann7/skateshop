@@ -64,7 +64,7 @@ export function ProductCard({
                 aria-label="Placeholder"
                 role="img"
                 aria-roledescription="placeholder"
-                className="flex h-full items-center justify-center bg-secondary"
+                className="flex h-full w-full items-center justify-center bg-secondary"
               >
                 <Icons.placeholder
                   className="h-9 w-9 text-muted-foreground"

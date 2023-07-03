@@ -16,15 +16,20 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 - [Clerk Auth](https://clerk.dev)
 - [Drizzle ORM](https://orm.drizzle.team)
 - [React Email](https://react.email)
+- [Contentlayer](https://www.contentlayer.dev)
 - [uploadthing](https://uploadthing.com)
 - [Stripe](https://stripe.com)
 
 ## Features
 
-- Authentication with Clerk
-- File uploads with uploadthing
-- Newsletter subscription with React Email and Resend
-- Subscription, payment, and billing with Stripe
+- Authentication with **Clerk**
+- File uploads with **uploadthing**
+- Newsletter subscription with **React Email** and **Resend**
+- Blog using **MDX** and **Contentlayer**
+- ORM using **Drizzle ORM**
+- Database on **PlanetScale**
+- Validation with **Zod**
+- Subscription, payment, and billing with **Stripe**
 - Storefront with products and categories
 - Seller and customer workflows
 - Admin dashboard with stores, products, orders, subscriptions, and payments
