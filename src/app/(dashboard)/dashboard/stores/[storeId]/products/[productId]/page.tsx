@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
@@ -15,6 +16,7 @@ import { UpdateProductForm } from "@/components/forms/update-product-form"
 import { ProductNavigator } from "@/components/product-navigator"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Manage Product",
   description: "Manage your product",
 }

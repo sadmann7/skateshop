@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { revalidatePath } from "next/cache"
 import { notFound, redirect } from "next/navigation"
@@ -18,6 +19,7 @@ import { LoadingButton } from "@/components/ui/loading-button"
 import { Textarea } from "@/components/ui/textarea"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Manage Store",
   description: "Manage your store",
 }

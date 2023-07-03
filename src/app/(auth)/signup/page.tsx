@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import { type Metadata } from "next"
 import Link from "next/link"
 
@@ -14,6 +15,7 @@ import { SignUpForm } from "@/components/forms/signup-form"
 import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Sign Up",
   description: "Sign up for an account",
 }

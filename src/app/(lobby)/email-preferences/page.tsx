@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
@@ -16,6 +17,7 @@ import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Email Preferences",
   description: "Manage your email preferences",
 }

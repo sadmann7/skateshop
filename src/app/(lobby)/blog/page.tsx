@@ -1,9 +1,11 @@
+import { env } from "@/env.mjs"
 import { type Metadata } from "next"
 
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Blog",
   description: "Explore the latest news and updates from the community",
 }
