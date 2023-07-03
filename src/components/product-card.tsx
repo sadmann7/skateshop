@@ -77,7 +77,7 @@ export function ProductCard({
       </Link>
       <Link
         aria-label={`View ${product.name} details`}
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
       >
         <CardContent className="grid gap-2.5 p-4">
           <CardTitle className="line-clamp-1">{product.name}</CardTitle>

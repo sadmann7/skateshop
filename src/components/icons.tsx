@@ -44,6 +44,7 @@ import {
   ShoppingCart,
   Sliders,
   SlidersHorizontal,
+  Star,
   SunMedium,
   Trash,
   Twitter,
@@ -62,6 +63,7 @@ export type Icon = LucideIcon
 export const Icons = {
   sun: SunMedium,
   moon: Moon,
+  star: Star,
   twitter: Twitter,
   close: X,
   spinner: Loader2,

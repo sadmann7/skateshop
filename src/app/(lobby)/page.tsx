@@ -3,6 +3,7 @@ import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { desc, eq, sql } from "drizzle-orm"
+import Balance from "react-wrap-balancer"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -17,7 +18,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
-import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
 
@@ -45,44 +45,109 @@ export default async function IndexPage() {
     .orderBy(desc(sql<number>`count(${products.id})`))
 
   return (
-    <div>
-      <Hero />
-      <Shell>
-        <div className="space-y-5">
-          <h2 className="text-2xl font-medium">Categories</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {productCategories.map((category) => (
-              <Link
-                aria-label={`Go to ${category.title}`}
-                key={category.title}
-                href={`/categories/${category.title}`}
-              >
-                <div className="group relative overflow-hidden rounded">
-                  <AspectRatio ratio={4 / 5}>
-                    <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
-                    <Image
-                      src={category.image}
-                      alt={category.title}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      priority
-                    />
-                  </AspectRatio>
-                  <div className="absolute inset-0 z-20 flex items-center justify-center">
-                    <h3 className="text-2xl font-medium capitalize text-slate-100">
-                      {category.title}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+    <Shell as="div" className="gap-12">
+      <section
+        id="hero"
+        aria-labelledby="hero-heading"
+        className="mx-auto flex w-full max-w-[61rem] flex-col items-center justify-center gap-5 pb-8 pt-6 text-center md:pb-12 md:pt-10 lg:py-32"
+      >
+        <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
+          A skateshop built with everything new in Next.js 13
+        </h1>
+        <Balance className="max-w-[46rem] text-lg text-muted-foreground sm:text-xl">
+          Buy and sell skateboarding products from independent brands and stores
+          around the world
+        </Balance>
+        <div className="space-x-4">
+          <Link
+            href="/products"
+            className={cn(
+              buttonVariants({
+                size: "lg",
+              })
+            )}
+          >
+            Shop Now
+          </Link>
+          <Link
+            href="/dashboard/stores"
+            className={cn(
+              buttonVariants({
+                variant: "outline",
+                size: "lg",
+              })
+            )}
+          >
+            Sell Now
+          </Link>
         </div>
-        <Card className="mt-4 grid place-items-center gap-5 px-6 py-20 text-center">
-          <h2 className="text-2xl font-medium">
-            Do you want to sell your products on our website?
+      </section>
+      <section
+        id="categories"
+        aria-labelledby="categories-heading"
+        className="space-y-6 py-6 md:pt-10 lg:pt-32"
+      >
+        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
+          <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
+            Categories
           </h2>
-          <Link href="/dashboard/stores">
+          <Balance className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            Explore our categories and find the best products for you
+          </Balance>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {productCategories.map((category) => (
+            <Link
+              aria-label={`Go to ${category.title}`}
+              key={category.title}
+              href={`/categories/${category.title}`}
+            >
+              <div className="group relative overflow-hidden rounded-lg">
+                <AspectRatio ratio={4 / 5}>
+                  <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
+                  <Image
+                    src={category.image}
+                    alt={category.title}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-105"
+                    priority
+                  />
+                </AspectRatio>
+                <div className="absolute inset-0 z-20 flex items-center justify-center">
+                  <h3 className="text-3xl font-medium capitalize text-slate-100 md:text-2xl">
+                    {category.title}
+                  </h3>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section
+        id="create-a-store-banner"
+        aria-labelledby="create-a-store-banner-heading"
+        className="grid place-items-center gap-6 rounded-lg border bg-card px-6 py-16 text-center text-card-foreground shadow-sm"
+      >
+        <h2 className="text-2xl font-medium sm:text-3xl">
+          Do you want to sell your products on our website?
+        </h2>
+        <Link href="/dashboard/stores">
+          <div className={cn(buttonVariants())}>
+            Create a store
+            <span className="sr-only">Create a store</span>
+          </div>
+        </Link>
+      </section>
+      <section
+        id="featured-products"
+        aria-labelledby="featured-products-heading"
+        className="space-y-6"
+      >
+        <div className="flex items-center">
+          <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
+            Featured products
+          </h2>
+          <Link href="/products">
             <div
               className={cn(
                 buttonVariants({
@@ -90,87 +155,82 @@ export default async function IndexPage() {
                 })
               )}
             >
-              Create a store
-              <span className="sr-only">Create a store</span>
+              View all
+              <span className="sr-only">View all products</span>
             </div>
           </Link>
-        </Card>
-        <div className="space-y-5">
-          <div className="flex items-center">
-            <h2 className="flex-1 text-2xl font-medium">Featured products</h2>
-            <Link href="/products">
-              <div
-                className={cn(
-                  buttonVariants({
-                    size: "sm",
-                  })
-                )}
-              >
-                View all
-                <span className="sr-only">View all products</span>
-              </div>
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {allProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
         </div>
-        <div className="space-y-5">
-          <h2 className="text-2xl font-medium">Featured stores</h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {allStoresWithProductCount.map((store) => (
-              <Card key={store.id} className="flex h-full flex-col">
-                <CardHeader className="flex-1">
-                  <CardTitle className="line-clamp-1">{store.name}</CardTitle>
-                  <CardDescription className="line-clamp-2">
-                    {store.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Link href={`/products?store_ids=${store.id}`}>
-                    <div
-                      className={cn(
-                        buttonVariants({
-                          size: "sm",
-                          className: "h-8 w-full",
-                        })
-                      )}
-                    >
-                      View products ({store.productCount})
-                      <span className="sr-only">{`${store.name} store products`}</span>
-                    </div>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-        <Card className="mt-4 grid place-items-center gap-4 px-6 py-16 text-center">
-          <h2 className="text-2xl font-medium">
-            Join our newsletter to get the latest news and updates
-          </h2>
-          <SubscribeToNewsletterForm />
-        </Card>
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          {productCategories[
-            Math.floor(Math.random() * productCategories.length)
-          ]?.subcategories.map((subcategory) => (
-            <Link
-              key={subcategory.slug}
-              href={`/categories/${String(productCategories[0]?.title)}/${
-                subcategory.slug
-              }`}
-            >
-              <Badge variant="secondary" className="rounded px-3 py-1">
-                {subcategory.title}
-              </Badge>
-              <span className="sr-only">{subcategory.title}</span>
-            </Link>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {allProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
-      </Shell>
-    </div>
+      </section>
+      <section
+        id="featured-stores"
+        aria-labelledby="featured-stores-heading"
+        className="space-y-6"
+      >
+        <h2 className="text-2xl font-medium sm:text-3xl">Featured stores</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {allStoresWithProductCount.map((store) => (
+            <Card key={store.id} className="flex h-full flex-col">
+              <CardHeader className="flex-1">
+                <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+                <CardDescription className="line-clamp-2">
+                  {store.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href={`/products?store_ids=${store.id}`}>
+                  <div
+                    className={cn(
+                      buttonVariants({
+                        size: "sm",
+                        className: "h-8 w-full",
+                      })
+                    )}
+                  >
+                    View products ({store.productCount})
+                    <span className="sr-only">{`${store.name} store products`}</span>
+                  </div>
+                </Link>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+      <section
+        id="newsletter"
+        aria-labelledby="newsletter-heading"
+        className="mt-4 grid place-items-center gap-4 rounded-lg border bg-card px-6 py-16 text-center text-card-foreground shadow-sm"
+      >
+        <h2 className="text-2xl font-medium sm:text-3xl">
+          Join our newsletter to get the latest news and updates
+        </h2>
+        <SubscribeToNewsletterForm />
+      </section>
+      <section
+        id="random-subcategories"
+        aria-labelledby="random-subcategories-heading"
+        className="flex flex-wrap items-center justify-center gap-4 pb-4"
+      >
+        {productCategories[
+          Math.floor(Math.random() * productCategories.length)
+        ]?.subcategories.map((subcategory) => (
+          <Link
+            key={subcategory.slug}
+            href={`/categories/${String(productCategories[0]?.title)}/${
+              subcategory.slug
+            }`}
+          >
+            <Badge variant="secondary" className="rounded px-3 py-1">
+              {subcategory.title}
+            </Badge>
+            <span className="sr-only">{subcategory.title}</span>
+          </Link>
+        ))}
+      </section>
+    </Shell>
   )
 }
