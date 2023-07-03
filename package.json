@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "contentlayer build && next build",
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
@@ -15,7 +15,7 @@
     "shadcn:add": "pnpm dlx shadcn-ui@latest add",
     "email:dev": "email dev --dir src/components/emails -p 3001",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "contentlayer build && tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
@@ -49,12 +49,15 @@
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "cmdk": "^0.2.0",
+    "concurrently": "^8.2.0",
+    "contentlayer": "^0.3.4",
     "dayjs": "^1.11.9",
     "drizzle-orm": "^0.27.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
     "lucide-react": "^0.257.0",
     "next": "^13.4.7",
+    "next-contentlayer": "^0.3.4",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-cropper": "^2.3.3",
@@ -76,6 +79,7 @@
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
+    "@tailwindcss/typography": "^0.5.9",
     "@types/eslint": "^8.40.2",
     "@types/node": "^20.3.3",
     "@types/prettier": "^2.7.3",
@@ -93,7 +97,11 @@
     "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
+    "rehype-pretty-code": "^0.10.0",
+    "rehype-slug": "^5.1.0",
+    "remark-gfm": "^3.0.1",
     "tailwindcss": "^3.3.2",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "unist-util-visit": "^4.1.2"
   }
 }

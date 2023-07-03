@@ -83,10 +83,10 @@ export default async function IndexPage() {
       >
         {githubStars ? (
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
-            <Badge className="rounded-md px-4 py-1.5" variant="secondary">
+            <Badge className="rounded-md px-3.5 py-1.5" variant="secondary">
               <Icons.gitHub className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
-              {githubStars}
-              <span className="sr-only">Github</span>
+              {githubStars} stars on GitHub
+              <span className="sr-only">GitHub</span>
             </Badge>
           </Link>
         ) : null}
@@ -141,7 +141,7 @@ export default async function IndexPage() {
               key={category.title}
               href={`/categories/${category.title}`}
             >
-              <div className="group relative overflow-hidden rounded-lg">
+              <div className="group relative overflow-hidden rounded-md">
                 <AspectRatio ratio={4 / 5}>
                   <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
                   <Image

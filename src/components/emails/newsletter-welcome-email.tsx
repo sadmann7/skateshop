@@ -26,7 +26,7 @@ const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
 // In production we need to put images in the root public folder
 const newsletterImages = [
   {
-    src: `${baseUrl}/images/skater-one.webp`,
+    src: `${baseUrl}/images/newsletter/skater-one.webp`,
     alt: "Skateboarder flying high",
     credit: "ALLAN FRANCA CARMO",
     creditUrl:
@@ -34,7 +34,7 @@ const newsletterImages = [
     description: `Skateboarding is a sport that has been around for decades. It's not just about the tricks, but also about the culture and community that surrounds it. So we decided to create a newsletter to share our passion with others who love skateboarding as much as we do!`,
   },
   {
-    src: `${baseUrl}/images/skater-two.webp`,
+    src: `${baseUrl}/images/newsletter/skater-two.webp`,
     alt: "Skateboarder landing on half pipe",
     credit: "cottonbro studio",
     creditUrl:

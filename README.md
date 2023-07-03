@@ -1,8 +1,8 @@
-# [Skateshop13](https://skateshop13.vercel.app/)
+# [Skateshop13](https://skateshop.sadmn.com/)
 
 This is an open source e-commerce skateshop build with everything new in Next.js 13. It is bootstrapped with `create-t3-app`.
 
-[![Skateshop13](./public/screenshot.png)](https://skateshop13.vercel.app/)
+[![Skateshop13](./public/images/screenshot/landing-page-screenshot.png)](https://skateshop.sadmn.com/)
 
 > **Warning**
 > This project is still in development and is not ready for production use.
