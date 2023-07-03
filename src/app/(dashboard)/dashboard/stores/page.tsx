@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -19,9 +20,10 @@ import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
 // Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
+export const runtime = env.NEXTJS_RUNTIME
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Stores",
   description: "Manage your stores",
 }

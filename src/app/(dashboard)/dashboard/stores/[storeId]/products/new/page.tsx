@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
@@ -12,6 +13,7 @@ import {
 import { AddProductForm } from "@/components/forms/add-product-form"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "New Product",
   description: "Add a new product",
 }

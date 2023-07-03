@@ -1,9 +1,10 @@
+import { env } from "@/env.mjs"
 import { LogOutButtons } from "@/components/auth/logout-buttons"
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
 // Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
+export const runtime = env.NEXTJS_RUNTIME
 
 export default function SignOutPage() {
   return (

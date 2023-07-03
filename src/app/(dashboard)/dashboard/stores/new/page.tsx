@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
@@ -7,6 +8,7 @@ import { Header } from "@/components/header"
 import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "New Store",
   description: "Add a new store",
 }

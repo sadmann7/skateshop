@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
@@ -8,6 +9,7 @@ import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 import { ProductsTable } from "@/components/products-table"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Products",
   description: "Manage your products",
 }

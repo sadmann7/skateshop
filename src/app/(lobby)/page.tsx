@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/db"
@@ -24,7 +25,7 @@ import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
 
 // Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
+export const runtime = env.NEXTJS_RUNTIME
 
 export default async function IndexPage() {
   const allProducts = await db
