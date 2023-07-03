@@ -54,8 +54,8 @@ export function ProductCard({
                   product.images[0]?.url ?? "/images/product-placeholder.webp"
                 }
                 alt={product.images[0]?.name ?? product.name}
-                fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                fill
                 className="object-cover"
                 loading="lazy"
               />
