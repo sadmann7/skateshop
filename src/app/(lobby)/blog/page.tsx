@@ -29,8 +29,8 @@ export default function BlogPage() {
         description="Explore the latest news and updates from the community"
       />
       <Separator className="mb-2.5" />
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-3 lg:grid-cols-4">
-        {posts.map((post) => (
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {posts.map((post, i) => (
           <Link key={post.slug} href={`/blog/${post.slug}`}>
             <div className="flex flex-col space-y-2.5">
               <AspectRatio ratio={16 / 9}>
@@ -39,7 +39,9 @@ export default function BlogPage() {
                     src={post.image}
                     alt={post.title}
                     fill
+                    sizes="(min-width: 1024px) 384px, (min-width: 768px) 288px, (min-width: 640px) 224px, 100vw"
                     className="rounded-lg object-cover"
+                    priority={i <= 1}
                   />
                 ) : (
                   <div
