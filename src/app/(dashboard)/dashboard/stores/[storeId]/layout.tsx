@@ -28,13 +28,15 @@ export default async function StoreLayout({
     redirect("/signin")
   }
 
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, storeId),
-    columns: {
-      id: true,
-      name: true,
-    },
-  })
+  const allStores = await db
+    .select({
+      id: stores.id,
+      name: stores.name,
+    })
+    .from(stores)
+    .where(eq(stores.userId, user.id))
+
+  const store = allStores.find((store) => store.id === storeId)
 
   if (!store) {
     notFound()
@@ -44,7 +46,9 @@ export default async function StoreLayout({
     <Shell layout="dashboard">
       <div className="flex items-center space-x-4">
         <Header title={store.name} size="sm" className="flex-1" />
-        <StorePager storeId={storeId} userId={user.id} />
+        {allStores.length > 1 ? (
+          <StorePager storeId={storeId} userId={user.id} />
+        ) : null}
       </div>
       <div className="space-y-4 overflow-hidden">
         <StoreTabs storeId={storeId} />

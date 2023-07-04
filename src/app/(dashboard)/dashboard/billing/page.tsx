@@ -1,11 +1,11 @@
-import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
+import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 
+import { subscriptionPlans } from "@/config/subscriptions"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
-import { formatDate } from "@/lib/utils"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { formatDate, formatPrice } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -44,46 +44,101 @@ export default async function BillingPage() {
   // }
 
   return (
-    <Shell layout="dashboard">
+    <Shell as="div" layout="dashboard" className="gap-10">
       <Header
         title="Billing"
-        description="Manage your billing and subscription."
+        description="Manage your billing and subscription"
         size="sm"
       />
-      <div className="space-y-4">
-        <Alert>
-          <Icons.warning className="h-4 w-4" aria-hidden="true" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>
-            You can create up to 3 stores on the kickflip plan.
-          </AlertDescription>
-        </Alert>
-        <form>
-          <Card>
-            <CardHeader>
-              <CardTitle>Subscription Plan</CardTitle>
-              <CardDescription>
-                You are currently on the <strong>Ollie</strong> plan.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>{subscriptionPlan.description}</CardContent>
-            <CardFooter className="flex flex-col items-start space-y-2 md:flex-row md:justify-between md:space-x-0">
-              <Button>Upgrade to Kickflip</Button>
-              {true ? (
-                <p className="rounded-full text-xs font-medium">
-                  {true
-                    ? "Your plan will be canceled on "
-                    : "Your plan renews on "}
-                  {formatDate(
-                    new Date(new Date().setDate(new Date().getDate() + 14))
-                  )}
-                  .
-                </p>
-              ) : null}
-            </CardFooter>
-          </Card>
-        </form>
-      </div>
+      <section
+        id="billing-info"
+        aria-labelledby="billing-info-heading"
+        className="space-y-5"
+      >
+        <h2 className="text-xl font-medium sm:text-2xl">Billing info</h2>
+        <Card className="grid gap-6 p-6">
+          {subscriptionPlan ? (
+            <>
+              <div className="flex flex-col space-y-2">
+                <div className="text-3xl font-bold">
+                  {subscriptionPlan.name}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {formatDate(new Date())}
+                </div>
+              </div>
+              <div className="flex flex-col space-y-2">
+                <div className="text-sm text-muted-foreground">
+                  {subscriptionPlan.isPro
+                    ? "You are currently subscribed to the Pro plan."
+                    : "You are currently subscribed to the Free plan."}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {subscriptionPlan.isPro
+                    ? "Your subscription will automatically renew on the next billing date."
+                    : "Your subscription will expire on the next billing date."}
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col space-y-2">
+              <div className="text-sm text-muted-foreground">
+                You are not currently subscribed to any plan.
+              </div>
+              <div className="text-sm text-muted-foreground">
+                You can subscribe to a plan below.
+              </div>
+            </div>
+          )}
+        </Card>
+      </section>
+      <section
+        id="subscription-plans"
+        aria-labelledby="subscription-plans-heading"
+        className="space-y-5"
+      >
+        <h2 className="text-xl font-medium sm:text-2xl">Choose a plan</h2>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {subscriptionPlans.map((plan) => (
+            <Card key={plan.name}>
+              <CardHeader>
+                <CardTitle>{plan.name}</CardTitle>
+                <CardDescription>{plan.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <div className="text-center text-3xl font-bold">
+                  {formatPrice(plan.price, "USD", "compact")}
+                  <span className="text-sm font-normal text-muted-foreground">
+                    /month
+                  </span>
+                </div>
+                <div className="space-y-2 text-center text-sm text-muted-foreground">
+                  {plan.perks.map((perk) => (
+                    <div key={perk} className="flex items-center gap-2">
+                      <Icons.check
+                        className="h-4 w-4 text-green-500"
+                        aria-hidden="true"
+                      />
+                      <span>{perk}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button
+                  type="button"
+                  className="w-full"
+                  disabled={plan.name === subscriptionPlan?.name}
+                >
+                  {plan.name === subscriptionPlan?.name
+                    ? "Current plan"
+                    : "Upgrade"}
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </section>
     </Shell>
   )
 }

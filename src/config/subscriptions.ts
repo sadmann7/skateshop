@@ -3,16 +3,18 @@ import type { SubscriptionPlan } from "@/types"
 
 export const freePlan: SubscriptionPlan = {
   name: "Ollie",
-  description:
-    "The ollie plan allows you to create up to 1 store, and 20 products.",
+  description: "Perfect for small businesses that want to sell online.",
+  perks: ["Create up to 1 store", "Create up to 20 products"],
   stripePriceId: "",
-  monthlyPrice: null,
+  price: 0,
 }
 
 export const proPlan: SubscriptionPlan = {
   name: "Kickflip",
-  description:
-    "The kickflip plan allows you to create up to 3 stores, and 20 products per store.",
+  description: "Perfect for big businesses that want to sell online.",
+  perks: ["Create up to 3 stores", "Create up to 20 products per store"],
   stripePriceId: env.STRIPE_PRO_STORE_PRICE_ID ?? "",
-  monthlyPrice: 10,
+  price: 10,
 }
+
+export const subscriptionPlans = [freePlan, proPlan]

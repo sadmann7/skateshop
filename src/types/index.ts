@@ -67,6 +67,7 @@ export interface CartLineItem
 export type SubscriptionPlan = {
   name: string
   description: string
+  perks: string[]
   stripePriceId: string
-  monthlyPrice?: number | null
+  price: number
 }
