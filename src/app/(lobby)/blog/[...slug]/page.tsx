@@ -111,14 +111,15 @@ export default async function PostPage({ params }: PostPageProps) {
         See all posts
       </Link>
       <div>
-        {post.date && (
-          <time
-            dateTime={post.date}
-            className="block text-sm text-muted-foreground"
-          >
-            Published on {formatDate(post.date)}
-          </time>
-        )}
+        <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+          {post.date && (
+            <time dateTime={post.date} className="block">
+              Published on {formatDate(post.date)}
+            </time>
+          )}
+          {post.date ? <div>•</div> : null}
+          <div>{post.readingTime}min</div>
+        </div>
         <h1 className="mt-2 inline-block text-4xl font-bold leading-tight lg:text-5xl">
           {post.title}
         </h1>

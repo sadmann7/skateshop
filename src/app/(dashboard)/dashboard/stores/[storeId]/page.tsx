@@ -1,9 +1,9 @@
-import { env } from "@/env.mjs"
-import type { Metadata } from "next"
+import { type Metadata } from "next"
 import { revalidatePath } from "next/cache"
 import { notFound, redirect } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { and, eq, not } from "drizzle-orm"
 
 import {

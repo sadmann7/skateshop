@@ -5,8 +5,8 @@ import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
 import { Header } from "@/components/header"
+import { StorePager } from "@/components/pagers/store-pager"
 import { Shell } from "@/components/shell"
-import { StoreNavigator } from "@/components/store-navigator"
 import { StoreTabs } from "@/components/store-tabs"
 
 interface StoreLayoutProps {
@@ -44,7 +44,7 @@ export default async function StoreLayout({
     <Shell layout="dashboard">
       <div className="flex items-center space-x-4">
         <Header title={store.name} size="sm" className="flex-1" />
-        <StoreNavigator storeId={storeId} userId={user.id} />
+        <StorePager storeId={storeId} userId={user.id} />
       </div>
       <div className="space-y-4 overflow-hidden">
         <StoreTabs storeId={storeId} />

@@ -1,12 +1,12 @@
 import { ErrorCard } from "@/components/error-card"
 import { Shell } from "@/components/shell"
 
-export default function EmailPreferencesNotFound() {
+export default function PageNotFound() {
   return (
     <Shell layout="centered">
       <ErrorCard
-        title="Email preferences not found"
-        description="The token may have expired or you may have already updated your email preferences"
+        title="Page not found"
+        description="The page you are looking for does not exist"
         retryLink="/"
         retryLinkText="Go to Home"
       />

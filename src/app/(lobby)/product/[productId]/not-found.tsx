@@ -3,7 +3,7 @@ import { Shell } from "@/components/shell"
 
 export default function ProductNotFound() {
   return (
-    <Shell className="mt-20 max-w-md justify-center">
+    <Shell layout="centered">
       <ErrorCard
         title="Product not found"
         description="The product may have expired or you may have already updated your product"
