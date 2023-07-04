@@ -1,3 +1,4 @@
+import { env } from "@/env.mjs"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
 import { twMerge } from "tailwind-merge"
@@ -13,7 +14,7 @@ export function formatPrice(price: number | string) {
   }).format(Number(price))
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date: Date | string) {
   return dayjs(date).format("MMMM D, YYYY")
 }
 
@@ -60,4 +61,8 @@ export function isArrayOfFile(files: unknown): files is File[] {
   const isArray = Array.isArray(files)
   if (!isArray) return false
   return files.every((file) => file instanceof File)
+}
+
+export function absoluteUrl(path: string) {
+  return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }

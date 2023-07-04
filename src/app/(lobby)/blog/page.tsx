@@ -5,6 +5,7 @@ import { env } from "@/env.mjs"
 import { allPosts } from "contentlayer/generated"
 import dayjs from "dayjs"
 
+import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
@@ -31,8 +32,8 @@ export default function BlogPage() {
       <Separator className="mb-2.5" />
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {posts.map((post, i) => (
-          <Link key={post.slug} href={`/blog/${post.slug}`}>
-            <div className="flex flex-col space-y-2.5">
+          <Link key={post.slug} href={post.slug}>
+            <article className="flex flex-col space-y-2.5">
               <AspectRatio ratio={16 / 9}>
                 {post.image ? (
                   <Image
@@ -65,10 +66,10 @@ export default function BlogPage() {
               </p>
               {post.date ? (
                 <p className="text-sm text-muted-foreground">
-                  {dayjs(post.date).format("MMMM D, YYYY")}
+                  {formatDate(post.date)}
                 </p>
               ) : null}
-            </div>
+            </article>
           </Link>
         ))}
       </div>
