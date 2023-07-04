@@ -12,6 +12,7 @@ import { env } from "@/env.mjs"
 
 import { absoluteUrl, cn, formatDate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 import { Icons } from "@/components/icons"
 
 interface PostPageProps {
@@ -94,13 +95,8 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   const authors = post.authors.map((author) =>
-    allAuthors.find(({ slug }) => slug === `/authors/${author}`)
+    allAuthors.find((a) => a.title === author?.replace(/\r$/, ""))
   )
-
-  console.log({
-    post,
-    authors,
-  })
 
   return (
     <article className="container relative max-w-3xl py-6 lg:py-10">
@@ -165,7 +161,7 @@ export default async function PostPage({ params }: PostPageProps) {
         />
       )}
       <Mdx code={post.body.code} />
-      <hr className="mt-12" />
+      <Separator className="mt-12" />
       <div className="flex justify-center py-6 lg:py-10">
         <Link href="/blog" className={cn(buttonVariants({ variant: "ghost" }))}>
           <Icons.chevronLeft className="mr-2 h-4 w-4" />

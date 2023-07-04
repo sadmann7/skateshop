@@ -9,6 +9,7 @@ import { env } from "@/env.mjs"
 import { siteConfig } from "@/config/site"
 import { absoluteUrl } from "@/lib/utils"
 import { Mdx } from "@/components/mdx/mdx-components"
+import { Separator } from "@/components/ui/separator"
 
 interface PageProps {
   params: {
@@ -94,7 +95,7 @@ export default async function PagePage({ params }: PageProps) {
           <p className="text-xl text-muted-foreground">{page.description}</p>
         )}
       </div>
-      <hr className="my-4" />
+      <Separator className="my-4" />
       <Mdx code={page.body.code} />
     </article>
   )

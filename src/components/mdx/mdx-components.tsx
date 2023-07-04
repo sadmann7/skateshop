@@ -152,6 +152,9 @@ const components = {
       {...props}
     />
   ),
+  Image: ({ className, alt, ...props }: ImageProps) => (
+    <Image className={cn(className, 'mt-4')} alt={alt} {...props} />
+  ),
   Alert: ({ className, ...props }: AlertProps) => (
     <Alert className={cn(className)} {...props} />
   ),
@@ -163,9 +166,6 @@ const components = {
   ),
   AspectRatio: ({ className, ...props }: AspectRatioProps) => (
     <AspectRatio className={cn(className)} {...props} />
-  ),
-  Image: ({ className, alt, ...props }: ImageProps) => (
-    <Image className={cn(className)} alt={alt} {...props} />
   ),
   Card: MdxCard,
   Callout,
