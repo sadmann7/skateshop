@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { env } from "@/env.mjs"
-import { UserProfile } from "@clerk/nextjs"
 
 import { Header } from "@/components/header"
 import { Shell } from "@/components/shells/shell"
+import { UserProfile } from "@/components/user-profile"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -19,21 +19,9 @@ export default function AccountPage() {
         description="Manage your account settings."
         size="sm"
       />
-      <div className="w-full overflow-hidden rounded-lg">
-        <UserProfile
-          appearance={{
-            variables: {
-              borderRadius: "0.25rem",
-            },
-            elements: {
-              card: "shadow-none",
-              navbar: "hidden",
-              navbarMobileMenuButton: "hidden",
-              headerTitle: "hidden",
-              headerSubtitle: "hidden",
-            },
-          }}
-        />
+
+      <div className="w-full overflow-hidden">
+        <UserProfile />
       </div>
     </Shell>
   )
