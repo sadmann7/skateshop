@@ -137,14 +137,14 @@ export default async function BillingPage() {
                   <ManageStoreSubscriptionForm
                     userId={user.id}
                     email={email}
-                    isCurrentPlan={subscriptionPlan?.name === plan.name}
-                    isSubscribed={subscriptionPlan.isSubscribed}
                     stripePriceId={plan.stripePriceId}
                     stripeCustomerId={subscriptionPlan?.stripeCustomerId}
                     stripeSubscriptionId={
                       subscriptionPlan?.stripeSubscriptionId
                     }
-                  />
+                    isSubscribed={subscriptionPlan.isSubscribed}
+                    isCurrentPlan={subscriptionPlan?.name === plan.name}
+                    />
                 )}
               </CardFooter>
             </Card>

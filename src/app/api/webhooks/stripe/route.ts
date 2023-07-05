@@ -4,6 +4,7 @@ import { clerkClient } from "@clerk/nextjs"
 import type Stripe from "stripe"
 
 import { stripe } from "@/lib/stripe"
+import { userPrivateMetadataSchema } from "@/lib/validations/auth"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -38,9 +39,23 @@ export async function POST(req: Request) {
       session.subscription as string
     )
 
+    // Unsubscribe the user from the previous plan if they are subscribed to another plan
+    const user = await clerkClient.users.getUser(session.metadata.userId)
+
+    const stripeSubscriptionId =
+      userPrivateMetadataSchema.shape.stripeSubscriptionId.parse(
+        user.privateMetadata.stripeSubscriptionId
+      )
+
+    if (subscription.customer && stripeSubscriptionId) {
+      await stripe.subscriptions.update(stripeSubscriptionId, {
+        cancel_at_period_end: true,
+      })
+    }
+
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
-    // the subscription id and customer id
+    // the subscription id and customer id.
     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
       privateMetadata: {
         stripeSubscriptionId: subscription.id,

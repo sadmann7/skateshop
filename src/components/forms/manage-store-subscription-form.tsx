@@ -9,7 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { manageSubscriptionAction } from "@/app/_actions/stripe"
 
-type ManageStoreSubscriptionFormProps = z.infer<typeof manageSubscriptionSchema> & {
+type ManageStoreSubscriptionFormProps = z.infer<
+  typeof manageSubscriptionSchema
+> & {
   isCurrentPlan: boolean
 }
 
@@ -33,6 +35,7 @@ export function ManageStoreSubscriptionForm({
           email,
           userId,
           isSubscribed,
+          isCurrentPlan,
           stripeCustomerId,
           stripeSubscriptionId,
           stripePriceId,
