@@ -3,7 +3,8 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 
-import { subscriptionPlans } from "@/config/subscriptions"
+import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { formatDate, formatPrice } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -28,20 +29,25 @@ export const metadata: Metadata = {
 export default async function BillingPage() {
   const user = await currentUser()
 
+
   if (!user) {
     redirect("/signin")
   }
 
+  const email =
+  user.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
+    ?.emailAddress ?? ""
+
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
-  // // If user has a pro plan, check cancel status on Stripe.
-  // let isCanceled = false
-  // if (subscriptionPlan?.isPro && subscriptionPlan?.stripeSubscriptionId) {
-  //   const stripePlan = await stripe.subscriptions.retrieve(
-  //     subscriptionPlan?.stripeSubscriptionId
-  //   )
-  //   isCanceled = stripePlan.cancel_at_period_end
-  // }
+  // If user has a pro plan, check cancel status on Stripe.
+  let isCanceled = false
+  if (subscriptionPlan?.isPro && subscriptionPlan?.stripeSubscriptionId) {
+    const stripePlan = await stripe.subscriptions.retrieve(
+      subscriptionPlan?.stripeSubscriptionId
+    )
+    isCanceled = stripePlan.cancel_at_period_end
+  }
 
   return (
     <Shell as="div" layout="dashboard" className="gap-10">
@@ -74,7 +80,7 @@ export default async function BillingPage() {
                     : "You are currently subscribed to the Free plan."}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {subscriptionPlan.isPro
+                  {isCanceled
                     ? "Your subscription will automatically renew on the next billing date."
                     : "Your subscription will expire on the next billing date."}
                 </div>
@@ -99,7 +105,7 @@ export default async function BillingPage() {
       >
         <h2 className="text-xl font-medium sm:text-2xl">Choose a plan</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {subscriptionPlans.map((plan) => (
+          {storeSubscriptionPlans.map((plan) => (
             <Card key={plan.name}>
               <CardHeader>
                 <CardTitle>{plan.name}</CardTitle>
@@ -113,13 +119,10 @@ export default async function BillingPage() {
                   </span>
                 </div>
                 <div className="space-y-2 text-center text-sm text-muted-foreground">
-                  {plan.perks.map((perk) => (
-                    <div key={perk} className="flex items-center gap-2">
-                      <Icons.check
-                        className="h-4 w-4 text-green-500"
-                        aria-hidden="true"
-                      />
-                      <span>{perk}</span>
+                  {plan.features.map((feature) => (
+                    <div key={feature} className="flex items-center gap-2">
+                      <Icons.check className="h-4 w-4" aria-hidden="true" />
+                      <span>{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -132,7 +135,7 @@ export default async function BillingPage() {
                 >
                   {plan.name === subscriptionPlan?.name
                     ? "Current plan"
-                    : "Upgrade"}
+                    : "Subscribe"}
                 </Button>
               </CardFooter>
             </Card>

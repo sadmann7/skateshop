@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/nextjs"
 
-import { freePlan, proPlan } from "@/config/subscriptions"
+import { storeSubscriptionPlans } from "@/config/subscriptions"
 
 export async function getUserSubscriptionPlan(userId: string) {
   const user = await clerkClient.users.getUser(userId)
@@ -16,12 +16,22 @@ export async function getUserSubscriptionPlan(userId: string) {
       86_400_000 >
       Date.now()
 
-  const plan = isPro ? proPlan : freePlan
+  const plan = isPro ? storeSubscriptionPlans[1] : storeSubscriptionPlans[0]
+
+  const stripeSubscriptionId =
+    typeof user.privateMetadata.stripeSubscriptionId === "string"
+      ? user.privateMetadata.stripeSubscriptionId
+      : null
+
+  const stripeCurrentPeriodEnd =
+    typeof user.privateMetadata.stripeCurrentPeriodEnd === "number"
+      ? user.privateMetadata.stripeSubscriptionId
+      : null
 
   return {
     ...plan,
-    stripeSubscriptionId: user.privateMetadata.stripeSubscriptionId,
-    stripeCurrentPeriodEnd: user.privateMetadata.stripeCurrentPeriodEnd,
+    stripeSubscriptionId,
+    stripeCurrentPeriodEnd,
     isPro,
   }
 }

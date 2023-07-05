@@ -67,7 +67,11 @@ export interface CartLineItem
 export type SubscriptionPlan = {
   name: string
   description: string
-  perks: string[]
+  features: string[]
   stripePriceId: string
   price: number
+}
+
+export type StoreSubscriptionPlan = SubscriptionPlan & {
+  stripeCurrentPeriodEnd: number
 }
