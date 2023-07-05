@@ -1,9 +1,9 @@
 import * as z from "zod"
 
 export const manageSubscriptionSchema = z.object({
-  stripeCustomerId: z.string(),
-  isPro: z.boolean(),
   stripePriceId: z.string(),
+  stripeCustomerId: z.string().nullable(),
+  isPro: z.boolean(),
   userId: z.string(),
   email: z.string().email(),
 })

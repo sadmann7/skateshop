@@ -7,7 +7,6 @@ import { storeSubscriptionPlans } from "@/config/subscriptions"
 import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { formatDate, formatPrice } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -16,6 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { ManageSubscriptionForm } from "@/components/forms/manage-subscription-form"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
@@ -29,14 +29,13 @@ export const metadata: Metadata = {
 export default async function BillingPage() {
   const user = await currentUser()
 
-
   if (!user) {
     redirect("/signin")
   }
 
   const email =
-  user.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
-    ?.emailAddress ?? ""
+    user.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
+      ?.emailAddress ?? ""
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
@@ -128,15 +127,18 @@ export default async function BillingPage() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button
-                  type="button"
-                  className="w-full"
-                  disabled={plan.name === subscriptionPlan?.name}
-                >
-                  {plan.name === subscriptionPlan?.name
-                    ? "Current plan"
-                    : "Subscribe"}
-                </Button>
+                <ManageSubscriptionForm
+                  userId={user.id}
+                  email={email}
+                  isCurrentPlan={subscriptionPlan?.name === plan.name}
+                  isPro={
+                    typeof subscriptionPlan?.isPro === "boolean"
+                      ? subscriptionPlan?.isPro
+                      : false
+                  }
+                  stripePriceId={plan.stripePriceId}
+                  stripeCustomerId={subscriptionPlan?.stripeCustomerId}
+                />
               </CardFooter>
             </Card>
           ))}

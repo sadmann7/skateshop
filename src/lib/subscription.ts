@@ -28,10 +28,16 @@ export async function getUserSubscriptionPlan(userId: string) {
       ? user.privateMetadata.stripeSubscriptionId
       : null
 
+  const stripeCustomerId =
+    typeof user.privateMetadata.stripeCustomerId === "string"
+      ? user.privateMetadata.stripeCustomerId
+      : null
+
   return {
     ...plan,
     stripeSubscriptionId,
     stripeCurrentPeriodEnd,
+    stripeCustomerId,
     isPro,
   }
 }
