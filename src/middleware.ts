@@ -10,13 +10,13 @@ export default authMiddleware({
     "/signin(.*)",
     "/signup(.*)",
     "/sso-callback(.*)",
-    "/api(.*)",
     "/categories(.*)",
     "/products(.*)",
     "/product(.*)",
     "/build-a-board(.*)",
     "/email-preferences(.*)",
     "/blog(.*)",
+    "/api(.*)",
   ],
   async afterAuth(auth, req) {
     if (auth.isPublicRoute) {
@@ -53,5 +53,5 @@ export default authMiddleware({
 })
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)"],
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 }

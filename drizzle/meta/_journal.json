@@ -85,6 +85,20 @@
       "when": 1688294924584,
       "tag": "0011_wide_screwball",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1688560718280,
+      "tag": "0012_stiff_proudstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1688562688509,
+      "tag": "0013_perfect_lady_mastermind",
+      "breakpoints": true
     }
   ]
 }

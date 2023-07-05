@@ -14,7 +14,7 @@
     "db:studio": "drizzle-kit studio",
     "shadcn:add": "pnpm dlx shadcn-ui@latest add",
     "email:dev": "email dev --dir src/components/emails -p 3001",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe-webhook --latest",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",
     "typecheck": "contentlayer build && tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"

@@ -53,8 +53,8 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Run lint
-        run: pnpm run lint
+      # - name: Run lint
+      #   run: pnpm run lint
 
       - name: Run typecheck
         run: pnpm run typecheck

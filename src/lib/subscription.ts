@@ -1,4 +1,5 @@
 import { clerkClient } from "@clerk/nextjs"
+import dayjs from "dayjs"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
 
@@ -12,32 +13,17 @@ export async function getUserSubscriptionPlan(userId: string) {
   // Check if user is on a pro plan
   const isPro =
     user.privateMetadata.stripePriceId &&
-    (user.privateMetadata.stripeCurrentPeriodEnd as Date)?.getTime() +
+    dayjs(user.privateMetadata.stripeCurrentPeriodEnd as string).valueOf() +
       86_400_000 >
       Date.now()
 
   const plan = isPro ? storeSubscriptionPlans[1] : storeSubscriptionPlans[0]
 
-  const stripeSubscriptionId =
-    typeof user.privateMetadata.stripeSubscriptionId === "string"
-      ? user.privateMetadata.stripeSubscriptionId
-      : null
-
-  const stripeCurrentPeriodEnd =
-    typeof user.privateMetadata.stripeCurrentPeriodEnd === "number"
-      ? user.privateMetadata.stripeSubscriptionId
-      : null
-
-  const stripeCustomerId =
-    typeof user.privateMetadata.stripeCustomerId === "string"
-      ? user.privateMetadata.stripeCustomerId
-      : null
-
   return {
     ...plan,
-    stripeSubscriptionId,
-    stripeCurrentPeriodEnd,
-    stripeCustomerId,
+    stripeSubscriptionId: String(user.privateMetadata.stripeSubscriptionId),
+    stripeCurrentPeriodEnd: String(user.privateMetadata.stripeCurrentPeriodEnd),
+    stripeCustomerId: String(user.privateMetadata.stripeCustomerId),
     isPro,
   }
 }

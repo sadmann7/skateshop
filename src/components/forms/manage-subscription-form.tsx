@@ -48,14 +48,14 @@ export function ManageSubscriptionForm({
 
   return (
     <form className="w-full" onSubmit={(e) => onSubmit(e)}>
-      <Button className="w-full" disabled={isPending || isCurrentPlan}>
+      <Button className="w-full" disabled={isPending}>
         {isPending && (
           <Icons.spinner
             className="mr-2 h-4 w-4 animate-spin"
             aria-hidden="true"
           />
         )}
-        {isCurrentPlan ? "Current plan" : "Subscribe"}
+        {isCurrentPlan ? "Manage" : "Subscribe"}
       </Button>
     </form>
   )

@@ -69,7 +69,10 @@ export default async function BillingPage() {
                   {subscriptionPlan.name}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {formatDate(new Date())}
+                  {isCanceled
+                    ? "Your plan will be canceled on "
+                    : "Your plan renews on "}
+                  {formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.
                 </div>
               </div>
               <div className="flex flex-col space-y-2">

@@ -33,15 +33,15 @@ export async function POST(req: Request) {
   }
 
   if (event.type === "checkout.session.completed") {
-    // Retrieve the subscription details from Stripe.
+    // Retrieve the subscription details from Stripe
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     )
 
     // Update the user stripe into in our database.
     // Since this is the initial subscription, we need to update
-    // the subscription id and customer id.
-    await clerkClient.users.updateUser(session?.metadata?.userId, {
+    // the subscription id and customer id
+    await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
       privateMetadata: {
         stripeSubscriptionId: subscription.id,
         stripeCustomerId: subscription.customer as string,
@@ -54,13 +54,13 @@ export async function POST(req: Request) {
   }
 
   if (event.type === "invoice.payment_succeeded") {
-    // Retrieve the subscription details from Stripe.
+    // Retrieve the subscription details from Stripe
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string
     )
 
-    // Update the price id and set the new period end.
-    await clerkClient.users.updateUser(session?.metadata?.userId, {
+    // Update the price id and set the new period end
+    await clerkClient.users.updateUserMetadata(subscription.id, {
       privateMetadata: {
         stripePriceId: subscription.items.data[0]?.price.id,
         stripeCurrentPeriodEnd: new Date(
