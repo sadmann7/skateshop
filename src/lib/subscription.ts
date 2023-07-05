@@ -2,28 +2,36 @@ import { clerkClient } from "@clerk/nextjs"
 import dayjs from "dayjs"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { userPrivateMetadataSchema } from "@/lib/validations/auth"
 
 export async function getUserSubscriptionPlan(userId: string) {
   const user = await clerkClient.users.getUser(userId)
 
   if (!user) {
-    throw new Error("User not found")
+    throw new Error("User not found.")
   }
 
-  // Check if user is on a pro plan
-  const isPro =
-    user.privateMetadata.stripePriceId &&
-    dayjs(user.privateMetadata.stripeCurrentPeriodEnd as string).valueOf() +
-      86_400_000 >
+  const userPrivateMetadata = userPrivateMetadataSchema.parse(
+    user.privateMetadata
+  )
+
+  // Check if user is subscribed
+  const isSubscribed =
+    !!userPrivateMetadata.stripePriceId &&
+    dayjs(userPrivateMetadata.stripeCurrentPeriodEnd).valueOf() + 86_400_000 >
       Date.now()
 
-  const plan = isPro ? storeSubscriptionPlans[1] : storeSubscriptionPlans[0]
+  const plan = isSubscribed
+    ? storeSubscriptionPlans.find(
+        (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
+      )
+    : storeSubscriptionPlans[0]
 
   return {
     ...plan,
-    stripeSubscriptionId: String(user.privateMetadata.stripeSubscriptionId),
-    stripeCurrentPeriodEnd: String(user.privateMetadata.stripeCurrentPeriodEnd),
-    stripeCustomerId: String(user.privateMetadata.stripeCustomerId),
-    isPro,
+    stripeSubscriptionId: userPrivateMetadata.stripeSubscriptionId,
+    stripeCurrentPeriodEnd: userPrivateMetadata.stripeCurrentPeriodEnd,
+    stripeCustomerId: userPrivateMetadata.stripeCustomerId,
+    isSubscribed,
   }
 }

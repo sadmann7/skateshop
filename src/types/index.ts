@@ -2,6 +2,7 @@ import { type Product } from "@/db/schema"
 import { type FileWithPath } from "react-dropzone"
 import { type z } from "zod"
 
+import { type userPrivateMetadataSchema } from "@/lib/validations/auth"
 import type { cartItemSchema, checkoutItemSchema } from "@/lib/validations/cart"
 import { type Icons } from "@/components/icons"
 
@@ -27,7 +28,7 @@ export type MainNavItem = NavItemWithOptionalChildren
 
 export type SidebarNavItem = NavItemWithChildren
 
-export type UserRole = "user" | "admin" | "superadmin"
+export type UserRole = z.infer<typeof userPrivateMetadataSchema.shape.role>
 
 export type Option = {
   label: string
@@ -65,6 +66,7 @@ export interface CartLineItem
 }
 
 export type SubscriptionPlan = {
+  id: "basic" | "standard" | "pro"
   name: string
   description: string
   features: string[]

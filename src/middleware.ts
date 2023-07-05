@@ -42,9 +42,8 @@ export default authMiddleware({
 
     // If the user doesn't have a role, set it to user
     if (!user.privateMetadata.role) {
-      await clerkClient.users.updateUser(auth.userId, {
+      await clerkClient.users.updateUserMetadata(auth.userId, {
         privateMetadata: {
-          ...user.privateMetadata,
           role: "user" satisfies UserRole,
         },
       })

@@ -18,8 +18,8 @@ export async function manageSubscriptionAction(
     throw new Error("User not found.")
   }
 
-  // If the user is already a Pro member, we redirect them to the Stripe billing portal
-  if (input.isPro && input.stripeCustomerId) {
+  // If the user is already subscribed to a plan, we redirect them to the Stripe billing portal
+  if (input.isSubscribed && input.stripeCustomerId) {
     const stripeSession = await stripe.billingPortal.sessions.create({
       customer: input.stripeCustomerId,
       return_url: billingUrl,
@@ -30,7 +30,7 @@ export async function manageSubscriptionAction(
     }
   }
 
-  // If the user is not a Pro member, we create a Stripe Checkout session
+  // If the user is not subscribed to a plan, we create a Stripe Checkout session
   const stripeSession = await stripe.checkout.sessions.create({
     success_url: billingUrl,
     cancel_url: billingUrl,
