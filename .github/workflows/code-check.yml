@@ -3,8 +3,6 @@ name: Code check
 on:
   pull_request:
     branches: ["*"]
-  push:
-    branches: ["main"]
 
 env:
   NEXT_PUBLIC_APP_URL: "https://fake.com"
@@ -53,8 +51,8 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      # - name: Run lint
-      #   run: pnpm run lint
+      - name: Run lint
+        run: pnpm run lint
 
       - name: Run typecheck
         run: pnpm run typecheck
