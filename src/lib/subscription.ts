@@ -2,6 +2,7 @@ import { clerkClient } from "@clerk/nextjs"
 import dayjs from "dayjs"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { stripe } from "@/lib/stripe"
 import { userPrivateMetadataSchema } from "@/lib/validations/auth"
 
 export async function getUserSubscriptionPlan(userId: string) {
@@ -27,11 +28,21 @@ export async function getUserSubscriptionPlan(userId: string) {
       )
     : storeSubscriptionPlans[0]
 
+  // Check if user has canceled subscription
+  let isCanceled = false
+  if (isSubscribed && userPrivateMetadata.stripeSubscriptionId) {
+    const stripePlan = await stripe.subscriptions.retrieve(
+      userPrivateMetadata.stripeSubscriptionId
+    )
+    isCanceled = stripePlan.cancel_at_period_end
+  }
+
   return {
     ...plan,
     stripeSubscriptionId: userPrivateMetadata.stripeSubscriptionId,
     stripeCurrentPeriodEnd: userPrivateMetadata.stripeCurrentPeriodEnd,
     stripeCustomerId: userPrivateMetadata.stripeCustomerId,
     isSubscribed,
+    isCanceled,
   }
 }

@@ -5,8 +5,10 @@ import { db } from "@/db"
 import { stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
+import dayjs from "dayjs"
 import { eq } from "drizzle-orm"
 
+import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -46,6 +48,12 @@ export default async function StoresPage() {
     },
   })
 
+  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+
+  const isSubscriptionPlanActive = dayjs(
+    subscriptionPlan.stripeCurrentPeriodEnd
+  ).isAfter(dayjs())
+
   return (
     <Shell layout="dashboard">
       <Header title="Stores" description="Manage your stores" size="sm" />
@@ -84,7 +92,21 @@ export default async function StoresPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/dashboard/stores/new">
+              <Link
+                href={
+                  subscriptionPlan.id === "basic"
+                    ? "/dashboard/billing"
+                    : subscriptionPlan.id === "standard" &&
+                      isSubscriptionPlanActive &&
+                      userStores.length >= 2
+                    ? "/dashboard/billing"
+                    : subscriptionPlan.id === "pro" &&
+                      isSubscriptionPlanActive &&
+                      userStores.length >= 3
+                    ? "/dashboard/billing"
+                    : "/dashboard/stores/new"
+                }
+              >
                 <div
                   className={cn(
                     buttonVariants({

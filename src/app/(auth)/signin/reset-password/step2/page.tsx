@@ -1,5 +1,5 @@
-import { env } from "@/env.mjs"
 import { type Metadata } from "next"
+import { env } from "@/env.mjs"
 
 import {
   Card,
@@ -27,7 +27,7 @@ export default function ResetPasswordStep2Page() {
             Enter your email address and we will send you a verification code
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4">
+        <CardContent>
           <ResetPasswordStep2Form />
         </CardContent>
       </Card>

@@ -16,20 +16,20 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <Image
           src="/images/auth-layout.webp"
           alt="A skateboarder doing a high drop"
-          priority
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           fill
           className="absolute inset-0 object-cover"
+          priority
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background to-background/60 md:to-background/40" />
         <Link
           href="/"
-          className="absolute left-8 top-8 z-20 flex items-center text-lg font-bold tracking-tight"
+          className="absolute left-8 top-6 z-20 flex items-center text-lg font-bold tracking-tight"
         >
           <Icons.logo className="mr-2 h-6 w-6" aria-hidden="true" />
           <span>{siteConfig.name}</span>
         </Link>
-        <div className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 text-base">
+        <div className="absolute bottom-6 left-8 z-20 line-clamp-1 text-base">
           Photo by{" "}
           <a
             href="https://unsplash.com/ja/@pixelperfektion?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"

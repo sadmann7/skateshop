@@ -1,6 +1,6 @@
-import { env } from "@/env.mjs"
 import { type Metadata } from "next"
 import Link from "next/link"
+import { env } from "@/env.mjs"
 
 import {
   Card,
@@ -44,9 +44,11 @@ export default function SignInPage() {
           </div>
           <SignInForm />
         </CardContent>
-        <CardFooter className="flex flex-wrap items-center space-x-2">
-          <div className="flex-1 text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+        <CardFooter className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-muted-foreground">
+            <span className="mr-1 hidden sm:inline-block">
+              Don&apos;t have an account?
+            </span>
             <Link
               aria-label="Sign up"
               href="/signup"

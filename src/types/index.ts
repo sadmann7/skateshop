@@ -72,6 +72,7 @@ export type SubscriptionPlan = {
   features: string[]
   stripePriceId: string
   price: number
+  isCanceled?: boolean
 }
 
 export type StoreSubscriptionPlan = SubscriptionPlan & {

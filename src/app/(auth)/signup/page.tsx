@@ -44,7 +44,7 @@ export default function SignUpPage() {
           </div>
           <SignUpForm />
         </CardContent>
-        <CardFooter className="grid gap-4">
+        <CardFooter >
           <div className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link

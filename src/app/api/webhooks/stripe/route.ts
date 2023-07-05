@@ -40,6 +40,7 @@ export async function POST(req: Request) {
     )
 
     // Unsubscribe the user from the previous plan if they are subscribed to another plan
+    // TODO: Need to find an alternative for this. This is a bit hacky.
     const user = await clerkClient.users.getUser(session.metadata.userId)
 
     const stripeSubscriptionId =

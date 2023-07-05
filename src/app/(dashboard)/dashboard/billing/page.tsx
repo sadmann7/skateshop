@@ -41,15 +41,6 @@ export default async function BillingPage() {
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
-  // If user has a pro plan, check cancel status on Stripe
-  let isCanceled = false
-  if (subscriptionPlan.isSubscribed && subscriptionPlan.stripeSubscriptionId) {
-    const stripePlan = await stripe.subscriptions.retrieve(
-      subscriptionPlan.stripeSubscriptionId
-    )
-    isCanceled = stripePlan.cancel_at_period_end
-  }
-
   return (
     <Shell as="div" layout="dashboard">
       <Header
@@ -69,8 +60,8 @@ export default async function BillingPage() {
           </h3>
           <p className="text-sm text-muted-foreground">
             {!subscriptionPlan.isSubscribed
-              ? "Start creating your store and selling your products today!"
-              : isCanceled
+              ? "You are subscribed to the ollie plan. Upgrade to unlock more features."
+              : subscriptionPlan.isCanceled
               ? "Your plan will be canceled on "
               : "Your plan renews on "}
             {subscriptionPlan?.stripeCurrentPeriodEnd
@@ -144,7 +135,7 @@ export default async function BillingPage() {
                     }
                     isSubscribed={subscriptionPlan.isSubscribed}
                     isCurrentPlan={subscriptionPlan?.name === plan.name}
-                    />
+                  />
                 )}
               </CardFooter>
             </Card>
