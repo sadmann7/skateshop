@@ -4,6 +4,7 @@ import { clerkClient } from "@clerk/nextjs"
 import { type z } from "zod"
 
 import { stripe } from "@/lib/stripe"
+import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { absoluteUrl } from "@/lib/utils"
 import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
 
@@ -18,8 +19,14 @@ export async function manageSubscriptionAction(
     throw new Error("User not found.")
   }
 
+  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+
   // If the user is already subscribed to a plan, we redirect them to the Stripe billing portal
-  if (input.isSubscribed && input.stripeCustomerId) {
+  if (
+    input.isSubscribed &&
+    input.stripeCustomerId &&
+    subscriptionPlan?.stripePriceId === input.stripePriceId
+  ) {
     const stripeSession = await stripe.billingPortal.sessions.create({
       customer: input.stripeCustomerId,
       return_url: billingUrl,

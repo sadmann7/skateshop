@@ -75,5 +75,6 @@ export type SubscriptionPlan = {
 }
 
 export type StoreSubscriptionPlan = SubscriptionPlan & {
+  stripeCustomerId: string
   stripeCurrentPeriodEnd: number
 }

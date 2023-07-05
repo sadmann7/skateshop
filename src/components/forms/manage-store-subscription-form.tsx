@@ -9,18 +9,19 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { manageSubscriptionAction } from "@/app/_actions/stripe"
 
-type SellerSubscriptionFormProps = z.infer<typeof manageSubscriptionSchema> & {
+type ManageStoreSubscriptionFormProps = z.infer<typeof manageSubscriptionSchema> & {
   isCurrentPlan: boolean
 }
 
-export function SellerSubscriptionForm({
+export function ManageStoreSubscriptionForm({
   userId,
   email,
   isCurrentPlan,
   isSubscribed,
   stripeCustomerId,
+  stripeSubscriptionId,
   stripePriceId,
-}: SellerSubscriptionFormProps) {
+}: ManageStoreSubscriptionFormProps) {
   const [isPending, startTransition] = React.useTransition()
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,6 +34,7 @@ export function SellerSubscriptionForm({
           userId,
           isSubscribed,
           stripeCustomerId,
+          stripeSubscriptionId,
           stripePriceId,
         })
         if (session) {
@@ -55,7 +57,7 @@ export function SellerSubscriptionForm({
             aria-hidden="true"
           />
         )}
-        {isCurrentPlan ? "Manage" : "Subscribe"}
+        {isCurrentPlan ? "Manage Subscription" : "Subscribe"}
       </Button>
     </form>
   )

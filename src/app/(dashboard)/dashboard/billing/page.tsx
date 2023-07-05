@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SellerSubscriptionForm } from "@/components/forms/seller-subscription-form"
+import { ManageStoreSubscriptionForm } from "@/components/forms/manage-store-subscription-form"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
@@ -69,7 +69,7 @@ export default async function BillingPage() {
           </h3>
           <p className="text-sm text-muted-foreground">
             {!subscriptionPlan.isSubscribed
-              ? "You are not subscribed to any plan"
+              ? "Start creating your store and selling your products today!"
               : isCanceled
               ? "Your plan will be canceled on "
               : "Your plan renews on "}
@@ -130,17 +130,20 @@ export default async function BillingPage() {
                       )}
                     >
                       Manage stores
-                      <span className="sr-only">Manage stores</span>
+                      <span className="sr-only">Manage Stores</span>
                     </div>
                   </Link>
                 ) : (
-                  <SellerSubscriptionForm
+                  <ManageStoreSubscriptionForm
                     userId={user.id}
                     email={email}
                     isCurrentPlan={subscriptionPlan?.name === plan.name}
                     isSubscribed={subscriptionPlan.isSubscribed}
                     stripePriceId={plan.stripePriceId}
                     stripeCustomerId={subscriptionPlan?.stripeCustomerId}
+                    stripeSubscriptionId={
+                      subscriptionPlan?.stripeSubscriptionId
+                    }
                   />
                 )}
               </CardFooter>
