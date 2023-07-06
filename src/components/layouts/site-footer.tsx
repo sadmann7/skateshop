@@ -10,17 +10,18 @@ export function SiteFooter() {
   return (
     <footer className="w-full border-t bg-background">
       <div className="container flex flex-col items-center justify-between space-y-1 py-5 md:h-16 md:flex-row md:py-0">
-        <div className="text-center text-base text-muted-foreground">
-          Learn to do a{" "}
+        <div className="text-center text-sm leading-loose text-muted-foreground">
+          Built by{" "}
           <a
             aria-label="Kickflip tutorial on YouTube"
-            href="https://www.youtube.com/watch?v=kpVhjV-I6nM"
+            href="https://twitter.com/sadmann17"
             target="_blank"
             rel="noreferrer"
             className="font-semibold transition-colors hover:text-slate-950 dark:hover:text-slate-200"
           >
-            kickflip
+            Sadman
           </a>
+          .
         </div>
         <div className="flex items-center space-x-1">
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">

@@ -1,12 +1,19 @@
 "use server"
 
+import { db } from "@/db"
+import { payments, stores } from "@/db/schema"
 import { clerkClient } from "@clerk/nextjs"
+import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
 import { stripe } from "@/lib/stripe"
 import { absoluteUrl } from "@/lib/utils"
-import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
+import type {
+  createAccountLinkSchema,
+  manageSubscriptionSchema,
+} from "@/lib/validations/stripe"
 
+// For managing stripe subscriptions for a user
 export async function manageSubscriptionAction(
   input: z.infer<typeof manageSubscriptionSchema>
 ) {
@@ -51,5 +58,64 @@ export async function manageSubscriptionAction(
 
   return {
     url: stripeSession.url,
+  }
+}
+
+// For connecting a Stripe account to a store
+export async function createAccountLinkAction(
+  input: z.infer<typeof createAccountLinkSchema>
+) {
+  //  Check if the store is already connected to Stripe
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, input.storeId),
+  })
+
+  if (!store) {
+    throw new Error("Store not found.")
+  }
+
+  // TODO: Check if stripeAccountId is available on the store
+
+  const payment = await db.query.payments.findFirst({
+    where: eq(payments.storeId, input.storeId),
+  })
+
+  if (!payment) {
+    throw new Error("Payment not found.")
+  }
+
+  if (payment?.detailsSubmitted) {
+    throw new Error("Store already connected to Stripe.")
+  }
+
+  let stripeAccountId = ""
+  if (payment?.stripeAccountId) {
+    stripeAccountId = payment.stripeAccountId
+  } else {
+    const account = await stripe.accounts.create({
+      type: "standard",
+    })
+
+    if (!account) {
+      throw new Error("Error creating Stripe account.")
+    }
+
+    stripeAccountId = account.id
+
+    await db.update(payments).set({
+      storeId: input.storeId,
+      stripeAccountId,
+    })
+  }
+
+  const accountLink = await stripe.accountLinks.create({
+    account: stripeAccountId,
+    refresh_url: absoluteUrl("/dashboard/stripe"),
+    return_url: absoluteUrl("/dashboard/stripe"),
+    type: "account_onboarding",
+  })
+
+  return {
+    url: accountLink.url,
   }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE `orders` MODIFY COLUMN `items` json DEFAULT ('null');
