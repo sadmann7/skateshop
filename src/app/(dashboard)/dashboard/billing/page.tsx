@@ -5,7 +5,6 @@ import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
-import { stripe } from "@/lib/stripe"
 import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -42,7 +41,7 @@ export default async function BillingPage() {
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
   return (
-    <Shell as="div" layout="dashboard">
+    <Shell layout="dashboard" as="div">
       <Header
         title="Billing"
         description="Manage your billing and subscription"
@@ -60,12 +59,12 @@ export default async function BillingPage() {
           </h3>
           <p className="text-sm text-muted-foreground">
             {!subscriptionPlan.isSubscribed
-              ? "You are subscribed to the ollie plan. Upgrade to unlock more features."
+              ? "Upgrade to create more stores and products."
               : subscriptionPlan.isCanceled
               ? "Your plan will be canceled on "
               : "Your plan renews on "}
             {subscriptionPlan?.stripeCurrentPeriodEnd
-              ? formatDate(subscriptionPlan.stripeCurrentPeriodEnd)
+              ? `${formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.`
               : null}
           </p>
         </Card>
@@ -120,7 +119,7 @@ export default async function BillingPage() {
                         })
                       )}
                     >
-                      Manage stores
+                      Manage Stores
                       <span className="sr-only">Manage Stores</span>
                     </div>
                   </Link>

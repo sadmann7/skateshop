@@ -74,8 +74,3 @@ export type SubscriptionPlan = {
   price: number
   isCanceled?: boolean
 }
-
-export type StoreSubscriptionPlan = SubscriptionPlan & {
-  stripeCustomerId: string
-  stripeCurrentPeriodEnd: number
-}

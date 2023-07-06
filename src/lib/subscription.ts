@@ -1,3 +1,4 @@
+import { type SubscriptionPlan } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
 import dayjs from "dayjs"
 
@@ -44,5 +45,23 @@ export async function getUserSubscriptionPlan(userId: string) {
     stripeCustomerId: userPrivateMetadata.stripeCustomerId,
     isSubscribed,
     isCanceled,
+  }
+}
+
+export function getFeaturedStoreAndProductCounts(
+  planId?: SubscriptionPlan["id"]
+) {
+  const plan = storeSubscriptionPlans.find((plan) => plan.id === planId)
+  const features = plan?.features.map((feature) => feature.split(",")).flat()
+
+  const featuredStoreCount =
+    features?.find((feature) => feature.match(/store/i))?.match(/\d+/) ?? 0
+
+  const featuredProductCount =
+    features?.find((feature) => feature.match(/product/i))?.match(/\d+/) ?? 0
+
+  return {
+    featuredStoreCount,
+    featuredProductCount,
   }
 }

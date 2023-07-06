@@ -8,8 +8,12 @@ import { currentUser } from "@clerk/nextjs"
 import dayjs from "dayjs"
 import { eq } from "drizzle-orm"
 
-import { getUserSubscriptionPlan } from "@/lib/subscription"
-import { cn } from "@/lib/utils"
+import {
+  getFeaturedStoreAndProductCounts,
+  getUserSubscriptionPlan,
+} from "@/lib/subscription"
+import { cn, formatDate } from "@/lib/utils"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +23,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Header } from "@/components/header"
+import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shell"
 
 // Running out of edge function execution units on vercel free plan
@@ -54,9 +59,32 @@ export default async function StoresPage() {
     subscriptionPlan.stripeCurrentPeriodEnd
   ).isAfter(dayjs())
 
+  const { featuredStoreCount, featuredProductCount } =
+    getFeaturedStoreAndProductCounts(subscriptionPlan.id)
+
   return (
     <Shell layout="dashboard">
       <Header title="Stores" description="Manage your stores" size="sm" />
+      <Alert>
+        <Icons.terminal className="h-4 w-4" aria-hidden="true" />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          You are currently on the{" "}
+          <span className="font-semibold">{subscriptionPlan.name}</span> plan.{" "}
+          {!subscriptionPlan.isSubscribed
+            ? "Upgrade to create more stores and products."
+            : subscriptionPlan.isCanceled
+            ? "Your plan will be canceled on "
+            : "Your plan renews on "}
+          {subscriptionPlan?.stripeCurrentPeriodEnd
+            ? `${formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.`
+            : null}{" "}
+          You can create up to{" "}
+          <span className="font-semibold">{featuredStoreCount}</span> stores and{" "}
+          <span className="font-semibold">{featuredProductCount}</span> products
+          on this plan.
+        </AlertDescription>
+      </Alert>
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {userStores.map((store) => (
           <Card key={store.id} className="flex h-full flex-col">
@@ -94,7 +122,7 @@ export default async function StoresPage() {
             <CardContent>
               <Link
                 href={
-                  subscriptionPlan.id === "basic"
+                  subscriptionPlan.id === "basic" && userStores.length >= 1
                     ? "/dashboard/billing"
                     : subscriptionPlan.id === "standard" &&
                       isSubscriptionPlanActive &&
