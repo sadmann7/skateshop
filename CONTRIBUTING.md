@@ -94,3 +94,7 @@ Finally, open a pull request with the changes.
 Congratulations :tada::tada: The GitHub team thanks you :sparkles:.
 
 Once your PR is merged, your contributions will be publicly visible on the [skateshop](https://github.com/sadmann7/skateshop).
+
+### Credits
+
+This Contributing Guide is adapted from [GitHub docs contributing guide](https://github.com/github/docs/blob/main/CONTRIBUTING.md?plain=1).

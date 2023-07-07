@@ -75,12 +75,26 @@ pnpm run stripe:listen
 
 Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
 
+## License
+
+Licensed under the MIT License. Check the [LICENSE](./LICENSE) file for details.
+
 ## Contributing
 
 Contributions are welcome! Please open an issue if you have any questions or suggestions. Your contributions will be acknowledged.
 
 See the [contributing guide](./CONTRIBUTING.md) for more information.
 
-## License
+## Contributors
 
-Licensed under the MIT License. Check the [LICENSE](./LICENSE) file for details.
+Thanks goes to these wonderful people for their contributions:
+
+<p align="center">
+ <a href="https://github.com/sadmann7/skateshop/graphs/contributors">
+   <img src="https://contrib.rocks/image?repo=sadmann7/skateshop" />
+ </a>
+</p>
+
+<p align="center">
+ Made with <a rel="noopener noreferrer" target="_blank" href="https://contrib.rocks">contrib.rocks</a>
+</p>
