@@ -20,19 +20,20 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 - [uploadthing](https://uploadthing.com)
 - [Stripe](https://stripe.com)
 
-## Features
+## Features to be implemented
 
-- Authentication with **Clerk**
-- File uploads with **uploadthing**
-- Newsletter subscription with **React Email** and **Resend**
-- Blog using **MDX** and **Contentlayer**
-- ORM using **Drizzle ORM**
-- Database on **PlanetScale**
-- Validation with **Zod**
-- Subscription, payment, and billing with **Stripe**
-- Storefront with products and categories
-- Seller and customer workflows
-- Admin dashboard with stores, products, orders, subscriptions, and payments
+- [x] Authentication with **Clerk**
+- [x] File uploads with **uploadthing**
+- [x] Newsletter subscription with **React Email** and **Resend**
+- [x] Blog using **MDX** and **Contentlayer**
+- [x] ORM using **Drizzle ORM**
+- [x] Database on **PlanetScale**
+- [x] Validation with **Zod**
+- [x] Storefront with products, categories, and subcategories
+- [x] Seller and customer workflows
+- [x] User subscriptions with **Stripe**
+- [ ] Checkout with **Stripe Checkout**
+- [ ] Admin dashboard with stores, products, orders, subscriptions, and payments
 
 ## Installation
 

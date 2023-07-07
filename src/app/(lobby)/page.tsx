@@ -18,7 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
 import { Icons } from "@/components/icons"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
@@ -239,16 +238,6 @@ export default async function IndexPage() {
             </Card>
           ))}
         </div>
-      </section>
-      <section
-        id="newsletter"
-        aria-labelledby="newsletter-heading"
-        className="mt-4 grid place-items-center gap-4 rounded-lg border bg-card px-6 py-16 text-center text-card-foreground shadow-sm"
-      >
-        <h2 className="text-2xl font-medium sm:text-3xl">
-          Join our newsletter to get the latest news and updates
-        </h2>
-        <SubscribeToNewsletterForm />
       </section>
       <section
         id="random-subcategories"

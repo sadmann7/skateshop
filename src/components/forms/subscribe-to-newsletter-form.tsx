@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -23,7 +22,6 @@ import { Icons } from "@/components/icons"
 type Inputs = z.infer<typeof emailSchema>
 
 export function SubscribeToNewsletterForm() {
-  const router = useRouter()
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
@@ -36,7 +34,7 @@ export function SubscribeToNewsletterForm() {
 
   function onSubmit(data: Inputs) {
     console.log(data)
- 
+
     startTransition(async () => {
       const response = await fetch("/api/newsletter/subscribe", {
         method: "POST",
@@ -65,9 +63,8 @@ export function SubscribeToNewsletterForm() {
       }
 
       if (response.ok) {
-        toast.success("You have successfully joined our newsletter.")
+        toast.success("You have been subscribed to our newsletter.")
         form.reset()
-        router.refresh()
       }
     })
   }
@@ -75,7 +72,7 @@ export function SubscribeToNewsletterForm() {
   return (
     <Form {...form}>
       <form
-        className="grid w-full max-w-xs gap-5"
+        className="grid w-full"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
         <FormField
@@ -86,7 +83,7 @@ export function SubscribeToNewsletterForm() {
               <FormLabel className="sr-only">Email</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="rodneymullen180@gmail.com"
+                  placeholder="skate@gmail.com"
                   className="pr-12"
                   {...field}
                 />
