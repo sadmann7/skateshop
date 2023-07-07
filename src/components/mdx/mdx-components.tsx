@@ -153,7 +153,7 @@ const components = {
     />
   ),
   Image: ({ className, alt, ...props }: ImageProps) => (
-    <Image className={cn(className, 'mt-4')} alt={alt} {...props} />
+    <Image className={cn(className, "mt-4")} alt={alt} {...props} />
   ),
   Alert: ({ className, ...props }: AlertProps) => (
     <Alert className={cn(className)} {...props} />

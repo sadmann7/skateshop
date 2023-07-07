@@ -33,7 +33,7 @@ import {
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { MultiSelect } from "@/components/multi-select"
-import { PaginationButton } from "@/components/pagination-button"
+import { PaginationButton } from "@/components/pagers/pagination-button"
 import { ProductCard } from "@/components/product-card"
 
 interface ProductsProps {

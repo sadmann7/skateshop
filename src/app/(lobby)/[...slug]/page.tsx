@@ -4,12 +4,14 @@ import { allPages } from "contentlayer/generated"
 import "@/styles/mdx.css"
 
 import { type Metadata } from "next"
-import { env } from "@/env.mjs"
 
 import { siteConfig } from "@/config/site"
 import { absoluteUrl } from "@/lib/utils"
-import { Mdx } from "@/components/mdx/mdx-components"
 import { Separator } from "@/components/ui/separator"
+import { Header } from "@/components/header"
+import { Mdx } from "@/components/mdx/mdx-components"
+import { MdxPager } from "@/components/pagers/mdx-pager"
+import { Shell } from "@/components/shell"
 
 interface PageProps {
   params: {
@@ -38,7 +40,7 @@ export async function generateMetadata({
     return {}
   }
 
-  const url = env.NEXT_PUBLIC_APP_URL
+  const url = absoluteUrl("/")
 
   const ogUrl = new URL(`${url}/api/og`)
   ogUrl.searchParams.set("title", page.title)
@@ -85,18 +87,27 @@ export default async function PagePage({ params }: PageProps) {
     notFound()
   }
 
+  // Remove the /pages prefix from the slug
+  const formattedPage = {
+    ...page,
+    slug: page.slug.replace(/^\/pages/, ""),
+  }
+
+  const formattedPages = allPages.map((page) => ({
+    ...page,
+    slug: page.slug.replace(/^\/pages/, ""),
+  }))
+
   return (
-    <article className="container max-w-3xl py-6 lg:py-12">
-      <div className="space-y-4">
-        <h1 className="inline-block text-4xl font-bold lg:text-5xl">
-          {page.title}
-        </h1>
-        {page.description && (
-          <p className="text-xl text-muted-foreground">{page.description}</p>
-        )}
-      </div>
+    <Shell as="article" variant="markdown">
+      <Header title={page.title} description={page.description} />
       <Separator className="my-4" />
       <Mdx code={page.body.code} />
-    </article>
+      <MdxPager
+        currentItem={formattedPage}
+        allItems={formattedPages}
+        className="mt-8"
+      />
+    </Shell>
   )
 }

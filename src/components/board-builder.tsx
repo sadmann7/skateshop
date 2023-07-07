@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
-import { PaginationButton } from "@/components/pagination-button"
+import { PaginationButton } from "@/components/pagers/pagination-button"
 import { ProductCard } from "@/components/product-card"
 import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 

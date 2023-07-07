@@ -62,6 +62,10 @@ export function toSentenceCase(str: string) {
     .replace(/^./, (str) => str.toUpperCase())
 }
 
+export function truncate(str: string, length: number) {
+  return str.length > length ? `${str.substring(0, length)}...` : str
+}
+
 export function isArrayOfFile(files: unknown): files is File[] {
   const isArray = Array.isArray(files)
   if (!isArray) return false

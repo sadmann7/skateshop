@@ -24,7 +24,7 @@ export default function BlogPage() {
     .sort((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix())
 
   return (
-    <Shell>
+    <Shell className="md:pb-10">
       <Header
         title="Blog"
         description="Explore the latest news and updates from the community"

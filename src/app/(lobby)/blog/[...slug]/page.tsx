@@ -14,6 +14,8 @@ import { absoluteUrl, cn, formatDate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Icons } from "@/components/icons"
+import { MdxPager } from "@/components/pagers/mdx-pager"
+import { Shell } from "@/components/shell"
 
 interface PostPageProps {
   params: {
@@ -99,7 +101,7 @@ export default async function PostPage({ params }: PostPageProps) {
   )
 
   return (
-    <article className="container relative max-w-3xl py-6 lg:py-10">
+    <Shell variant="markdown" as="article">
       <Link
         href="/blog"
         className={cn(
@@ -162,13 +164,15 @@ export default async function PostPage({ params }: PostPageProps) {
         />
       )}
       <Mdx code={post.body.code} />
-      <Separator className="mt-12" />
-      <div className="flex justify-center py-6 lg:py-10">
+      <Separator className="my-10" />
+      <MdxPager currentItem={post} allItems={allPosts} />
+      <div className="flex justify-center py-5">
         <Link href="/blog" className={cn(buttonVariants({ variant: "ghost" }))}>
-          <Icons.chevronLeft className="mr-2 h-4 w-4" />
+          <Icons.chevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
           See all posts
+          <span className="sr-only">See all posts</span>
         </Link>
       </div>
-    </article>
+    </Shell>
   )
 }
