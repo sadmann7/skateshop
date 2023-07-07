@@ -63,7 +63,7 @@ export default async function StoresPage() {
     getFeaturedStoreAndProductCounts(subscriptionPlan.id)
 
   return (
-    <Shell layout="dashboard">
+    <Shell variant="sidebar">
       <Header title="Stores" description="Manage your stores" size="sm" />
       <Alert>
         <Icons.terminal className="h-4 w-4" aria-hidden="true" />

@@ -6,7 +6,7 @@ import { Shell } from "@/components/shell"
 
 export default function BillingLoading() {
   return (
-    <Shell layout="dashboard" as="div">
+    <Shell variant="sidebar" as="div">
       <Header
         title="Billing"
         description="Manage your billing and subscription"

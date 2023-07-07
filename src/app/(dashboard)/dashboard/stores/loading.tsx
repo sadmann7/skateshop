@@ -5,7 +5,7 @@ import { Shell } from "@/components/shell"
 
 export default function StoresLoading() {
   return (
-    <Shell layout="dashboard">
+    <Shell variant="sidebar">
       <Header title="Stores" description="Manage your stores" size="sm" />
       <Card className="flex space-x-4 px-4 py-3">
         <Skeleton className="mt-2 h-4 w-4 rounded" />

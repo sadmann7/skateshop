@@ -1,6 +1,6 @@
-import { env } from "@/env.mjs"
 import { type Metadata } from "next"
 import Link from "next/link"
+import { env } from "@/env.mjs"
 
 import {
   Card,
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <Shell layout="auth">
+    <Shell className="max-w-lg">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Sign up</CardTitle>
@@ -44,7 +44,7 @@ export default function SignUpPage() {
           </div>
           <SignUpForm />
         </CardContent>
-        <CardFooter >
+        <CardFooter>
           <div className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link

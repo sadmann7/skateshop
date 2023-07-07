@@ -4,7 +4,7 @@ import { Shell } from "@/components/shell"
 
 export default function AccountLoading() {
   return (
-    <Shell layout="dashboard">
+    <Shell variant="sidebar">
       <Header title="Stores" description="Manage your stores." size="sm" />
       <div className="grid gap-10 rounded-lg border p-4">
         <div className="space-y-2">

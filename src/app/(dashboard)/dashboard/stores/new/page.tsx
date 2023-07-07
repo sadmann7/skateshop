@@ -28,7 +28,7 @@ export default async function NewStorePage() {
   }
 
   return (
-    <Shell layout="dashboard">
+    <Shell variant="sidebar">
       <Header
         title="New Store"
         description="New store for your account."

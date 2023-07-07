@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function AccountPage() {
   return (
-    <Shell layout="dashboard">
+    <Shell variant="sidebar">
       <Header
         title="Account"
         description="Manage your account settings."

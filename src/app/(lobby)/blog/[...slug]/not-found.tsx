@@ -3,7 +3,7 @@ import { Shell } from "@/components/shell"
 
 export default function BlogNotFound() {
   return (
-    <Shell layout="centered">
+    <Shell variant="centered">
       <ErrorCard
         title="Post not found"
         description="The post you are looking for does not exist"

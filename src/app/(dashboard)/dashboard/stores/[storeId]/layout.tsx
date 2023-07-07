@@ -43,7 +43,7 @@ export default async function StoreLayout({
   }
 
   return (
-    <Shell layout="dashboard">
+    <Shell variant="sidebar">
       <div className="flex items-center space-x-4">
         <Header title={store.name} size="sm" className="flex-1" />
         {allStores.length > 1 ? (

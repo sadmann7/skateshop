@@ -3,7 +3,7 @@ import { Shell } from "@/components/shell"
 
 export default function PageNotFound() {
   return (
-    <Shell layout="centered">
+    <Shell variant="centered">
       <ErrorCard
         title="Page not found"
         description="The page you are looking for does not exist"
