@@ -73,6 +73,9 @@ dependencies:
   '@t3-oss/env-nextjs':
     specifier: ^0.6.0
     version: 0.6.0(typescript@5.1.6)(zod@3.21.4)
+  '@tanstack/react-table':
+    specifier: ^8.9.3
+    version: 8.9.3(react-dom@18.2.0)(react@18.2.0)
   '@uploadthing/react':
     specifier: ^5.1.0
     version: 5.1.0(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@5.1.0)(zod@3.21.4)
