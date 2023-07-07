@@ -106,7 +106,7 @@ export default async function PagePage({ params }: PageProps) {
       <MdxPager
         currentItem={formattedPage}
         allItems={formattedPages}
-        className="mt-8"
+        className="mb-2 mt-8"
       />
     </Shell>
   )

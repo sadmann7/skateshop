@@ -68,22 +68,27 @@ export const siteConfig = {
       items: [
         {
           title: "OneStopShop",
-          href: "https://onestopshop.jackblatch.com/",
+          href: "https://onestopshop.jackblatch.com",
           external: true,
         },
         {
           title: "Acme Corp",
-          href: "https://acme-corp.jumr.dev/",
+          href: "https://acme-corp.jumr.dev",
           external: true,
         },
         {
-          title: "shadcn/ui",
-          href: "https://ui.shadcn.com/",
+          title: "craft.mxkaske.dev",
+          href: "https://craft.mxkaske.dev",
           external: true,
         },
         {
           title: "Taxonomy",
           href: "https://tx.shadcn.com/",
+          external: true,
+        },
+        {
+          title: "shadcn/ui",
+          href: "https://ui.shadcn.com",
           external: true,
         },
       ],
