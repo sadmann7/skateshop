@@ -281,7 +281,7 @@ function FileCard<TFieldValues extends FieldValues>({
                 size="sm"
                 className="h-7 w-7 p-0"
               >
-                <Icons.crop className="h-4 w-4 text-white" aria-hidden="true" />
+                <Icons.crop className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">Crop image</span>
               </Button>
             </DialogTrigger>
@@ -365,7 +365,7 @@ function FileCard<TFieldValues extends FieldValues>({
             )
           }}
         >
-          <Icons.close className="h-4 w-4 text-white" aria-hidden="true" />
+          <Icons.close className="h-4 w-4" aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>
