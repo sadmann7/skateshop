@@ -26,13 +26,13 @@ export const metadata: Metadata = {
   description: "Product description",
 }
 
-interface PrdouctPageProps {
+interface ProductPageProps {
   params: {
     productId: string
   }
 }
 
-export default async function ProductPage({ params }: PrdouctPageProps) {
+export default async function ProductPage({ params }: ProductPageProps) {
   const productId = Number(params.productId)
 
   const product = await db.query.products.findFirst({
