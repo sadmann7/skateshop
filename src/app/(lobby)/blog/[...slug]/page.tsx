@@ -101,7 +101,7 @@ export default async function PostPage({ params }: PostPageProps) {
   )
 
   return (
-    <Shell variant="markdown" as="article">
+    <Shell as="article" variant="markdown">
       <Link
         href="/blog"
         className={cn(

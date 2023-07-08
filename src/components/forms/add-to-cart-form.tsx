@@ -67,7 +67,6 @@ export function AddToCartForm({ productId }: AddToCartFromProps) {
               <FormLabel>Quantity</FormLabel>
               <FormControl>
                 <Input
-                  {...field}
                   type="number"
                   inputMode="numeric"
                   min={0}

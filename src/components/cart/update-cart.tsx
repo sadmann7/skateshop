@@ -33,7 +33,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
               } catch (error) {
                 error instanceof Error
                   ? toast.error(error.message)
-                  : toast.error("Something went wrong.")
+                  : toast.error("Something went wrong, please try again.")
               }
             })
           }}

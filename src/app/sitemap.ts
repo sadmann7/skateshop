@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   const products = productsTransaction.items.map((product) => ({
-    url: `${siteConfig.url}/product/${product.id}`,
+    url: `${siteConfig.url}/products/${product.id}`,
     lastModified: new Date().toISOString(),
   }))
 
