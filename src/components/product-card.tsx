@@ -44,7 +44,7 @@ export function ProductCard({
     >
       <Link
         aria-label={`View ${product.name} details`}
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
       >
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
@@ -77,7 +77,7 @@ export function ProductCard({
       </Link>
       <Link
         aria-label={`View ${product.name} details`}
-        href={`/products/${product.id}`}
+        href={`/product/${product.id}`}
       >
         <CardContent className="grid gap-2.5 p-4">
           <CardTitle className="line-clamp-1">{product.name}</CardTitle>
@@ -90,8 +90,8 @@ export function ProductCard({
         {variant === "default" ? (
           <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
             <Link
-              aria-label="Preview"
-              href={`/preview/product/${product.id}`}
+              aria-label="Preview product"
+              href={`/product-preview/${product.id}`}
               className={buttonVariants({
                 variant: "outline",
                 size: "sm",
