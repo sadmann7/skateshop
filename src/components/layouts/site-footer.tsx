@@ -33,7 +33,7 @@ export function SiteFooter() {
           <section
             id="footer-links"
             aria-labelledby="footer-links-heading"
-            className="grid flex-1 grid-cols-2 gap-10 sm:grid-cols-4"
+            className="grid flex-1 grid-cols-1 gap-10 xs:grid-cols-2 sm:grid-cols-4"
           >
             {siteConfig.footerNav.map((item) => (
               <div key={item.title} className="space-y-3">

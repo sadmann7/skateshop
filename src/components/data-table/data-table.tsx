@@ -49,11 +49,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DataTablePagination } from "@/components/data-table/data-table-pagination"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { Icons } from "@/components/icons"
-
-import { Input } from "../ui/input"
-import { DataTablePagination } from "./data-table-pagination"
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -171,9 +170,14 @@ export function DataTable<TData, TValue>({
   )
 
   const debouncedDateRange = useDebounce(
-    columnFilters.find((f) => f.id === "date_range")?.value,
+    columnFilters.find((f) => f.id === "createdAt")?.value,
     500
   )
+
+  // console.log({
+  //   debouncedName,
+  //   debouncedDateRange,
+  // })
 
   React.useEffect(() => {
     router.push(
@@ -231,17 +235,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 p-1">
-      <div className="flex items-center justify-between">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
-        <DataTableViewOptions table={table} />
-      </div>
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>

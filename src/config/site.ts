@@ -144,7 +144,7 @@ export const siteConfig = {
       ],
     },
     {
-      title: "Decompress",
+      title: "Lofi",
       items: [
         {
           title: "beats to study to",
