@@ -1,12 +1,12 @@
-import { env } from "@/env.mjs"
-import type { Metadata } from "next"
+import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
+import { env } from "@/env.mjs"
 import dayjs from "dayjs"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
-import { ProductsTable } from "@/components/products-table"
+import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -121,7 +121,7 @@ export default async function ProductsPage({
   const pageCount = Math.ceil(totalProducts / limit)
 
   return (
-    <ProductsTable
+    <ProductsTableShell
       data={storeProducts}
       pageCount={pageCount}
       storeId={storeId}

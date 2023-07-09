@@ -1,4 +1,6 @@
 import { env } from "@/env.mjs"
+import { compareItems, type RankingInfo } from "@tanstack/match-sorter-utils"
+import { sortingFns, type SortingFn } from "@tanstack/react-table"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
 import { twMerge } from "tailwind-merge"
@@ -74,4 +76,19 @@ export function isArrayOfFile(files: unknown): files is File[] {
 
 export function absoluteUrl(path: string) {
   return `${env.NEXT_PUBLIC_APP_URL}${path}`
+}
+
+export const fuzzySort: SortingFn<unknown> = (rowA, rowB, columnId) => {
+  let dir = 0
+
+  // Only sort by rank if the column has ranking information
+  if (rowA.columnFiltersMeta[columnId]) {
+    dir = compareItems(
+      rowA.columnFiltersMeta[columnId]?.itemRank as RankingInfo,
+      rowB.columnFiltersMeta[columnId]?.itemRank as RankingInfo
+    )
+  }
+
+  // Provide an alphanumeric fallback for when the item ranks are equal
+  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
 }
