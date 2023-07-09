@@ -1,22 +1,13 @@
 "use client"
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { type Table } from "@tanstack/react-table"
-import dayjs from "dayjs"
-import { Calendar as CalendarIcon } from "lucide-react"
 
-import { cn, formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { DatePickerWithRange } from "@/components/date-range-picker"
+import { Icons } from "@/components/icons"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -25,10 +16,11 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
+  const router = useRouter()
+  const pathname = usePathname()
 
   return (
-    <div className="flex w-full items-center justify-between overflow-auto">
+    <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter names..."
@@ -38,9 +30,21 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {/* <DatePickerWithRange /> */}
+        <DatePickerWithRange />
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center space-x-2">
+        <Button
+          aria-label="Add new item"
+          variant="outline"
+          size="sm"
+          className="h-8"
+          onClick={() => router.push(`${pathname}/new`)}
+        >
+          <Icons.addCircle className="mr-2 h-4 w-4" />
+          New
+        </Button>
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   )
 }
