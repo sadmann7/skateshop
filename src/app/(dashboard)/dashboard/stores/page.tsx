@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 // Running out of edge function execution units on vercel free plan
 // export const runtime = "edge"

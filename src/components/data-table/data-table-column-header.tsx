@@ -1,5 +1,4 @@
 import { type Column } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -10,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Icons } from "@/components/icons"
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -38,11 +38,14 @@ export function DataTableColumnHeader<TData, TValue>({
           >
             <span>{title}</span>
             {column.getIsSorted() === "desc" ? (
-              <ArrowDown className="ml-2 h-4 w-4" aria-hidden="true" />
+              <Icons.arrowDown className="ml-2 h-4 w-4" aria-hidden="true" />
             ) : column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" aria-hidden="true" />
+              <Icons.arrowUp className="ml-2 h-4 w-4" aria-hidden="true" />
             ) : (
-              <ChevronsUpDown className="ml-2 h-4 w-4" aria-hidden="true" />
+              <Icons.chevronUpDown
+                className="ml-2 h-4 w-4"
+                aria-hidden="true"
+              />
             )}
           </Button>
         </DropdownMenuTrigger>
@@ -51,7 +54,7 @@ export function DataTableColumnHeader<TData, TValue>({
             aria-label="Sort column ascending"
             onClick={() => column.toggleSorting(false)}
           >
-            <ArrowUp
+            <Icons.arrowUp
               className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
               aria-hidden="true"
             />
@@ -61,7 +64,7 @@ export function DataTableColumnHeader<TData, TValue>({
             aria-label="Sort column descending"
             onClick={() => column.toggleSorting(true)}
           >
-            <ArrowDown
+            <Icons.arrowDown
               className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
               aria-hidden="true"
             />
@@ -72,7 +75,7 @@ export function DataTableColumnHeader<TData, TValue>({
             aria-label="Remove sorting"
             onClick={() => column.toggleVisibility(false)}
           >
-            <EyeOff
+            <Icons.hide
               className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
               aria-hidden="true"
             />

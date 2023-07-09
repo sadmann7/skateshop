@@ -1,14 +1,14 @@
-import { env } from "@/env.mjs"
 import { type Metadata } from "next"
 import { cookies } from "next/headers"
 import Link from "next/link"
+import { env } from "@/env.mjs"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
 import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 import { getCartItemsAction } from "@/app/_actions/cart"
 import { getProductsAction } from "@/app/_actions/product"
 

@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
 import { Icons } from "@/components/icons"
 import { ThemeToggle } from "@/components/layouts/theme-toggle"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export function SiteFooter() {
   return (

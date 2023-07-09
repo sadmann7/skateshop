@@ -1,9 +1,9 @@
-import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { and, desc, eq, not } from "drizzle-orm"
 
 import { cn, formatPrice } from "@/lib/utils"
@@ -18,7 +18,7 @@ import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { Icons } from "@/components/icons"
 import { ProductCard } from "@/components/product-card"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

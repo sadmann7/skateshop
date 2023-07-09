@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ResetPasswordForm } from "@/components/forms/reset-password-form"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

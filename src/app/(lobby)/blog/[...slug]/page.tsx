@@ -15,7 +15,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Icons } from "@/components/icons"
 import { MdxPager } from "@/components/pagers/mdx-pager"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 interface PostPageProps {
   params: {

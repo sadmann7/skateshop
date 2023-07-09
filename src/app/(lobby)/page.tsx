@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 import { ProductCard } from "@/components/product-card"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 // Running out of edge function execution units on vercel free plan
 // export const runtime = "edge"

@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
 import { Mdx } from "@/components/mdx/mdx-components"
 import { MdxPager } from "@/components/pagers/mdx-pager"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 interface PageProps {
   params: {

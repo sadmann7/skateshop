@@ -19,7 +19,7 @@ import {
 import { ManageStoreSubscriptionForm } from "@/components/forms/manage-store-subscription-form"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

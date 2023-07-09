@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm"
 import { Header } from "@/components/header"
 import { StorePager } from "@/components/pagers/store-pager"
 import { StoreTabs } from "@/components/pagers/store-tabs"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 interface StoreLayoutProps {
   children: React.ReactNode

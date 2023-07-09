@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Header } from "@/components/header"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export default function BillingLoading() {
   return (

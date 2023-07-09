@@ -27,6 +27,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table"
 
+import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import {
   Popover,
@@ -51,6 +52,7 @@ import {
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { Icons } from "@/components/icons"
 
+import { Input } from "../ui/input"
 import { DataTablePagination } from "./data-table-pagination"
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
@@ -80,12 +82,6 @@ export function DataTable<TData, TValue>({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
@@ -111,6 +107,14 @@ export function DataTable<TData, TValue>({
       return newSearchParams.toString()
     },
     [searchParams]
+  )
+
+  // Table states
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
   )
 
   // Handle server-side pagination
@@ -142,7 +146,7 @@ export function DataTable<TData, TValue>({
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
     {
-      id: column ?? "",
+      id: column ?? "createdAt",
       desc: order === "desc",
     },
   ])
@@ -160,8 +164,39 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
-  // Handle server-side column (name) filtering
-  const [nameFilter, setNameFilter] = React.useState(name ?? "")
+  // Handle server-side column filtering
+  const debouncedName = useDebounce(
+    columnFilters.find((f) => f.id === "name")?.value,
+    500
+  )
+
+  const debouncedDateRange = useDebounce(
+    columnFilters.find((f) => f.id === "date_range")?.value,
+    500
+  )
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        page: 1,
+        name: typeof debouncedName === "string" ? debouncedName : null,
+      })}`
+    )
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedName])
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        page: 1,
+        date_range:
+          typeof debouncedDateRange === "string" ? debouncedDateRange : null,
+      })}`
+    )
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedDateRange])
 
   const table = useReactTable({
     data,
@@ -191,12 +226,20 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
     manualSorting: true,
+    manualFiltering: true,
   })
 
   return (
     <div className="space-y-4 p-1">
       <div className="flex items-center justify-between">
-        <div>Filters</div>
+        <Input
+          placeholder="Filter names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="h-8 w-[150px] lg:w-[250px]"
+        />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border">

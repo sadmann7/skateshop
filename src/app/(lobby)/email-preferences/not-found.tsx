@@ -1,5 +1,5 @@
 import { ErrorCard } from "@/components/error-card"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export default function EmailPreferencesNotFound() {
   return (

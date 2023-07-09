@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card"
 import { AddStoreForm } from "@/components/forms/add-store-form"
 import { Header } from "@/components/header"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

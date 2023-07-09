@@ -1,8 +1,8 @@
-import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { emailPreferences } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card"
 import { UpdateEmailPreferencesForm } from "@/components/forms/update-email-preferences-form"
 import { Header } from "@/components/header"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

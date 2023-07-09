@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Header } from "@/components/header"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export default function AccountLoading() {
   return (
