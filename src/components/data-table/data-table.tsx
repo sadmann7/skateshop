@@ -89,7 +89,7 @@ export function DataTable<TData, TValue>({
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
-  const per_page = searchParams?.get("per_page") ?? "2"
+  const per_page = searchParams?.get("per_page") ?? "10"
   const sort = searchParams?.get("sort")
   const [column, order] = sort?.split(".") ?? []
   const name = searchParams?.get("name")
@@ -116,7 +116,7 @@ export function DataTable<TData, TValue>({
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: Number(page),
+      pageIndex: Number(page) - 1,
       pageSize: Number(per_page),
     })
 
@@ -131,7 +131,7 @@ export function DataTable<TData, TValue>({
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
-        page: pageIndex,
+        page: pageIndex + 1,
         per_page: pageSize,
       })}`
     )
@@ -159,8 +159,6 @@ export function DataTable<TData, TValue>({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
-
-  console.log(pagination)
 
   // Handle server-side column (name) filtering
   const [nameFilter, setNameFilter] = React.useState(name ?? "")
@@ -251,7 +249,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} pageSizes={[1, 2, 3, 4]} />
+      <DataTablePagination table={table} />
     </div>
   )
 }
