@@ -44,7 +44,7 @@ export default async function ProductsPage({
   }
 
   // Number of skaters to show per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const limit = typeof per_page === "string" ? parseInt(per_page) : 2
   // Number of skaters to skip
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
   // Column and order to sort by

@@ -48,7 +48,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 import { Icons } from "@/components/icons"
+
+import { DataTablePagination } from "./data-table-pagination"
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -86,7 +89,7 @@ export function DataTable<TData, TValue>({
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
-  const per_page = searchParams?.get("per_page") ?? "10"
+  const per_page = searchParams?.get("per_page") ?? "2"
   const sort = searchParams?.get("sort")
   const [column, order] = sort?.split(".") ?? []
   const name = searchParams?.get("name")
@@ -111,10 +114,30 @@ export function DataTable<TData, TValue>({
   )
 
   // Handle server-side pagination
-  const [pagination, setPagination] = React.useState<PaginationState>({
-    pageIndex: Number(page) - 1,
-    pageSize: Number(per_page),
-  })
+  const [{ pageIndex, pageSize }, setPagination] =
+    React.useState<PaginationState>({
+      pageIndex: Number(page),
+      pageSize: Number(per_page),
+    })
+
+  const pagination = React.useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  )
+
+  React.useEffect(() => {
+    router.push(
+      `${pathname}?${createQueryString({
+        page: pageIndex,
+        per_page: pageSize,
+      })}`
+    )
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageIndex, pageSize])
 
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
@@ -174,7 +197,10 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4 p-1">
-      {/* <DataTableToolbar table={table} /> */}
+      <div className="flex items-center justify-between">
+        <div>Filters</div>
+        <DataTableViewOptions table={table} />
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -225,78 +251,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
-            <Select
-              value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value))
-              }}
-            >
-              <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
-              </SelectTrigger>
-              <SelectContent side="top">
-                {[1, 2, 3, 4, 5].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Go to first page</span>
-              <Icons.chevronsLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Go to previous page</span>
-              <Icons.chevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Go to next page</span>
-              <Icons.chevronRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Go to last page</span>
-              <Icons.chevronsRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <DataTablePagination table={table} pageSizes={[1, 2, 3, 4]} />
     </div>
   )
 }
