@@ -2,11 +2,7 @@
 
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import {
-  compareItems,
-  rankItem,
-  type RankingInfo,
-} from "@tanstack/match-sorter-utils"
+import { rankItem } from "@tanstack/match-sorter-utils"
 import {
   flexRender,
   getCoreRowModel,
@@ -15,32 +11,16 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  sortingFns,
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
   type FilterFn,
-  type FilterFns,
   type PaginationState,
-  type SortingFn,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
 
 import { useDebounce } from "@/hooks/use-debounce"
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Table,
   TableBody,
@@ -51,8 +31,6 @@ import {
 } from "@/components/ui/table"
 import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
-import { Icons } from "@/components/icons"
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
   // Rank the item
@@ -87,8 +65,6 @@ export function DataTable<TData, TValue>({
   const per_page = searchParams?.get("per_page") ?? "10"
   const sort = searchParams?.get("sort")
   const [column, order] = sort?.split(".") ?? []
-  const name = searchParams?.get("name")
-  const date_range = searchParams?.get("date_range")
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -169,16 +145,6 @@ export function DataTable<TData, TValue>({
     500
   )
 
-  const debouncedDateRange = useDebounce(
-    columnFilters.find((f) => f.id === "createdAt")?.value,
-    500
-  )
-
-  // console.log({
-  //   debouncedName,
-  //   debouncedDateRange,
-  // })
-
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
@@ -189,18 +155,6 @@ export function DataTable<TData, TValue>({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedName])
-
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: 1,
-        date_range:
-          typeof debouncedDateRange === "string" ? debouncedDateRange : null,
-      })}`
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedDateRange])
 
   const table = useReactTable({
     data,

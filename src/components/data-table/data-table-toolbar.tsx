@@ -6,7 +6,6 @@ import { type Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
-import { DatePickerWithRange } from "@/components/date-range-picker"
 import { Icons } from "@/components/icons"
 
 interface DataTableToolbarProps<TData> {
@@ -30,7 +29,6 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        <DatePickerWithRange />
       </div>
       <div className="flex items-center space-x-2">
         <Button
