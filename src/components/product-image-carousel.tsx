@@ -2,7 +2,11 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { type StoredFile } from "@/types"
+import { type StoredFile } from "@/types";
+import useEmblaCarousel, {
+  type EmblaCarouselType,
+  type EmblaOptionsType,
+} from "embla-carousel-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -14,50 +18,75 @@ interface ProductImageCarouselProps
     HTMLDivElement
   > {
   images: StoredFile[]
+  options?: EmblaOptionsType
 }
 
 export function ProductImageCarousel({
   images,
   className,
+  options,
   ...props
 }: ProductImageCarouselProps) {
-  const imagesRef = React.useRef<HTMLDivElement>(null)
-  const [currentImage, setCurrentImage] = React.useState(0)
+  const [emblaRef, emblaApi] = useEmblaCarousel(options)
 
-  const goToSlide = React.useCallback((index: number) => {
-    if (!imagesRef.current) return
+  const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true)
+  const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true)
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
 
-    const imageWidth = imagesRef.current.children[0]?.clientWidth ?? 0
-    imagesRef.current.style.transform = `translateX(-${imageWidth * index}px)`
-    setCurrentImage(index)
-  }, [])
+  const scrollPrev = React.useCallback(
+    () => emblaApi && emblaApi.scrollPrev(),
+    [emblaApi]
+  )
+  const scrollNext = React.useCallback(
+    () => emblaApi && emblaApi.scrollNext(),
+    [emblaApi]
+  )
 
-  const getNextSlide = React.useCallback(() => {
-    if (currentImage === images.length - 1) {
-      goToSlide(0)
-      return
-    }
-    goToSlide(currentImage + 1)
-  }, [currentImage, images.length, goToSlide])
-
-  const getPrevSlide = React.useCallback(() => {
-    if (currentImage === 0) {
-      goToSlide(images.length - 1)
-      return
-    }
-    goToSlide(currentImage - 1)
-  }, [currentImage, images.length, goToSlide])
+  const scrollTo = React.useCallback(
+    (index: number) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi]
+  )
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
       if (event.key === "ArrowLeft") {
-        getPrevSlide()
+        scrollPrev()
       } else if (event.key === "ArrowRight") {
-        getNextSlide()
+        scrollNext()
       }
     },
-    [getNextSlide, getPrevSlide]
+    [scrollNext, scrollPrev]
   )
+
+  const onSelect = React.useCallback((emblaApi: EmblaCarouselType) => {
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+    setPrevBtnDisabled(!emblaApi.canScrollPrev())
+    setNextBtnDisabled(!emblaApi.canScrollNext())
+  }, [])
+
+  React.useEffect(() => {
+    if (!emblaApi) return
+
+    onSelect(emblaApi)
+    emblaApi.on("reInit", onSelect)
+    emblaApi.on("select", onSelect)
+  }, [emblaApi, onSelect])
+
+  if (images.length === 0) {
+    return (
+      <div
+        aria-label="Product Placeholder"
+        role="img"
+        aria-roledescription="placeholder"
+        className="flex aspect-square h-full w-full flex-1 items-center justify-center bg-secondary"
+      >
+        <Icons.placeholder
+          className="h-9 w-9 text-muted-foreground"
+          aria-hidden="true"
+        />
+      </div>
+    )
+  }
 
   return (
     <div
@@ -65,48 +94,39 @@ export function ProductImageCarousel({
       className={cn("flex flex-col gap-2", className)}
       {...props}
     >
-      <div className="relative overflow-hidden">
+      <div ref={emblaRef} className="overflow-hidden">
         <div
-          aria-live="polite"
-          className="flex transition-transform duration-500 ease-in-out"
-          ref={imagesRef}
+          className="-ml-4 flex touch-pan-y"
+          style={{
+            backfaceVisibility: "hidden",
+          }}
         >
-          {images.length > 0 ? (
-            images.map((image, index) => (
+          {images.map((image, index) => (
+            <div className="relative min-w-0 flex-full pl-4" key={index}>
               <Image
                 aria-label={`Slide ${index + 1} of ${images.length}`}
                 role="group"
-                aria-roledescription="slide"
                 key={index}
+                aria-roledescription="slide"
                 src={image.url}
                 alt={image.name}
                 width={500}
                 height={500}
                 className="aspect-square w-full object-cover"
               />
-            ))
-          ) : (
-            <div
-              aria-label="Placeholder"
-              role="img"
-              aria-roledescription="placeholder"
-              className="flex aspect-square h-full w-full flex-1 items-center justify-center bg-secondary"
-            >
-              <Icons.placeholder
-                className="h-9 w-9 text-muted-foreground"
-                aria-hidden="true"
-              />
             </div>
-          )}
+          ))}
         </div>
       </div>
+
       {images.length > 1 ? (
         <div className="flex w-full items-center justify-center gap-2">
           <Button
             variant="outline"
             size="icon"
             className="mr-0.5 aspect-square h-7 w-7 rounded-none sm:mr-2 sm:h-8 sm:w-8"
-            onClick={getPrevSlide}
+            disabled={prevBtnDisabled}
+            onClick={scrollPrev}
           >
             <Icons.chevronLeft
               className="h-3 w-3 sm:h-4 sm:w-4"
@@ -121,9 +141,9 @@ export function ProductImageCarousel({
               size="icon"
               className={cn(
                 "group relative aspect-square h-full w-full max-w-[100px] rounded-none shadow-sm hover:bg-transparent focus-visible:ring-foreground",
-                i === currentImage && "ring-1 ring-foreground"
+                i === selectedIndex && "ring-1 ring-foreground"
               )}
-              onClick={() => goToSlide(i)}
+              onClick={() => scrollTo(i)}
               onKeyDown={handleKeyDown}
             >
               <div className="absolute inset-0 z-10 bg-zinc-950/20 group-hover:bg-zinc-950/40" />
@@ -142,7 +162,8 @@ export function ProductImageCarousel({
             variant="outline"
             size="icon"
             className="ml-0.5 aspect-square h-7 w-7 rounded-none sm:ml-2 sm:h-8 sm:w-8"
-            onClick={getNextSlide}
+            disabled={nextBtnDisabled}
+            onClick={scrollNext}
           >
             <Icons.chevronRight
               className="h-3 w-3 sm:h-4 sm:w-4"
