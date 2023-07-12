@@ -55,6 +55,7 @@
     "contentlayer": "^0.3.4",
     "dayjs": "^1.11.9",
     "drizzle-orm": "^0.27.0",
+    "embla-carousel-react": "8.0.0-rc10",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.5.29",
     "lucide-react": "^0.258.0",

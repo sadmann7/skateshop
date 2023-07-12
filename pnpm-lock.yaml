@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@clerk/nextjs':
     specifier: ^4.21.13
@@ -106,6 +110,9 @@ dependencies:
   drizzle-orm:
     specifier: ^0.27.0
     version: 0.27.0(@opentelemetry/api@1.4.1)(@planetscale/database@1.8.0)
+  embla-carousel-react:
+    specifier: 8.0.0-rc10
+    version: 8.0.0-rc10(react@18.2.0)
   jspdf:
     specifier: ^2.5.1
     version: 2.5.1
@@ -4938,6 +4945,28 @@ packages:
 
   /electron-to-chromium@1.4.449:
     resolution: {integrity: sha512-TxLRpRUj/107ATefeP8VIUWNOv90xJxZZbCW/eIbSZQiuiFANCx2b7u+GbVc9X4gU+xnbvypNMYVM/WArE1DNQ==}
+
+  /embla-carousel-react@8.0.0-rc10(react@18.2.0):
+    resolution: {integrity: sha512-zCwPa/hAOh2iq8m7x+0VgAnWINU8WHMdUjMjJg7xP1KxFU2VwgiU/4KLSneEQXczgHk1NZbqJTTWdlqKuwfyww==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.1 || ^18.0.0
+    dependencies:
+      embla-carousel: 8.0.0-rc10
+      embla-carousel-reactive-utils: 8.0.0-rc10(embla-carousel@8.0.0-rc10)
+      react: 18.2.0
+    dev: false
+
+  /embla-carousel-reactive-utils@8.0.0-rc10(embla-carousel@8.0.0-rc10):
+    resolution: {integrity: sha512-aR6nlBGS0Q+UXcGKZcCOHgo8j2gcWsKuXhrdqlv9QO4Nykhm2Bt30pAw0JuxQQA+VgO66ZAI9sV4DJOAYFeV2g==}
+    peerDependencies:
+      embla-carousel: 8.0.0-rc10
+    dependencies:
+      embla-carousel: 8.0.0-rc10
+    dev: false
+
+  /embla-carousel@8.0.0-rc10:
+    resolution: {integrity: sha512-vDlarCNnUW9pg6a3gOT2pujUBou7fMAJ9/JuUjg4+aV+VcKlo50RHomKk0tp2vzs3+ANc0QXb+ee4GArn57C7A==}
+    dev: false
 
   /emoji-regex@10.2.1:
     resolution: {integrity: sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==}
@@ -9818,7 +9847,3 @@ packages:
 
   /zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
