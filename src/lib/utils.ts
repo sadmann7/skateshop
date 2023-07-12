@@ -1,9 +1,12 @@
 import { env } from "@/env.mjs"
+import { isClerkAPIResponseError } from "@clerk/nextjs"
 import { compareItems, type RankingInfo } from "@tanstack/match-sorter-utils"
 import { sortingFns, type SortingFn } from "@tanstack/react-table"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
+import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
+import * as z from "zod"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -91,4 +94,26 @@ export const fuzzySort: SortingFn<unknown> = (rowA, rowB, columnId) => {
 
   // Provide an alphanumeric fallback for when the item ranks are equal
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
+}
+
+export function catchError(err: unknown) {
+  if (err instanceof z.ZodError) {
+    const errors = err.issues.map((issue) => {
+      return issue.message
+    })
+    toast(errors.join("\n"))
+  } else if (err instanceof Error) {
+    toast(err.message)
+  } else {
+    toast("Something went wrong, please try again later.")
+  }
+}
+
+export function catchClerkError(err: unknown) {
+  const unknownErr = "Something went wrong, please try again later."
+  if (isClerkAPIResponseError(err)) {
+    toast.error(err.errors[0]?.longMessage ?? unknownErr)
+  } else {
+    toast.error(unknownErr)
+  }
 }

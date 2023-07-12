@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { toast } from "sonner"
 import { type z } from "zod"
 
+import { catchError } from "@/lib/utils"
 import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
@@ -43,10 +43,8 @@ export function ManageStoreSubscriptionForm({
         if (session) {
           window.location.href = session.url ?? "/dashboard/billing"
         }
-      } catch (error) {
-        error instanceof Error
-          ? toast.error(error.message)
-          : toast.error("Something went wrong, please try again.")
+      } catch (err) {
+        catchError(err)
       }
     })
   }

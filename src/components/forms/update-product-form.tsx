@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
-import { isArrayOfFile } from "@/lib/utils"
+import { catchError, isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import {
@@ -121,10 +121,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
 
         toast.success("Product updated successfully.")
         setFiles(null)
-      } catch (error) {
-        error instanceof Error
-          ? toast.error(error.message)
-          : toast.error("Something went wrong, please try again.")
+      } catch (err) {
+        catchError(err)
       }
     })
   }

@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { isClerkAPIResponseError, useSignIn } from "@clerk/nextjs"
+import { useSignIn } from "@clerk/nextjs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import type { z } from "zod"
 
+import { catchClerkError } from "@/lib/utils"
 import { authSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -56,12 +56,8 @@ export function SignInForm() {
           /*Investigate why the login hasn't completed */
           console.log(result)
         }
-      } catch (error) {
-        const unknownError = "Something went wrong, please try again."
-
-        isClerkAPIResponseError(error)
-          ? toast.error(error.errors[0]?.longMessage ?? unknownError)
-          : toast.error(unknownError)
+      } catch (err) {
+        catchClerkError(err)
       }
     })
   }
