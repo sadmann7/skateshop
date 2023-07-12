@@ -20,8 +20,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
-    "@clerk/themes": "^1.7.5",
     "@clerk/nextjs": "^4.21.13",
+    "@clerk/themes": "^1.7.5",
     "@clerk/types": "^3.46.1",
     "@hookform/resolvers": "^3.1.1",
     "@planetscale/database": "^1.8.0",
