@@ -13,6 +13,7 @@ export async function getStoresAction(input: {
   limit?: number
   offset?: number
   sort?: `${keyof Store | "productCount"}.${"asc" | "desc"}`
+  userId?: string
 }) {
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0
@@ -33,6 +34,7 @@ export async function getStoresAction(input: {
       .limit(limit)
       .offset(offset)
       .leftJoin(products, eq(stores.id, products.storeId))
+      .where(input.userId ? eq(stores.userId, input.userId) : undefined)
       .groupBy(stores.id)
       .orderBy(
         input.sort === "productCount.asc"

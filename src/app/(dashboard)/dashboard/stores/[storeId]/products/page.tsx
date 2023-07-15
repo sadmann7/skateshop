@@ -121,7 +121,7 @@ export default async function ProductsPage({
 
   return (
     <>
-      <GenerateButton />
+      {env.NODE_ENV !== "production" && <GenerateButton storeId={storeId} />}
       <ProductsTableShell
         data={storeProducts}
         pageCount={pageCount}

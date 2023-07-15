@@ -11,10 +11,10 @@ import {
 } from "@/config/products"
 
 export async function generateProducts({
-  storeId = 1,
+  storeId,
   count = 10,
 }: {
-  storeId?: number
+  storeId: number
   count?: number
 }) {
   const allProducts: Product[] = []
