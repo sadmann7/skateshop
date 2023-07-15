@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { type StoredFile } from "@/types";
+import { type StoredFile } from "@/types"
+import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 import useEmblaCarousel, {
   type EmblaCarouselType,
   type EmblaOptionsType,
@@ -13,10 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 interface ProductImageCarouselProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+  extends React.HTMLAttributes<HTMLDivElement> {
   images: StoredFile[]
   options?: EmblaOptionsType
 }
@@ -103,22 +101,24 @@ export function ProductImageCarousel({
         >
           {images.map((image, index) => (
             <div className="relative min-w-0 flex-full pl-4" key={index}>
-              <Image
-                aria-label={`Slide ${index + 1} of ${images.length}`}
-                role="group"
-                key={index}
-                aria-roledescription="slide"
-                src={image.url}
-                alt={image.name}
-                width={500}
-                height={500}
-                className="aspect-square w-full object-cover"
-              />
+              <AspectRatio ratio={1}>
+                <Image
+                  aria-label={`Slide ${index + 1} of ${images.length}`}
+                  role="group"
+                  key={index}
+                  aria-roledescription="slide"
+                  src={image.url}
+                  alt={image.name}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
+                  priority={index === 0}
+                />
+              </AspectRatio>
             </div>
           ))}
         </div>
       </div>
-
       {images.length > 1 ? (
         <div className="flex w-full items-center justify-center gap-2">
           <Button

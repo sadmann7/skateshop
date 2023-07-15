@@ -1,16 +1,27 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { products, type Product } from "@/db/schema"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
+import { toast } from "sonner"
 
 import { formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
-
-import { DataTableColumnHeader } from "../data-table/data-table-column-header"
-import { DataTableRowActions } from "../data-table/data-table-row-actions"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+import { deleteProductAction } from "@/app/_actions/product"
 
 interface ProductsTableShellProps {
   data: Product[]
@@ -21,7 +32,10 @@ interface ProductsTableShellProps {
 export function ProductsTableShell({
   data,
   pageCount,
+  storeId,
 }: ProductsTableShellProps) {
+  const [isPending, startTransition] = React.useTransition()
+
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
     () => [
@@ -101,10 +115,50 @@ export function ProductsTableShell({
       },
       {
         id: "actions",
-        cell: ({ row }) => <DataTableRowActions row={row} />,
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <DotsHorizontalIcon className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px]">
+              <DropdownMenuItem asChild>
+                <Link
+                  href={`/dashboard/stores/${storeId}/products/${row.original.id}`}
+                >
+                  Edit
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/product/${row.original.id}`}>View</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  startTransition(async () => {
+                    await deleteProductAction({
+                      id: row.original.id,
+                      storeId,
+                    })
+                    toast.success("Product deleted successfully.")
+                  })
+                }}
+                disabled={isPending}
+              >
+                Delete
+                <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
       },
     ],
-    []
+    [isPending, storeId]
   )
 
   return (
