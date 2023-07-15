@@ -242,7 +242,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="w-full space-y-4 overflow-auto p-1">
+    <div className="w-full space-y-3 overflow-auto">
       <DataTableToolbar
         table={table}
         filterableColumns={filterableColumns}

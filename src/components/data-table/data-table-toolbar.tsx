@@ -34,7 +34,7 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
-    <div className="flex w-full items-center justify-between overflow-auto">
+    <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
       <div className="flex flex-1 items-center space-x-2">
         {searchableColumns.length > 0 &&
           searchableColumns.map(
@@ -86,7 +86,8 @@ export function DataTableToolbar<TData>({
           <Button
             aria-label="Delete selected rows"
             variant="outline"
-            className="h-8 px-2 lg:px-3"
+            size="sm"
+            className="h-8"
             onClick={(event) => {
               table.toggleAllPageRowsSelected(false)
               deleteRowsAction(event)
@@ -102,7 +103,8 @@ export function DataTableToolbar<TData>({
                 className={cn(
                   buttonVariants({
                     variant: "outline",
-                    className: "h-8 px-2 lg:px-3",
+                    size: "sm",
+                    className: "h-8",
                   })
                 )}
               >

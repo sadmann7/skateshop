@@ -222,7 +222,7 @@ export function ProductsTableShell({
       searchableColumns={[
         {
           id: "name",
-          title: "Name",
+          title: "names",
         },
       ]}
       newRowLink={`/dashboard/stores/${storeId}/products/new`}
