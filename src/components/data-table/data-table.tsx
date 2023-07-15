@@ -1,8 +1,5 @@
-"use client"
-
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { rankItem } from "@tanstack/match-sorter-utils"
 import {
   flexRender,
   getCoreRowModel,
@@ -14,7 +11,6 @@ import {
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
-  type FilterFn,
   type PaginationState,
   type SortingState,
   type VisibilityState,
@@ -29,32 +25,32 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "@/components/data-table/data-table-pagination"
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
-const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value as string)
-
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  })
-
-  // Return if the item should be filtered in/out
-  return itemRank.passed
-}
+import { type FilterOption } from "./data-table-faceted-filter"
+import { DataTablePagination } from "./data-table-pagination"
+import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
+  filterableColumns?: {
+    id: keyof TData
+    title: string
+    options: FilterOption[]
+  }[]
+  searchableColumns?: {
+    id: keyof TData
+    title: string
+  }[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pageCount,
+  filterableColumns = [],
+  searchableColumns = [],
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -108,6 +104,13 @@ export function DataTable<TData, TValue>({
   )
 
   React.useEffect(() => {
+    setPagination({
+      pageIndex: Number(page) - 1,
+      pageSize: Number(per_page),
+    })
+  }, [page, per_page])
+
+  React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -121,7 +124,7 @@ export function DataTable<TData, TValue>({
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
     {
-      id: column ?? "createdAt",
+      id: column ?? "",
       desc: order === "desc",
     },
   ])
@@ -139,29 +142,81 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
-  // Handle server-side column filtering
-  const debouncedName = useDebounce(
-    columnFilters.find((f) => f.id === "name")?.value,
-    500
-  )
+  // Handle server-side filtering
+  const debouncedSearchableColumnFilters = JSON.parse(
+    useDebounce(
+      JSON.stringify(
+        columnFilters.filter((filter) => {
+          return searchableColumns.find((column) => column.id === filter.id)
+        })
+      ),
+      500
+    )
+  ) as ColumnFiltersState
+
+  const filterableColumnFilters = columnFilters.filter((filter) => {
+    return filterableColumns.find((column) => column.id === filter.id)
+  })
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: 1,
-        name: typeof debouncedName === "string" ? debouncedName : null,
-      })}`
-    )
+    for (const column of debouncedSearchableColumnFilters) {
+      if (typeof column.value === "string") {
+        router.push(
+          `${pathname}?${createQueryString({
+            page: 1,
+            [column.id]: typeof column.value === "string" ? column.value : null,
+          })}`
+        )
+      }
+    }
 
+    for (const key of searchParams.keys()) {
+      if (
+        searchableColumns.find((column) => column.id === key) &&
+        !debouncedSearchableColumnFilters.find((column) => column.id === key)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page: 1,
+            [key]: null,
+          })}`
+        )
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedName])
+  }, [JSON.stringify(debouncedSearchableColumnFilters)])
+
+  React.useEffect(() => {
+    for (const column of filterableColumnFilters) {
+      if (typeof column.value === "object" && Array.isArray(column.value)) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page: 1,
+            [column.id]: column.value.join("."),
+          })}`
+        )
+      }
+    }
+
+    for (const key of searchParams.keys()) {
+      if (
+        filterableColumns.find((column) => column.id === key) &&
+        !filterableColumnFilters.find((column) => column.id === key)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page: 1,
+            [key]: null,
+          })}`
+        )
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(filterableColumnFilters)])
 
   const table = useReactTable({
     data,
     columns,
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
     pageCount: pageCount ?? -1,
     state: {
       pagination,
@@ -188,8 +243,12 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="space-y-3 p-1">
-      <DataTableToolbar table={table} />
+    <div className="w-full space-y-4 overflow-auto p-1">
+      <DataTableToolbar
+        table={table}
+        filterableColumns={filterableColumns}
+        searchableColumns={searchableColumns}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -197,13 +256,13 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id} className="whitespace-nowrap">
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}

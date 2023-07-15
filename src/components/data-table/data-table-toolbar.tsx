@@ -1,48 +1,85 @@
 "use client"
 
-import { usePathname, useRouter } from "next/navigation"
-import { type Table } from "@tanstack/react-table"
+import { Cross2Icon } from "@radix-ui/react-icons"
+import type { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
-import { Icons } from "@/components/icons"
+
+import {
+  DataTableFacetedFilter,
+  type FilterOption,
+} from "./data-table-faceted-filter"
+import { DataTableViewOptions } from "./data-table-view-options"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
+  filterableColumns?: {
+    id: keyof TData
+    title: string
+    options: FilterOption[]
+  }[]
+  searchableColumns?: {
+    id: keyof TData
+    title: string
+  }[]
 }
 
 export function DataTableToolbar<TData>({
   table,
+  filterableColumns = [],
+  searchableColumns = [],
 }: DataTableToolbarProps<TData>) {
-  const router = useRouter()
-  const pathname = usePathname()
+  const isFiltered = table.getState().columnFilters.length > 0
 
   return (
-    <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
+    <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
-          placeholder="Filter names..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        />
+        {searchableColumns.length > 0 &&
+          searchableColumns.map(
+            (column) =>
+              table.getColumn(column.id ? String(column.id) : "") && (
+                <Input
+                  key={String(column.id)}
+                  placeholder={`Filter ${column.title}...`}
+                  value={
+                    (table
+                      .getColumn(String(column.id))
+                      ?.getFilterValue() as string) ?? ""
+                  }
+                  onChange={(event) =>
+                    table
+                      .getColumn(String(column.id))
+                      ?.setFilterValue(event.target.value)
+                  }
+                  className="h-8 w-[150px] lg:w-[250px]"
+                />
+              )
+          )}
+        {filterableColumns.length > 0 &&
+          filterableColumns.map(
+            (column) =>
+              table.getColumn(column.id ? String(column.id) : "") && (
+                <DataTableFacetedFilter
+                  key={String(column.id)}
+                  column={table.getColumn(column.id ? String(column.id) : "")}
+                  title={column.title}
+                  options={column.options}
+                />
+              )
+          )}
+        {isFiltered && (
+          <Button
+            variant="ghost"
+            onClick={() => table.resetColumnFilters()}
+            className="h-8 px-2 lg:px-3"
+          >
+            Reset
+            <Cross2Icon className="ml-2 h-4 w-4" />
+          </Button>
+        )}
       </div>
-      <div className="flex items-center space-x-2">
-        <Button
-          aria-label="Add new item"
-          variant="outline"
-          size="sm"
-          className="h-8"
-          onClick={() => router.push(`${pathname}/new`)}
-        >
-          <Icons.addCircle className="mr-2 h-4 w-4" />
-          New
-        </Button>
-        <DataTableViewOptions table={table} />
-      </div>
+      <DataTableViewOptions table={table} />
     </div>
   )
 }

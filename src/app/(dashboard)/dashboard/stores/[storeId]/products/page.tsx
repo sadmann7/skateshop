@@ -3,8 +3,7 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
-import dayjs from "dayjs"
-import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
+import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
@@ -29,7 +28,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, name, date_range } = searchParams
+  const { page, per_page, sort, name, category } = searchParams
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -60,10 +59,10 @@ export default async function ProductsPage({
           "asc" | "desc" | undefined
         ])
       : []
-  // Date range for created date
-  const [start_date, end_date] =
-    typeof date_range === "string"
-      ? date_range.split("to").map((date) => dayjs(date).toDate())
+
+  const categories =
+    typeof category === "string"
+      ? (category.split(".") as Product["category"][])
       : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
@@ -80,12 +79,9 @@ export default async function ProductsPage({
           typeof name === "string"
             ? like(products.name, `%${name}%`)
             : undefined,
-          // Filter by created date
-          start_date && end_date
-            ? and(
-                gte(products.createdAt, start_date),
-                lte(products.createdAt, end_date)
-              )
+          // Filter by category
+          categories.length > 0
+            ? inArray(products.category, categories)
             : undefined
         )
       )
@@ -108,11 +104,8 @@ export default async function ProductsPage({
           typeof name === "string"
             ? like(products.name, `%${name}%`)
             : undefined,
-          start_date && end_date
-            ? and(
-                gte(products.createdAt, start_date),
-                lte(products.createdAt, end_date)
-              )
+          categories.length > 0
+            ? inArray(products.category, categories)
             : undefined
         )
       )

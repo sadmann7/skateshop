@@ -1,27 +1,16 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import { products, type Product } from "@/db/schema"
-import { toast } from "sonner"
-import { type ColumnDef } from "unstyled-table"
+import { type ColumnDef } from "@tanstack/react-table"
 
 import { formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
-import { Icons } from "@/components/icons"
-import { deleteProductAction } from "@/app/_actions/product"
 
 import { DataTableColumnHeader } from "../data-table/data-table-column-header"
+import { DataTableRowActions } from "../data-table/data-table-row-actions"
 
 interface ProductsTableShellProps {
   data: Product[]
@@ -32,35 +21,30 @@ interface ProductsTableShellProps {
 export function ProductsTableShell({
   data,
   pageCount,
-  storeId,
 }: ProductsTableShellProps) {
-  const [isPending, startTransition] = React.useTransition()
-
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
     () => [
       {
-        // Column for row selection
         id: "select",
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => {
+            onCheckedChange={(value) =>
               table.toggleAllPageRowsSelected(!!value)
-            }}
+            }
             aria-label="Select all"
+            className="translate-y-[2px]"
           />
         ),
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
-            onCheckedChange={(value) => {
-              row.toggleSelected(!!value)
-            }}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
+            className="translate-y-[2px]"
           />
         ),
-        // Disable column sorting for this column
         enableSorting: false,
         enableHiding: false,
       },
@@ -116,73 +100,34 @@ export function ProductsTableShell({
         enableColumnFilter: false,
       },
       {
-        // Column for row actions
         id: "actions",
-        enableHiding: false,
-        cell: ({ row }) => {
-          const product = row.original
-
-          return (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  aria-label="Open menu"
-                  variant="ghost"
-                  className="h-8 w-8 p-0"
-                >
-                  <Icons.verticalThreeDots
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[150px]">
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={`/dashboard/stores/${storeId}/products/${product.id}`}
-                  >
-                    <Icons.edit
-                      className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
-                      aria-hidden="true"
-                    />
-                    Edit
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href={`/product/${product.id}`}>
-                    <Icons.view
-                      className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
-                      aria-hidden="true"
-                    />
-                    View
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    startTransition(async () => {
-                      await deleteProductAction({
-                        storeId,
-                        id: product.id,
-                      })
-                      toast.success("Product deleted")
-                    })
-                  }}
-                >
-                  <Icons.trash
-                    className="mr-2 h-3.5 w-3.5 text-muted-foreground/70"
-                    aria-hidden="true"
-                  />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )
-        },
+        cell: ({ row }) => <DataTableRowActions row={row} />,
       },
     ],
-    [storeId]
+    []
   )
 
-  return <DataTable columns={columns} data={data} pageCount={pageCount} />
+  return (
+    <DataTable
+      columns={columns}
+      data={data}
+      pageCount={pageCount}
+      filterableColumns={[
+        {
+          id: "category",
+          title: "Category",
+          options: products.category.enumValues.map((category) => ({
+            label: `${category.charAt(0).toUpperCase()}${category.slice(1)}`,
+            value: category,
+          })),
+        },
+      ]}
+      searchableColumns={[
+        {
+          id: "name",
+          title: "Name",
+        },
+      ]}
+    />
+  )
 }

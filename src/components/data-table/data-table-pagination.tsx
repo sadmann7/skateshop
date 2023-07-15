@@ -1,3 +1,9 @@
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+} from "@radix-ui/react-icons"
 import { type Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -8,24 +14,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Icons } from "@/components/icons"
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>
-  pageSizes?: number[]
+  pageSizeOptions?: number[]
 }
 
 export function DataTablePagination<TData>({
   table,
-  pageSizes = [10, 20, 30, 40, 50],
+  pageSizeOptions = [10, 20, 30, 40, 50],
 }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex w-full flex-col items-center gap-4 overflow-auto px-2 py-1 sm:flex-row sm:justify-between sm:gap-8">
+    <div className="flex w-full items-center justify-between space-x-8 overflow-auto px-2">
       <div className="flex-1 whitespace-nowrap text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>
-      <div className="flex flex-col items-center gap-4 sm:flex-row lg:gap-8">
+      <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="whitespace-nowrap text-sm font-medium">Rows per page</p>
           <Select
@@ -38,7 +43,7 @@ export function DataTablePagination<TData>({
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {pageSizes.map((pageSize) => (
+              {pageSizeOptions.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
@@ -46,7 +51,7 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center whitespace-nowrap text-sm font-medium">
+        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
@@ -54,42 +59,38 @@ export function DataTablePagination<TData>({
           <Button
             aria-label="Go to first page"
             variant="outline"
-            size="icon"
-            className="hidden h-8 w-8 lg:flex"
+            className="hidden h-8 w-8 p-0 lg:flex"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <Icons.chevronsLeft className="h-4 w-4" aria-hidden="true" />
+            <DoubleArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             aria-label="Go to previous page"
             variant="outline"
-            size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 p-0"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <Icons.chevronLeft className="h-4 w-4" aria-hidden="true" />
+            <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             aria-label="Go to next page"
             variant="outline"
-            size="icon"
-            className="h-8 w-8"
+            className="h-8 w-8 p-0"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
+            <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
           <Button
             aria-label="Go to last page"
             variant="outline"
-            size="icon"
-            className="hidden h-8 w-8 lg:flex"
+            className="hidden h-8 w-8 p-0 lg:flex"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <Icons.chevronsRight className="h-4 w-4" aria-hidden="true" />
+            <DoubleArrowRightIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </div>
