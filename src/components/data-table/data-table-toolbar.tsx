@@ -85,16 +85,19 @@ export function DataTableToolbar<TData>({
         {deleteRowsAction && table.getSelectedRowModel().rows.length > 0 ? (
           <Button
             aria-label="Delete selected rows"
-            variant="destructive"
+            variant="outline"
             className="h-8 px-2 lg:px-3"
-            onClick={deleteRowsAction}
+            onClick={(event) => {
+              table.toggleAllPageRowsSelected(false)
+              deleteRowsAction(event)
+            }}
           >
-            <TrashIcon className="mr-1 h-4 w-4" aria-hidden="true" />
+            <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             Delete
           </Button>
         ) : (
           newRowLink && (
-            <Link href={newRowLink}>
+            <Link aria-label="Create new row" href={newRowLink}>
               <div
                 className={cn(
                   buttonVariants({

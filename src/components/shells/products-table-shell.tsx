@@ -152,11 +152,15 @@ export function ProductsTableShell({
               <DropdownMenuItem
                 onClick={() => {
                   startTransition(async () => {
-                    await deleteProductAction({
-                      id: row.original.id,
-                      storeId,
-                    })
-                    toast.success("Product deleted successfully.")
+                    try {
+                      await deleteProductAction({
+                        id: row.original.id,
+                        storeId,
+                      })
+                      toast.success("Product deleted successfully.")
+                    } catch (err) {
+                      catchError(err)
+                    }
                   })
                 }}
                 disabled={isPending}
@@ -171,6 +175,27 @@ export function ProductsTableShell({
     ],
     [data, isPending, storeId]
   )
+
+  async function deleteSelectedRows() {
+    try {
+      await Promise.all(
+        selectedRowIds.map((id) =>
+          deleteProductAction({
+            id,
+            storeId,
+          })
+        )
+      )
+      setSelectedRowIds([])
+      toast.success(
+        `${
+          selectedRowIds.length > 1 ? "Products" : "Product"
+        } deleted successfully.`
+      )
+    } catch (err) {
+      catchError(err)
+    }
+  }
 
   return (
     <DataTable
@@ -194,22 +219,7 @@ export function ProductsTableShell({
         },
       ]}
       newRowLink={`/dashboard/stores/${storeId}/products/new`}
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      deleteRowsAction={async () => {
-        try {
-          await Promise.all(
-            selectedRowIds.map((id) =>
-              deleteProductAction({
-                id,
-                storeId,
-              })
-            )
-          )
-          toast.success("Products deleted successfully.")
-        } catch (err) {
-          catchError(err)
-        }
-      }}
+      deleteRowsAction={() => void deleteSelectedRows()}
     />
   )
 }

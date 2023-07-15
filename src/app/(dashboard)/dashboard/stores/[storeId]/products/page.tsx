@@ -5,6 +5,7 @@ import { products, stores, type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
+import { GenerateButton } from "@/components/generate-button"
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
 export const metadata: Metadata = {
@@ -119,10 +120,13 @@ export default async function ProductsPage({
   const pageCount = Math.ceil(totalProducts / limit)
 
   return (
-    <ProductsTableShell
-      data={storeProducts}
-      pageCount={pageCount}
-      storeId={storeId}
-    />
+    <>
+      <GenerateButton />
+      <ProductsTableShell
+        data={storeProducts}
+        pageCount={pageCount}
+        storeId={storeId}
+      />
+    </>
   )
 }

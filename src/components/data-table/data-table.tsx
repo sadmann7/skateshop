@@ -183,7 +183,7 @@ export function DataTable<TData, TValue>({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(debouncedSearchableColumnFilters)])
+  }, [debouncedSearchableColumnFilters])
 
   React.useEffect(() => {
     for (const column of filterableColumnFilters) {
@@ -211,7 +211,7 @@ export function DataTable<TData, TValue>({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filterableColumnFilters)])
+  }, [filterableColumnFilters])
 
   const table = useReactTable({
     data,
