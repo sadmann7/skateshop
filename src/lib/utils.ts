@@ -1,7 +1,5 @@
 import { env } from "@/env.mjs"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
-import { compareItems, type RankingInfo } from "@tanstack/match-sorter-utils"
-import { sortingFns, type SortingFn } from "@tanstack/react-table"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
 import { toast } from "sonner"
@@ -81,39 +79,24 @@ export function absoluteUrl(path: string) {
   return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
-export const fuzzySort: SortingFn<unknown> = (rowA, rowB, columnId) => {
-  let dir = 0
-
-  // Only sort by rank if the column has ranking information
-  if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId]?.itemRank as RankingInfo,
-      rowB.columnFiltersMeta[columnId]?.itemRank as RankingInfo
-    )
-  }
-
-  // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
-}
-
 export function catchError(err: unknown) {
   if (err instanceof z.ZodError) {
     const errors = err.issues.map((issue) => {
       return issue.message
     })
-    toast(errors.join("\n"))
+    return toast(errors.join("\n"))
   } else if (err instanceof Error) {
-    toast(err.message)
+    return toast(err.message)
   } else {
-    toast("Something went wrong, please try again later.")
+    return toast("Something went wrong, please try again later.")
   }
 }
 
 export function catchClerkError(err: unknown) {
   const unknownErr = "Something went wrong, please try again later."
   if (isClerkAPIResponseError(err)) {
-    toast.error(err.errors[0]?.longMessage ?? unknownErr)
+    return toast.error(err.errors[0]?.longMessage ?? unknownErr)
   } else {
-    toast.error(unknownErr)
+    return toast.error(unknownErr)
   }
 }

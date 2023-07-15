@@ -151,16 +151,20 @@ export function ProductsTableShell({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  startTransition(async () => {
-                    try {
-                      await deleteProductAction({
+                  startTransition(() => {
+                    row.toggleSelected(false)
+
+                    toast.promise(
+                      deleteProductAction({
                         id: row.original.id,
                         storeId,
-                      })
-                      toast.success("Product deleted successfully.")
-                    } catch (err) {
-                      catchError(err)
-                    }
+                      }),
+                      {
+                        loading: "Deleting...",
+                        success: () => "Product deleted successfully.",
+                        error: (err: unknown) => catchError(err),
+                      }
+                    )
                   })
                 }}
                 disabled={isPending}
@@ -176,25 +180,28 @@ export function ProductsTableShell({
     [data, isPending, storeId]
   )
 
-  async function deleteSelectedRows() {
-    try {
-      await Promise.all(
+  function deleteSelectedRows() {
+    toast.promise(
+      Promise.all(
         selectedRowIds.map((id) =>
           deleteProductAction({
             id,
             storeId,
           })
         )
-      )
-      setSelectedRowIds([])
-      toast.success(
-        `${
-          selectedRowIds.length > 1 ? "Products" : "Product"
-        } deleted successfully.`
-      )
-    } catch (err) {
-      catchError(err)
-    }
+      ),
+      {
+        loading: "Deleting...",
+        success: () => {
+          setSelectedRowIds([])
+          return "Products deleted successfully."
+        },
+        error: (err: unknown) => {
+          setSelectedRowIds([])
+          return catchError(err)
+        },
+      }
+    )
   }
 
   return (
