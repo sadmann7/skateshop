@@ -7,7 +7,7 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
-import { formatDate, formatPrice } from "@/lib/utils"
+import { catchError, formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -35,6 +35,7 @@ export function ProductsTableShell({
   storeId,
 }: ProductsTableShellProps) {
   const [isPending, startTransition] = React.useTransition()
+  const [selectedRowIds, setSelectedRowIds] = React.useState<number[]>([])
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
@@ -44,9 +45,12 @@ export function ProductsTableShell({
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) =>
+            onCheckedChange={(value) => {
               table.toggleAllPageRowsSelected(!!value)
-            }
+              setSelectedRowIds((prev) =>
+                prev.length === data.length ? [] : data.map((row) => row.id)
+              )
+            }}
             aria-label="Select all"
             className="translate-y-[2px]"
           />
@@ -54,7 +58,14 @@ export function ProductsTableShell({
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            onCheckedChange={(value) => {
+              row.toggleSelected(!!value)
+              setSelectedRowIds((prev) =>
+                value
+                  ? [...prev, row.original.id]
+                  : prev.filter((id) => id !== row.original.id)
+              )
+            }}
             aria-label="Select row"
             className="translate-y-[2px]"
           />
@@ -158,7 +169,7 @@ export function ProductsTableShell({
         ),
       },
     ],
-    [isPending, storeId]
+    [data, isPending, storeId]
   )
 
   return (
@@ -182,6 +193,23 @@ export function ProductsTableShell({
           title: "Name",
         },
       ]}
+      newRowLink={`/dashboard/stores/${storeId}/products/new`}
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      deleteRowsAction={async () => {
+        try {
+          await Promise.all(
+            selectedRowIds.map((id) =>
+              deleteProductAction({
+                id,
+                storeId,
+              })
+            )
+          )
+          toast.success("Products deleted successfully.")
+        } catch (err) {
+          catchError(err)
+        }
+      }}
     />
   )
 }

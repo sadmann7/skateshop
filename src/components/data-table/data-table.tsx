@@ -1,5 +1,9 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import type {
+  DataTableFilterableColumn,
+  DataTableSearchableColumn,
+} from "@/types"
 import {
   flexRender,
   getCoreRowModel,
@@ -25,24 +29,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-import { type FilterOption } from "./data-table-faceted-filter"
-import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
+import { DataTablePagination } from "@/components/data-table/data-table-pagination"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
-  filterableColumns?: {
-    id: keyof TData
-    title: string
-    options: FilterOption[]
-  }[]
-  searchableColumns?: {
-    id: keyof TData
-    title: string
-  }[]
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  searchableColumns?: DataTableSearchableColumn<TData>[]
+  newRowLink?: string
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTable<TData, TValue>({
@@ -51,6 +48,8 @@ export function DataTable<TData, TValue>({
   pageCount,
   filterableColumns = [],
   searchableColumns = [],
+  deleteRowsAction,
+  newRowLink,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -248,6 +247,8 @@ export function DataTable<TData, TValue>({
         table={table}
         filterableColumns={filterableColumns}
         searchableColumns={searchableColumns}
+        newRowLink={newRowLink}
+        deleteRowsAction={deleteRowsAction}
       />
       <div className="rounded-md border">
         <Table>

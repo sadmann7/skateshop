@@ -1,4 +1,4 @@
-"use server";
+"use server"
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
@@ -188,22 +188,6 @@ export async function deleteProductAction(
       .where(
         and(eq(products.id, input.id), eq(products.storeId, input.storeId))
       )
-
-  revalidatePath(`/dashboard/stores/${input.storeId}/products`)
-}
-
-export async function deleteProductsAction(input: {
-  storeId: number
-  ids: number[]
-}) {
-  await db
-    .delete(products)
-    .where(
-      and(
-        input.ids.length > 0 ? inArray(products.id, input.ids) : undefined,
-        eq(products.storeId, input.storeId)
-      )
-    )
 
   revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
