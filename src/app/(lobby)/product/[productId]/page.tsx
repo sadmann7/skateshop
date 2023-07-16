@@ -6,7 +6,7 @@ import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, desc, eq, not } from "drizzle-orm"
 
-import { cn, formatPrice } from "@/lib/utils"
+import { formatPrice, toTitleCase } from "@/lib/utils"
 import {
   Accordion,
   AccordionContent,
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/accordion"
 import { Separator } from "@/components/ui/separator"
 import { AddToCartForm } from "@/components/forms/add-to-cart-form"
-import { Icons } from "@/components/icons"
+import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { ProductCard } from "@/components/product-card"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Shell } from "@/components/shells/shell"
@@ -67,19 +67,22 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <Shell>
-      <div className="flex items-center space-x-1 text-sm capitalize text-muted-foreground">
-        <div className="truncate">Products</div>
-        <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
-        <div className={cn(!product.subcategory && "text-foreground")}>
-          {product.category}
-        </div>
-        {product.subcategory ? (
-          <>
-            <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
-            <div className="text-foreground">{product.subcategory}</div>
-          </>
-        ) : null}
-      </div>
+      <Breadcrumbs
+        segments={[
+          {
+            title: "Products",
+            href: "/products",
+          },
+          {
+            title: toTitleCase(product.category),
+            href: `/products?category=${product.category}`,
+          },
+          {
+            title: product.name,
+            href: `/product/${product.id}`,
+          },
+        ]}
+      />
       <div className="flex flex-col gap-8 md:flex-row md:gap-16">
         <ProductImageCarousel
           className="w-full md:w-1/2"

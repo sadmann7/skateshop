@@ -9,11 +9,15 @@ import {
 } from "@/components/ui/table"
 
 interface DataTableLoadingProps {
+  columnCount: number
+  rowCount?: number
   isNewRowCreatable?: boolean
   isRowsDeletable?: boolean
 }
 
 export function DataTableLoading({
+  columnCount,
+  rowCount = 10,
   isNewRowCreatable = false,
   isRowsDeletable = false,
 }: DataTableLoadingProps) {
@@ -38,7 +42,7 @@ export function DataTableLoading({
           <TableHeader>
             {Array.from({ length: 1 }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: columnCount }).map((_, i) => (
                   <TableHead key={i}>
                     <Skeleton className="h-6 w-full" />
                   </TableHead>
@@ -47,9 +51,9 @@ export function DataTableLoading({
             ))}
           </TableHeader>
           <TableBody>
-            {Array.from({ length: 10 }).map((_, i) => (
+            {Array.from({ length: rowCount }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
-                {Array.from({ length: 6 }).map((_, i) => (
+                {Array.from({ length: columnCount }).map((_, i) => (
                   <TableCell key={i}>
                     <Skeleton className="h-6 w-full" />
                   </TableCell>
