@@ -96,7 +96,7 @@ export default async function IndexPage() {
           Buy and sell skateboarding products from independent brands and stores
           around the world
         </Balance>
-        <div className="space-x-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/products"
             className={cn(

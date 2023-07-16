@@ -32,6 +32,7 @@ export function DataTableToolbar<TData>({
   newRowLink,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
+  const [isPending, startTransition] = React.useTransition()
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
@@ -89,9 +90,12 @@ export function DataTableToolbar<TData>({
             size="sm"
             className="h-8"
             onClick={(event) => {
-              table.toggleAllPageRowsSelected(false)
-              deleteRowsAction(event)
+              startTransition(() => {
+                table.toggleAllPageRowsSelected(false)
+                deleteRowsAction(event)
+              })
             }}
+            disabled={isPending}
           >
             <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             Delete
