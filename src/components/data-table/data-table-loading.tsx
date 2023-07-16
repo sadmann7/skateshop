@@ -25,8 +25,11 @@ export function DataTableLoading({
           <Skeleton className="h-7 w-[70px] border-dashed" />
         </div>
         <div className="flex items-center space-x-2">
-          {isNewRowCreatable ? <Skeleton className="h-7 w-[70px]" /> : null}
-          {isRowsDeletable ? <Skeleton className="h-7 w-[70px]" /> : null}
+          {isRowsDeletable ? (
+            <Skeleton className="h-7 w-[70px]" />
+          ) : isNewRowCreatable ? (
+            <Skeleton className="h-7 w-[70px]" />
+          ) : null}
           <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
         </div>
       </div>

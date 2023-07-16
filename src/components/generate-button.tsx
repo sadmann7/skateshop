@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -21,6 +22,7 @@ export function GenerateButton({ storeId }: GenerateButtonProps) {
         startTransition(async () => {
           try {
             await generateProducts({ storeId, count: 10 })
+            toast.success("Products generated successfully.")
           } catch (err) {
             catchError(err)
           }

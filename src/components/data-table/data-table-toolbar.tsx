@@ -20,16 +20,16 @@ interface DataTableToolbarProps<TData> {
   table: Table<TData>
   filterableColumns?: DataTableFilterableColumn<TData>[]
   searchableColumns?: DataTableSearchableColumn<TData>[]
-  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
   newRowLink?: string
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTableToolbar<TData>({
   table,
   filterableColumns = [],
   searchableColumns = [],
-  deleteRowsAction,
   newRowLink,
+  deleteRowsAction,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
   const [isPending, startTransition] = React.useTransition()
@@ -100,24 +100,22 @@ export function DataTableToolbar<TData>({
             <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             Delete
           </Button>
-        ) : (
-          newRowLink && (
-            <Link aria-label="Create new row" href={newRowLink}>
-              <div
-                className={cn(
-                  buttonVariants({
-                    variant: "outline",
-                    size: "sm",
-                    className: "h-8",
-                  })
-                )}
-              >
-                <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
-                New
-              </div>
-            </Link>
-          )
-        )}
+        ) : newRowLink ? (
+          <Link aria-label="Create new row" href={newRowLink}>
+            <div
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  size: "sm",
+                  className: "h-8",
+                })
+              )}
+            >
+              <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+              New
+            </div>
+          </Link>
+        ) : null}
         <DataTableViewOptions table={table} />
       </div>
     </div>

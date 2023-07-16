@@ -34,7 +34,7 @@ export async function CartSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          aria-label="Cart"
+          aria-label="Open cart"
           variant="outline"
           size="icon"
           className="relative"

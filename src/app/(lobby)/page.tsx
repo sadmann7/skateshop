@@ -25,6 +25,10 @@ import { Shell } from "@/components/shells/shell"
 // Running out of edge function execution units on vercel free plan
 // export const runtime = "edge"
 
+// This is equivalent to getServersideProps() in the pages directory
+// Read more: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
+export const dynamic = "force-dynamic"
+
 export default async function IndexPage() {
   const allProducts = await db
     .select()
@@ -78,7 +82,7 @@ export default async function IndexPage() {
       <section
         id="hero"
         aria-labelledby="hero-heading"
-        className="mx-auto flex w-full max-w-[64rem] flex-col items-center justify-center gap-4 pb-8 pt-6 text-center md:pb-12 md:pt-10 lg:py-32"
+        className="mx-auto flex w-full max-w-[64rem] flex-col items-center justify-center gap-4 pb-8 pt-6 text-center md:pb-12 md:pt-10 lg:py-28"
       >
         {githubStars ? (
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
@@ -123,7 +127,7 @@ export default async function IndexPage() {
       <section
         id="categories"
         aria-labelledby="categories-heading"
-        className="space-y-6 py-6 md:pt-10 lg:pt-32"
+        className="space-y-6 py-6 md:pt-10 lg:pt-24"
       >
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
           <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
