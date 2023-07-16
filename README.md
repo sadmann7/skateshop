@@ -1,24 +1,23 @@
 # [Skateshop13](https://skateshop.sadmn.com/)
 
-This is an open source e-commerce skateshop build with everything new in Next.js 13. It is bootstrapped with `create-t3-app`.
+This is an open-source e-commerce skate shop built with everything new in Next.js 13. It is bootstrapped with [`create t3-app`](https://create.t3.gg). If you come across any glitches or have any valuable suggestions, feel free to open an issue or a pull request. Alternatively, you can also reach out to me on [Twitter](https://www.twitter.com/SameerJadav_). If you like this project, please consider giving it a ⭐
 
 [![Skateshop13](./public/images/screenshot/landing-page-screenshot.png)](https://skateshop.sadmn.com/)
 
 > **Warning**
-> This project is still in development and is not ready for production use.
->
-> It uses new technologies (server actions, drizzle ORM) which are subject to change and may break your application.
+> This project is still in development. It uses new technologies (server actions, drizzle ORM) that are not yet stable. It is not recommended to use this project in production.
 
 ## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [Tailwind CSS](https://tailwindcss.com)
-- [Clerk Auth](https://clerk.dev)
-- [Drizzle ORM](https://orm.drizzle.team)
-- [React Email](https://react.email)
-- [Contentlayer](https://www.contentlayer.dev)
-- [uploadthing](https://uploadthing.com)
-- [Stripe](https://stripe.com)
+- **Framework:** [Next.js](https://nextjs.org)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com)
+- **User Management:** [Clerk](https://clerk.com)
+- **ORM:** [Drizzle ORM](https://orm.drizzle.team)
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com)
+- **Email:** [React Email](https://react.email)
+- **Content Management:** [Contentlayer](https://www.contentlayer.dev)
+- **File Uploads:** [uploadthing](https://uploadthing.com)
+- **Payments infrastructure:** [Stripe](https://stripe.com)
 
 ## Features to be implemented
 
@@ -35,37 +34,39 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 - [ ] Checkout with **Stripe Checkout**
 - [ ] Admin dashboard with stores, products, orders, subscriptions, and payments
 
-## Installation
+## Running Locally
 
-### 1. Clone the repository
+1. Clone the repository
 
 ```bash
-git clone https://github.com/sadmann7/skateshop
+git clone https://github.com/sadmann7/skateshop.git
 ```
 
-### 2. Install dependencies
+2. Install dependencies using pnpm
 
 ```bash
 pnpm install
 ```
 
-### 3. Create a `.env` file
+3. Copy the `.env.example` to `.env` and update the variables.
 
-Create a `.env` file in the root directory and add the environment variables as shown in the `.env.example` file.
+```bash
+cp .env.example .env
+```
 
-### 4. Run the application
+4. Start the development server
 
 ```bash
 pnpm run dev
 ```
 
-### 5. Push database
+5. Push the database schema
 
 ```bash
 pnpm run db:push
 ```
 
-### 6. Listen for stripe events
+6. Start the Stripe webhook listener
 
 ```bash
 pnpm run stripe:listen
@@ -75,15 +76,9 @@ pnpm run stripe:listen
 
 Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
 
-## License
-
-Licensed under the MIT License. Check the [LICENSE](./LICENSE) file for details.
-
 ## Contributing
 
-Contributions are welcome! Please open an issue if you have any questions or suggestions. Your contributions will be acknowledged.
-
-See the [contributing guide](./CONTRIBUTING.md) for more information.
+Contributions are welcome! Please open an issue if you have any questions or suggestions. Your contributions will be acknowledged. See the [contributing guide](./CONTRIBUTING.md) for more information.
 
 ## Contributors
 
@@ -98,3 +93,7 @@ Thanks goes to these wonderful people for their contributions:
 <p align="center">
  Made with <a rel="noopener noreferrer" target="_blank" href="https://contrib.rocks">contrib.rocks</a>
 </p>
+
+## License
+
+Licensed under the MIT License. Check the [LICENSE](./LICENSE) file for details.
