@@ -120,7 +120,7 @@ export default async function UpdateStorePage({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {!isConnectedToStripe ? (
+          {isConnectedToStripe ? (
             <Link href="https://dashboard.stripe.com/">
               <div className={cn(buttonVariants())}>Manage Stripe account</div>
             </Link>
