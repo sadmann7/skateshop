@@ -35,6 +35,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
+import { ToastWithButton } from "@/components/toast-with-button"
 import {
   checkProductAction,
   deleteProductAction,
@@ -89,7 +90,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const subcategories = getSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
-    console.log(data)
+    // console.log(data)
 
     startTransition(async () => {
       try {
@@ -119,7 +120,17 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           images: images ?? product.images,
         })
 
-        toast.success("Product updated successfully.")
+        const handleToastAction = () => {
+          router.push(`/product/${product.storeId}`)
+          toast.dismiss(`update-product-success-${product.id}`)
+        }
+
+        toast(
+          <ToastWithButton onClick={handleToastAction}>View</ToastWithButton>,
+          {
+            id: `update-product-success-${product.id}`,
+          }
+        )
         setFiles(null)
       } catch (err) {
         catchError(err)
