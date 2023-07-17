@@ -87,6 +87,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <ProductImageCarousel
           className="w-full md:w-1/2"
           images={product.images ?? []}
+          options={{
+            loop: true,
+          }}
         />
         <Separator className="mt-4 md:hidden" />
         <div className="flex w-full flex-col gap-4 md:w-1/2">

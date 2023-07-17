@@ -6,9 +6,8 @@ import type {
   DataTableFilterableColumn,
   DataTableSearchableColumn,
 } from "@/types"
-import { Cross2Icon, TrashIcon } from "@radix-ui/react-icons"
+import { Cross2Icon, PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
-import { PlusCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -111,7 +110,7 @@ export function DataTableToolbar<TData>({
                 })
               )}
             >
-              <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
+              <PlusCircledIcon className="mr-2 h-4 w-4" aria-hidden="true" />
               New
             </div>
           </Link>

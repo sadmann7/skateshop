@@ -48,8 +48,8 @@ export function DataTable<TData, TValue>({
   pageCount,
   filterableColumns = [],
   searchableColumns = [],
-  deleteRowsAction,
   newRowLink,
+  deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()

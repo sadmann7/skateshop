@@ -1,19 +1,19 @@
 import * as React from "react"
 import Link from "next/link"
+import { ChevronRightIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
 
 interface BreadcrumbsProps {
   segments: {
     title: string
     href: string
   }[]
-  separator?: keyof typeof Icons
+  separator?: React.ComponentType<{ className?: string }>
 }
 
 export function Breadcrumbs({ segments, separator }: BreadcrumbsProps) {
-  const SeparatorIcon = Icons[separator ?? "chevronRight"]
+  const SeparatorIcon = separator ?? ChevronRightIcon
 
   return (
     <nav
