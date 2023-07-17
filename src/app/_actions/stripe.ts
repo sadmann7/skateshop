@@ -61,6 +61,30 @@ export async function manageSubscriptionAction(
   }
 }
 
+export async function checkStripeConnectionAction(
+  input: z.infer<typeof createAccountLinkSchema>
+) {
+  const payment = await db.query.payments.findFirst({
+    where: eq(payments.storeId, input.storeId),
+  })
+
+  if (!payment) {
+    return false
+  }
+
+  if (!payment.stripeAccountId) {
+    return false
+  }
+
+  const account = await stripe.accounts.retrieve(payment.stripeAccountId)
+
+  if (!account) {
+    return false
+  }
+
+  return account.details_submitted && payment.detailsSubmitted ? true : false
+}
+
 // For connecting a Stripe account to a store
 export async function createAccountLinkAction(
   input: z.infer<typeof createAccountLinkSchema>
@@ -114,6 +138,10 @@ export async function createAccountLinkAction(
     return_url: absoluteUrl("/dashboard/stripe"),
     type: "account_onboarding",
   })
+
+  if (!accountLink || !accountLink.url) {
+    throw new Error("Error creating Stripe account link, please try again.")
+  }
 
   return {
     url: accountLink.url,

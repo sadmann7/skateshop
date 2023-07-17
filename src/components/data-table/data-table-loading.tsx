@@ -38,7 +38,7 @@ export function DataTableLoading({
         </div>
       </div>
       <div className="rounded-md border">
-        <Table>
+        <Table className="min-w-[640px]">
           <TableHeader>
             {Array.from({ length: 1 }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
