@@ -114,7 +114,10 @@ export function DataTable<TData, TValue>({
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
         per_page: pageSize,
-      })}`
+      })}`,
+      {
+        scroll: false,
+      }
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,7 +138,10 @@ export function DataTable<TData, TValue>({
         sort: sorting[0]?.id
           ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
           : null,
-      })}`
+      })}`,
+      {
+        scroll: false,
+      }
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -164,7 +170,10 @@ export function DataTable<TData, TValue>({
           `${pathname}?${createQueryString({
             page: 1,
             [column.id]: typeof column.value === "string" ? column.value : null,
-          })}`
+          })}`,
+          {
+            scroll: false,
+          }
         )
       }
     }
@@ -178,7 +187,10 @@ export function DataTable<TData, TValue>({
           `${pathname}?${createQueryString({
             page: 1,
             [key]: null,
-          })}`
+          })}`,
+          {
+            scroll: false,
+          }
         )
       }
     }
@@ -192,7 +204,10 @@ export function DataTable<TData, TValue>({
           `${pathname}?${createQueryString({
             page: 1,
             [column.id]: column.value.join("."),
-          })}`
+          })}`,
+          {
+            scroll: false,
+          }
         )
       }
     }
@@ -206,7 +221,10 @@ export function DataTable<TData, TValue>({
           `${pathname}?${createQueryString({
             page: 1,
             [key]: null,
-          })}`
+          })}`,
+          {
+            scroll: false,
+          }
         )
       }
     }
