@@ -9,7 +9,7 @@ import { Icons } from "@/components/icons"
 import {
   getNextStoreIdAction,
   getPreviousStoreIdAction,
-} from "@/app/_actions/store"
+} from "@/app/[locale]/_actions/store"
 
 interface StorePagerProps {
   storeId: number

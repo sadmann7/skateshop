@@ -4,8 +4,8 @@ import { toTitleCase } from "@/lib/utils"
 import { Header } from "@/components/header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
+import { getProductsAction } from "@/app/[locale]/_actions/product"
+import { getStoresAction } from "@/app/[locale]/_actions/store"
 
 // Running out of edge function execution units on vercel free plan
 // export const runtime = "edge"

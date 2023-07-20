@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { deleteProductAction } from "@/app/_actions/product"
+import { deleteProductAction } from "@/app/[locale]/_actions/product"
 
 interface ProductsTableShellProps {
   data: Product[]

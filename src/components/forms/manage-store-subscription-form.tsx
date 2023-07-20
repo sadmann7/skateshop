@@ -7,7 +7,7 @@ import { catchError } from "@/lib/utils"
 import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { manageSubscriptionAction } from "@/app/_actions/stripe"
+import { manageSubscriptionAction } from "@/app/[locale]/_actions/stripe"
 
 type ManageStoreSubscriptionFormProps = z.infer<
   typeof manageSubscriptionSchema

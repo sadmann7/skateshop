@@ -9,8 +9,8 @@ import { BoardBuilder } from "@/components/board-builder"
 import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shells/shell"
-import { getCartItemsAction } from "@/app/_actions/cart"
-import { getProductsAction } from "@/app/_actions/product"
+import { getCartItemsAction } from "@/app/[locale]/_actions/cart"
+import { getProductsAction } from "@/app/[locale]/_actions/product"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

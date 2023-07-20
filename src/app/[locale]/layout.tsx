@@ -10,6 +10,10 @@ import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
+import { NextIntlClientProvider, useLocale } from "next-intl"
+import { notFound } from "next/navigation"
+import { enUS, zhCN } from "@clerk/localizations"
+
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -62,13 +66,29 @@ export const metadata: Metadata = {
 
 interface RootLayoutProps {
   children: React.ReactNode
+  params: { locale: string }
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+  const locale = useLocale();
+ 
+  // Show a 404 error if the user requests an unknown locale
+  if (params.locale !== locale) {
+    notFound();
+  }
+
+  // TODO mappping of locale and localization
+  let messages;
+  try {
+    messages = (await import(`@/messages/${locale}.json`)).default;
+  } catch (error) {
+    notFound();
+  }
+ 
   return (
     <>
-      <ClerkProvider>
-        <html lang="en" suppressHydrationWarning>
+      <ClerkProvider localization={locale === "en" ? enUS : zhCN}>
+        <html lang={locale} suppressHydrationWarning>
           <head />
           <body
             className={cn(
@@ -78,7 +98,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
             )}
           >
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              {children}
+              <NextIntlClientProvider locale={locale} messages={messages}>
+                {children}
+              </NextIntlClientProvider>
               <TailwindIndicator />
             </ThemeProvider>
             <Toaster />

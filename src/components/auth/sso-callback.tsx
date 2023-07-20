@@ -4,7 +4,7 @@ import * as React from "react"
 import { useClerk } from "@clerk/nextjs"
 
 import { Icons } from "@/components/icons"
-import { type SSOCallbackPageProps } from "@/app/(auth)/sso-callback/page"
+import { type SSOCallbackPageProps } from "@/app/[locale]/(auth)/sso-callback/page"
 
 export default function SSOCallback({ searchParams }: SSOCallbackPageProps) {
   const { handleRedirectCallback } = useClerk()

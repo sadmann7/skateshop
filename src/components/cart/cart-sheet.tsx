@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sheet"
 import { UpdateCart } from "@/components/cart/update-cart"
 import { Icons } from "@/components/icons"
-import { getCartAction } from "@/app/_actions/cart"
+import { getCartAction } from "@/app/[locale]/_actions/cart"
 
 export async function CartSheet() {
   const cartLineItems = await getCartAction()

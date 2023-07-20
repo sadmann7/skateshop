@@ -2,8 +2,21 @@ import { NextResponse } from "next/server"
 import { type UserRole } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
 import { authMiddleware } from "@clerk/nextjs/server"
+import createMiddleware from "next-intl/middleware"
+
+const languages = {
+  locales: ["en", "zh"],
+  
+  defaultLocale: "en",
+}
+
+const intlMiddleware = createMiddleware(languages)
 
 export default authMiddleware({
+  beforeAuth: (req) => {
+    return intlMiddleware(req)
+  },
+
   // Public routes are routes that don't require authentication
   publicRoutes: [
     "/",

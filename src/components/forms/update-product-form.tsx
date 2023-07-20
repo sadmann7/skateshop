@@ -39,8 +39,8 @@ import {
   checkProductAction,
   deleteProductAction,
   updateProductAction,
-} from "@/app/_actions/product"
-import type { OurFileRouter } from "@/app/api/uploadthing/core"
+} from "@/app/[locale]/_actions/product"
+import type { OurFileRouter } from "@/app/[locale]/api/uploadthing/core"
 
 interface UpdateProductFormProps {
   product: Product

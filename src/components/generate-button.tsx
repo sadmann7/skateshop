@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { generateProducts } from "@/app/_actions/generate"
+import { generateProducts } from "@/app/[locale]/_actions/generate"
 
 interface GenerateButtonProps {
   storeId: number

@@ -1,4 +1,4 @@
-import ProductsLoading from "@/app/(lobby)/products/loading"
+import ProductsLoading from "@/app/[locale]/(lobby)/products/loading"
 
 export default function CategoryLoading() {
   return <ProductsLoading />

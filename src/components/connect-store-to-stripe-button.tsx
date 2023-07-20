@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { createAccountLinkAction } from "@/app/_actions/stripe"
+import { createAccountLinkAction } from "@/app/[locale]/_actions/stripe"
 
 import { Icons } from "./icons"
 

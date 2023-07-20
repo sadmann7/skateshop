@@ -1,44 +1,43 @@
-import { type Product } from "@/db/schema"
+import { type Metadata } from "next"
+import { products } from "@/db/schema"
+import { env } from "@/env.mjs"
 
-import { toTitleCase, unslugify } from "@/lib/utils"
 import { Header } from "@/components/header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
+import { getProductsAction } from "@/app/[locale]/_actions/product"
+import { getStoresAction } from "@/app/[locale]/_actions/store"
 
 // Running out of edge function execution units on vercel free plan
 // export const runtime = "edge"
 
-interface SubcategoryPageProps {
-  params: {
-    category: Product["category"]
-    subcategory: string
-  }
+export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+  title: "Products",
+  description: "Buy products from our stores",
+}
+
+interface ProductsPageProps {
   searchParams: {
     [key: string]: string | string[] | undefined
   }
 }
 
-export function generateMetadata({ params }: SubcategoryPageProps) {
-  const subcategory = unslugify(params.subcategory)
-
-  return {
-    title: toTitleCase(subcategory),
-    description: `Buy the best ${subcategory}`,
-  }
-}
-
-export default async function SubcategoryPage({
-  params,
+export default async function ProductsPage({
   searchParams,
-}: SubcategoryPageProps) {
-  const { category, subcategory } = params
-  const { page, per_page, sort, price_range, store_ids, store_page } =
-    searchParams
+}: ProductsPageProps) {
+  const {
+    page,
+    per_page,
+    sort,
+    categories,
+    subcategories,
+    price_range,
+    store_ids,
+    store_page,
+  } = searchParams
 
   // Products transaction
-
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
@@ -46,8 +45,8 @@ export default async function SubcategoryPage({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
-    categories: category,
-    subcategories: subcategory,
+    categories: typeof categories === "string" ? categories : null,
+    subcategories: typeof subcategories === "string" ? subcategories : null,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
   })
@@ -72,13 +71,14 @@ export default async function SubcategoryPage({
   return (
     <Shell>
       <Header
-        title={toTitleCase(unslugify(subcategory))}
-        description={`Buy the best ${unslugify(subcategory)}`}
+        title="Products"
+        description="Buy products from our stores"
         size="sm"
       />
       <Products
         products={productsTransaction.items}
         pageCount={pageCount}
+        categories={Object.values(products.category.enumValues)}
         stores={storesTransaction.items}
         storePageCount={storePageCount}
       />

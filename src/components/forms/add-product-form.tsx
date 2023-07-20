@@ -34,8 +34,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
-import { addProductAction, checkProductAction } from "@/app/_actions/product"
-import type { OurFileRouter } from "@/app/api/uploadthing/core"
+import { addProductAction, checkProductAction } from "@/app/[locale]/_actions/product"
+import type { OurFileRouter } from "@/app/[locale]/api/uploadthing/core"
 
 interface AddProductFormProps {
   storeId: number

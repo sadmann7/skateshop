@@ -20,6 +20,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
   "dependencies": {
+    "@clerk/localizations": "^1.23.1",
     "@clerk/nextjs": "^4.21.13",
     "@clerk/themes": "^1.7.5",
     "@clerk/types": "^3.46.1",
@@ -63,6 +64,7 @@
     "lucide-react": "^0.258.0",
     "next": "^13.4.8",
     "next-contentlayer": "^0.3.4",
+    "next-intl": "3.0.0-beta.9",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-cropper": "^2.3.3",
