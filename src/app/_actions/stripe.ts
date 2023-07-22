@@ -64,23 +64,23 @@ export async function manageSubscriptionAction(
 export async function checkStripeConnectionAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, input.storeId),
+  })
+
+  if (!store) return false
+
   const payment = await db.query.payments.findFirst({
     where: eq(payments.storeId, input.storeId),
   })
 
-  if (!payment) {
-    return false
-  }
+  if (!payment) return false
 
-  if (!payment.stripeAccountId) {
-    return false
-  }
+  if (!payment.stripeAccountId) return false
 
   const account = await stripe.accounts.retrieve(payment.stripeAccountId)
 
-  if (!account) {
-    return false
-  }
+  if (!account) return false
 
   return account.details_submitted && payment.detailsSubmitted ? true : false
 }
@@ -103,10 +103,6 @@ export async function createAccountLinkAction(
   const payment = await db.query.payments.findFirst({
     where: eq(payments.storeId, input.storeId),
   })
-
-  if (!payment) {
-    throw new Error("Payment not found.")
-  }
 
   if (payment?.detailsSubmitted) {
     throw new Error("Store already connected to Stripe.")
