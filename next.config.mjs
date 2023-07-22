@@ -1,4 +1,5 @@
 import { withContentlayer } from "next-contentlayer"
+import plugin from 'next-intl/plugin'
 
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
@@ -23,4 +24,7 @@ const nextConfig = {
   //   ignoreBuildErrors: true,
   // },
 }
-export default withContentlayer(nextConfig)
+
+const withNextIntl = plugin("./src/i18n.ts");
+
+export default withNextIntl(withContentlayer(nextConfig));

@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form"
 import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
-import { updateEmailPreferencesAction } from "@/app/_actions/email"
+import { updateEmailPreferencesAction } from "@/app/[locale]/_actions/email"
 
 interface UpdateEmailPreferencesFormProps {
   emailPreference: EmailPreference

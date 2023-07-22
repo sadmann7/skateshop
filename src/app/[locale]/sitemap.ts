@@ -3,7 +3,7 @@ import { allPosts } from "contentlayer/generated"
 
 import { productCategories } from "@/config/products"
 import { siteConfig } from "@/config/site"
-import { getProductsAction } from "@/app/_actions/product"
+import { getProductsAction } from "@/app/[locale]/_actions/product"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productsTransaction = await getProductsAction({

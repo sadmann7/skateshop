@@ -32,7 +32,7 @@ import { Slider } from "@/components/ui/slider"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 import { ProductCard } from "@/components/product-card"
-import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
+import { addToCartAction, deleteCartItemAction } from "@/app/[locale]/_actions/cart"
 
 interface BoardBuilderProps {
   products: Product[]

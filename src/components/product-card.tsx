@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
-import { addToCartAction } from "@/app/_actions/cart"
+import { addToCartAction } from "@/app/[locale]/_actions/cart"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Product

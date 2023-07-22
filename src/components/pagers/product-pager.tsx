@@ -10,7 +10,7 @@ import { Icons } from "@/components/icons"
 import {
   getNextProductIdAction,
   getPreviousProductIdAction,
-} from "@/app/_actions/product"
+} from "@/app/[locale]/_actions/product"
 
 interface ProductPagerProps {
   product: Product

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { addToCartAction } from "@/app/_actions/cart"
+import { addToCartAction } from "@/app/[locale]/_actions/cart"
 
 interface AddToCartFromProps {
   productId: number

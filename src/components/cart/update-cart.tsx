@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { deleteCartItemAction, updateCartItemAction } from "@/app/_actions/cart"
+import { deleteCartItemAction, updateCartItemAction } from "@/app/[locale]/_actions/cart"
 
 interface UpdateCartProps {
   cartLineItem: CartLineItem

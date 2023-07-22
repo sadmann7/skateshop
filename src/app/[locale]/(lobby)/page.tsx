@@ -21,6 +21,7 @@ import {
 import { Icons } from "@/components/icons"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shells/shell"
+import { getTranslator } from "next-intl/server"
 
 // Running out of edge function execution units on vercel free plan
 // export const runtime = "edge"
@@ -29,7 +30,7 @@ import { Shell } from "@/components/shells/shell"
 // Read more: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
 export const dynamic = "force-dynamic"
 
-export default async function IndexPage() {
+export default async function IndexPage({params: {locale}}) {
   const allProducts = await db
     .select()
     .from(products)
@@ -77,6 +78,8 @@ export default async function IndexPage() {
 
   const githubStars = await getGithubStars()
 
+  const t = await getTranslator(locale, 'Index');
+
   return (
     <Shell as="div" className="gap-12">
       <section
@@ -94,11 +97,10 @@ export default async function IndexPage() {
           </Link>
         ) : null}
         <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
-          An e-commerce skateshop built with everything new in Next.js 13
+          {t("title")}
         </h1>
         <Balance className="max-w-[46rem] text-lg text-muted-foreground sm:text-xl">
-          Buy and sell skateboarding products from independent brands and stores
-          around the world
+          {t("subtitle")}
         </Balance>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
