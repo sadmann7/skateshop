@@ -58,7 +58,7 @@ export async function getProductsAction(
   const [column, order] =
     (input.sort?.split(".") as [
       keyof Product | undefined,
-      "asc" | "desc" | undefined
+      "asc" | "desc" | undefined,
     ]) ?? []
   const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
   const categories =

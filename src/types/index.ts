@@ -39,7 +39,7 @@ export type SidebarNavItem = NavItemWithChildren
 
 export type UserRole = z.infer<typeof userPrivateMetadataSchema.shape.role>
 
-export type Option = {
+export interface Option {
   label: string
   value: string
   icon?: React.ComponentType<{ className?: string }>
@@ -49,7 +49,7 @@ export type FileWithPreview = FileWithPath & {
   preview: string
 }
 
-export type StoredFile = {
+export interface StoredFile {
   id: string
   name: string
   url: string
@@ -85,7 +85,7 @@ export interface CartLineItem
   storeName: string | null
 }
 
-export type SubscriptionPlan = {
+export interface SubscriptionPlan {
   id: "basic" | "standard" | "pro"
   name: string
   description: string

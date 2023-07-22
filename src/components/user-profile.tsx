@@ -2,7 +2,7 @@
 
 import { UserProfile as ClerkUserProfile } from "@clerk/nextjs"
 import { dark } from "@clerk/themes"
-import type { BaseThemeTaggedType, Theme } from "@clerk/types"
+import { type Theme } from "@clerk/types"
 import { useTheme } from "next-themes"
 
 const appearance: Theme = {
@@ -26,7 +26,7 @@ export function UserProfile() {
     <ClerkUserProfile
       appearance={{
         ...appearance,
-        baseTheme: (theme === "dark" ? dark : appearance.baseTheme) as BaseThemeTaggedType,
+        baseTheme: theme === "dark" ? dark : appearance.baseTheme,
         variables: {
           ...appearance.variables,
           colorBackground: theme === "light" ? "#fafafa" : undefined,

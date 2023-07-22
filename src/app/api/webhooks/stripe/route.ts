@@ -8,7 +8,7 @@ import { userPrivateMetadataSchema } from "@/lib/validations/auth"
 
 export async function POST(req: Request) {
   const body = await req.text()
-  const signature = headers().get("Stripe-Signature") as string
+  const signature = headers().get("Stripe-Signature") ?? ""
 
   let event: Stripe.Event
 

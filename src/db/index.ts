@@ -6,6 +6,6 @@ import * as schema from "./schema"
 
 // Create the connection
 const connection = connect({
-  url: env["DATABASE_URL"],
+  url: env.DATABASE_URL,
 })
 export const db = drizzle(connection, { schema })

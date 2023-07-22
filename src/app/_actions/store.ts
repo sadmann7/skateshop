@@ -20,7 +20,7 @@ export async function getStoresAction(input: {
   const [column, order] =
     (input.sort?.split("-") as [
       keyof Store | undefined,
-      "asc" | "desc" | undefined
+      "asc" | "desc" | undefined,
     ]) ?? []
 
   const { items, total } = await db.transaction(async (tx) => {

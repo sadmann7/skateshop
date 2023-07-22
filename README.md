@@ -1,11 +1,13 @@
 # [Skateshop13](https://skateshop.sadmn.com/)
 
-This is an open-source e-commerce skate shop built with everything new in Next.js 13. It is bootstrapped with [`create t3-app`](https://create.t3.gg). If you come across any glitches or have any valuable suggestions, feel free to open an issue or a pull request. Alternatively, you can also reach out to me on [Twitter](https://www.twitter.com/SameerJadav_). If you like this project, please consider giving it a ⭐
+This is an open source e-commerce skateshop build with everything new in Next.js 13. It is bootstrapped with `create-t3-app`.
 
 [![Skateshop13](./public/images/screenshot/landing-page-screenshot.png)](https://skateshop.sadmn.com/)
 
 > **Warning**
-> This project is still in development. It uses new technologies (server actions, drizzle ORM) that are not yet stable. It is not recommended to use this project in production.
+> This project is still in development and is not ready for production use.
+>
+> It uses new technologies (server actions, drizzle ORM) which are subject to change and may break your application.
 
 ## Tech Stack
 

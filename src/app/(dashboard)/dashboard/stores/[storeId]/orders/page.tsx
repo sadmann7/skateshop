@@ -1,8 +1,8 @@
-import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 
 export const metadata: Metadata = {

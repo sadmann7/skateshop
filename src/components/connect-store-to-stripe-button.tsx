@@ -4,9 +4,8 @@ import * as React from "react"
 
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
 import { createAccountLinkAction } from "@/app/_actions/stripe"
-
-import { Icons } from "./icons"
 
 interface ConnectToStripeButtonProps {
   storeId: number
