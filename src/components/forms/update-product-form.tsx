@@ -262,9 +262,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           {!isUploading && previews?.length ? (
             <div className="flex items-center gap-2">
               {previews.map((file) => (
-                <Zoom>
+                <Zoom key={file.name}>
                   <Image
-                    key={file.name}
                     src={file.preview}
                     alt={file.name}
                     className="h-20 w-20 shrink-0 rounded-md object-cover object-center"

@@ -156,16 +156,11 @@ dependencies:
     specifier: ^1.9.4
     version: 1.9.4
   react-hook-form:
-<<<<<<< HEAD
     specifier: ^7.45.2
     version: 7.45.2(react@18.2.0)
-=======
-    specifier: ^7.45.1
-    version: 7.45.1(react@18.2.0)
   react-medium-image-zoom:
     specifier: ^5.1.6
     version: 5.1.6(react-dom@18.2.0)(react@18.2.0)
->>>>>>> 978a8ad7c9d2dbcc32813792a0f57d5c4f49c9b3
   react-wrap-balancer:
     specifier: ^1.0.0
     version: 1.0.0(react@18.2.0)
