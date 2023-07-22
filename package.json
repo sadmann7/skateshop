@@ -70,7 +70,7 @@
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-email": "^1.9.4",
-    "react-hook-form": "^7.45.2",
+    "react-hook-form": "^7.45.1",
     "react-wrap-balancer": "^1.0.0",
     "resend": "^0.17.1",
     "sonner": "^0.6.2",
