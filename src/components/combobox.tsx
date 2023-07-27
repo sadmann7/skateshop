@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { type Product } from "@/db/schema"
 
-import { cn } from "@/lib/utils"
+import { cn, isMacOs } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import {
@@ -77,7 +77,7 @@ export function Combobox() {
         <span className="hidden xl:inline-flex">Search products...</span>
         <span className="sr-only">Search products</span>
         <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
-          <span className="text-xs">Ctrl</span>K
+          <abbr title={isMacOs() ? 'Command' : 'Control'}>{isMacOs() ? '⌘' : 'Ctrl+'}</abbr>K
         </kbd>
       </Button>
       <CommandDialog position="top" open={isOpen} onOpenChange={setIsOpen}>

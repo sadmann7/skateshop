@@ -106,3 +106,7 @@ export function catchClerkError(err: unknown) {
     return toast.error(unknownErr)
   }
 }
+
+export function isMacOs(){
+  return window.navigator.userAgent.includes('Mac');
+}
