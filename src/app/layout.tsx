@@ -8,8 +8,8 @@ import { siteConfig } from "@/config/site"
 import { fontMono, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
+import { Providers } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
-import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -77,10 +77,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
               fontMono.variable
             )}
           >
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Providers attribute="class" defaultTheme="system" enableSystem>
               {children}
               <TailwindIndicator />
-            </ThemeProvider>
+            </Providers>
             <Toaster />
           </body>
         </html>

@@ -2,7 +2,7 @@ import * as React from "react"
 import Link from "next/link"
 import { ChevronRightIcon } from "@radix-ui/react-icons"
 
-import { cn } from "@/lib/utils"
+import { cn, truncate } from "@/lib/utils"
 
 interface BreadcrumbsProps {
   segments: {
@@ -10,9 +10,14 @@ interface BreadcrumbsProps {
     href: string
   }[]
   separator?: React.ComponentType<{ className?: string }>
+  truncationLength?: number
 }
 
-export function Breadcrumbs({ segments, separator }: BreadcrumbsProps) {
+export function Breadcrumbs({
+  segments,
+  separator,
+  truncationLength = 0,
+}: BreadcrumbsProps) {
   const SeparatorIcon = separator ?? ChevronRightIcon
 
   return (
@@ -29,13 +34,13 @@ export function Breadcrumbs({ segments, separator }: BreadcrumbsProps) {
               aria-current={isLastSegment ? "page" : undefined}
               href={segment.href}
               className={cn(
-                "truncate transition-colors hover:text-muted-foreground",
-                isLastSegment
-                  ? "pointer-events-none text-muted-foreground"
-                  : "text-foreground"
+                "truncate transition-colors hover:text-foreground",
+                isLastSegment ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              {segment.title}
+              {truncationLength > 0 && segment.title
+                ? truncate(segment.title, truncationLength)
+                : segment.title}
             </Link>
             {!isLastSegment && (
               <SeparatorIcon className="mx-2 h-4 w-4" aria-hidden="true" />
