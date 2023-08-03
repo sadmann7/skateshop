@@ -13,6 +13,8 @@ export default authMiddleware({
     "/categories(.*)",
     "/products(.*)",
     "/product(.*)",
+    "/stores(.*)",
+    "/store(.*)",
     "/build-a-board(.*)",
     "/email-preferences(.*)",
     "/blog(.*)",
