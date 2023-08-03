@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { products, type Product } from "@/db/schema"
 import type { FileWithPreview } from "@/types"
@@ -11,7 +12,7 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
-import { isArrayOfFile } from "@/lib/utils"
+import { catchError, isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import {
@@ -35,6 +36,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
+import { Zoom } from "@/components/zoom-image"
 import {
   checkProductAction,
   deleteProductAction,
@@ -55,7 +57,6 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
   const [isPending, startTransition] = React.useTransition()
 
-  // Set files from product
   React.useEffect(() => {
     if (product.images && product.images.length > 0) {
       setFiles(
@@ -73,10 +74,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     }
   }, [product])
 
-  // uploadthing
   const { isUploading, startUpload } = useUploadThing("productImage")
 
-  // react-hook-form
   const form = useForm<Inputs>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -85,21 +84,17 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     },
   })
 
-  // Get subcategories based on category
+  const previews = form.watch("images") as FileWithPreview[] | null
   const subcategories = getSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
-    console.log(data)
-
     startTransition(async () => {
       try {
-        // Check if product already exists in the store
         await checkProductAction({
           name: data.name,
           id: product.id,
         })
 
-        // Upload images if data.images is an array of files
         const images = isArrayOfFile(data.images)
           ? await startUpload(data.images).then((res) => {
               const formattedImages = res?.map((image) => ({
@@ -111,7 +106,6 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
             })
           : null
 
-        // Update product
         await updateProductAction({
           ...data,
           storeId: product.storeId,
@@ -121,10 +115,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
 
         toast.success("Product updated successfully.")
         setFiles(null)
-      } catch (error) {
-        error instanceof Error
-          ? toast.error(error.message)
-          : toast.error("Something went wrong, please try again.")
+      } catch (err) {
+        catchError(err)
       }
     })
   }
@@ -267,6 +259,21 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
         </div>
         <FormItem className="flex w-full flex-col gap-1.5">
           <FormLabel>Images</FormLabel>
+          {!isUploading && previews?.length ? (
+            <div className="flex items-center gap-2">
+              {previews.map((file) => (
+                <Zoom key={file.name}>
+                  <Image
+                    src={file.preview}
+                    alt={file.name}
+                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                    width={80}
+                    height={80}
+                  />
+                </Zoom>
+              ))}
+            </div>
+          ) : null}
           <FormControl>
             <FileDialog
               setValue={form.setValue}

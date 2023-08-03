@@ -11,6 +11,12 @@ module.exports = {
       },
     },
     extend: {
+      screens: {
+        xs: "380px",
+      },
+      flex: {
+        full: "0 0 100%",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -67,5 +73,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 }

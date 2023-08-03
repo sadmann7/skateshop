@@ -1,10 +1,6 @@
 import { cn } from "@/lib/utils"
 
-interface HeaderProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
   description?: string | null
   size?: "default" | "sm"

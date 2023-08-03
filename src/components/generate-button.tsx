@@ -1,23 +1,33 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 
+import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import { generateProducts } from "@/app/_actions/generate"
 
-export function GenerateButton() {
+interface GenerateButtonProps {
+  storeId: number
+}
+
+export function GenerateButton({ storeId }: GenerateButtonProps) {
   const [isPending, startTransition] = React.useTransition()
 
   return (
     <Button
-      className="w-fit"
+      className="h-8 px-2 lg:px-3"
       onClick={() => {
         startTransition(async () => {
-          await generateProducts()
+          try {
+            await generateProducts({ storeId, count: 10 })
+            toast.success("Products generated successfully.")
+          } catch (err) {
+            catchError(err)
+          }
         })
       }}
-      disabled={isPending}
     >
       {isPending && (
         <Icons.spinner
@@ -26,7 +36,6 @@ export function GenerateButton() {
         />
       )}
       Generate
-      <span className="sr-only">Generate products</span>
     </Button>
   )
 }

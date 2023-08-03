@@ -2,42 +2,100 @@
 
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
-import { stores, type Store } from "@/db/schema"
-import { type UserRole } from "@/types"
-import { clerkClient } from "@clerk/nextjs"
-import {
-  asc,
-  desc,
-  eq,
-  gt,
-  lt,
-  sql,
-} from "drizzle-orm"
-import type { z } from "zod"
+import { products, stores, type Store } from "@/db/schema"
+import { and, asc, desc, eq, gt, lt, sql } from "drizzle-orm"
+import { type z } from "zod"
 
 import { slugify } from "@/lib/utils"
-import type {
-  getStoreSchema,
-  getStoresSchema,
-  storeSchema,
-} from "@/lib/validations/store"
+import type { getPublicStoreSchema, getStoreSchema, storeSchema } from "@/lib/validations/store"
 
-export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
+export async function getPublicStoresAction(
+  input: z.infer<typeof getPublicStoreSchema>
+) {
+  const limit = input.limit ?? 10
+  const offset = input.offset ?? 0
   const [column, order] =
     (input.sort?.split(".") as [
       keyof Store | undefined,
-      "asc" | "desc" | undefined
+      "asc" | "desc" | undefined,
     ]) ?? []
 
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
-      .select()
+      .select({
+        id: stores.id,
+        name: stores.name,
+        description: stores.description,
+        productCount: sql<number>`count(${products.id})`,
+      })
       .from(stores)
-      .limit(input.limit)
-      .offset(input.offset)
-      // .where(and(storeIds.length ? inArray(stores.id, storeIds) : undefined))
+      .limit(limit)
+      .offset(offset)
+      .leftJoin(products, eq(stores.id, products.storeId))
+      .groupBy(stores.id)
       .orderBy(
-        column && column in stores
+        input.sort === "productCount.asc"
+          ? asc(sql<number>`count(${products.id})`)
+          : input.sort === "productCount.desc"
+          ? desc(sql<number>`count(${products.id})`)
+          : column && column in stores
+          ? order === "asc"
+            ? asc(stores[column])
+            : desc(stores[column])
+          : desc(stores.createdAt)
+      )
+
+    const total = await tx
+      .select({
+        count: sql<number>`count(${stores.id})`,
+      })
+      .from(stores)
+
+    return {
+      items,
+      total: Number(total[0]?.count) ?? 0,
+    }
+  })
+
+  return {
+    items,
+    total,
+  }
+}
+
+export async function getStoresAction(input: {
+  limit?: number
+  offset?: number
+  sort?: `${keyof Store | "productCount"}.${"asc" | "desc"}`
+  userId?: string
+}) {
+  const limit = input.limit ?? 10
+  const offset = input.offset ?? 0
+  const [column, order] =
+    (input.sort?.split("-") as [
+      keyof Store | undefined,
+      "asc" | "desc" | undefined,
+    ]) ?? []
+
+  const { items, total } = await db.transaction(async (tx) => {
+    const items = await tx
+      .select({
+        id: stores.id,
+        name: stores.name,
+        productCount: sql<number>`count(${products.id})`,
+      })
+      .from(stores)
+      .limit(limit)
+      .offset(offset)
+      .leftJoin(products, eq(stores.id, products.storeId))
+      .where(input.userId ? eq(stores.userId, input.userId) : undefined)
+      .groupBy(stores.id)
+      .orderBy(
+        input.sort === "productCount.asc"
+          ? asc(sql<number>`count(${products.id})`)
+          : input.sort === "productCount.desc"
+          ? desc(sql<number>`count(${products.id})`)
+          : column && column in stores
           ? order === "asc"
             ? asc(stores[column])
             : desc(stores[column])
@@ -106,16 +164,25 @@ export async function getNextStoreIdAction(
     throw new Error("Invalid input.")
   }
 
-  const store = await db.query.stores.findFirst({
-    where: gt(stores.id, input.id),
+  const nextStore = await db.query.stores.findFirst({
+    where: and(eq(stores.userId, input.userId), gt(stores.id, input.id)),
     orderBy: asc(stores.id),
   })
 
-  if (!store) {
-    throw new Error("Store not found.")
+  if (!nextStore) {
+    const firstStore = await db.query.stores.findFirst({
+      where: eq(stores.userId, input.userId),
+      orderBy: asc(stores.id),
+    })
+
+    if (!firstStore) {
+      throw new Error("Store not found.")
+    }
+
+    return firstStore.id
   }
 
-  return store.id
+  return nextStore.id
 }
 
 export async function getPreviousStoreIdAction(
@@ -125,14 +192,23 @@ export async function getPreviousStoreIdAction(
     throw new Error("Invalid input.")
   }
 
-  const store = await db.query.stores.findFirst({
-    where: lt(stores.id, input.id),
+  const previousStore = await db.query.stores.findFirst({
+    where: and(eq(stores.userId, input.userId), lt(stores.id, input.id)),
     orderBy: desc(stores.id),
   })
 
-  if (!store) {
-    throw new Error("store not found.")
+  if (!previousStore) {
+    const lastStore = await db.query.stores.findFirst({
+      where: eq(stores.userId, input.userId),
+      orderBy: desc(stores.id),
+    })
+
+    if (!lastStore) {
+      throw new Error("Store not found.")
+    }
+
+    return lastStore.id
   }
 
-  return store.id
+  return previousStore.id
 }

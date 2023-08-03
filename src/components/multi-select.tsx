@@ -35,7 +35,7 @@ export function MultiSelect({
 
   const handleSelect = React.useCallback(
     (option: Option) => {
-      setSelected((prev) => [...(prev || []), option])
+      setSelected((prev) => [...(prev ?? []), option])
     },
     [setSelected]
   )

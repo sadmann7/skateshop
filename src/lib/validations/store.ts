@@ -10,7 +10,7 @@ export const getStoreSchema = z.object({
   userId: z.string(),
 })
 
-export const getStoresSchema = z.object({
+export const getPublicStoreSchema = z.object({
   limit: z.number().default(10),
   offset: z.number().default(0),
   sort: z

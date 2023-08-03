@@ -1,12 +1,15 @@
-import type { Metadata } from "next"
+import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
-import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
+import { env } from "@/env.mjs"
+import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
-import { ProductsTable } from "@/components/products-table"
+import { GenerateButton } from "@/components/generate-button"
+import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Products",
   description: "Manage your products",
 }
@@ -26,7 +29,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, name, date_range } = searchParams
+  const { page, per_page, sort, name, category } = searchParams
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -40,21 +43,28 @@ export default async function ProductsPage({
     notFound()
   }
 
-  // Number of skaters to show per page
+  // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
-  // Number of skaters to skip
-  const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
+  // Number of items to skip
+  const offset =
+    typeof page === "string"
+      ? parseInt(page) > 0
+        ? (parseInt(page) - 1) * limit
+        : 0
+      : 0
   // Column and order to sort by
   const [column, order] =
     typeof sort === "string"
       ? (sort.split(".") as [
           keyof Product | undefined,
-          "asc" | "desc" | undefined
+          "asc" | "desc" | undefined,
         ])
       : []
-  // Date range for created date
-  const [start_date, end_date] =
-    typeof date_range === "string" ? date_range.split("to") : []
+
+  const categories =
+    typeof category === "string"
+      ? (category.split(".") as Product["category"][])
+      : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
   const { storeProducts, totalProducts } = await db.transaction(async (tx) => {
@@ -70,9 +80,10 @@ export default async function ProductsPage({
           typeof name === "string"
             ? like(products.name, `%${name}%`)
             : undefined,
-          // Filter by created date
-          start_date ? gte(products.createdAt, start_date) : undefined,
-          end_date ? lte(products.createdAt, end_date) : undefined
+          // Filter by category
+          categories.length > 0
+            ? inArray(products.category, categories)
+            : undefined
         )
       )
       .orderBy(
@@ -94,11 +105,8 @@ export default async function ProductsPage({
           typeof name === "string"
             ? like(products.name, `%${name}%`)
             : undefined,
-          start_date && end_date
-            ? and(
-                gte(products.createdAt, start_date),
-                lte(products.createdAt, end_date)
-              )
+          categories.length > 0
+            ? inArray(products.category, categories)
             : undefined
         )
       )
@@ -112,10 +120,13 @@ export default async function ProductsPage({
   const pageCount = Math.ceil(totalProducts / limit)
 
   return (
-    <ProductsTable
-      data={storeProducts}
-      pageCount={pageCount}
-      storeId={storeId}
-    />
+    <div className="space-y-2.5">
+      {env.NODE_ENV !== "production" && <GenerateButton storeId={storeId} />}
+      <ProductsTableShell
+        data={storeProducts}
+        pageCount={pageCount}
+        storeId={storeId}
+      />
+    </div>
   )
 }

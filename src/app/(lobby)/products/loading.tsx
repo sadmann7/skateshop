@@ -2,7 +2,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export default function ProductsLoading() {
   return (
@@ -13,8 +13,8 @@ export default function ProductsLoading() {
       </div>
       <div className="flex flex-col space-y-6">
         <div className="flex items-center gap-2">
-          <Skeleton className="h-10 w-14" />
-          <Skeleton className="h-10 w-20" />
+          <Skeleton className="h-9 w-14" />
+          <Skeleton className="h-9 w-20" />
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (

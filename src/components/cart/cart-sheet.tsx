@@ -34,7 +34,7 @@ export async function CartSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button
-          aria-label="Cart"
+          aria-label="Open cart"
           variant="outline"
           size="icon"
           className="relative"
@@ -71,6 +71,7 @@ export async function CartSheet() {
                                 "/images/product-placeholder.webp"
                               }
                               alt={item.images[0]?.name ?? item.name}
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               fill
                               className="absolute object-cover"
                               loading="lazy"

@@ -1,5 +1,8 @@
 import { type Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { env } from "@/env.mjs"
+import { currentUser } from "@clerk/nextjs"
 
 import {
   Card,
@@ -11,16 +14,20 @@ import {
 } from "@/components/ui/card"
 import { OAuthSignIn } from "@/components/auth/oauth-signin"
 import { SignUpForm } from "@/components/forms/signup-form"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Sign Up",
   description: "Sign up for an account",
 }
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  const user = await currentUser()
+  if (user) redirect("/")
+
   return (
-    <Shell layout="auth">
+    <Shell className="max-w-lg">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Sign up</CardTitle>
@@ -42,7 +49,7 @@ export default function SignUpPage() {
           </div>
           <SignUpForm />
         </CardContent>
-        <CardFooter className="grid gap-4">
+        <CardFooter>
           <div className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link

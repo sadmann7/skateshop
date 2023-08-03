@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/.react-email/node_modules
 /.pnp
 .pnp.js
 
@@ -9,11 +10,10 @@
 /coverage
 
 # database
-/prisma/db.sqlite
-/prisma/db.sqlite-journal
 
 # next.js
 /.next/
+/.react-email/.next/
 /out/
 next-env.d.ts
 
@@ -40,3 +40,4 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+.contentlayer

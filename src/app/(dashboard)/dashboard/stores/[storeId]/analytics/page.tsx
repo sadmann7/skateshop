@@ -2,12 +2,14 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 import { Activity, CreditCard, DollarSign, Users } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Analytics",
   description: "Analytics for your store",
 }

@@ -12,7 +12,7 @@ export function GET(req: Request) {
       Object.fromEntries(url.searchParams)
     )
 
-    const { mode, title, description } = parsedValues
+    const { mode, title, description, type } = parsedValues
     const paint = mode === "dark" ? "#fff" : "#000"
 
     return new ImageResponse(
@@ -46,12 +46,19 @@ export function GET(req: Request) {
               whiteSpace: "pre-wrap",
             }}
           >
-            <div tw="text-5xl font-bold tracking-tight leading-tight dark:text-white px-8">
+            {type ? (
+              <div tw="text-xl uppercase font-medium tracking-tight leading-tight dark:text-zinc-50 px-8">
+                {type}
+              </div>
+            ) : null}
+            <div tw="text-5xl font-bold tracking-tight leading-tight dark:text-zinc-50 px-8">
               {title}
             </div>
-            <div tw="mt-5 text-3xl text-slate-400 text-center font-normal tracking-tight leading-tight px-20">
-              {description}
-            </div>
+            {description ? (
+              <div tw="mt-5 text-3xl text-zinc-400 text-center font-normal tracking-tight leading-tight px-20">
+                {description}
+              </div>
+            ) : null}
           </div>
         </div>
       ),

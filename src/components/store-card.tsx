@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 
+import { reducedStore } from "@/components/stores"
+
 interface StoreCardProps {
-  store: Store
+  store: reducedStore
   variant?: "default" | "switchable"
 }
 
@@ -34,25 +36,12 @@ export function StoreCard({
       >
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
-            {store?.images?.length ? (
-              <Image
-                src={
-                  store.images[0]?.url ?? "/images/product-placeholder.webp"
-                }
-                alt={store.images[0]?.name ?? store.name}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover"
-                loading="lazy"
+            <div className="flex h-full items-center justify-center bg-secondary">
+              <Icons.placeholder
+                className="h-9 w-9 text-muted-foreground"
+                aria-hidden="true"
               />
-            ) : (
-              <div className="flex h-full items-center justify-center bg-secondary">
-                <Icons.placeholder
-                  className="h-9 w-9 text-muted-foreground"
-                  aria-hidden="true"
-                />
-              </div>
-            )}
+            </div>
           </AspectRatio>
         </CardHeader>
       </Link>

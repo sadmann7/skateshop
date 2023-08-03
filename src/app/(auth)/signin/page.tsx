@@ -1,5 +1,8 @@
 import { type Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { env } from "@/env.mjs"
+import { currentUser } from "@clerk/nextjs"
 
 import {
   Card,
@@ -11,16 +14,20 @@ import {
 } from "@/components/ui/card"
 import { OAuthSignIn } from "@/components/auth/oauth-signin"
 import { SignInForm } from "@/components/forms/signin-form"
-import { Shell } from "@/components/shell"
+import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Sign In",
   description: "Sign in to your account",
 }
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const user = await currentUser()
+  if (user) redirect("/")
+
   return (
-    <Shell layout="auth">
+    <Shell className="max-w-lg">
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Sign in</CardTitle>
@@ -42,9 +49,11 @@ export default function SignInPage() {
           </div>
           <SignInForm />
         </CardContent>
-        <CardFooter className="flex flex-wrap items-center space-x-2">
-          <div className="flex-1 text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+        <CardFooter className="flex flex-wrap items-center justify-between gap-2">
+          <div className="text-sm text-muted-foreground">
+            <span className="mr-1 hidden sm:inline-block">
+              Don&apos;t have an account?
+            </span>
             <Link
               aria-label="Sign up"
               href="/signup"

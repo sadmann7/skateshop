@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "7deb05de-398a-412f-8cc9-ed1b91a01d85",
+  "id": "369c4ae2-c815-45df-b68f-bcf6f2e089ff",
   "prevId": "5cd1d2cb-9e46-4884-93b9-4e15a78adcff",
   "tables": {
     "carts": {
@@ -42,6 +42,43 @@
           "notNull": false,
           "autoincrement": false,
           "default": "('null')"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    },
+    "newsletter_subscriptions": {
+      "name": "newsletter_subscriptions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(191)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         },
         "createdAt": {
           "name": "createdAt",
@@ -165,15 +202,15 @@
           "notNull": true,
           "autoincrement": true
         },
-        "name": {
-          "name": "name",
+        "userId": {
+          "name": "userId",
           "type": "varchar(191)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "userId": {
-          "name": "userId",
+        "name": {
+          "name": "name",
           "type": "varchar(191)",
           "primaryKey": false,
           "notNull": true,
@@ -185,14 +222,6 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
-        },
-        "images": {
-          "name": "images",
-          "type": "json",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "('null')"
         },
         "slug": {
           "name": "slug",

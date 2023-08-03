@@ -47,8 +47,78 @@
     {
       "idx": 6,
       "version": "5",
-      "when": 1687921102471,
-      "tag": "0006_famous_dexter_bennett",
+      "when": 1687915971685,
+      "tag": "0006_familiar_payback",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1687918985272,
+      "tag": "0007_condemned_morgan_stark",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1687919020550,
+      "tag": "0008_bouncy_korg",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1687987519499,
+      "tag": "0009_tearful_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1688009834283,
+      "tag": "0010_clever_leper_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1688294924584,
+      "tag": "0011_wide_screwball",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1688560718280,
+      "tag": "0012_stiff_proudstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1688562688509,
+      "tag": "0013_perfect_lady_mastermind",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1688636359424,
+      "tag": "0014_bored_proteus",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1688636623929,
+      "tag": "0015_panoramic_wendigo",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1688639476050,
+      "tag": "0016_green_ultron",
       "breakpoints": true
     }
   ]

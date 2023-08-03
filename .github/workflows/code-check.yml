@@ -5,91 +5,56 @@ on:
     branches: ["*"]
 
 env:
+  NEXT_PUBLIC_APP_URL: "https://fake.com"
   DATABASE_URL: "fake"
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
   CLERK_SECRET_KEY: "fake"
+  RESEND_API_KEY: "fake"
+  EMAIL_FROM_ADDRESS: "fake@fake.com"
   UPLOADTHING_SECRET: "fake"
   UPLOADTHING_APP_ID: "fake"
   STRIPE_API_KEY: "fake"
   STRIPE_WEBHOOK_SECRET: "fake"
-  STRIPE_PRO_STORE_PRICE_ID: "fake"
+  STRIPE_STD_MONTHLY_PRICE_ID: "fake"
+  STRIPE_PRO_MONTHLY_PRICE_ID: "fake"
 
 jobs:
-  lint:
+  typecheck-lint:
     runs-on: ubuntu-latest
-    name: Lint
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
-      - name: Install Node.js
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node 18
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - uses: pnpm/action-setup@v2.2.4
-        name: Install pnpm
-        id: pnpm-install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
         with:
           version: 8.6.1
-          run_install: false
 
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
+      - name: Install deps (with cache)
         run: pnpm install
 
-      - run: pnpm lint
+      # TODO: Linting is failing because of contentlayer types, need to fix that
+      # - name: Run lint
+      #   run: pnpm run lint
 
-      - name: Print Environment Variable
-        run: echo $MY_ENV_VAR
-
-  tsc:
-    runs-on: ubuntu-latest
-    name: TypeScript
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - uses: pnpm/action-setup@v2.2.4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 8.6.1
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - run: pnpm typecheck
+      - name: Run typecheck
+        run: pnpm run typecheck

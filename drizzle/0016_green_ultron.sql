@@ -1,0 +1,1 @@
+ALTER TABLE `stores` ADD `stripeAccountId` varchar(191);
