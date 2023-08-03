@@ -4,12 +4,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-interface TooltipButtonProps {
+interface TooltipShellProps {
   children: React.ReactNode
   tooltip: string
 }
 
-export function TooltipContainer({ children, tooltip }: TooltipButtonProps) {
+export function TooltipShell({ children, tooltip }: TooltipShellProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
