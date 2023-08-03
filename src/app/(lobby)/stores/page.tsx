@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { env } from "@/env.mjs"
 
 import { Header } from "@/components/header"
 import { Stores } from "@/components/stores"
@@ -8,6 +9,7 @@ import { getPublicStoresAction } from "@/app/_actions/store"
 export const runtime = "edge"
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Stores",
   description: "Buy stores from our stores",
 }
@@ -34,7 +36,7 @@ export default async function StoresPage({
   const storesTransaction = await getPublicStoresAction({
     limit: limit,
     offset: offset,
-    sort: sort,
+    sort: typeof sort === "string" ? sort : null,
   })
 
   const pageCount = Math.ceil(storesTransaction.total / limit)
@@ -43,7 +45,7 @@ export default async function StoresPage({
     <Shell>
       <Header
         title="Stores"
-        description="Buy Stores from our stores"
+        description="Buy products from our stores"
         size="sm"
       />
       <Stores
