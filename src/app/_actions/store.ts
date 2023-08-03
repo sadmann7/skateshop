@@ -15,7 +15,7 @@ export async function getPublicStoresAction(
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0
   const [column, order] =
-    (input.sort?.split(".") as [
+    (input.sort?.split("-") as [
       keyof Store | undefined,
       "asc" | "desc" | undefined,
     ]) ?? []
@@ -123,22 +123,6 @@ export async function getStoresAction(input: {
 export async function addStoreAction(
   input: z.infer<typeof storeSchema> & { userId: string }
 ) {
-  const user = await clerkClient.users.getUser(input.userId)
-
-  if (!user) {
-    throw new Error("User not found.")
-  }
-
-  // If the user doesn't have a role, set it to user
-  if (!user.privateMetadata.role) {
-    await clerkClient.users.updateUser(input.userId, {
-      privateMetadata: {
-        ...user.privateMetadata,
-        role: "user" satisfies UserRole,
-      },
-    })
-  }
-
   const storeWithSameName = await db.query.stores.findFirst({
     where: eq(stores.name, input.name),
   })
@@ -160,7 +144,7 @@ export async function addStoreAction(
 export async function getNextStoreIdAction(
   input: z.infer<typeof getStoreSchema>
 ) {
-  if (typeof input.id !== "number") {
+  if (typeof input.id !== "number" || typeof input.userId !== "string") {
     throw new Error("Invalid input.")
   }
 
@@ -188,7 +172,7 @@ export async function getNextStoreIdAction(
 export async function getPreviousStoreIdAction(
   input: z.infer<typeof getStoreSchema>
 ) {
-  if (typeof input.id !== "number") {
+  if (typeof input.id !== "number" || typeof input.userId !== "string") {
     throw new Error("Invalid input.")
   }
 

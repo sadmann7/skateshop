@@ -15,10 +15,9 @@ import {
 
 export const stores = mysqlTable("stores", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 191 }).notNull(),
   userId: varchar("userId", { length: 191 }).notNull(),
+  name: varchar("name", { length: 191 }).notNull(),
   description: text("description"),
-  images: json("images").$type<StoredFile[] | null>().default(null),
   slug: text("slug"),
   active: boolean("active").notNull().default(true),
   stripeAccountId: varchar("stripeAccountId", { length: 191 }),
