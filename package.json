@@ -70,6 +70,7 @@
     "react-hook-form": "^7.45.2",
     "react-medium-image-zoom": "^5.1.8",
     "react-wrap-balancer": "^1.0.0",
+    "recharts": "^2.7.2",
     "resend": "^0.17.2",
     "sonner": "^0.6.2",
     "stripe": "^12.16.0",
