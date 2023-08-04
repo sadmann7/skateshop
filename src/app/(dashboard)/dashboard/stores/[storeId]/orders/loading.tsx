@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function PurchasesLoading() {
+export default function OrdersLoading() {
   return (
     <>
       <div className="grid gap-10 rounded-lg border p-4">

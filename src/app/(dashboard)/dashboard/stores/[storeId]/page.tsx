@@ -16,10 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { LoadingButton } from "@/components/ui/loading-button"
-import { Textarea } from "@/components/ui/textarea"
+import { UpdateStoreForm } from '@/components/forms/update-store-form';
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
 import { checkStripeConnectionAction } from "@/app/_actions/stripe"
 
@@ -120,7 +117,7 @@ export default async function UpdateStorePage({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isConnectedToStripe ? (
+          {!isConnectedToStripe ? (
             <Link href="https://dashboard.stripe.com/">
               <div className={cn(buttonVariants())}>Manage Stripe account</div>
             </Link>
@@ -141,52 +138,8 @@ export default async function UpdateStorePage({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form
-            // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            action={updateStore}
-            className="grid w-full max-w-xl gap-5"
-          >
-            <fieldset className="grid gap-2.5">
-              <Label htmlFor="update-store-name">Name</Label>
-              <Input
-                id="update-store-name"
-                aria-describedby="update-store-name-description"
-                name="name"
-                required
-                minLength={3}
-                maxLength={50}
-                placeholder="Type store name here."
-                defaultValue={store.name}
-              />
-            </fieldset>
-            <fieldset className="grid gap-2.5">
-              <Label htmlFor="update-store-description">Description</Label>
-              <Textarea
-                id="update-store-description"
-                aria-describedby="update-store-description-description"
-                name="description"
-                minLength={3}
-                maxLength={255}
-                placeholder="Type store description here."
-                defaultValue={store.description ?? ""}
-              />
-            </fieldset>
-            <div className="flex space-x-2">
-              <LoadingButton>
-                Update Store
-                <span className="sr-only">Update store</span>
-              </LoadingButton>
-              <LoadingButton
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                formAction={deleteStore}
-                variant="destructive"
-              >
-                Delete Store
-                <span className="sr-only">Delete store</span>
-              </LoadingButton>
-            </div>
-          </form>
-        </CardContent>
+        <UpdateStoreForm store={store} updateStore={updateStore} deleteStore={deleteStore} />
+      </CardContent>
       </Card>
     </div>
   )
