@@ -1,9 +1,7 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
 import Link from "next/link"
-import { type Store } from "@/db/schema"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
@@ -17,7 +15,7 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 
-import { reducedStore } from "@/components/stores"
+import { type reducedStore } from "@/components/stores"
 
 interface StoreCardProps {
   store: reducedStore

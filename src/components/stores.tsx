@@ -2,8 +2,6 @@
 
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-// import { type Product, type Store } from "@/db/schema"
-// import { type Store } from "@/db/schema"
 
 import { sortOptions } from "@/config/products"
 import { cn } from "@/lib/utils"
