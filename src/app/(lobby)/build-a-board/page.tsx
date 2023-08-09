@@ -6,8 +6,8 @@ import { env } from "@/env.mjs"
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
 import { BoardBuilder } from "@/components/board-builder"
-import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { getCartItemsAction } from "@/app/_actions/cart"
 import { getProductsAction } from "@/app/_actions/product"
@@ -52,7 +52,7 @@ export default async function BuildABoardPage({
 
   return (
     <Shell className="gap-4">
-      <Header
+      <PageHeader
         title="Build a Board"
         description="Select the components for your board"
         size="sm"

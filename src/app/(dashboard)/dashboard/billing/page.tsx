@@ -17,8 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ManageStoreSubscriptionForm } from "@/components/forms/manage-store-subscription-form"
-import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -42,7 +42,7 @@ export default async function BillingPage() {
 
   return (
     <Shell variant="sidebar" as="div">
-      <Header
+      <PageHeader
         title="Billing"
         description="Manage your billing and subscription"
         size="sm"

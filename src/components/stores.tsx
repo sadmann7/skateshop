@@ -3,10 +3,9 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
-import { sortOptions } from "@/config/products"
+import { sortOptions } from "@/config/stores"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,37 +14,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 import { StoreCard } from "@/components/store-card"
 
-export interface reducedStore {
-  id: number
-  name: string
-  description: string | null
-  productCount: number
-}
-
 interface StoresProps {
-  stores: reducedStore[]
+  stores: {
+    id: number
+    name: string
+    productCount: number
+  }[]
   pageCount: number
 }
 
-export function Stores({ 
-    stores, 
-    pageCount, 
-}: StoresProps) {
+export function Stores({ stores, pageCount }: StoresProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -54,8 +36,7 @@ export function Stores({
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
-  const sort = searchParams?.get("sort") ?? "createdAt.desc"
-  const store_ids = searchParams?.get("store_ids")
+  const sort = searchParams?.get("sort") ?? "productCount.asc"
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -75,104 +56,9 @@ export function Stores({
     [searchParams]
   )
 
-  // Store filter
-  const [storeIds, setStoreIds] = React.useState<number[] | null>(
-    store_ids?.split(".").map(Number) ?? null
-  )
-
-  React.useEffect(() => {
-    startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          store_ids: storeIds?.length ? storeIds.join(".") : null,
-        })}`
-      )
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeIds])
-
   return (
     <div className="flex flex-col space-y-6">
       <div className="flex items-center space-x-2">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button aria-label="Filter stores" size="sm" disabled={isPending}>
-              Filter
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="flex flex-col">
-            <SheetHeader className="px-1">
-              <SheetTitle>Filters</SheetTitle>
-            </SheetHeader>
-            <Separator />
-            <div className="flex flex-1 flex-col gap-5 overflow-hidden px-1">
-              {stores?.length ? (
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
-                      Stores
-                    </h3>
-                  </div>
-                  <ScrollArea className="h-96">
-                    <div className="space-y-4">
-                      {stores.map((store) => (
-                        <div
-                          key={store.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`store-${store.id}`}
-                            checked={storeIds?.includes(store.id) ?? false}
-                            onCheckedChange={(value) => {
-                              if (value) {
-                                setStoreIds([...(storeIds ?? []), store.id])
-                              } else {
-                                setStoreIds(
-                                  storeIds?.filter((id) => id !== store.id) ??
-                                    null
-                                )
-                              }
-                            }}
-                          />
-                          <Label
-                            htmlFor={`store-${store.id}`}
-                            className="line-clamp-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                          >
-                            {store.name}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </div>
-              ) : null}
-            </div>
-            <div>
-              <Separator className="my-4" />
-              <SheetFooter>
-                <Button
-                  aria-label="Clear filters"
-                  size="sm"
-                  className="w-full"
-                  onClick={() => {
-                    startTransition(() => {
-                      router.push(
-                        `${pathname}?${createQueryString({
-                          store_ids: null,
-                        })}`
-                      )
-
-                      setStoreIds(null)
-                    })
-                  }}
-                  disabled={isPending}
-                >
-                  Clear Filters
-                </Button>
-              </SheetFooter>
-            </div>
-          </SheetContent>
-        </Sheet>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button aria-label="Sort stores" size="sm" disabled={isPending}>
@@ -192,7 +78,10 @@ export function Stores({
                     router.push(
                       `${pathname}?${createQueryString({
                         sort: option.value,
-                      })}`
+                      })}`,
+                      {
+                        scroll: false,
+                      }
                     )
                   })
                 }}

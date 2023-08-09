@@ -4,7 +4,7 @@ import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { StorePager } from "@/components/pagers/store-pager"
 import { StoreTabs } from "@/components/pagers/store-tabs"
 import { Shell } from "@/components/shells/shell"
@@ -45,7 +45,7 @@ export default async function StoreLayout({
   return (
     <Shell variant="sidebar" className="gap-4">
       <div className="flex items-center space-x-4">
-        <Header title={store.name} size="sm" className="flex-1" />
+        <PageHeader title={store.name} size="sm" className="flex-1" />
         {allStores.length > 1 ? (
           <StorePager storeId={storeId} userId={user.id} />
         ) : null}

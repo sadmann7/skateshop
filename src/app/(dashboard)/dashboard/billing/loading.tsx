@@ -1,13 +1,13 @@
 import { cn } from "@/lib/utils"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export default function BillingLoading() {
   return (
     <Shell variant="sidebar" as="div">
-      <Header
+      <PageHeader
         title="Billing"
         description="Manage your billing and subscription"
         size="sm"

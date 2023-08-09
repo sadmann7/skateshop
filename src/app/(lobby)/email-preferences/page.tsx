@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { UpdateEmailPreferencesForm } from "@/components/forms/update-email-preferences-form"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -43,7 +43,7 @@ export default async function EmailPreferencesPage({
 
   return (
     <Shell className="max-w-2xl justify-center">
-      <Header title="Email Preferences" className="text-center" />
+      <PageHeader title="Email Preferences" className="text-center" />
       <Card>
         <CardHeader>
           <CardTitle>Email Preferences</CardTitle>

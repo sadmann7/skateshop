@@ -8,8 +8,8 @@ import dayjs from "dayjs"
 import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Separator } from "@/components/ui/separator"
-import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default function BlogPage() {
 
   return (
     <Shell className="md:pb-10">
-      <Header
+      <PageHeader
         title="Blog"
         description="Explore the latest news and updates from the community"
       />

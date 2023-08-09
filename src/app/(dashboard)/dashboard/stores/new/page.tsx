@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { AddStoreForm } from "@/components/forms/add-store-form"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default async function NewStorePage() {
 
   return (
     <Shell variant="sidebar">
-      <Header
+      <PageHeader
         title="New Store"
         description="New store for your account."
         size="sm"

@@ -1,7 +1,7 @@
 import { type Product } from "@/db/schema"
 
 import { toTitleCase } from "@/lib/utils"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
@@ -74,7 +74,7 @@ export default async function CategoryPage({
 
   return (
     <Shell>
-      <Header
+      <PageHeader
         title={toTitleCase(category)}
         description={`Buy ${category} from the best stores`}
         size="sm"

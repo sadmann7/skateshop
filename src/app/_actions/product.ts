@@ -95,7 +95,7 @@ export async function getProductsAction(
 
     const total = await tx
       .select({
-        count: sql<number>`count(${products.id})`,
+        count: sql<number>`count(*)`,
       })
       .from(products)
       .where(

@@ -6,13 +6,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export default function EmailPreferencesLoading() {
   return (
     <Shell className="max-w-2xl">
-      <Header title="Email Preferences" className="text-center" />
+      <PageHeader title="Email Preferences" className="text-center" />
       <Card>
         <CardHeader>
           <CardTitle>Email Preferences</CardTitle>

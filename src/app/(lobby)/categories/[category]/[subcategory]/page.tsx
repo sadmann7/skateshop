@@ -1,7 +1,7 @@
 import { type Product } from "@/db/schema"
 
 import { toTitleCase, unslugify } from "@/lib/utils"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
@@ -71,7 +71,7 @@ export default async function SubcategoryPage({
 
   return (
     <Shell>
-      <Header
+      <PageHeader
         title={toTitleCase(unslugify(subcategory))}
         description={`Buy the best ${unslugify(subcategory)}`}
         size="sm"

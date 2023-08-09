@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { env } from "@/env.mjs"
 
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { UserProfile } from "@/components/user-profile"
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function AccountPage() {
   return (
     <Shell variant="sidebar">
-      <Header
+      <PageHeader
         title="Account"
         description="Manage your account settings."
         size="sm"

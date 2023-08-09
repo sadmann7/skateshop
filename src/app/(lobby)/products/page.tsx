@@ -2,14 +2,11 @@ import { type Metadata } from "next"
 import { products } from "@/db/schema"
 import { env } from "@/env.mjs"
 
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
-
-// Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -70,7 +67,7 @@ export default async function ProductsPage({
 
   return (
     <Shell>
-      <Header
+      <PageHeader
         title="Products"
         description="Buy products from our stores"
         size="sm"

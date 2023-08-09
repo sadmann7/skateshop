@@ -1,11 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export default function PurchasesLoading() {
   return (
     <Shell variant="sidebar">
-      <Header
+      <PageHeader
         title="Purchases"
         description="Manage your purchases."
         size="sm"

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export default async function PurchasesPage() {
 
   return (
     <Shell variant="sidebar">
-      <Header
+      <PageHeader
         title="Purchases"
         description="Manage your purchases."
         size="sm"

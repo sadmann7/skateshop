@@ -2,18 +2,20 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
-import { stores } from "@/db/schema"
+import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 import dayjs from "dayjs"
-import { eq } from "drizzle-orm"
+import { desc, eq, sql } from "drizzle-orm"
 
+import { getRandomPatternStyle } from "@/lib/generate-pattern"
 import {
   getFeaturedStoreAndProductCounts,
   getUserSubscriptionPlan,
 } from "@/lib/subscription"
 import { cn, formatDate } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -22,12 +24,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Header } from "@/components/header"
 import { Icons } from "@/components/icons"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-
-// Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
+import { StoreCard } from "@/components/store-card"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -42,16 +42,19 @@ export default async function StoresPage() {
     redirect("/signin")
   }
 
-  const userStores = await db.query.stores.findMany({
-    where: eq(stores.userId, user.id),
-    with: {
-      products: {
-        columns: {
-          id: true,
-        },
-      },
-    },
-  })
+  const storesWithProductCount = await db
+    .select({
+      id: stores.id,
+      name: stores.name,
+      description: stores.description,
+      productCount: sql<number>`count(*)`,
+    })
+    .from(stores)
+
+    .leftJoin(products, eq(products.storeId, stores.id))
+    .groupBy(stores.id)
+    .orderBy(desc(sql<number>`count(*)`))
+    .where(eq(stores.userId, user.id))
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
@@ -64,7 +67,7 @@ export default async function StoresPage() {
 
   return (
     <Shell variant="sidebar">
-      <Header title="Stores" description="Manage your stores" size="sm" />
+      <PageHeader title="Stores" description="Manage your stores" size="sm" />
       <Alert>
         <Icons.terminal className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
@@ -86,33 +89,17 @@ export default async function StoresPage() {
         </AlertDescription>
       </Alert>
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {userStores.map((store) => (
-          <Card key={store.id} className="flex h-full flex-col">
-            <CardHeader className="flex-1">
-              <CardTitle className="line-clamp-1">{store.name}</CardTitle>
-              <CardDescription className="line-clamp-2">
-                {store.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link key={store.id} href={`/dashboard/stores/${store.id}`}>
-                <div
-                  className={cn(
-                    buttonVariants({
-                      size: "sm",
-                      className: "h-8 w-full",
-                    })
-                  )}
-                >
-                  View store
-                  <span className="sr-only">View {store.name} store</span>
-                </div>
-              </Link>
-            </CardContent>
-          </Card>
+        {storesWithProductCount.map((store) => (
+          <StoreCard key={store.id} store={store} />
         ))}
-        {userStores.length < 3 && (
+        {storesWithProductCount.length < 3 && (
           <Card className="flex h-full flex-col">
+            <AspectRatio ratio={21 / 9}>
+              <div
+                className="h-full rounded-t-md"
+                style={getRandomPatternStyle("1")}
+              />
+            </AspectRatio>
             <CardHeader className="flex-1">
               <CardTitle className="line-clamp-1">Create a new store</CardTitle>
               <CardDescription className="line-clamp-2">
@@ -122,15 +109,16 @@ export default async function StoresPage() {
             <CardContent>
               <Link
                 href={
-                  subscriptionPlan.id === "basic" && userStores.length >= 1
+                  subscriptionPlan.id === "basic" &&
+                  storesWithProductCount.length >= 1
                     ? "/dashboard/billing"
                     : subscriptionPlan.id === "standard" &&
                       isSubscriptionPlanActive &&
-                      userStores.length >= 2
+                      storesWithProductCount.length >= 2
                     ? "/dashboard/billing"
                     : subscriptionPlan.id === "pro" &&
                       isSubscriptionPlanActive &&
-                      userStores.length >= 3
+                      storesWithProductCount.length >= 3
                     ? "/dashboard/billing"
                     : "/dashboard/stores/new"
                 }

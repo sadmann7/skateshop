@@ -1,11 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export default function SignOutLoading() {
   return (
     <Shell className="max-w-xs">
-      <Header
+      <PageHeader
         title="Sign out"
         description="Are you sure you want to sign out?"
         size="sm"

@@ -1,11 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { Header } from "@/components/header"
+import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export default function AccountLoading() {
   return (
     <Shell variant="sidebar">
-      <Header
+      <PageHeader
         title="Account"
         description="Manage your account settings"
         size="sm"

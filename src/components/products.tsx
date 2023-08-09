@@ -93,7 +93,10 @@ export function Products({
       router.push(
         `${pathname}?${createQueryString({
           price_range: `${min}-${max}`,
-        })}`
+        })}`,
+        {
+          scroll: false,
+        }
       )
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,7 +115,10 @@ export function Products({
             ? // Join categories with a dot to make search params prettier
               selectedCategories.map((c) => c.value).join(".")
             : null,
-        })}`
+        })}`,
+        {
+          scroll: false,
+        }
       )
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,7 +137,10 @@ export function Products({
           subcategories: selectedSubcategories?.length
             ? selectedSubcategories.map((s) => s.value).join(".")
             : null,
-        })}`
+        })}`,
+        {
+          scroll: false,
+        }
       )
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -147,7 +156,10 @@ export function Products({
       router.push(
         `${pathname}?${createQueryString({
           store_ids: storeIds?.length ? storeIds.join(".") : null,
-        })}`
+        })}`,
+        {
+          scroll: false,
+        }
       )
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -376,7 +388,10 @@ export function Products({
                     router.push(
                       `${pathname}?${createQueryString({
                         sort: option.value,
-                      })}`
+                      })}`,
+                      {
+                        scroll: false,
+                      }
                     )
                   })
                 }}

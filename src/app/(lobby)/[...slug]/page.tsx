@@ -8,8 +8,8 @@ import { type Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import { absoluteUrl } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
-import { Header } from "@/components/header"
 import { Mdx } from "@/components/mdx/mdx-components"
+import { PageHeader } from "@/components/page-header"
 import { MdxPager } from "@/components/pagers/mdx-pager"
 import { Shell } from "@/components/shells/shell"
 
@@ -100,7 +100,7 @@ export default async function PagePage({ params }: PageProps) {
 
   return (
     <Shell as="article" variant="markdown">
-      <Header title={page.title} description={page.description} />
+      <PageHeader title={page.title} description={page.description} />
       <Separator className="my-4" />
       <Mdx code={page.body.code} />
       <MdxPager

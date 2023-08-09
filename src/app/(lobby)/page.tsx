@@ -11,19 +11,10 @@ import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shells/shell"
-
-// Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
+import { StoreCard } from "@/components/store-card"
 
 // This is equivalent to getServersideProps() in the pages directory
 // Read more: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
@@ -36,18 +27,18 @@ export default async function IndexPage() {
     .limit(8)
     .orderBy(desc(products.createdAt))
 
-  const allStoresWithProductCount = await db
+  const storesWithProductCount = await db
     .select({
       id: stores.id,
       name: stores.name,
       description: stores.description,
-      productCount: sql<number>`count(${products.id})`,
+      productCount: sql<number>`count(*)`,
     })
     .from(stores)
     .limit(4)
     .leftJoin(products, eq(products.storeId, stores.id))
     .groupBy(stores.id)
-    .orderBy(desc(sql<number>`count(${products.id})`))
+    .orderBy(desc(sql<number>`count(*)`))
 
   async function getGithubStars(): Promise<number | null> {
     try {
@@ -190,7 +181,7 @@ export default async function IndexPage() {
           <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
             Featured products
           </h2>
-          <Link href="/products">
+          <Link aria-label="Products" href="/products">
             <div
               className={cn(
                 buttonVariants({
@@ -199,7 +190,6 @@ export default async function IndexPage() {
               )}
             >
               View all
-              <span className="sr-only">View all products</span>
             </div>
           </Link>
         </div>
@@ -214,32 +204,25 @@ export default async function IndexPage() {
         aria-labelledby="featured-stores-heading"
         className="space-y-6"
       >
-        <h2 className="text-2xl font-medium sm:text-3xl">Featured stores</h2>
+        <div className="flex items-center">
+          <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
+            Featured stores
+          </h2>
+          <Link aria-label="Stores" href="/stores">
+            <div
+              className={cn(
+                buttonVariants({
+                  size: "sm",
+                })
+              )}
+            >
+              View all
+            </div>
+          </Link>
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {allStoresWithProductCount.map((store) => (
-            <Card key={store.id} className="flex h-full flex-col">
-              <CardHeader className="flex-1">
-                <CardTitle className="line-clamp-1">{store.name}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                  {store.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href={`/products?store_ids=${store.id}`}>
-                  <div
-                    className={cn(
-                      buttonVariants({
-                        size: "sm",
-                        className: "h-8 w-full",
-                      })
-                    )}
-                  >
-                    View products ({store.productCount})
-                    <span className="sr-only">{`${store.name} store products`}</span>
-                  </div>
-                </Link>
-              </CardContent>
-            </Card>
+          {storesWithProductCount.map((store) => (
+            <StoreCard key={store.id} store={store} />
           ))}
         </div>
       </section>
