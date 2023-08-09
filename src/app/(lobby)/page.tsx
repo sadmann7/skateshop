@@ -61,7 +61,7 @@ export default async function IndexPage() {
       const data = (await response.json()) as { stargazers_count: number }
 
       return data.stargazers_count
-    } catch (error) {
+    } catch (err) {
       return null
     }
   }
@@ -162,9 +162,9 @@ export default async function IndexPage() {
         aria-labelledby="create-a-store-banner-heading"
         className="grid place-items-center gap-6 rounded-lg border bg-card px-6 py-16 text-center text-card-foreground shadow-sm"
       >
-        <h2 className="text-2xl font-medium sm:text-3xl">
+        <div className="text-2xl font-medium sm:text-3xl">
           Do you want to sell your products on our website?
-        </h2>
+        </div>
         <Link href="/dashboard/stores">
           <div className={cn(buttonVariants())}>
             Create a store
