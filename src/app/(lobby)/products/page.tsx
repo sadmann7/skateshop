@@ -32,7 +32,7 @@ export default async function ProductsPage({
     price_range,
     store_ids,
     store_page,
-  } = searchParams
+  } = searchParams ?? {}
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8

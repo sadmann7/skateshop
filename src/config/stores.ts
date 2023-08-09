@@ -1,10 +1,10 @@
 export const sortOptions = [
   {
-    label: "Count: Low to high",
+    label: "Item count: Low to high",
     value: "productCount.asc",
   },
   {
-    label: "Count: High to low",
+    label: "Item count: High to low",
     value: "productCount.desc",
   },
   { label: "Date: Old to new", value: "createdAt.asc" },

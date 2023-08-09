@@ -29,7 +29,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, name, category } = searchParams
+  const { page, per_page, sort, name, category } = searchParams ?? {}
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),

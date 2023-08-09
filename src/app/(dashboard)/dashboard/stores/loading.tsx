@@ -1,3 +1,4 @@
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PageHeader } from "@/components/page-header"
@@ -18,6 +19,9 @@ export default function StoresLoading() {
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {Array.from({ length: 3 }).map((_, i) => (
           <Card key={i} className="h-full">
+            <AspectRatio ratio={21 / 9}>
+              <Skeleton className="h-full w-full" />
+            </AspectRatio>
             <CardHeader className="flex-1">
               <Skeleton className="h-5 w-3/5" />
               <Skeleton className="h-4 w-4/5" />

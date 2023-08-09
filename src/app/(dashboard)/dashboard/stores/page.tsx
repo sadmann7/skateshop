@@ -97,7 +97,7 @@ export default async function StoresPage() {
             <AspectRatio ratio={21 / 9}>
               <div
                 className="h-full rounded-t-md"
-                style={getRandomPatternStyle("1")}
+                style={getRandomPatternStyle(crypto.randomUUID())}
               />
             </AspectRatio>
             <CardHeader className="flex-1">

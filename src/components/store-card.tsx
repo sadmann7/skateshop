@@ -25,12 +25,17 @@ interface StoreCardProps {
 export function StoreCard({ store }: StoreCardProps) {
   return (
     <Card key={store.id} className="flex h-full flex-col">
-      <AspectRatio ratio={21 / 9}>
-        <div
-          className="h-full rounded-t-md"
-          style={getRandomPatternStyle(String(store.id))}
-        />
-      </AspectRatio>
+      <Link
+        aria-label={`${store.name} store products`}
+        href={`/products?store_ids=${store.id}`}
+      >
+        <AspectRatio ratio={21 / 9}>
+          <div
+            className="h-full rounded-t-md"
+            style={getRandomPatternStyle(String(store.id))}
+          />
+        </AspectRatio>
+      </Link>
       <CardHeader className="flex-1">
         <CardTitle className="line-clamp-1">{store.name}</CardTitle>
         {store.description && (
@@ -40,7 +45,10 @@ export function StoreCard({ store }: StoreCardProps) {
         )}
       </CardHeader>
       <CardContent>
-        <Link href={`/products?store_ids=${store.id}`}>
+        <Link
+          aria-label={`${store.name} store products`}
+          href={`/products?store_ids=${store.id}`}
+        >
           <div
             className={cn(
               buttonVariants({
@@ -50,7 +58,6 @@ export function StoreCard({ store }: StoreCardProps) {
             )}
           >
             View products ({store.productCount})
-            <span className="sr-only">{`${store.name} store products`}</span>
           </div>
         </Link>
       </CardContent>

@@ -10,6 +10,7 @@ import { slugify } from "@/lib/utils"
 import type { getStoreSchema, storeSchema } from "@/lib/validations/store"
 
 export async function getStoresAction(input: {
+  description?: string
   limit?: number
   offset?: number
   sort?: `${keyof Store | "productCount"}.${"asc" | "desc"}`
@@ -28,6 +29,7 @@ export async function getStoresAction(input: {
       .select({
         id: stores.id,
         name: stores.name,
+        description: stores.description,
         productCount: sql<number>`count(*)`,
       })
       .from(stores)
