@@ -80,7 +80,9 @@ export function ProductCard({
         href={`/product/${product.id}`}
       >
         <CardContent className="grid gap-2.5 p-4">
-          <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+          <CardTitle as="h2" className="line-clamp-1">
+            {product.name}
+          </CardTitle>
           <CardDescription className="line-clamp-2">
             {formatPrice(product.price)}
           </CardDescription>

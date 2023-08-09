@@ -37,7 +37,9 @@ export function StoreCard({ store }: StoreCardProps) {
         </AspectRatio>
       </Link>
       <CardHeader className="flex-1">
-        <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+        <CardTitle as="h2" className="line-clamp-1">
+          {store.name}
+        </CardTitle>
         {store.description && (
           <CardDescription className="line-clamp-2">
             {store.description}
