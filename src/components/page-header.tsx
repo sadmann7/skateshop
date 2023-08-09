@@ -35,6 +35,7 @@ interface PageHeaderProps
     VariantProps<typeof headerDescriptionVariants> {
   title: string
   description?: string | null
+  descriptionAs?: React.ElementType
   balancedTitle?: boolean
   balacedDescription?: boolean
 }
@@ -42,6 +43,7 @@ interface PageHeaderProps
 export const PageHeader = ({
   title,
   description,
+  descriptionAs = "h2",
   className,
   size,
   balancedTitle = false,
@@ -49,7 +51,7 @@ export const PageHeader = ({
   ...props
 }: PageHeaderProps) => {
   const Title = balancedTitle ? Balancer : "h1"
-  const Description = balacedDescription ? Balancer : "p"
+  const Description = balacedDescription ? Balancer : "h2"
 
   return (
     <div className={cn("grid gap-1", className)} {...props}>
@@ -57,7 +59,10 @@ export const PageHeader = ({
         {title}
       </Title>
       {description && (
-        <Description as="p" className={cn(headerDescriptionVariants({ size }))}>
+        <Description
+          as={descriptionAs}
+          className={cn(headerDescriptionVariants({ size }))}
+        >
           {description}
         </Description>
       )}
