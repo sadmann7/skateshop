@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 import { type Store } from "@/db/schema"
 
@@ -16,39 +14,45 @@ import {
 } from "@/components/ui/card"
 
 interface StoreCardProps {
-  store: Pick<Store, "id" | "name"> &
+  cardTitle?: string
+  cardDescription?: string
+  store?: Pick<Store, "id" | "name"> &
     Partial<Pick<Store, "description">> & {
       productCount: number
     }
+  route: string
+  buttonText?: string
 }
 
-export function StoreCard({ store }: StoreCardProps) {
+export function StoreCard({
+  cardTitle,
+  cardDescription,
+  store,
+  route,
+  buttonText = `View products (${store?.productCount})`,
+}: StoreCardProps) {
   return (
-    <Card key={store.id} className="flex h-full flex-col">
-      <Link
-        aria-label={`${store.name} store products`}
-        href={`/products?store_ids=${store.id}`}
-      >
+    <Card className="flex h-full flex-col">
+      <Link aria-label={buttonText ?? store?.name} href={route}>
         <AspectRatio ratio={21 / 9}>
           <div
             className="h-full rounded-t-md"
-            style={getRandomPatternStyle(String(store.id))}
+            style={getRandomPatternStyle(String(store?.id))}
           />
         </AspectRatio>
       </Link>
       <CardHeader className="flex-1">
-        <CardTitle className="line-clamp-1">{store.name}</CardTitle>
-        {store.description && (
+        <CardTitle className="line-clamp-1">
+          {cardTitle ?? store?.name}
+        </CardTitle>
+        {(cardDescription || store?.description) && (
           <CardDescription className="line-clamp-2">
-            {store.description}
+            {cardDescription ?? store?.description}
           </CardDescription>
         )}
       </CardHeader>
       <CardContent>
-        <Link
-          aria-label={`${store.name} store products`}
-          href={`/products?store_ids=${store.id}`}
-        >
+        <Link aria-label={buttonText ?? store?.name} href={route}>
           <div
             className={cn(
               buttonVariants({
@@ -57,7 +61,7 @@ export function StoreCard({ store }: StoreCardProps) {
               })
             )}
           >
-            View products ({store.productCount})
+            {buttonText}
           </div>
         </Link>
       </CardContent>

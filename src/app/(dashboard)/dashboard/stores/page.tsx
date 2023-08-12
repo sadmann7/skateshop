@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
@@ -8,22 +7,12 @@ import { currentUser } from "@clerk/nextjs"
 import dayjs from "dayjs"
 import { desc, eq, sql } from "drizzle-orm"
 
-import { getRandomPatternStyle } from "@/lib/generate-pattern"
 import {
   getFeaturedStoreAndProductCounts,
   getUserSubscriptionPlan,
 } from "@/lib/subscription"
-import { cn, formatDate } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
@@ -90,53 +79,33 @@ export default async function StoresPage() {
       </Alert>
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
         {storesWithProductCount.map((store) => (
-          <StoreCard key={store.id} store={store} />
+          <StoreCard
+            key={store.id}
+            store={store}
+            route={`/dashboard/stores/${store.id}`}
+            buttonText="Manage store"
+          />
         ))}
         {storesWithProductCount.length < 3 && (
-          <Card className="flex h-full flex-col">
-            <AspectRatio ratio={21 / 9}>
-              <div
-                className="h-full rounded-t-md"
-                style={getRandomPatternStyle(crypto.randomUUID())}
-              />
-            </AspectRatio>
-            <CardHeader className="flex-1">
-              <CardTitle className="line-clamp-1">Create a new store</CardTitle>
-              <CardDescription className="line-clamp-2">
-                Create a new store to start selling your products.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link
-                href={
-                  subscriptionPlan.id === "basic" &&
-                  storesWithProductCount.length >= 1
-                    ? "/dashboard/billing"
-                    : subscriptionPlan.id === "standard" &&
-                      isSubscriptionPlanActive &&
-                      storesWithProductCount.length >= 2
-                    ? "/dashboard/billing"
-                    : subscriptionPlan.id === "pro" &&
-                      isSubscriptionPlanActive &&
-                      storesWithProductCount.length >= 3
-                    ? "/dashboard/billing"
-                    : "/dashboard/stores/new"
-                }
-              >
-                <div
-                  className={cn(
-                    buttonVariants({
-                      size: "sm",
-                      className: "h-8 w-full",
-                    })
-                  )}
-                >
-                  Create a store
-                  <span className="sr-only">Create a new store</span>
-                </div>
-              </Link>
-            </CardContent>
-          </Card>
+          <StoreCard
+            cardTitle="Create a new store"
+            cardDescription="Create a new store to start selling your products."
+            route={
+              subscriptionPlan.id === "basic" &&
+              storesWithProductCount.length >= 1
+                ? "/dashboard/billing"
+                : subscriptionPlan.id === "standard" &&
+                  isSubscriptionPlanActive &&
+                  storesWithProductCount.length >= 2
+                ? "/dashboard/billing"
+                : subscriptionPlan.id === "pro" &&
+                  isSubscriptionPlanActive &&
+                  storesWithProductCount.length >= 3
+                ? "/dashboard/billing"
+                : "/dashboard/stores/new"
+            }
+            buttonText="Create store"
+          />
         )}
       </div>
     </Shell>
