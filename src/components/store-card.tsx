@@ -14,12 +14,12 @@ import {
 } from "@/components/ui/card"
 
 interface StoreCardProps {
-  cardTitle?: string
-  cardDescription?: string
   store?: Pick<Store, "id" | "name"> &
     Partial<Pick<Store, "description">> & {
       productCount: number
     }
+  cardTitle?: string
+  cardDescription?: string
   route: string
   buttonText?: string
 }
@@ -37,7 +37,9 @@ export function StoreCard({
         <AspectRatio ratio={21 / 9}>
           <div
             className="h-full rounded-t-md"
-            style={getRandomPatternStyle(String(store?.id))}
+            style={getRandomPatternStyle(
+              String(store?.id ?? crypto.randomUUID())
+            )}
           />
         </AspectRatio>
       </Link>
