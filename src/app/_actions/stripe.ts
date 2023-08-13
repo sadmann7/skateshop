@@ -130,8 +130,8 @@ export async function createAccountLinkAction(
 
   const accountLink = await stripe.accountLinks.create({
     account: stripeAccountId,
-    refresh_url: absoluteUrl("/dashboard/stripe"),
-    return_url: absoluteUrl("/dashboard/stripe"),
+    refresh_url: absoluteUrl(`/dashboard/stores/${input.storeId}`),
+    return_url: absoluteUrl(`/dashboard/stores/${input.storeId}`),
     type: "account_onboarding",
   })
 
@@ -142,4 +142,33 @@ export async function createAccountLinkAction(
   return {
     url: accountLink.url,
   }
+}
+
+export async function getStripeAccountAction(
+  input: z.infer<typeof createAccountLinkSchema>
+) {
+  //  Check if the store is already connected to Stripe
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, input.storeId),
+  })
+
+  if (!store) {
+    throw new Error("Store not found.")
+  }
+
+  const payment = await db.query.payments.findFirst({
+    where: eq(payments.storeId, input.storeId),
+  })
+
+  if (!payment?.stripeAccountId) {
+    throw new Error("Store not connected to Stripe.")
+  }
+
+  const account = await stripe.accounts.retrieve(payment.stripeAccountId)
+
+  if (!account) {
+    throw new Error("Error retrieving Stripe account.")
+  }
+
+  return account
 }

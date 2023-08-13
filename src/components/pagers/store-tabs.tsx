@@ -27,10 +27,6 @@ export function StoreTabs({ className, storeId, ...props }: StoreTabsProps) {
       href: `/dashboard/stores/${storeId}/orders`,
     },
     {
-      title: "Payments",
-      href: `/dashboard/stores/${storeId}/payments`,
-    },
-    {
       title: "Analytics",
       href: `/dashboard/stores/${storeId}/analytics`,
     },

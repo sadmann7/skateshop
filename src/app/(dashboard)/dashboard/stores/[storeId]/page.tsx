@@ -13,6 +13,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -21,7 +22,10 @@ import { Label } from "@/components/ui/label"
 import { LoadingButton } from "@/components/ui/loading-button"
 import { Textarea } from "@/components/ui/textarea"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
-import { checkStripeConnectionAction } from "@/app/_actions/stripe"
+import {
+  checkStripeConnectionAction,
+  getStripeAccountAction,
+} from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -104,31 +108,91 @@ export default async function UpdateStorePage({
 
   const isConnectedToStripe = await checkStripeConnectionAction({ storeId })
 
+  const stripeAccount = isConnectedToStripe
+    ? await getStripeAccountAction({ storeId })
+    : null
+
   return (
     <div className="space-y-6">
-      <Card
-        as="section"
-        id="connect-store-to-stripe"
-        aria-labelledby="connect-store-to-stripe-heading"
-      >
-        <CardHeader className="space-y-1">
-          <CardTitle className="line-clamp-1 text-2xl">
-            Connect to Stripe
-          </CardTitle>
-          <CardDescription>
-            Connect your store to Stripe to start accepting payments
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isConnectedToStripe ? (
+      {isConnectedToStripe && stripeAccount ? (
+        <Card
+          as="section"
+          id="manage-stripe-account"
+          aria-labelledby="manage-stripe-account-heading"
+        >
+          <CardHeader className="space-y-1">
+            <CardTitle className="line-clamp-1 text-2xl">
+              Manage Stripe Account
+            </CardTitle>
+            <CardDescription>
+              Manage your Stripe account and view your payouts
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-5 sm:grid-cols-2">
+            <fieldset className="grid gap-2.5">
+              <Label htmlFor="stripe-account-email">Email</Label>
+              <Input
+                id="stripe-account-email"
+                name="stripeAccountEmail"
+                readOnly
+                defaultValue={stripeAccount.email ?? "N/A"}
+              />
+            </fieldset>
+            <fieldset className="grid gap-2.5">
+              <Label htmlFor="stripe-account-country">Country</Label>
+              <Input
+                id="stripe-account-country"
+                name="stripeAccountCountry"
+                readOnly
+                defaultValue={stripeAccount.country}
+              />
+            </fieldset>
+            <fieldset className="grid gap-2.5">
+              <Label htmlFor="stripe-account-currency">Currency</Label>
+              <Input
+                id="stripe-account-currency"
+                name="stripeAccountCurrency"
+                readOnly
+                defaultValue={stripeAccount.default_currency}
+              />
+            </fieldset>
+            <fieldset className="grid gap-2.5">
+              <Label htmlFor="stripe-account-status">Status</Label>
+              <Input
+                id="stripe-account-status"
+                name="stripeAccountStatus"
+                readOnly
+                defaultValue={
+                  stripeAccount.charges_enabled ? "Enabled" : "Disabled"
+                }
+              />
+            </fieldset>
+          </CardContent>
+          <CardFooter>
             <Link href="https://dashboard.stripe.com/">
-              <div className={cn(buttonVariants())}>Manage Stripe account</div>
+              <div className={cn(buttonVariants())}>Manage in Stripe</div>
             </Link>
-          ) : (
+          </CardFooter>
+        </Card>
+      ) : (
+        <Card
+          as="section"
+          id="connect-to-stripe"
+          aria-labelledby="connect-to-stripe-heading"
+        >
+          <CardHeader className="space-y-1">
+            <CardTitle className="line-clamp-1 text-2xl">
+              Connect to Stripe
+            </CardTitle>
+            <CardDescription>
+              Connect your store to Stripe to start accepting payments
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
             <ConnectStoreToStripeButton storeId={storeId} />
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
       <Card
         as="section"
         id="update-store"
