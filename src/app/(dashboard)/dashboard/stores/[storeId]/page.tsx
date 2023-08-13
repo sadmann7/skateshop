@@ -122,7 +122,7 @@ export default async function UpdateStorePage({
         >
           <CardHeader className="space-y-1">
             <CardTitle className="line-clamp-1 text-2xl">
-              Manage Stripe Account
+              Manage Stripe account
             </CardTitle>
             <CardDescription>
               Manage your Stripe account and view your payouts
@@ -169,8 +169,11 @@ export default async function UpdateStorePage({
             </fieldset>
           </CardContent>
           <CardFooter>
-            <Link href="https://dashboard.stripe.com/">
-              <div className={cn(buttonVariants())}>Manage in Stripe</div>
+            <Link
+              aria-label="Manage Stripe account"
+              href="https://dashboard.stripe.com/"
+            >
+              <div className={cn(buttonVariants())}>Manage Stripe account</div>
             </Link>
           </CardFooter>
         </Card>

@@ -18,6 +18,7 @@ export function ConnectStoreToStripeButton({
 
   return (
     <Button
+      aria-label="Connect to Stripe"
       onClick={() => {
         startTransaction(async () => {
           try {
@@ -30,7 +31,12 @@ export function ConnectStoreToStripeButton({
       }}
       disabled={isPending}
     >
-      {isPending && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+      {isPending && (
+        <Icons.spinner
+          className="mr-2 h-4 w-4 animate-spin"
+          aria-hidden="true"
+        />
+      )}
       Connect to Stripe
     </Button>
   )
