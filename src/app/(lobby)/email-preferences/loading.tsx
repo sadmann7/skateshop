@@ -11,7 +11,7 @@ import { Shell } from "@/components/shells/shell"
 
 export default function EmailPreferencesLoading() {
   return (
-    <Shell className="max-w-2xl">
+    <Shell variant="centered">
       <PageHeader title="Email Preferences" className="text-center" />
       <Card>
         <CardHeader>

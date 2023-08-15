@@ -33,7 +33,14 @@ export function ErrorCard({
   const Icon = Icons[icon ?? "warning"]
 
   return (
-    <Card className={cn("grid place-items-center", className)} {...props}>
+    <Card
+      as="section"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      className={cn("grid place-items-center", className)}
+      {...props}
+    >
       <CardHeader>
         <div className="grid h-20 w-20 place-items-center rounded-full bg-muted">
           <Icon className="h-10 w-10" aria-hidden="true" />

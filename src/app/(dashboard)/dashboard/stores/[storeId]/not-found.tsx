@@ -3,7 +3,7 @@ import { Shell } from "@/components/shells/shell"
 
 export default function StoreNotFound() {
   return (
-    <Shell variant="centered">
+    <Shell variant="centered" className="max-w-md">
       <ErrorCard
         title="Store not found"
         description="The store may have expired or you may have already updated your store"
