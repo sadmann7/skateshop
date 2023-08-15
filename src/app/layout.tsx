@@ -8,6 +8,7 @@ import { siteConfig } from "@/config/site"
 import { fontMono, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
+import { Analytics } from "@/components/analytics"
 import { Providers } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             <Providers attribute="class" defaultTheme="system" enableSystem>
               {children}
               <TailwindIndicator />
+              <Analytics />
             </Providers>
             <Toaster />
           </body>
