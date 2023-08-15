@@ -36,7 +36,7 @@ export function Stores({ stores, pageCount }: StoresProps) {
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
-  const sort = searchParams?.get("sort") ?? "productCount.asc"
+  const sort = searchParams?.get("sort") ?? "productCount.desc"
 
   // Create query string
   const createQueryString = React.useCallback(

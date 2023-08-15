@@ -7,19 +7,17 @@ import { and, asc, desc, eq, gt, lt, sql } from "drizzle-orm"
 import { type z } from "zod"
 
 import { slugify } from "@/lib/utils"
-import type { getStoreSchema, storeSchema } from "@/lib/validations/store"
+import type {
+  getStoreSchema,
+  getStoresSchema,
+  storeSchema,
+} from "@/lib/validations/store"
 
-export async function getStoresAction(input: {
-  description?: string
-  limit?: number
-  offset?: number
-  sort?: `${keyof Store | "productCount"}.${"asc" | "desc"}`
-  userId?: string
-}) {
+export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0
   const [column, order] =
-    (input.sort?.split("-") as [
+    (input.sort?.split(".") as [
       keyof Store | undefined,
       "asc" | "desc" | undefined,
     ]) ?? []

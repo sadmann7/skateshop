@@ -1,5 +1,4 @@
 import { type Metadata } from "next"
-import { type Store } from "@/db/schema"
 import { env } from "@/env.mjs"
 
 import { PageHeader } from "@/components/page-header"
@@ -29,10 +28,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const storesTransaction = await getStoresAction({
     limit: limit,
     offset: offset,
-    sort:
-      typeof sort === "string"
-        ? (sort as `${keyof Store | "productCount"}.${"asc" | "desc"}`)
-        : "productCount.asc",
+    sort: typeof sort === "string" ? sort : "productCount.desc",
   })
 
   const pageCount = Math.ceil(storesTransaction.total / limit)

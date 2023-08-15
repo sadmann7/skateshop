@@ -2,10 +2,22 @@ import { type MetadataRoute } from "next"
 import { allPosts } from "contentlayer/generated"
 
 import { productCategories } from "@/config/products"
-import { siteConfig } from "@/config/site"
+import { absoluteUrl } from "@/lib/utils"
 import { getProductsAction } from "@/app/_actions/product"
+import { getStoresAction } from "@/app/_actions/store"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const storesTransaction = await getStoresAction({
+    limit: 10,
+    offset: 0,
+    sort: "createdAt.desc",
+  })
+
+  const stores = storesTransaction.items.map((store) => ({
+    url: absoluteUrl(`/stores/${store.id}`),
+    lastModified: new Date().toISOString(),
+  }))
+
   const productsTransaction = await getProductsAction({
     limit: 10,
     offset: 0,
@@ -13,42 +25,50 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   const products = productsTransaction.items.map((product) => ({
-    url: `${siteConfig.url}/product/${product.id}`,
+    url: absoluteUrl(`/product/${product.id}`),
     lastModified: new Date().toISOString(),
   }))
 
   const categories = productCategories.map((category) => ({
-    url: `${siteConfig.url}/categories/${category.title}`,
+    url: absoluteUrl(`/categories/${category.title}`),
     lastModified: new Date().toISOString(),
   }))
 
   const subcategories = productCategories
     .map((category) =>
       category.subcategories.map((subcategory) => ({
-        url: `${siteConfig.url}/categories/${category.title}/${subcategory.slug}`,
+        url: absoluteUrl(`/categories/${category.title}/${subcategory.slug}`),
         lastModified: new Date().toISOString(),
       }))
     )
     .flat()
 
   const posts = allPosts.map((post) => ({
-    url: `${siteConfig.url}/blog/${post.slug}`,
+    url: absoluteUrl(`/blog/${post.slug}`),
     lastModified: new Date().toISOString(),
   }))
 
   const routes = [
     "",
     "/products",
+    "/stores",
     "/build-a-board",
     "/blog",
     "/dashboard/account",
-    "/dashboard/stores",
     "/dashboard/billing",
     "/dashboard/purchases",
+    "/dashboard/stores",
   ].map((route) => ({
-    url: `${siteConfig.url}${route}`,
+    url: absoluteUrl(route),
     lastModified: new Date().toISOString(),
   }))
 
-  return [...routes, ...products, ...categories, ...subcategories, ...posts]
+  return [
+    ...routes,
+    ...stores,
+    ...products,
+    ...categories,
+    ...subcategories,
+    ...posts,
+  ]
 }
