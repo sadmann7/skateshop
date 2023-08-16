@@ -1,7 +1,11 @@
-"use client"
-
-import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
+import Loglib from "@loglib/tracker/react"
 
 export function Analytics() {
-  return <VercelAnalytics />
+  return (
+    <Loglib
+      config={{
+        id: "skateshop_sadmn",
+      }}
+    />
+  )
 }

@@ -14,6 +14,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.2.0
     version: 3.2.0(react-hook-form@7.45.4)
+  '@loglib/tracker':
+    specifier: ^0.5.1
+    version: 0.5.1(react@18.2.0)
   '@planetscale/database':
     specifier: ^1.10.0
     version: 1.10.0
@@ -92,9 +95,6 @@ dependencies:
   '@uploadthing/react':
     specifier: ^5.3.0
     version: 5.3.0(react-dropzone@14.2.3)(react@18.2.0)(uploadthing@5.3.3)(zod@3.22.0)
-  '@vercel/analytics':
-    specifier: ^1.0.2
-    version: 1.0.2
   '@vercel/og':
     specifier: ^0.5.11
     version: 0.5.11
@@ -1726,6 +1726,14 @@ packages:
     dependencies:
       jsbi: 4.3.0
       tslib: 2.6.1
+    dev: false
+
+  /@loglib/tracker@0.5.1(react@18.2.0):
+    resolution: {integrity: sha512-50RhBSMdDH3gimCmQmj6BwgDM/F7DO/Q/LXS3iSNnbc1RMJvgMsnydAv+aw/v2e1OU31QXvmDF5w2YDCuc+yeA==}
+    peerDependencies:
+      react: ^16.8||^17||^18
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /@manypkg/find-root@2.1.0:
@@ -4112,10 +4120,6 @@ packages:
     dependencies:
       '@uploadthing/mime-types': 0.2.0
       zod: 3.22.0
-    dev: false
-
-  /@vercel/analytics@1.0.2:
-    resolution: {integrity: sha512-BZFxVrv24VbNNl5xMxqUojQIegEeXMI6rX3rg1uVLYUEXsuKNBSAEQf4BWEcjQDp/8aYJOj6m8V4PUA3x/cxgg==}
     dev: false
 
   /@vercel/og@0.5.11:
