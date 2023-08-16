@@ -74,9 +74,9 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         const images = isArrayOfFile(data.images)
           ? await startUpload(data.images).then((res) => {
               const formattedImages = res?.map((image) => ({
-                id: image.fileKey,
-                name: image.fileKey.split("_")[1] ?? image.fileKey,
-                url: image.fileUrl,
+                id: image.key,
+                name: image.key.split("_")[1] ?? image.key,
+                url: image.url,
               }))
               return formattedImages ?? null
             })

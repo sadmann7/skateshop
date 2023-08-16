@@ -70,15 +70,15 @@
     "react-email": "^1.9.4",
     "react-hook-form": "^7.45.4",
     "react-medium-image-zoom": "^5.1.8",
-    "react-wrap-balancer": "^1.0.0",
-    "resend": "^0.17.2",
+    "react-wrap-balancer": "^1.1.0",
+    "resend": "^1.0.0",
     "sonner": "^0.6.2",
     "stripe": "^12.18.0",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
     "unstyled-table": "0.0.3-alpha-3",
     "uploadthing": "^5.3.3",
-    "zod": "^3.22.0"
+    "zod": "^3.22.1"
   },
   "devDependencies": {
     "@clerk/types": "^3.49.0",
@@ -98,7 +98,7 @@
     "eslint-config-next": "^13.4.16",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-tailwindcss": "^3.13.0",
-    "postcss": "^8.4.27",
+    "postcss": "^8.4.28",
     "prettier": "^3.0.2",
     "prettier-plugin-tailwindcss": "^0.5.3",
     "rehype-pretty-code": "^0.10.0",
