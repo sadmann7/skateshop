@@ -231,8 +231,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           <FormLabel>Images</FormLabel>
           {!isUploading && previews?.length ? (
             <div className="flex items-center gap-2">
-              {previews.map((file) => (
-                <Zoom key={file.name}>
+              {previews.map((file, i) => (
+                <Zoom key={i}>
                   <Image
                     src={file.preview}
                     alt={file.name}

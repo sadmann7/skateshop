@@ -56,21 +56,12 @@ export function FileDialog<TFieldValues extends FieldValues>({
 }: FileDialogProps<TFieldValues>) {
   const onDrop = React.useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
-      setValue(
-        name,
-        acceptedFiles as PathValue<TFieldValues, Path<TFieldValues>>,
-        {
-          shouldValidate: true,
-        }
-      )
-
-      setFiles(
-        acceptedFiles.map((file) =>
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-          })
-        )
-      )
+      acceptedFiles.forEach((file) => {
+        const fileWithPreview = Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+        setFiles((prev) => [...(prev ?? []), fileWithPreview])
+      })
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ errors }) => {
@@ -85,8 +76,14 @@ export function FileDialog<TFieldValues extends FieldValues>({
       }
     },
 
-    [maxSize, name, setFiles, setValue]
+    [maxSize, setFiles]
   )
+
+  // Register files to react-hook-form
+  React.useEffect(() => {
+    setValue(name, files as PathValue<TFieldValues, Path<TFieldValues>>)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -169,8 +166,6 @@ export function FileDialog<TFieldValues extends FieldValues>({
               <FileCard
                 key={i}
                 i={i}
-                name={name}
-                setValue={setValue}
                 files={files}
                 setFiles={setFiles}
                 file={file}
@@ -184,20 +179,11 @@ export function FileDialog<TFieldValues extends FieldValues>({
             variant="outline"
             size="sm"
             className="mt-2.5 w-full"
-            onClick={() => {
-              setFiles(null)
-              setValue(
-                name,
-                null as PathValue<TFieldValues, Path<TFieldValues>>,
-                {
-                  shouldValidate: true,
-                }
-              )
-            }}
+            onClick={() => setFiles(null)}
           >
             <Icons.trash className="mr-2 h-4 w-4" aria-hidden="true" />
             Remove All
-            <span className="sr-only">Remove All</span>
+            <span className="sr-only">Remove all</span>
           </Button>
         ) : null}
       </DialogContent>
@@ -205,23 +191,14 @@ export function FileDialog<TFieldValues extends FieldValues>({
   )
 }
 
-interface FileCardProps<TFieldValues extends FieldValues> {
+interface FileCardProps {
   i: number
   file: FileWithPreview
-  name: Path<TFieldValues>
-  setValue: UseFormSetValue<TFieldValues>
   files: FileWithPreview[] | null
   setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
 }
 
-function FileCard<TFieldValues extends FieldValues>({
-  i,
-  file,
-  name,
-  setValue,
-  files,
-  setFiles,
-}: FileCardProps<TFieldValues>) {
+function FileCard({ i, file, files, setFiles }: FileCardProps) {
   const [isOpen, setIsOpen] = React.useState(false)
   const [cropData, setCropData] = React.useState<string | null>(null)
   const cropperRef = React.useRef<ReactCropperElement>(null)
@@ -247,11 +224,12 @@ function FileCard<TFieldValues extends FieldValues>({
         path: file.name,
       }) satisfies FileWithPreview
 
-      const newFiles = [...files]
-      newFiles.splice(i, 1, croppedFileWithPathAndPreview)
-      setValue(name, newFiles as PathValue<TFieldValues, Path<TFieldValues>>)
+      const newFiles = files.map((file, j) =>
+        j === i ? croppedFileWithPathAndPreview : file
+      )
+      setFiles(newFiles)
     })
-  }, [file.name, file.type, files, i, name, setValue])
+  }, [file.name, file.type, files, i, setFiles])
 
   React.useEffect(() => {
     function handleKeydown(e: KeyboardEvent) {
@@ -291,8 +269,8 @@ function FileCard<TFieldValues extends FieldValues>({
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
-                className="h-7 w-7 p-0"
+                size="icon"
+                className="h-7 w-7"
               >
                 <Icons.crop className="h-4 w-4 text-white" aria-hidden="true" />
                 <span className="sr-only">Crop image</span>
@@ -361,21 +339,11 @@ function FileCard<TFieldValues extends FieldValues>({
         <Button
           type="button"
           variant="outline"
-          size="sm"
-          className="h-7 w-7 p-0"
+          size="icon"
+          className="h-7 w-7"
           onClick={() => {
             if (!files) return
             setFiles(files.filter((_, j) => j !== i))
-            setValue(
-              name,
-              files.filter((_, j) => j !== i) as PathValue<
-                TFieldValues,
-                Path<TFieldValues>
-              >,
-              {
-                shouldValidate: true,
-              }
-            )
           }}
         >
           <Icons.close className="h-4 w-4 text-white" aria-hidden="true" />
