@@ -84,7 +84,6 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
     },
   })
 
-  const previews = form.watch("images") as FileWithPreview[] | null
   const subcategories = getSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
@@ -259,9 +258,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
         </div>
         <FormItem className="flex w-full flex-col gap-1.5">
           <FormLabel>Images</FormLabel>
-          {!isUploading && previews?.length ? (
+          {files?.length ? (
             <div className="flex items-center gap-2">
-              {previews.map((file, i) => (
+              {files.map((file, i) => (
                 <Zoom key={i}>
                   <Image
                     src={file.preview}

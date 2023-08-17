@@ -8,6 +8,7 @@ import {
   type FileWithPath,
 } from "react-dropzone"
 import type {
+  FieldPath,
   FieldValues,
   Path,
   PathValue,
@@ -26,9 +27,11 @@ import { Icons } from "@/components/icons"
 
 // FIXME Your proposed upload exceeds the maximum allowed size, this should trigger toast.error too
 
-interface FileDialogProps<TFieldValues extends FieldValues>
-  extends React.HTMLAttributes<HTMLDivElement> {
-  name: Path<TFieldValues>
+interface FileDialogProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> extends React.HTMLAttributes<HTMLDivElement> {
+  name: TName
   setValue: UseFormSetValue<TFieldValues>
   accept?: Accept
   maxSize?: number
