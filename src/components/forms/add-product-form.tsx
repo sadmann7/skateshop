@@ -259,7 +259,11 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             message={form.formState.errors.images?.message}
           />
         </FormItem>
-        <Button className="w-fit" disabled={isPending}>
+        <Button
+          onClick={() => {
+            form.trigger(["name", "description" ,"price" , "inventory"])
+          }}
+          className="w-fit" disabled={isPending}>
           {isPending && (
             <Icons.spinner
               className="mr-2 h-4 w-4 animate-spin"
