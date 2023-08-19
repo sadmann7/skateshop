@@ -74,9 +74,7 @@ export async function checkStripeConnectionAction(
     where: eq(payments.storeId, input.storeId),
   })
 
-  if (!payment) return false
-
-  if (!payment.stripeAccountId) return false
+  if (!payment || !payment.stripeAccountId) return false
 
   const account = await stripe.accounts.retrieve(payment.stripeAccountId)
 
@@ -122,10 +120,21 @@ export async function createAccountLinkAction(
 
     stripeAccountId = account.id
 
-    await db.update(payments).set({
-      storeId: input.storeId,
-      stripeAccountId,
-    })
+    if (payment) {
+      await db.update(payments).set({
+        storeId: input.storeId,
+        stripeAccountId,
+        stripeAccountCreatedAt: account.created,
+        detailsSubmitted: account.details_submitted,
+      })
+    } else {
+      await db.insert(payments).values({
+        storeId: input.storeId,
+        stripeAccountId,
+        stripeAccountCreatedAt: account.created,
+        detailsSubmitted: account.details_submitted,
+      })
+    }
   }
 
   const accountLink = await stripe.accountLinks.create({

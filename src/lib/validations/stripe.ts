@@ -12,5 +12,4 @@ export const manageSubscriptionSchema = z.object({
 
 export const createAccountLinkSchema = z.object({
   storeId: z.number(),
-  userId: z.string().optional(),
 })

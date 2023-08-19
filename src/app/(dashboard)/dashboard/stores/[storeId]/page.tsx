@@ -152,6 +152,7 @@ export default async function UpdateStorePage({
               <Input
                 id="stripe-account-currency"
                 name="stripeAccountCurrency"
+                className="uppercase"
                 readOnly
                 defaultValue={stripeAccount.default_currency}
               />

@@ -87,8 +87,8 @@ export const payments = mysqlTable("payments", {
   userId: varchar("userId", { length: 191 }),
   storeId: int("storeId").notNull(),
   stripeAccountId: varchar("stripeAccountId", { length: 191 }).notNull(),
-  stripeAccountCreatedAt: int("stripeAccountCreatedAt").notNull(),
-  stripeAccountExpiresAt: int("stripeAccountExpiresAt").notNull(),
+  stripeAccountCreatedAt: int("stripeAccountCreatedAt"),
+  stripeAccountExpiresAt: int("stripeAccountExpiresAt"),
   detailsSubmitted: boolean("detailsSubmitted").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow(),
 })
