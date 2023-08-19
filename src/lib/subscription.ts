@@ -38,23 +38,16 @@ export async function getUserSubscriptionPlan(userId: string) {
       )
       isCanceled = stripePlan.cancel_at_period_end
     } catch (err) {
-      // If the subscription is not found, we update the user's metadata
-      if (
-        err instanceof Error &&
-        err.message.includes("No such subscription")
-      ) {
-        await clerkClient.users.updateUserMetadata(userId, {
-          privateMetadata: {
-            stripePriceId: null,
-            stripeCustomerId: null,
-            stripeSubscriptionId: null,
-            stripeCurrentPeriodEnd: null,
-          },
-        })
-        return null
-      }
-
-      console.log(err)
+      console.error(err)
+      // TODO: Find a better way to reset user privateMetadata
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {
+          stripePriceId: null,
+          stripeCustomerId: null,
+          stripeSubscriptionId: null,
+          stripeCurrentPeriodEnd: null,
+        },
+      })
       return null
     }
   }
