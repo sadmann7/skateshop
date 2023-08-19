@@ -51,7 +51,7 @@ export function SubscribeToNewsletterForm() {
       }
 
       if (response.status === 422) {
-        toast.error("Inavlid input.")
+        toast.error("Invalid input.")
       }
 
       if (response.status === 429) {
