@@ -55,10 +55,10 @@ export default async function BillingPage() {
         <h2 className="text-xl font-semibold sm:text-2xl">Billing info</h2>
         <Card className="grid gap-4 p-6">
           <h3 className="text-lg font-semibold sm:text-xl">
-            {subscriptionPlan?.name}
+            {subscriptionPlan?.name ?? "Ollie"}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {!subscriptionPlan.isSubscribed
+            {!subscriptionPlan?.isSubscribed
               ? "Upgrade to create more stores and products."
               : subscriptionPlan.isCanceled
               ? "Your plan will be canceled on "
@@ -132,7 +132,7 @@ export default async function BillingPage() {
                     stripeSubscriptionId={
                       subscriptionPlan?.stripeSubscriptionId
                     }
-                    isSubscribed={subscriptionPlan.isSubscribed}
+                    isSubscribed={subscriptionPlan?.isSubscribed ?? false}
                     isCurrentPlan={subscriptionPlan?.name === plan.name}
                   />
                 )}

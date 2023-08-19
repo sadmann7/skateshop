@@ -31,11 +31,32 @@ export async function getUserSubscriptionPlan(userId: string) {
 
   // Check if user has canceled subscription
   let isCanceled = false
-  if (isSubscribed && userPrivateMetadata.stripeSubscriptionId) {
-    const stripePlan = await stripe.subscriptions.retrieve(
-      userPrivateMetadata.stripeSubscriptionId
-    )
-    isCanceled = stripePlan.cancel_at_period_end
+  if (isSubscribed && !!userPrivateMetadata.stripeSubscriptionId) {
+    try {
+      const stripePlan = await stripe.subscriptions.retrieve(
+        userPrivateMetadata.stripeSubscriptionId
+      )
+      isCanceled = stripePlan.cancel_at_period_end
+    } catch (err) {
+      // If the subscription is not found, we update the user's metadata
+      if (
+        err instanceof Error &&
+        err.message.includes("No such subscription")
+      ) {
+        await clerkClient.users.updateUserMetadata(userId, {
+          privateMetadata: {
+            stripePriceId: null,
+            stripeCustomerId: null,
+            stripeSubscriptionId: null,
+            stripeCurrentPeriodEnd: null,
+          },
+        })
+        return null
+      }
+
+      console.log(err)
+      return null
+    }
   }
 
   return {

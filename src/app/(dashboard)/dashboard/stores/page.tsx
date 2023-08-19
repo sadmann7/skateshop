@@ -48,11 +48,11 @@ export default async function StoresPage() {
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
   const isSubscriptionPlanActive = dayjs(
-    subscriptionPlan.stripeCurrentPeriodEnd
+    subscriptionPlan?.stripeCurrentPeriodEnd
   ).isAfter(dayjs())
 
   const { featuredStoreCount, featuredProductCount } =
-    getFeaturedStoreAndProductCounts(subscriptionPlan.id)
+    getFeaturedStoreAndProductCounts(subscriptionPlan?.id)
 
   return (
     <Shell variant="sidebar">
@@ -62,8 +62,8 @@ export default async function StoresPage() {
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           You are currently on the{" "}
-          <span className="font-semibold">{subscriptionPlan.name}</span> plan.{" "}
-          {!subscriptionPlan.isSubscribed
+          <span className="font-semibold">{subscriptionPlan?.name}</span> plan.{" "}
+          {!subscriptionPlan?.isSubscribed
             ? "Upgrade to create more stores and products."
             : subscriptionPlan.isCanceled
             ? "Your plan will be canceled on "
@@ -91,14 +91,14 @@ export default async function StoresPage() {
             cardTitle="Create a new store"
             cardDescription="Create a new store to start selling your products."
             route={
-              subscriptionPlan.id === "basic" &&
+              subscriptionPlan?.id === "basic" &&
               storesWithProductCount.length >= 1
                 ? "/dashboard/billing"
-                : subscriptionPlan.id === "standard" &&
+                : subscriptionPlan?.id === "standard" &&
                   isSubscriptionPlanActive &&
                   storesWithProductCount.length >= 2
                 ? "/dashboard/billing"
-                : subscriptionPlan.id === "pro" &&
+                : subscriptionPlan?.id === "pro" &&
                   isSubscriptionPlanActive &&
                   storesWithProductCount.length >= 3
                 ? "/dashboard/billing"
