@@ -68,74 +68,49 @@ export async function checkStripeConnectionAction(
     where: eq(stores.id, input.storeId),
   })
 
-  if (!store) return false
+  if (!store)
+    return {
+      isConnected: false,
+      payment: null,
+    }
 
   const payment = await db.query.payments.findFirst({
     where: eq(payments.storeId, input.storeId),
   })
 
-  if (!payment || !payment.stripeAccountId) return false
+  if (!payment || !payment.stripeAccountId)
+    return {
+      isConnected: false,
+      payment: null,
+    }
 
   const account = await stripe.accounts.retrieve(payment.stripeAccountId)
 
-  if (!account) return false
+  if (!account)
+    return {
+      isConnected: false,
+      payment: null,
+    }
 
-  return account.details_submitted && payment.detailsSubmitted ? true : false
+  return {
+    isConnected:
+      account.details_submitted && payment.detailsSubmitted ? true : false,
+    payment,
+  }
 }
 
 // For connecting a Stripe account to a store
 export async function createAccountLinkAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
-  //  Check if the store is already connected to Stripe
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, input.storeId),
-  })
+  const { isConnected, payment } = await checkStripeConnectionAction(input)
 
-  if (!store) {
-    throw new Error("Store not found.")
-  }
-
-  // TODO: Check if stripeAccountId is available on the store
-
-  const payment = await db.query.payments.findFirst({
-    where: eq(payments.storeId, input.storeId),
-  })
-
-  if (payment?.detailsSubmitted) {
+  if (isConnected) {
     throw new Error("Store already connected to Stripe.")
   }
 
-  let stripeAccountId = ""
-  if (payment?.stripeAccountId) {
-    stripeAccountId = payment.stripeAccountId
-  } else {
-    const account = await stripe.accounts.create({
-      type: "standard",
-    })
-
-    if (!account) {
-      throw new Error("Error creating Stripe account.")
-    }
-
-    stripeAccountId = account.id
-
-    if (payment) {
-      await db.update(payments).set({
-        storeId: input.storeId,
-        stripeAccountId,
-        stripeAccountCreatedAt: account.created,
-        detailsSubmitted: account.details_submitted,
-      })
-    } else {
-      await db.insert(payments).values({
-        storeId: input.storeId,
-        stripeAccountId,
-        stripeAccountCreatedAt: account.created,
-        detailsSubmitted: account.details_submitted,
-      })
-    }
-  }
+  const stripeAccountId =
+    payment?.stripeAccountId ?? (await createStripeAccount())
 
   const accountLink = await stripe.accountLinks.create({
     account: stripeAccountId,
@@ -144,40 +119,41 @@ export async function createAccountLinkAction(
     type: "account_onboarding",
   })
 
-  if (!accountLink || !accountLink.url) {
+  if (!accountLink?.url) {
     throw new Error("Error creating Stripe account link, please try again.")
   }
 
-  return {
-    url: accountLink.url,
+  return { url: accountLink.url }
+
+  async function createStripeAccount(): Promise<string> {
+    const account = await stripe.accounts.create({ type: "standard" })
+
+    if (!account) {
+      throw new Error("Error creating Stripe account.")
+    }
+
+    await db.insert(payments).values({
+      storeId: input.storeId,
+      stripeAccountId: account.id,
+      stripeAccountCreatedAt: account.created,
+      detailsSubmitted: account.details_submitted,
+    })
+
+    return account.id
   }
 }
 
 export async function getStripeAccountAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
-  //  Check if the store is already connected to Stripe
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, input.storeId),
-  })
+  const { isConnected, payment } = await checkStripeConnectionAction(input)
 
-  if (!store) {
-    throw new Error("Store not found.")
+  if (!isConnected || !payment?.stripeAccountId) return null
+
+  try {
+    return await stripe.accounts.retrieve(payment.stripeAccountId)
+  } catch (err) {
+    console.error(err)
+    return null
   }
-
-  const payment = await db.query.payments.findFirst({
-    where: eq(payments.storeId, input.storeId),
-  })
-
-  if (!payment?.stripeAccountId) {
-    throw new Error("Store not connected to Stripe.")
-  }
-
-  const account = await stripe.accounts.retrieve(payment.stripeAccountId)
-
-  if (!account) {
-    throw new Error("Error retrieving Stripe account.")
-  }
-
-  return account
 }

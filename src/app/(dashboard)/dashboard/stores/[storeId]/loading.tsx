@@ -30,7 +30,7 @@ export default function StoreLoading() {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="space-x-2">
+        <CardFooter className="flex flex-col gap-2 xs:flex-row">
           <Skeleton className="h-10 w-32" />
           <Skeleton className="h-10 w-32" />
         </CardFooter>

@@ -79,3 +79,23 @@ export function getFeaturedStoreAndProductCounts(
     featuredProductCount,
   }
 }
+
+export function getDashboardRedirectPath(input: {
+  storeCount: number
+  subscriptionPlan?: Awaited<ReturnType<typeof getUserSubscriptionPlan>>
+}): string {
+  const { storeCount, subscriptionPlan } = input
+  const isSubscriptionPlanActive = dayjs(
+    subscriptionPlan?.stripeCurrentPeriodEnd
+  ).isAfter(dayjs())
+
+  const minStoresWithProductCount = {
+    basic: 1,
+    standard: 2,
+    pro: 3,
+  }[subscriptionPlan?.id ?? "basic"]
+
+  return isSubscriptionPlanActive && storeCount >= minStoresWithProductCount
+    ? "/dashboard/billing"
+    : "/dashboard/stores/new"
+}

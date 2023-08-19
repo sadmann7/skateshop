@@ -4,8 +4,12 @@ import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
-import { PageHeader } from "@/components/page-header"
-import { StorePager } from "@/components/pagers/store-pager"
+import {
+  getDashboardRedirectPath,
+  getUserSubscriptionPlan,
+} from "@/lib/subscription"
+import { PageHeaderHeading } from "@/components/page-header"
+import { StoreSwitcher } from "@/components/pagers/store-switcher"
 import { StoreTabs } from "@/components/pagers/store-tabs"
 import { Shell } from "@/components/shells/shell"
 
@@ -42,12 +46,23 @@ export default async function StoreLayout({
     notFound()
   }
 
+  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+
   return (
     <Shell variant="sidebar" className="gap-4">
-      <div className="flex items-center space-x-4">
-        <PageHeader title={store.name} size="sm" className="flex-1" />
+      <div className="flex items-center space-x-4 pr-1">
+        <PageHeaderHeading className="line-clamp-1 flex-1" size="sm">
+          {store.name}
+        </PageHeaderHeading>
         {allStores.length > 1 ? (
-          <StorePager storeId={storeId} userId={user.id} />
+          <StoreSwitcher
+            currentStore={store}
+            stores={allStores}
+            dashboardRedirectPath={getDashboardRedirectPath({
+              subscriptionPlan,
+              storeCount: allStores.length,
+            })}
+          />
         ) : null}
       </div>
       <div className="space-y-4 overflow-hidden">

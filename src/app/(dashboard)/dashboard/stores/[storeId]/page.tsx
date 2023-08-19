@@ -22,10 +22,7 @@ import { Label } from "@/components/ui/label"
 import { LoadingButton } from "@/components/ui/loading-button"
 import { Textarea } from "@/components/ui/textarea"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
-import {
-  checkStripeConnectionAction,
-  getStripeAccountAction,
-} from "@/app/_actions/stripe"
+import { getStripeAccountAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -106,15 +103,11 @@ export default async function UpdateStorePage({
     notFound()
   }
 
-  const isConnectedToStripe = await checkStripeConnectionAction({ storeId })
-
-  const stripeAccount = isConnectedToStripe
-    ? await getStripeAccountAction({ storeId })
-    : null
+  const stripeAccount = await getStripeAccountAction({ storeId })
 
   return (
     <div className="space-y-6">
-      {isConnectedToStripe && stripeAccount ? (
+      {stripeAccount ? (
         <Card
           as="section"
           id="manage-stripe-account"
@@ -173,8 +166,18 @@ export default async function UpdateStorePage({
             <Link
               aria-label="Manage Stripe account"
               href="https://dashboard.stripe.com/"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <div className={cn(buttonVariants())}>Manage Stripe account</div>
+              <div
+                className={cn(
+                  buttonVariants({
+                    className: "text-center",
+                  })
+                )}
+              >
+                Manage Stripe account
+              </div>
             </Link>
           </CardFooter>
         </Card>
@@ -239,7 +242,7 @@ export default async function UpdateStorePage({
                 defaultValue={store.description ?? ""}
               />
             </fieldset>
-            <div className="flex space-x-2">
+            <div className="flex flex-col gap-2 xs:flex-row">
               <LoadingButton>
                 Update Store
                 <span className="sr-only">Update store</span>

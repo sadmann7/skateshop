@@ -4,10 +4,10 @@ import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
-import dayjs from "dayjs"
 import { desc, eq, sql } from "drizzle-orm"
 
 import {
+  getDashboardRedirectPath,
   getFeaturedStoreAndProductCounts,
   getUserSubscriptionPlan,
 } from "@/lib/subscription"
@@ -46,10 +46,6 @@ export default async function StoresPage() {
     .where(eq(stores.userId, user.id))
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
-
-  const isSubscriptionPlanActive = dayjs(
-    subscriptionPlan?.stripeCurrentPeriodEnd
-  ).isAfter(dayjs())
 
   const { featuredStoreCount, featuredProductCount } =
     getFeaturedStoreAndProductCounts(subscriptionPlan?.id)
@@ -90,20 +86,10 @@ export default async function StoresPage() {
           <StoreCard
             cardTitle="Create a new store"
             cardDescription="Create a new store to start selling your products."
-            route={
-              subscriptionPlan?.id === "basic" &&
-              storesWithProductCount.length >= 1
-                ? "/dashboard/billing"
-                : subscriptionPlan?.id === "standard" &&
-                  isSubscriptionPlanActive &&
-                  storesWithProductCount.length >= 2
-                ? "/dashboard/billing"
-                : subscriptionPlan?.id === "pro" &&
-                  isSubscriptionPlanActive &&
-                  storesWithProductCount.length >= 3
-                ? "/dashboard/billing"
-                : "/dashboard/stores/new"
-            }
+            route={getDashboardRedirectPath({
+              storeCount: storesWithProductCount.length,
+              subscriptionPlan: subscriptionPlan,
+            })}
             buttonText="Create store"
           />
         )}
