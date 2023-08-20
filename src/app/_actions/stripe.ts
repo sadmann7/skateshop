@@ -68,36 +68,31 @@ export async function manageSubscriptionAction(
 export async function getStripeAccountAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
+  const nullReturn = {
+    isConnected: false,
+    account: null,
+    payment: null,
+  }
+
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, input.storeId),
   })
 
-  if (!store)
-    return {
-      isConnected: false,
-      account: null,
-      payment: null,
-    }
+  if (!store) return nullReturn
 
   const payment = await db.query.payments.findFirst({
     where: eq(payments.storeId, input.storeId),
+    columns: {
+      stripeAccountId: true,
+      detailsSubmitted: true,
+    },
   })
 
-  if (!payment || !payment.stripeAccountId)
-    return {
-      isConnected: false,
-      account: null,
-      payment: null,
-    }
+  if (!payment || !payment.stripeAccountId) return nullReturn
 
   const account = await stripe.accounts.retrieve(payment.stripeAccountId)
 
-  if (!account)
-    return {
-      isConnected: false,
-      account: null,
-      payment: null,
-    }
+  if (!account) return nullReturn
 
   // If the account details have been submitted, we update the store and payment records
   if (account.details_submitted && !payment.detailsSubmitted) {
