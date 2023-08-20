@@ -28,6 +28,7 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
         id: stores.id,
         name: stores.name,
         description: stores.description,
+        stripeAccountId: stores.stripeAccountId,
         productCount: sql<number>`count(*)`,
       })
       .from(stores)

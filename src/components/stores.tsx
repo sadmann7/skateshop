@@ -22,6 +22,8 @@ interface StoresProps extends React.HTMLAttributes<HTMLDivElement> {
   stores: {
     id: number
     name: string
+    description?: string | null
+    stripeAccountId?: string | null
     productCount: number
   }[]
   pageCount: number

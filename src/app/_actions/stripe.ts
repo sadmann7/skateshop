@@ -136,11 +136,20 @@ export async function createAccountLinkAction(
       throw new Error("Error creating Stripe account.")
     }
 
-    await db.insert(payments).values({
-      storeId: input.storeId,
-      stripeAccountId: account.id,
-      stripeAccountCreatedAt: account.created,
-      detailsSubmitted: account.details_submitted,
+    await db.transaction(async (tx) => {
+      await tx.insert(payments).values({
+        storeId: input.storeId,
+        stripeAccountId: account.id,
+        stripeAccountCreatedAt: account.created,
+        detailsSubmitted: account.details_submitted,
+      })
+
+      await tx
+        .update(stores)
+        .set({
+          stripeAccountId: account.details_submitted ? account.id : null,
+        })
+        .where(eq(stores.id, input.storeId))
     })
 
     return account.id

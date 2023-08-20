@@ -11,21 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { checkStripeConnectionAction } from "@/app/_actions/stripe/account"
 
 interface StoreCardProps {
   store: Pick<Store, "id" | "name"> &
-    Partial<Pick<Store, "description">> & {
+    Partial<Pick<Store, "description" | "stripeAccountId">> & {
       productCount: number
     }
   href: string
 }
 
-export async function StoreCard({ store, href }: StoreCardProps) {
-  const { isConnected } = await checkStripeConnectionAction({
-    storeId: store.id,
-  })
-
+export function StoreCard({ store, href }: StoreCardProps) {
   return (
     <Link aria-label={store.name} href={href}>
       <Card className="h-full">
@@ -34,10 +29,10 @@ export async function StoreCard({ store, href }: StoreCardProps) {
           <Badge
             className={cn(
               "pointer-events-none absolute right-2 top-2 text-foreground",
-              isConnected ? "bg-green-600" : "bg-red-600"
+              store.stripeAccountId ? "bg-green-600" : "bg-red-600"
             )}
           >
-            {isConnected ? "Connected" : "Disconnected"}
+            {store.stripeAccountId ? "Connected" : "Disconnected"}
           </Badge>
           <div
             className="h-full rounded-t-md"

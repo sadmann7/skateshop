@@ -6,7 +6,7 @@ import { type Product, type Store } from "@/db/schema"
 import type { Option } from "@/types"
 
 import { getSubcategories, sortOptions } from "@/config/products"
-import { cn, toTitleCase } from "@/lib/utils"
+import { cn, toTitleCase, truncate } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -192,9 +192,9 @@ export function Products({
                   max={500}
                   step={1}
                   value={priceRange}
-                  onValueChange={(value: typeof priceRange) => {
+                  onValueChange={(value: typeof priceRange) =>
                     setPriceRange(value)
-                  }}
+                  }
                 />
                 <div className="flex items-center space-x-4">
                   <Input
@@ -304,7 +304,7 @@ export function Products({
                       </Button>
                     </div>
                   </div>
-                  <ScrollArea className="h-96">
+                  <ScrollArea className="h-[calc(100%-10rem)]">
                     <div className="space-y-4">
                       {stores.map((store) => (
                         <div
@@ -327,9 +327,9 @@ export function Products({
                           />
                           <Label
                             htmlFor={`store-${store.id}`}
-                            className="line-clamp-1 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
-                            {store.name}
+                            {truncate(store.name, 20)}
                           </Label>
                         </div>
                       ))}
