@@ -22,7 +22,7 @@ export function formatPrice(
   }).format(Number(price))
 }
 
-export function formatDate(date: Date | string) {
+export function formatDate(date: Date | string | number) {
   return dayjs(date).format("MMMM D, YYYY")
 }
 
@@ -107,6 +107,6 @@ export function catchClerkError(err: unknown) {
   }
 }
 
-export function isMacOs(){
-  return window.navigator.userAgent.includes('Mac');
+export function isMacOs() {
+  return window.navigator.userAgent.includes("Mac")
 }

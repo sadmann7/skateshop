@@ -7,7 +7,7 @@ import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, eq, not } from "drizzle-orm"
 
-import { cn } from "@/lib/utils"
+import { cn, formatDate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
@@ -151,13 +151,15 @@ export default async function UpdateStorePage({
               />
             </fieldset>
             <fieldset className="grid gap-2.5">
-              <Label htmlFor="stripe-account-status">Status</Label>
+              <Label htmlFor="stripe-account-created">Created</Label>
               <Input
-                id="stripe-account-status"
-                name="stripeAccountStatus"
+                id="stripe-account-created"
+                name="stripeAccountCreated"
                 readOnly
                 defaultValue={
-                  stripeAccount.charges_enabled ? "Enabled" : "Disabled"
+                  stripeAccount.created
+                    ? formatDate(stripeAccount.created * 1000)
+                    : "N/A"
                 }
               />
             </fieldset>

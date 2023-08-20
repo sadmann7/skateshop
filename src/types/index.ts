@@ -92,5 +92,4 @@ export interface SubscriptionPlan {
   features: string[]
   stripePriceId: string
   price: number
-  isCanceled?: boolean
 }
