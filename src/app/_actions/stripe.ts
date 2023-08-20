@@ -2,7 +2,7 @@
 
 import { db } from "@/db"
 import { payments, stores } from "@/db/schema"
-import { clerkClient } from "@clerk/nextjs"
+import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
@@ -19,11 +19,15 @@ export async function manageSubscriptionAction(
 ) {
   const billingUrl = absoluteUrl("/dashboard/billing")
 
-  const user = await clerkClient.users.getUser(input.userId)
+  const user = await currentUser()
 
   if (!user) {
     throw new Error("User not found.")
   }
+
+  const email =
+    user.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
+      ?.emailAddress ?? ""
 
   // If the user is already subscribed to a plan, we redirect them to the Stripe billing portal
   if (input.isSubscribed && input.stripeCustomerId && input.isCurrentPlan) {
@@ -44,7 +48,7 @@ export async function manageSubscriptionAction(
     payment_method_types: ["card"],
     mode: "subscription",
     billing_address_collection: "auto",
-    customer_email: input.email,
+    customer_email: email,
     line_items: [
       {
         price: input.stripePriceId,
@@ -52,7 +56,7 @@ export async function manageSubscriptionAction(
       },
     ],
     metadata: {
-      userId: input.userId,
+      userId: user.id,
     },
   })
 

@@ -54,17 +54,17 @@ export function StoreCard({
         )}
       </CardHeader>
       <CardContent>
-        <Link aria-label={buttonText ?? store?.name} href={route}>
-          <div
-            className={cn(
-              buttonVariants({
-                size: "sm",
-                className: "h-8 w-full",
-              })
-            )}
-          >
-            {buttonText}
-          </div>
+        <Link
+          aria-label={buttonText ?? store?.name}
+          href={route}
+          className={cn(
+            buttonVariants({
+              size: "sm",
+              className: "h-8 w-full",
+            })
+          )}
+        >
+          {buttonText}
         </Link>
       </CardContent>
     </Card>

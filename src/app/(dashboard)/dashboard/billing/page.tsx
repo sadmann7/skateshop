@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { ManageStoreSubscriptionForm } from "@/components/forms/manage-store-subscription-form"
+import { ManageSubscriptionForm } from "@/components/forms/manage-subscription-form"
 import { Icons } from "@/components/icons"
 import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
@@ -33,10 +33,6 @@ export default async function BillingPage() {
   if (!user) {
     redirect("/signin")
   }
-
-  const email =
-    user.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
-      ?.emailAddress ?? ""
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
@@ -84,7 +80,8 @@ export default async function BillingPage() {
               className={cn(
                 "flex flex-col",
                 i === storeSubscriptionPlans.length - 1 &&
-                  "lg:col-span-2 xl:col-span-1"
+                  "lg:col-span-2 xl:col-span-1",
+                i === 1 && "border-primary shadow-md"
               )}
             >
               <CardHeader>
@@ -111,22 +108,19 @@ export default async function BillingPage() {
               </CardContent>
               <CardFooter className="pt-4">
                 {plan.id === "basic" ? (
-                  <Link href="/dashboard/stores" className="w-full">
-                    <div
-                      className={cn(
-                        buttonVariants({
-                          className: "w-full",
-                        })
-                      )}
-                    >
-                      Manage Stores
-                      <span className="sr-only">Manage Stores</span>
-                    </div>
+                  <Link
+                    href="/dashboard/stores"
+                    className={cn(
+                      buttonVariants({
+                        className: "w-full",
+                      })
+                    )}
+                  >
+                    Get started
+                    <span className="sr-only">Get started</span>
                   </Link>
                 ) : (
-                  <ManageStoreSubscriptionForm
-                    userId={user.id}
-                    email={email}
+                  <ManageSubscriptionForm
                     stripePriceId={plan.stripePriceId}
                     stripeCustomerId={subscriptionPlan?.stripeCustomerId}
                     stripeSubscriptionId={

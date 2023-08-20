@@ -3,7 +3,7 @@ import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { desc, eq, sql } from "drizzle-orm"
-import Balance from "react-wrap-balancer"
+import { Balancer } from "react-wrap-balancer"
 
 import { productCategories } from "@/config/products"
 import { siteConfig } from "@/config/site"
@@ -87,19 +87,12 @@ export default async function IndexPage() {
         <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
           An e-commerce skateshop built with everything new in Next.js 13
         </h1>
-        <Balance className="max-w-[46rem] text-lg text-muted-foreground sm:text-xl">
+        <Balancer className="max-w-[46rem] text-lg text-muted-foreground sm:text-xl">
           Buy and sell skateboarding products from independent brands and stores
           around the world
-        </Balance>
+        </Balancer>
         <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/products"
-            className={cn(
-              buttonVariants({
-                size: "lg",
-              })
-            )}
-          >
+          <Link href="/products" className={cn(buttonVariants())}>
             Buy Now
           </Link>
           <Link
@@ -107,7 +100,6 @@ export default async function IndexPage() {
             className={cn(
               buttonVariants({
                 variant: "outline",
-                size: "lg",
               })
             )}
           >
@@ -124,9 +116,9 @@ export default async function IndexPage() {
           <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
             Categories
           </h2>
-          <Balance className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
             Explore our categories and find the best products for you
-          </Balance>
+          </Balancer>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {productCategories.map((category) => (

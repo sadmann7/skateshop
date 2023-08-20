@@ -7,22 +7,23 @@ import type { SidebarNavItem } from "@/types"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 
-export interface SidebarNavProps {
+export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[]
 }
 
-export function SidebarNav({ items }: SidebarNavProps) {
+export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
   const pathname = usePathname()
 
   if (!items?.length) return null
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className={cn("flex w-full flex-col gap-2", className)} {...props}>
       {items.map((item, index) => {
         const Icon = Icons[item.icon ?? "chevronLeft"]
 
         return item.href ? (
           <Link
+            aria-label={item.title}
             key={index}
             href={item.href}
             target={item.external ? "_blank" : ""}

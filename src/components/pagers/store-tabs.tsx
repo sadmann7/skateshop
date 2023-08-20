@@ -38,12 +38,13 @@ export function StoreTabs({ className, storeId, ...props }: StoreTabsProps) {
       className={cn("w-full overflow-x-auto", className)}
       onValueChange={(value) => router.push(value)}
     >
-      <TabsList>
+      <TabsList className="rounded-md">
         {tabs.map((tab) => (
           <TabsTrigger
             key={tab.title}
             value={tab.href}
             className={cn(
+              "rounded-sm",
               pathname === tab.href && "bg-background text-foreground shadow-sm"
             )}
             onClick={() => router.push(tab.href)}

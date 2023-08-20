@@ -93,3 +93,12 @@ export interface SubscriptionPlan {
   stripePriceId: string
   price: number
 }
+
+export interface UserSubscriptionPlan extends SubscriptionPlan {
+  stripeSubscriptionId?: string | null
+  stripeCurrentPeriodEnd?: string | null
+  stripeCustomerId?: string | null
+  isSubscribed: boolean
+  isCanceled: boolean
+  isActive: boolean
+}

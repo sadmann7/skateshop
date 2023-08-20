@@ -170,16 +170,13 @@ export default async function UpdateStorePage({
               href="https://dashboard.stripe.com/"
               target="_blank"
               rel="noopener noreferrer"
+              className={cn(
+                buttonVariants({
+                  className: "text-center",
+                })
+              )}
             >
-              <div
-                className={cn(
-                  buttonVariants({
-                    className: "text-center",
-                  })
-                )}
-              >
-                Manage Stripe account
-              </div>
+              Manage Stripe account
             </Link>
           </CardFooter>
         </Card>
@@ -246,7 +243,7 @@ export default async function UpdateStorePage({
             </fieldset>
             <div className="flex flex-col gap-2 xs:flex-row">
               <LoadingButton>
-                Update Store
+                Update store
                 <span className="sr-only">Update store</span>
               </LoadingButton>
               <LoadingButton
@@ -254,7 +251,7 @@ export default async function UpdateStorePage({
                 formAction={deleteStore}
                 variant="destructive"
               >
-                Delete Store
+                Delete store
                 <span className="sr-only">Delete store</span>
               </LoadingButton>
             </div>

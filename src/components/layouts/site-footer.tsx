@@ -90,18 +90,15 @@ export function SiteFooter() {
               href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"
+              className={cn(
+                buttonVariants({
+                  size: "icon",
+                  variant: "ghost",
+                })
+              )}
             >
-              <div
-                className={cn(
-                  buttonVariants({
-                    size: "icon",
-                    variant: "ghost",
-                  })
-                )}
-              >
-                <Icons.gitHub className="h-4 w-4" aria-hidden="true" />
-                <span className="sr-only">GitHub</span>
-              </div>
+              <Icons.gitHub className="h-4 w-4" aria-hidden="true" />
+              <span className="sr-only">GitHub</span>
             </Link>
             <ThemeToggle />
           </div>

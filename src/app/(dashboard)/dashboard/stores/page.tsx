@@ -4,16 +4,15 @@ import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
+import { RocketIcon } from "@radix-ui/react-icons"
 import { desc, eq, sql } from "drizzle-orm"
 
 import {
   getDashboardRedirectPath,
-  getFeaturedStoreAndProductCounts,
+  getPlanFeatures,
   getUserSubscriptionPlan,
 } from "@/lib/subscription"
-import { formatDate } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Icons } from "@/components/icons"
 import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { StoreCard } from "@/components/store-card"
@@ -47,30 +46,23 @@ export default async function StoresPage() {
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
-  const { featuredStoreCount, featuredProductCount } =
-    getFeaturedStoreAndProductCounts(subscriptionPlan?.id)
+  const { maxStoreCount, maxProductCount } = getPlanFeatures(
+    subscriptionPlan?.id
+  )
 
   return (
     <Shell variant="sidebar">
       <PageHeader title="Stores" description="Manage your stores" size="sm" />
       <Alert>
-        <Icons.terminal className="h-4 w-4" aria-hidden="true" />
+        <RocketIcon className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           You are currently on the{" "}
           <span className="font-semibold">{subscriptionPlan?.name}</span> plan.{" "}
-          {!subscriptionPlan?.isSubscribed
-            ? "Upgrade to create more stores and products."
-            : subscriptionPlan.isCanceled
-            ? "Your plan will be canceled on "
-            : "Your plan renews on "}
-          {subscriptionPlan?.stripeCurrentPeriodEnd
-            ? `${formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.`
-            : null}{" "}
           You can create up to{" "}
-          <span className="font-semibold">{featuredStoreCount}</span> stores and{" "}
-          <span className="font-semibold">{featuredProductCount}</span> products
-          on this plan.
+          <span className="font-semibold">{maxStoreCount}</span> stores and{" "}
+          <span className="font-semibold">{maxProductCount}</span> products on
+          this plan.
         </AlertDescription>
       </Alert>
       <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
