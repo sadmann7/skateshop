@@ -2,7 +2,11 @@ import { type Metadata } from "next"
 import { products } from "@/db/schema"
 import { env } from "@/env.mjs"
 
-import { PageHeader } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
@@ -68,11 +72,17 @@ export default async function ProductsPage({
   return (
     <Shell>
       <PageHeader
-        title="Products"
-        description="Buy products from our stores"
-        size="sm"
-      />
+        id="products-page-header"
+        aria-labelledby="products-page-header-heading"
+      >
+        <PageHeaderHeading size="sm">Products</PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          Buy products from our stores
+        </PageHeaderDescription>
+      </PageHeader>
       <Products
+        id="products-page-products"
+        aria-labelledby="products-page-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         categories={Object.values(products.category.enumValues)}

@@ -1,14 +1,15 @@
 import { type Product } from "@/db/schema"
 
 import { toTitleCase } from "@/lib/utils"
-import { PageHeader } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
-
-// Running out of edge function execution units on vercel free plan
-// export const runtime = "edge"
 
 interface CategoryPageProps {
   params: {
@@ -75,11 +76,17 @@ export default async function CategoryPage({
   return (
     <Shell>
       <PageHeader
-        title={toTitleCase(category)}
-        description={`Buy ${category} from the best stores`}
-        size="sm"
-      />
+        id="category-header"
+        aria-labelledby="category-header-heading"
+      >
+        <PageHeaderHeading size="sm">{toTitleCase(category)}</PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          {`Buy ${category} from the best stores`}
+        </PageHeaderDescription>
+      </PageHeader>
       <Products
+        id="category-products"
+        aria-labelledby="category-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         category={category}

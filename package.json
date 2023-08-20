@@ -23,7 +23,7 @@
     "@clerk/nextjs": "^4.23.2",
     "@clerk/themes": "^1.7.5",
     "@hookform/resolvers": "^3.2.0",
-    "@loglib/tracker": "^0.6.0",
+    "@loglib/tracker": "^0.6.1",
     "@planetscale/database": "^1.10.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.4",

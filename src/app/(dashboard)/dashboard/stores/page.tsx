@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
@@ -12,8 +13,14 @@ import {
   getPlanFeatures,
   getUserSubscriptionPlan,
 } from "@/lib/subscription"
+import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { PageHeader } from "@/components/page-header"
+import { buttonVariants } from "@/components/ui/button"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { StoreCard } from "@/components/store-card"
 
@@ -52,40 +59,61 @@ export default async function StoresPage() {
 
   return (
     <Shell variant="sidebar">
-      <PageHeader title="Stores" description="Manage your stores" size="sm" />
-      <Alert>
+      <PageHeader
+        id="dashboard-stores-page-header"
+        aria-labelledby="dashboard-stores-page-header-heading"
+      >
+        <div className="flex space-x-4">
+          <PageHeaderHeading size="sm" className="flex-1">
+            Stores
+          </PageHeaderHeading>
+          <Link
+            aria-label="Create store"
+            href={getDashboardRedirectPath({
+              storeCount: storesWithProductCount.length,
+              subscriptionPlan: subscriptionPlan,
+            })}
+            className={cn(
+              buttonVariants({
+                size: "sm",
+              })
+            )}
+          >
+            Create store
+          </Link>
+        </div>
+        <PageHeaderDescription size="sm">
+          Manage your stores
+        </PageHeaderDescription>
+      </PageHeader>
+      <Alert
+        id="dashboard-stores-alert"
+        aria-labelledby="dashboard-stores-alert-heading"
+      >
         <RocketIcon className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           You are currently on the{" "}
-          <span className="font-semibold">{subscriptionPlan?.name}</span> plan.{" "}
+          <span className="font-semibold">{subscriptionPlan?.name}</span> plan.
           You can create up to{" "}
           <span className="font-semibold">{maxStoreCount}</span> stores and{" "}
           <span className="font-semibold">{maxProductCount}</span> products on
           this plan.
         </AlertDescription>
       </Alert>
-      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+      <section
+        id="dashboard-stores-section"
+        aria-labelledby="dashboard-stores-section-heading"
+        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      >
         {storesWithProductCount.map((store) => (
           <StoreCard
             key={store.id}
             store={store}
-            route={`/dashboard/stores/${store.id}`}
-            buttonText="Manage store"
+            href={`/dashboard/stores/${store.id}`}
           />
         ))}
-        {storesWithProductCount.length < 3 && (
-          <StoreCard
-            cardTitle="Create a new store"
-            cardDescription="Create a new store to start selling your products."
-            route={getDashboardRedirectPath({
-              storeCount: storesWithProductCount.length,
-              subscriptionPlan: subscriptionPlan,
-            })}
-            buttonText="Create store"
-          />
-        )}
-      </div>
+      </section>
     </Shell>
   )
 }

@@ -3,7 +3,11 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 
-import { PageHeader } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -22,10 +26,14 @@ export default async function PurchasesPage() {
   return (
     <Shell variant="sidebar">
       <PageHeader
-        title="Purchases"
-        description="Manage your purchases."
-        size="sm"
-      />
+        id="dashboard-purchases-header"
+        aria-labelledby="dashboard-purchases-header-heading"
+      >
+        <PageHeaderHeading size="sm">Purchases</PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          Manage your purchases
+        </PageHeaderDescription>
+      </PageHeader>
       <div>Purchases Table</div>
     </Shell>
   )

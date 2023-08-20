@@ -82,6 +82,7 @@ export const emailPreferences = mysqlTable("email_preferences", {
 
 export type EmailPreference = InferModel<typeof emailPreferences>
 
+// Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = mysqlTable("payments", {
   id: serial("id").primaryKey(),
   userId: varchar("userId", { length: 191 }),
@@ -95,6 +96,7 @@ export const payments = mysqlTable("payments", {
 
 export type Payment = InferModel<typeof payments>
 
+// Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const orders = mysqlTable("orders", {
   id: serial("id").primaryKey(),
   userId: varchar("userId", { length: 191 }),
@@ -115,6 +117,7 @@ export const orders = mysqlTable("orders", {
 
 export type Order = InferModel<typeof orders>
 
+// Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const addresses = mysqlTable("addresses", {
   id: serial("id").primaryKey(),
   line1: varchar("line1", { length: 191 }),

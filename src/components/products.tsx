@@ -36,7 +36,7 @@ import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 import { ProductCard } from "@/components/product-card"
 
-interface ProductsProps {
+interface ProductsProps extends React.HTMLAttributes<HTMLDivElement> {
   products: Product[]
   pageCount: number
   category?: Product["category"]
@@ -52,6 +52,7 @@ export function Products({
   categories,
   stores,
   storePageCount,
+  ...props
 }: ProductsProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -166,7 +167,7 @@ export function Products({
   }, [storeIds])
 
   return (
-    <div className="flex flex-col space-y-6">
+    <section className="flex flex-col space-y-6" {...props}>
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
@@ -428,6 +429,6 @@ export function Products({
           startTransition={startTransition}
         />
       ) : null}
-    </div>
+    </section>
   )
 }

@@ -217,7 +217,7 @@ export default async function IndexPage() {
             <StoreCard
               key={store.id}
               store={store}
-              route={`/products?store_ids=${store.id}`}
+              href={`/products?store_ids=${store.id}`}
             />
           ))}
         </div>

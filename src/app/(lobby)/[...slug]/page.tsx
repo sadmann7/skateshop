@@ -9,7 +9,11 @@ import { siteConfig } from "@/config/site"
 import { absoluteUrl } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { Mdx } from "@/components/mdx/mdx-components"
-import { PageHeader } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { MdxPager } from "@/components/pagers/mdx-pager"
 import { Shell } from "@/components/shells/shell"
 
@@ -100,7 +104,10 @@ export default async function PagePage({ params }: PageProps) {
 
   return (
     <Shell as="article" variant="markdown">
-      <PageHeader title={page.title} description={page.description} />
+      <PageHeader>
+        <PageHeaderHeading>{page.title}</PageHeaderHeading>
+        <PageHeaderDescription>{page.description}</PageHeaderDescription>
+      </PageHeader>
       <Separator className="my-4" />
       <Mdx code={page.body.code} />
       <MdxPager

@@ -34,7 +34,7 @@ import { PaginationButton } from "@/components/pagers/pagination-button"
 import { ProductCard } from "@/components/product-card"
 import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
-interface BoardBuilderProps {
+interface BoardBuilderProps extends React.HTMLAttributes<HTMLDivElement> {
   products: Product[]
   pageCount: number
   subcategory: string | null
@@ -46,6 +46,7 @@ export function BoardBuilder({
   pageCount,
   subcategory,
   cartItems,
+  ...props
 }: BoardBuilderProps) {
   const router = useRouter()
   const pathname = usePathname()
@@ -131,7 +132,7 @@ export function BoardBuilder({
   )
 
   return (
-    <div className="flex flex-col space-y-6">
+    <section className="flex flex-col space-y-6" {...props}>
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
@@ -279,6 +280,6 @@ export function BoardBuilder({
           startTransition={startTransition}
         />
       ) : null}
-    </div>
+    </section>
   )
 }

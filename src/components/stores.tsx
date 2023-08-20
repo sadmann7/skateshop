@@ -18,7 +18,7 @@ import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 import { StoreCard } from "@/components/store-card"
 
-interface StoresProps {
+interface StoresProps extends React.HTMLAttributes<HTMLDivElement> {
   stores: {
     id: number
     name: string
@@ -27,7 +27,7 @@ interface StoresProps {
   pageCount: number
 }
 
-export function Stores({ stores, pageCount }: StoresProps) {
+export function Stores({ stores, pageCount, ...props }: StoresProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -57,7 +57,7 @@ export function Stores({ stores, pageCount }: StoresProps) {
   )
 
   return (
-    <div className="flex flex-col space-y-6">
+    <section className="flex flex-col space-y-6" {...props}>
       <div className="flex items-center space-x-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -104,8 +104,8 @@ export function Stores({ stores, pageCount }: StoresProps) {
         {stores.map((store) => (
           <StoreCard
             key={store.id}
+            href={`/products?store_ids=${store.id}`}
             store={store}
-            route={`/products?store_ids=${store.id}`}
           />
         ))}
       </div>
@@ -122,6 +122,6 @@ export function Stores({ stores, pageCount }: StoresProps) {
           startTransition={startTransition}
         />
       ) : null}
-    </div>
+    </section>
   )
 }

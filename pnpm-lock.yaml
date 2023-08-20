@@ -15,8 +15,8 @@ dependencies:
     specifier: ^3.2.0
     version: 3.2.0(react-hook-form@7.45.4)
   '@loglib/tracker':
-    specifier: ^0.6.0
-    version: 0.6.0(react@18.2.0)
+    specifier: ^0.6.1
+    version: 0.6.1(react@18.2.0)
   '@planetscale/database':
     specifier: ^1.10.0
     version: 1.10.0
@@ -1728,8 +1728,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@loglib/tracker@0.6.0(react@18.2.0):
-    resolution: {integrity: sha512-bmSPYe4foIIigxFOXQMM6vP8wV0wIt9FJX+u/snqDImbwaSFd1Ojw6fw2SS2gdxp8Copo9iqRVFjyU6qSkZuDg==}
+  /@loglib/tracker@0.6.1(react@18.2.0):
+    resolution: {integrity: sha512-mr/7sj5f64lEN5p8MQwYlQQ/IvBFpsj+q62xa9UEOybVx9WP6SUOmEPt709PBqoGmZMrVNc1fAsTjQuha9lC2w==}
     peerDependencies:
       react: ^16.8||^17||^18
     dependencies:
@@ -4350,8 +4350,8 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.10
-      caniuse-lite: 1.0.30001521
-      fraction.js: 4.2.0
+      caniuse-lite: 1.0.30001522
+      fraction.js: 4.2.1
       normalize-range: 0.1.2
       picocolors: 1.0.0
       postcss: 8.4.28
@@ -4443,7 +4443,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001521
+      caniuse-lite: 1.0.30001522
       electron-to-chromium: 1.4.496
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
@@ -4520,8 +4520,8 @@ packages:
     resolution: {integrity: sha512-dU+Tx2fsypxTgtLoE36npi3UqcjSSMNYfkqgmoEhtZrraP5VWq0K7FkWVTYa8eMPtnU/G2txVsfdCJTn9uzpuQ==}
     dev: false
 
-  /caniuse-lite@1.0.30001521:
-    resolution: {integrity: sha512-fnx1grfpEOvDGH+V17eccmNjucGUnCbP6KL+l5KqBIerp26WK/+RQ7CIDE37KGJjaPyqWXXlFUyKiWmvdNNKmQ==}
+  /caniuse-lite@1.0.30001522:
+    resolution: {integrity: sha512-TKiyTVZxJGhsTszLuzb+6vUZSjVOAhClszBr2Ta2k9IwtNBT/4dzmL6aywt0HCgEZlmwJzXJd8yNiob6HgwTRg==}
 
   /ccount@2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -5967,8 +5967,8 @@ packages:
       fetch-blob: 3.2.0
     dev: false
 
-  /fraction.js@4.2.0:
-    resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
+  /fraction.js@4.2.1:
+    resolution: {integrity: sha512-/KxoyCnPM0GwYI4NN0Iag38Tqt+od3/mLuguepLgCAKPn0ZhC544nssAW0tG2/00zXEYl9W+7hwAIpLHo6Oc7Q==}
     dev: true
 
   /fs-extra@11.1.0:
@@ -7749,7 +7749,7 @@ packages:
       '@opentelemetry/api': 1.4.1
       '@swc/helpers': 0.5.1
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001521
+      caniuse-lite: 1.0.30001522
       postcss: 8.4.14
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)

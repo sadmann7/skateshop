@@ -1,7 +1,11 @@
 import { type Product } from "@/db/schema"
 
 import { toTitleCase, unslugify } from "@/lib/utils"
-import { PageHeader } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
@@ -38,7 +42,6 @@ export default async function SubcategoryPage({
     searchParams
 
   // Products transaction
-
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
@@ -72,11 +75,19 @@ export default async function SubcategoryPage({
   return (
     <Shell>
       <PageHeader
-        title={toTitleCase(unslugify(subcategory))}
-        description={`Buy the best ${unslugify(subcategory)}`}
-        size="sm"
-      />
+        id="subcategory-header"
+        aria-labelledby="subcategory-header-heading"
+      >
+        <PageHeaderHeading size="sm">
+          {toTitleCase(unslugify(subcategory))}
+        </PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          {`Buy the best ${unslugify(subcategory)}`}
+        </PageHeaderDescription>
+      </PageHeader>
       <Products
+        id="subcategory-products"
+        aria-labelledby="subcategory-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         stores={storesTransaction.items}

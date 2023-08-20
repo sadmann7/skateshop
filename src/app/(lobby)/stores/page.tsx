@@ -1,7 +1,11 @@
 import { type Metadata } from "next"
 import { env } from "@/env.mjs"
 
-import { PageHeader } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { Stores } from "@/components/stores"
 import { getStoresAction } from "@/app/_actions/store"
@@ -36,11 +40,20 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   return (
     <Shell>
       <PageHeader
-        title="Stores"
-        description="Buy products from our stores"
-        size="sm"
+        id="stores-page-header"
+        aria-labelledby="stores-page-header-heading"
+      >
+        <PageHeaderHeading size="sm">Stores</PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          Buy products from our stores
+        </PageHeaderDescription>
+      </PageHeader>
+      <Stores
+        id="stores-page-stores"
+        aria-labelledby="stores-page-stores-heading"
+        stores={storesTransaction.items}
+        pageCount={pageCount}
       />
-      <Stores stores={storesTransaction.items} pageCount={pageCount} />
     </Shell>
   )
 }
