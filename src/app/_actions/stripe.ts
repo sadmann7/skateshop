@@ -65,7 +65,7 @@ export async function manageSubscriptionAction(
   }
 }
 
-export async function checkStripeConnectionAction(
+export async function getStripeAccountAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
   const store = await db.query.stores.findFirst({
@@ -75,6 +75,7 @@ export async function checkStripeConnectionAction(
   if (!store)
     return {
       isConnected: false,
+      account: null,
       payment: null,
     }
 
@@ -85,6 +86,7 @@ export async function checkStripeConnectionAction(
   if (!payment || !payment.stripeAccountId)
     return {
       isConnected: false,
+      account: null,
       payment: null,
     }
 
@@ -93,12 +95,25 @@ export async function checkStripeConnectionAction(
   if (!account)
     return {
       isConnected: false,
+      account: null,
       payment: null,
     }
+
+  // If the account is connected, we update the store's detailsSubmitted field
+  if (account.details_submitted && !payment.detailsSubmitted) {
+    await db
+      .update(payments)
+      .set({
+        detailsSubmitted: account.details_submitted,
+        stripeAccountCreatedAt: account.created,
+      })
+      .where(eq(payments.storeId, input.storeId))
+  }
 
   return {
     isConnected:
       account.details_submitted && payment.detailsSubmitted ? true : false,
+    account,
     payment,
   }
 }
@@ -107,7 +122,7 @@ export async function checkStripeConnectionAction(
 export async function createAccountLinkAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
-  const { isConnected, payment } = await checkStripeConnectionAction(input)
+  const { isConnected, payment } = await getStripeAccountAction(input)
 
   if (isConnected) {
     throw new Error("Store already connected to Stripe.")
@@ -136,37 +151,11 @@ export async function createAccountLinkAction(
       throw new Error("Error creating Stripe account.")
     }
 
-    await db.transaction(async (tx) => {
-      await tx.insert(payments).values({
-        storeId: input.storeId,
-        stripeAccountId: account.id,
-        stripeAccountCreatedAt: account.created,
-        detailsSubmitted: account.details_submitted,
-      })
-
-      await tx
-        .update(stores)
-        .set({
-          stripeAccountId: account.details_submitted ? account.id : null,
-        })
-        .where(eq(stores.id, input.storeId))
+    await db.insert(payments).values({
+      storeId: input.storeId,
+      stripeAccountId: account.id,
     })
 
     return account.id
-  }
-}
-
-export async function getStripeAccountAction(
-  input: z.infer<typeof createAccountLinkSchema>
-) {
-  const { isConnected, payment } = await checkStripeConnectionAction(input)
-
-  if (!isConnected || !payment?.stripeAccountId) return null
-
-  try {
-    return await stripe.accounts.retrieve(payment.stripeAccountId)
-  } catch (err) {
-    console.error(err)
-    return null
   }
 }
