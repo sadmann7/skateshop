@@ -69,7 +69,7 @@ export default async function IndexPage() {
   const githubStars = await getGithubStars()
 
   return (
-    <Shell as="div" className="gap-12">
+    <Shell className="gap-12">
       <section
         id="hero"
         aria-labelledby="hero-heading"

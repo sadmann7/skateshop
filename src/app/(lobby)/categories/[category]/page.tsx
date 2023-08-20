@@ -76,8 +76,8 @@ export default async function CategoryPage({
   return (
     <Shell>
       <PageHeader
-        id="category-header"
-        aria-labelledby="category-header-heading"
+        id="category-page-header"
+        aria-labelledby="category-page-header-heading"
       >
         <PageHeaderHeading size="sm">{toTitleCase(category)}</PageHeaderHeading>
         <PageHeaderDescription size="sm">
@@ -85,8 +85,8 @@ export default async function CategoryPage({
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        id="category-products"
-        aria-labelledby="category-products-heading"
+        id="category-page-products"
+        aria-labelledby="category-page-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         category={category}

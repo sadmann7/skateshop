@@ -75,8 +75,8 @@ export default async function SubcategoryPage({
   return (
     <Shell>
       <PageHeader
-        id="subcategory-header"
-        aria-labelledby="subcategory-header-heading"
+        id="subcategory-page-header"
+        aria-labelledby="subcategory-page-header-heading"
       >
         <PageHeaderHeading size="sm">
           {toTitleCase(unslugify(subcategory))}
@@ -86,8 +86,8 @@ export default async function SubcategoryPage({
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        id="subcategory-products"
-        aria-labelledby="subcategory-products-heading"
+        id="subcategory-page-products"
+        aria-labelledby="subcategory-page-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         stores={storesTransaction.items}

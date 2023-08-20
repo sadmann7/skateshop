@@ -1,5 +1,5 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   PageHeader,
@@ -26,8 +26,8 @@ export default function StoresLoading() {
         </PageHeaderDescription>
       </PageHeader>
       <Card
-        id="dashboard-stores-alert"
-        aria-labelledby="dashboard-stores-alert-heading"
+        id="dashboard-stores-page-alert"
+        aria-labelledby="dashboard-stores-page-alert-heading"
         className="flex space-x-4 px-4 py-3"
       >
         <Skeleton className="mt-2 h-4 w-4 rounded" />
@@ -38,22 +38,20 @@ export default function StoresLoading() {
         </div>
       </Card>
       <section
-        id="dashboard-stores-section"
-        aria-labelledby="dashboard-stores-section-heading"
+        id="dashboard-stores-page-stores"
+        aria-labelledby="dashboard-stores-page-stores-heading"
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {Array.from({ length: 3 }).map((_, i) => (
           <Card key={i} className="h-full">
             <AspectRatio ratio={21 / 9}>
+              <Skeleton className="absolute right-2 top-2 h-5 w-20" />
               <Skeleton className="h-full w-full" />
             </AspectRatio>
-            <CardHeader className="flex-1">
+            <CardHeader className="space-y-2.5">
               <Skeleton className="h-5 w-3/5" />
               <Skeleton className="h-4 w-4/5" />
             </CardHeader>
-            <CardContent className="mt-5">
-              <Skeleton className="h-8 w-full" />
-            </CardContent>
           </Card>
         ))}
       </section>

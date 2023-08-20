@@ -87,8 +87,8 @@ export default async function StoresPage() {
         </PageHeaderDescription>
       </PageHeader>
       <Alert
-        id="dashboard-stores-alert"
-        aria-labelledby="dashboard-stores-alert-heading"
+        id="dashboard-stores-page-alert"
+        aria-labelledby="dashboard-stores-page-alert-heading"
       >
         <RocketIcon className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
@@ -102,8 +102,8 @@ export default async function StoresPage() {
         </AlertDescription>
       </Alert>
       <section
-        id="dashboard-stores-section"
-        aria-labelledby="dashboard-stores-section-heading"
+        id="dashboard-stores-page-stores"
+        aria-labelledby="dashboard-stores-page-stores-heading"
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
         {storesWithProductCount.map((store) => (

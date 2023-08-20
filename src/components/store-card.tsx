@@ -14,11 +14,11 @@ import {
 import { checkStripeConnectionAction } from "@/app/_actions/stripe/account"
 
 interface StoreCardProps {
-  href: string
   store: Pick<Store, "id" | "name"> &
     Partial<Pick<Store, "description">> & {
       productCount: number
     }
+  href: string
 }
 
 export async function StoreCard({ store, href }: StoreCardProps) {
@@ -27,13 +27,13 @@ export async function StoreCard({ store, href }: StoreCardProps) {
   })
 
   return (
-    <Link aria-label={store?.name} href={href}>
-      <Card className="flex h-full flex-col">
+    <Link aria-label={store.name} href={href}>
+      <Card className="h-full">
         <AspectRatio ratio={21 / 9}>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-950/20" />
           <Badge
             className={cn(
-              "pointer-events-none absolute right-2 top-2 z-20 text-foreground",
+              "pointer-events-none absolute right-2 top-2 text-foreground",
               isConnected ? "bg-green-600" : "bg-red-600"
             )}
           >
@@ -41,18 +41,16 @@ export async function StoreCard({ store, href }: StoreCardProps) {
           </Badge>
           <div
             className="h-full rounded-t-md"
-            style={getRandomPatternStyle(
-              String(store?.id ?? crypto.randomUUID())
-            )}
+            style={getRandomPatternStyle(String(store.id))}
           />
         </AspectRatio>
-        <CardHeader className="flex-1">
-          <CardTitle className="line-clamp-1 text-lg">{store?.name}</CardTitle>
-          {store?.description && (
+        <CardHeader>
+          <CardTitle className="line-clamp-1 text-lg">{store.name}</CardTitle>
+          {store.description ? (
             <CardDescription className="line-clamp-2">
               {store.description}
             </CardDescription>
-          )}
+          ) : null}
         </CardHeader>
       </Card>
     </Link>

@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { LoadingButton } from "@/components/ui/loading-button"
 import { Textarea } from "@/components/ui/textarea"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
+import { LoadingButton } from "@/components/loading-button"
 import { getStripeAccountAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
