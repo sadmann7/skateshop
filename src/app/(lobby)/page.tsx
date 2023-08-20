@@ -27,18 +27,18 @@ export default async function IndexPage() {
     .limit(8)
     .orderBy(desc(products.createdAt))
 
-  const storesWithProductCount = await db
+  const someStores = await db
     .select({
       id: stores.id,
       name: stores.name,
       description: stores.description,
-      productCount: sql<number>`count(*)`,
+      stripeAccountId: stores.stripeAccountId,
     })
     .from(stores)
     .limit(4)
     .leftJoin(products, eq(products.storeId, stores.id))
     .groupBy(stores.id)
-    .orderBy(desc(sql<number>`count(*)`))
+    .orderBy(desc(sql<number>`count(*)`), desc(stores.stripeAccountId))
 
   async function getGithubStars(): Promise<number | null> {
     try {
@@ -213,7 +213,7 @@ export default async function IndexPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {storesWithProductCount.map((store) => (
+          {someStores.map((store) => (
             <StoreCard
               key={store.id}
               store={store}

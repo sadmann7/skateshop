@@ -1,4 +1,4 @@
-import { type Product } from "@/db/schema"
+import type { Product, Store } from "@/db/schema"
 import { type FileWithPath } from "react-dropzone"
 import { type z } from "zod"
 
@@ -63,6 +63,14 @@ export interface DataTableSearchableColumn<TData> {
 export interface DataTableFilterableColumn<TData>
   extends DataTableSearchableColumn<TData> {
   options: Option[]
+}
+
+export interface CuratedStore {
+  id: Store["id"]
+  name: Store["name"]
+  description?: Store["description"]
+  stripeAccountId?: Store["stripeAccountId"]
+  productCount?: number
 }
 
 export type CartItem = z.infer<typeof cartItemSchema>

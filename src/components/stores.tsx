@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import type { CuratedStore } from "@/types"
 
 import { sortOptions } from "@/config/stores"
 import { cn } from "@/lib/utils"
@@ -19,13 +20,7 @@ import { PaginationButton } from "@/components/pagers/pagination-button"
 import { StoreCard } from "@/components/store-card"
 
 interface StoresProps extends React.HTMLAttributes<HTMLDivElement> {
-  stores: {
-    id: number
-    name: string
-    description?: string | null
-    stripeAccountId?: string | null
-    productCount: number
-  }[]
+  stores: CuratedStore[]
   pageCount: number
 }
 

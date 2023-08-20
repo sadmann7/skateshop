@@ -37,12 +37,12 @@ export default async function StoresPage() {
     redirect("/signin")
   }
 
-  const storesWithProductCount = await db
+  const allStores = await db
     .select({
       id: stores.id,
       name: stores.name,
       description: stores.description,
-      productCount: sql<number>`count(*)`,
+      stripeAccountId: stores.stripeAccountId,
     })
     .from(stores)
 
@@ -70,7 +70,7 @@ export default async function StoresPage() {
           <Link
             aria-label="Create store"
             href={getDashboardRedirectPath({
-              storeCount: storesWithProductCount.length,
+              storeCount: allStores.length,
               subscriptionPlan: subscriptionPlan,
             })}
             className={cn(
@@ -106,7 +106,7 @@ export default async function StoresPage() {
         aria-labelledby="dashboard-stores-page-stores-heading"
         className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
       >
-        {storesWithProductCount.map((store) => (
+        {allStores.map((store) => (
           <StoreCard
             key={store.id}
             store={store}

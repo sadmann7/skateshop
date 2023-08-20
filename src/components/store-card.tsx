@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { type Store } from "@/db/schema"
+import { type CuratedStore } from "@/types"
 
 import { getRandomPatternStyle } from "@/lib/generate-pattern"
 import { cn } from "@/lib/utils"
@@ -13,10 +13,7 @@ import {
 } from "@/components/ui/card"
 
 interface StoreCardProps {
-  store: Pick<Store, "id" | "name"> &
-    Partial<Pick<Store, "description" | "stripeAccountId">> & {
-      productCount: number
-    }
+  store: CuratedStore
   href: string
 }
 
