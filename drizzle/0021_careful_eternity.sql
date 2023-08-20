@@ -1,0 +1,1 @@
+ALTER TABLE `stores` MODIFY COLUMN `active` boolean NOT NULL DEFAULT false;

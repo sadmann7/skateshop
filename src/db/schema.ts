@@ -19,7 +19,7 @@ export const stores = mysqlTable("stores", {
   name: varchar("name", { length: 191 }).notNull(),
   description: text("description"),
   slug: text("slug"),
-  active: boolean("active").notNull().default(true),
+  active: boolean("active").notNull().default(false),
   stripeAccountId: varchar("stripeAccountId", { length: 191 }),
   createdAt: timestamp("createdAt").defaultNow(),
 })

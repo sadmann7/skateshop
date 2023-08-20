@@ -99,15 +99,25 @@ export async function getStripeAccountAction(
       payment: null,
     }
 
-  // If the account is connected, we update the store's detailsSubmitted field
+  // If the account details have been submitted, we update the store and payment records
   if (account.details_submitted && !payment.detailsSubmitted) {
-    await db
-      .update(payments)
-      .set({
-        detailsSubmitted: account.details_submitted,
-        stripeAccountCreatedAt: account.created,
-      })
-      .where(eq(payments.storeId, input.storeId))
+    await db.transaction(async (tx) => {
+      await tx
+        .update(payments)
+        .set({
+          detailsSubmitted: account.details_submitted,
+          stripeAccountCreatedAt: account.created,
+        })
+        .where(eq(payments.storeId, input.storeId))
+
+      await tx
+        .update(stores)
+        .set({
+          stripeAccountId: account.id,
+          active: true,
+        })
+        .where(eq(stores.id, input.storeId))
+    })
   }
 
   return {
