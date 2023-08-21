@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
-import { and, asc, desc, eq, gt, lt, sql } from "drizzle-orm"
+import { and, asc, desc, eq, gt, isNull, lt, not, sql } from "drizzle-orm"
 import { type z } from "zod"
 
 import { slugify } from "@/lib/utils"
@@ -21,6 +21,7 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
       keyof Store | undefined,
       "asc" | "desc" | undefined,
     ]) ?? []
+  const statuses = input.statuses?.split(".") ?? []
 
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
@@ -35,9 +36,20 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
       .limit(limit)
       .offset(offset)
       .leftJoin(products, eq(stores.id, products.storeId))
-      .where(input.userId ? eq(stores.userId, input.userId) : undefined)
+      .where(
+        and(
+          input.userId ? eq(stores.userId, input.userId) : undefined,
+          statuses.includes("active") && !statuses.includes("inactive")
+            ? not(isNull(stores.stripeAccountId))
+            : undefined,
+          statuses.includes("inactive") && !statuses.includes("active")
+            ? isNull(stores.stripeAccountId)
+            : undefined
+        )
+      )
       .groupBy(stores.id)
       .orderBy(
+        desc(stores.stripeAccountId),
         input.sort === "productCount.asc"
           ? asc(sql<number>`count(*)`)
           : input.sort === "productCount.desc"
@@ -54,6 +66,7 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
         count: sql<number>`count(*)`,
       })
       .from(stores)
+      .where(input.userId ? eq(stores.userId, input.userId) : undefined)
 
     return {
       items,

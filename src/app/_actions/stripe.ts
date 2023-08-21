@@ -68,58 +68,63 @@ export async function manageSubscriptionAction(
 export async function getStripeAccountAction(
   input: z.infer<typeof createAccountLinkSchema>
 ) {
-  const nullReturn = {
+  const falsyReturn = {
     isConnected: false,
     account: null,
     payment: null,
   }
 
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, input.storeId),
-  })
-
-  if (!store) return nullReturn
-
-  const payment = await db.query.payments.findFirst({
-    where: eq(payments.storeId, input.storeId),
-    columns: {
-      stripeAccountId: true,
-      detailsSubmitted: true,
-    },
-  })
-
-  if (!payment || !payment.stripeAccountId) return nullReturn
-
-  const account = await stripe.accounts.retrieve(payment.stripeAccountId)
-
-  if (!account) return nullReturn
-
-  // If the account details have been submitted, we update the store and payment records
-  if (account.details_submitted && !payment.detailsSubmitted) {
-    await db.transaction(async (tx) => {
-      await tx
-        .update(payments)
-        .set({
-          detailsSubmitted: account.details_submitted,
-          stripeAccountCreatedAt: account.created,
-        })
-        .where(eq(payments.storeId, input.storeId))
-
-      await tx
-        .update(stores)
-        .set({
-          stripeAccountId: account.id,
-          active: true,
-        })
-        .where(eq(stores.id, input.storeId))
+  try {
+    const store = await db.query.stores.findFirst({
+      where: eq(stores.id, input.storeId),
     })
-  }
 
-  return {
-    isConnected:
-      account.details_submitted && payment.detailsSubmitted ? true : false,
-    account,
-    payment,
+    if (!store) return falsyReturn
+
+    const payment = await db.query.payments.findFirst({
+      where: eq(payments.storeId, input.storeId),
+      columns: {
+        stripeAccountId: true,
+        detailsSubmitted: true,
+      },
+    })
+
+    if (!payment || !payment.stripeAccountId) return falsyReturn
+
+    const account = await stripe.accounts.retrieve(payment.stripeAccountId)
+
+    if (!account) return falsyReturn
+
+    // If the account details have been submitted, we update the store and payment records
+    if (account.details_submitted && !payment.detailsSubmitted) {
+      await db.transaction(async (tx) => {
+        await tx
+          .update(payments)
+          .set({
+            detailsSubmitted: account.details_submitted,
+            stripeAccountCreatedAt: account.created,
+          })
+          .where(eq(payments.storeId, input.storeId))
+
+        await tx
+          .update(stores)
+          .set({
+            stripeAccountId: account.id,
+            active: true,
+          })
+          .where(eq(stores.id, input.storeId))
+      })
+    }
+
+    return {
+      isConnected:
+        account.details_submitted && payment.detailsSubmitted ? true : false,
+      account,
+      payment,
+    }
+  } catch (err) {
+    console.log(err)
+    return falsyReturn
   }
 }
 

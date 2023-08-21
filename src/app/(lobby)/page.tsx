@@ -38,7 +38,7 @@ export default async function IndexPage() {
     .limit(4)
     .leftJoin(products, eq(products.storeId, stores.id))
     .groupBy(stores.id)
-    .orderBy(desc(sql<number>`count(*)`), desc(stores.stripeAccountId))
+    .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
 
   async function getGithubStars(): Promise<number | null> {
     try {
@@ -62,6 +62,7 @@ export default async function IndexPage() {
 
       return data.stargazers_count
     } catch (err) {
+      console.error(err)
       return null
     }
   }

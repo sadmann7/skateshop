@@ -3,8 +3,9 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { CuratedStore } from "@/types"
+import { Cross2Icon } from "@radix-ui/react-icons"
 
-import { sortOptions } from "@/config/stores"
+import { storeSortOptions, storeStatusOptions } from "@/config/stores"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -18,6 +19,8 @@ import {
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 import { StoreCard } from "@/components/store-card"
+
+import { FacetedFilter } from "./faceted-filter"
 
 interface StoresProps extends React.HTMLAttributes<HTMLDivElement> {
   stores: CuratedStore[]
@@ -34,6 +37,7 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "productCount.desc"
+  const statuses = searchParams?.get("statuses")
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -53,6 +57,25 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
     [searchParams]
   )
 
+  // Store status filter
+  const [filterValues, setFilterValues] = React.useState<string[]>(
+    statuses?.split(".") ?? []
+  )
+
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          statuses: filterValues?.length ? filterValues.join(".") : null,
+        })}`,
+        {
+          scroll: false,
+        }
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterValues])
+
   return (
     <section className="flex flex-col space-y-6" {...props}>
       <div className="flex items-center space-x-2">
@@ -66,7 +89,7 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {sortOptions.map((option) => (
+            {storeSortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.label}
                 className={cn(option.value === sort && "font-bold")}
@@ -88,6 +111,25 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <div className="flex flex-1 items-center space-x-2">
+          <FacetedFilter
+            title="Status"
+            filterValues={filterValues}
+            setFilterValues={setFilterValues}
+            options={storeStatusOptions}
+          />
+          {filterValues.length > 0 && (
+            <Button
+              aria-label="Reset filters"
+              variant="ghost"
+              className="h-8 px-2 lg:px-3"
+              onClick={() => setFilterValues([])}
+            >
+              Reset
+              <Cross2Icon className="ml-2 h-4 w-4" aria-hidden="true" />
+            </Button>
+          )}
+        </div>
       </div>
       {!isPending && !stores.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">

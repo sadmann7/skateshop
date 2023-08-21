@@ -1,4 +1,4 @@
-export const sortOptions = [
+export const storeSortOptions = [
   {
     label: "Item count: Low to high",
     value: "productCount.asc",
@@ -20,4 +20,9 @@ export const sortOptions = [
     label: "Alphabetical: Z to A",
     value: "name.desc",
   },
+]
+
+export const storeStatusOptions = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" },
 ]

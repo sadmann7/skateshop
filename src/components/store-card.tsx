@@ -29,7 +29,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
               store.stripeAccountId ? "bg-green-600" : "bg-red-600"
             )}
           >
-            {store.stripeAccountId ? "Connected" : "Disconnected"}
+            {store.stripeAccountId ? "Active" : "Inactive"}
           </Badge>
           <div
             className="h-full rounded-t-md"

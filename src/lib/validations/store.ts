@@ -19,5 +19,10 @@ export const getStoresSchema = z.object({
     .regex(/^\w+.(asc|desc)$/)
     .optional()
     .nullable(),
+  statuses: z
+    .string()
+    .regex(/^\d+.\d+$/)
+    .optional()
+    .nullable(),
   userId: z.string().optional(),
 })

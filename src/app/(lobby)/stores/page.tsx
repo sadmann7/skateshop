@@ -23,7 +23,7 @@ interface StoresPageProps {
 }
 
 export default async function StoresPage({ searchParams }: StoresPageProps) {
-  const { page, per_page, sort } = searchParams ?? {}
+  const { page, per_page, sort, statuses } = searchParams ?? {}
 
   // Stores transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
@@ -33,6 +33,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
     limit: limit,
     offset: offset,
     sort: typeof sort === "string" ? sort : "productCount.desc",
+    statuses: typeof statuses === "string" ? statuses : null,
   })
 
   const pageCount = Math.ceil(storesTransaction.total / limit)

@@ -45,10 +45,9 @@ export default async function StoresPage() {
       stripeAccountId: stores.stripeAccountId,
     })
     .from(stores)
-
     .leftJoin(products, eq(products.storeId, stores.id))
     .groupBy(stores.id)
-    .orderBy(desc(sql<number>`count(*)`))
+    .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
     .where(eq(stores.userId, user.id))
 
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
