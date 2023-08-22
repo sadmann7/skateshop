@@ -43,6 +43,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
     })
     .from(products)
     .leftJoin(stores, eq(stores.id, products.storeId))
+    .groupBy(products.id)
     .where(inArray(products.id, uniqueProductIds))
 
   const allCartLineItems = cartLineItems.map((item) => {
@@ -52,7 +53,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
 
     return {
       ...item,
-      quantity,
+      quantity: Number(quantity),
     }
   })
 

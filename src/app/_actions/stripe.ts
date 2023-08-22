@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers"
 import { db } from "@/db"
-import { payments, stores } from "@/db/schema"
+import { carts, payments, stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { type z } from "zod"
@@ -11,6 +11,8 @@ import { stripe } from "@/lib/stripe"
 import { absoluteUrl } from "@/lib/utils"
 import type {
   createPaymentIntentSchema,
+  getPaymentIntentSchema,
+  getPaymentIntentsSchema,
   getStripeAccountSchema,
   manageSubscriptionSchema,
 } from "@/lib/validations/stripe"
@@ -71,6 +73,8 @@ export async function manageSubscriptionAction(
 export async function getStripeAccountAction(
   input: z.infer<typeof getStripeAccountSchema>
 ) {
+  const retrieveAccount = input.retrieveAccount ?? true
+
   const falsyReturn = {
     isConnected: false,
     account: null,
@@ -80,6 +84,9 @@ export async function getStripeAccountAction(
   try {
     const store = await db.query.stores.findFirst({
       where: eq(stores.id, input.storeId),
+      columns: {
+        stripeAccountId: true,
+      },
     })
 
     if (!store) return falsyReturn
@@ -93,6 +100,13 @@ export async function getStripeAccountAction(
     })
 
     if (!payment || !payment.stripeAccountId) return falsyReturn
+
+    if (!retrieveAccount)
+      return {
+        isConnected: true,
+        account: null,
+        payment,
+      }
 
     const account = await stripe.accounts.retrieve(payment.stripeAccountId)
 
@@ -189,8 +203,162 @@ export async function createPaymentIntentAction(
 
   const cartId = Number(cookies().get("cartId")?.value)
 
+  if (isNaN(cartId)) {
+    throw new Error("Invalid cartId, please try again.")
+  }
+
   const metadata = {
     cartId: isNaN(cartId) ? "" : cartId,
     items: JSON.stringify(input.items),
+  }
+
+  const total = input.items.reduce((acc, item) => {
+    return acc + Number(item.price) * item.quantity
+  }, 0)
+  const fee = Math.round(total * 0.1)
+
+  if (cartId) {
+    const cart = await db.query.carts.findFirst({
+      columns: {
+        paymentIntentId: true,
+        clientSecret: true,
+      },
+      where: eq(carts.id, cartId),
+    })
+
+    if (!cart) {
+      throw new Error("Cart not found.")
+    }
+
+    if (cart.paymentIntentId && cart.clientSecret) {
+      const paymentIntent = await stripe.paymentIntents.update(
+        cart.paymentIntentId,
+        {
+          amount: total,
+          application_fee_amount: fee,
+          metadata,
+        },
+        {
+          stripeAccount: payment.stripeAccountId,
+        }
+      )
+
+      return {
+        paymentIntentId: paymentIntent.id,
+        clientSecret: paymentIntent.client_secret,
+      }
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create(
+      {
+        amount: total,
+        application_fee_amount: fee,
+        metadata,
+        currency: "usd",
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      },
+      {
+        stripeAccount: payment.stripeAccountId,
+      }
+    )
+
+    await db.update(carts).set({
+      paymentIntentId: paymentIntent.id,
+      clientSecret: paymentIntent.client_secret,
+    })
+
+    return {
+      paymentIntentId: paymentIntent.id,
+      clientSecret: paymentIntent.client_secret,
+    }
+  }
+}
+
+export async function getPaymentIntentsAction(
+  input: z.infer<typeof getPaymentIntentsSchema>
+) {
+  try {
+    const { isConnected, payment } = await getStripeAccountAction({
+      storeId: input.storeId,
+      retrieveAccount: false,
+    })
+
+    if (!isConnected || !payment) {
+      throw new Error("Store not connected to Stripe.")
+    }
+
+    if (!payment.stripeAccountId) {
+      throw new Error("Stripe account not found.")
+    }
+
+    const paymentIntents = await stripe.paymentIntents.list({
+      limit: input.limit ?? 10,
+      ...input,
+    })
+
+    return {
+      paymentIntents: paymentIntents.data.map((item) => ({
+        id: item.id,
+        amount: item.amount,
+        created: item.created,
+        cartId: Number(item.metadata.cartId),
+      })),
+      hasMore: paymentIntents.has_more,
+    }
+  } catch (err) {
+    console.error(err)
+    return {
+      paymentIntents: [],
+      hasMore: false,
+    }
+  }
+}
+
+export async function getPaymentIntentAction(
+  input: z.infer<typeof getPaymentIntentSchema>
+) {
+  try {
+    const cartId = cookies().get("cartId")?.value
+
+    const { isConnected, payment } = await getStripeAccountAction({
+      storeId: input.storeId,
+      retrieveAccount: false,
+    })
+
+    if (!isConnected || !payment) {
+      throw new Error("Store not connected to Stripe.")
+    }
+
+    if (!payment.stripeAccountId) {
+      throw new Error("Stripe account not found.")
+    }
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      input.paymentIntentId,
+      {
+        stripeAccount: payment.stripeAccountId,
+      }
+    )
+
+    if (paymentIntent.status !== "succeeded") {
+      throw new Error("Payment intent not succeeded.")
+    }
+
+    if (paymentIntent.metadata.cartId !== cartId) {
+      throw new Error("CartId does not match.")
+    }
+
+    return {
+      paymentIntent,
+      isVerified: true,
+    }
+  } catch (err) {
+    console.error(err)
+    return {
+      paymentIntent: null,
+      isVerified: false,
+    }
   }
 }

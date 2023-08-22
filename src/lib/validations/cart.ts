@@ -30,7 +30,7 @@ export const cartLineItemSchema = z.object({
   inventory: z.number().default(0),
   storeId: z.number(),
   storeName: z.string().optional().nullable(),
-  quantity: z.number().min(0).default(1).optional(),
+  quantity: z.number(),
 })
 
 export const deleteCartItemSchema = z.object({

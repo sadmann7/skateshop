@@ -89,7 +89,7 @@ export interface CartLineItem
     | "inventory"
     | "storeId"
   > {
-  quantity?: number
+  quantity: number
   storeName: string | null
 }
 
