@@ -187,6 +187,7 @@ export async function createAccountLinkAction(
   }
 }
 
+// Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Creating a payment intent for a store
 export async function createPaymentIntentAction(
   input: z.infer<typeof createPaymentIntentSchema>
@@ -276,6 +277,8 @@ export async function createPaymentIntentAction(
   }
 }
 
+// Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
+// Getting payment intents for a store
 export async function getPaymentIntentsAction(
   input: z.infer<typeof getPaymentIntentsSchema>
 ) {
@@ -316,6 +319,8 @@ export async function getPaymentIntentsAction(
   }
 }
 
+// Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
+// Getting a payment intent for a store
 export async function getPaymentIntentAction(
   input: z.infer<typeof getPaymentIntentSchema>
 ) {
@@ -346,8 +351,12 @@ export async function getPaymentIntentAction(
       throw new Error("Payment intent not succeeded.")
     }
 
-    if (paymentIntent.metadata.cartId !== cartId) {
-      throw new Error("CartId does not match.")
+    if (
+      paymentIntent.metadata.cartId !== cartId &&
+      paymentIntent.shipping?.address?.postal_code?.split(" ").join("") !==
+        input.deliveryPostalCode
+    ) {
+      throw new Error("CartId or delivery postal code does not match.")
     }
 
     return {
