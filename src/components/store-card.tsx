@@ -25,7 +25,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-950/20" />
           <Badge
             className={cn(
-              "pointer-events-none absolute right-2 top-2 text-foreground",
+              "pointer-events-none absolute right-2 top-2 text-white",
               store.stripeAccountId ? "bg-green-600" : "bg-red-600"
             )}
           >

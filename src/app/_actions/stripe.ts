@@ -1,5 +1,6 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { db } from "@/db"
 import { payments, stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
@@ -9,11 +10,12 @@ import { type z } from "zod"
 import { stripe } from "@/lib/stripe"
 import { absoluteUrl } from "@/lib/utils"
 import type {
-  createAccountLinkSchema,
+  createPaymentIntentSchema,
+  getStripeAccountSchema,
   manageSubscriptionSchema,
 } from "@/lib/validations/stripe"
 
-// For managing stripe subscriptions for a user
+// Managing stripe subscriptions for a user
 export async function manageSubscriptionAction(
   input: z.infer<typeof manageSubscriptionSchema>
 ) {
@@ -65,8 +67,9 @@ export async function manageSubscriptionAction(
   }
 }
 
+// Getting the Stripe account for a store
 export async function getStripeAccountAction(
-  input: z.infer<typeof createAccountLinkSchema>
+  input: z.infer<typeof getStripeAccountSchema>
 ) {
   const falsyReturn = {
     isConnected: false,
@@ -128,9 +131,9 @@ export async function getStripeAccountAction(
   }
 }
 
-// For connecting a Stripe account to a store
+// Connecting a Stripe account to a store
 export async function createAccountLinkAction(
-  input: z.infer<typeof createAccountLinkSchema>
+  input: z.infer<typeof getStripeAccountSchema>
 ) {
   const { isConnected, payment } = await getStripeAccountAction(input)
 
@@ -167,5 +170,27 @@ export async function createAccountLinkAction(
     })
 
     return account.id
+  }
+}
+
+// Creating a payment intent for a store
+export async function createPaymentIntentAction(
+  input: z.infer<typeof createPaymentIntentSchema>
+) {
+  const { isConnected, payment } = await getStripeAccountAction(input)
+
+  if (!isConnected || !payment) {
+    throw new Error("Store not connected to Stripe.")
+  }
+
+  if (!payment.stripeAccountId) {
+    throw new Error("Stripe account not found.")
+  }
+
+  const cartId = Number(cookies().get("cartId")?.value)
+
+  const metadata = {
+    cartId: isNaN(cartId) ? "" : cartId,
+    items: JSON.stringify(input.items),
   }
 }
