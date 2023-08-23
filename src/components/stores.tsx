@@ -16,9 +16,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { StoreCard } from "@/components/cards/store-card"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
-import { StoreCard } from "@/components/store-card"
 
 import { FacetedFilter } from "./faceted-filter"
 

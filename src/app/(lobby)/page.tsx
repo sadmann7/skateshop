@@ -11,17 +11,17 @@ import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
+import { ProductCard } from "@/components/cards/product-card"
+import { StoreCard } from "@/components/cards/store-card"
 import { Icons } from "@/components/icons"
-import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shells/shell"
-import { StoreCard } from "@/components/store-card"
 
 // This is equivalent to getServersideProps() in the pages directory
 // Read more: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
 export const dynamic = "force-dynamic"
 
 export default async function IndexPage() {
-  const allProducts = await db
+  const someProducts = await db
     .select()
     .from(products)
     .limit(8)
@@ -187,7 +187,7 @@ export default async function IndexPage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {allProducts.map((product) => (
+          {someProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>

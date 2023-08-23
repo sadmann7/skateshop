@@ -31,10 +31,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
+import { ProductCard } from "@/components/cards/product-card"
 import { Icons } from "@/components/icons"
 import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagers/pagination-button"
-import { ProductCard } from "@/components/product-card"
 
 interface ProductsProps extends React.HTMLAttributes<HTMLDivElement> {
   products: Product[]

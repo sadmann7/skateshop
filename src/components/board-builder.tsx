@@ -29,9 +29,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
+import { ProductCard } from "@/components/cards/product-card"
 import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
-import { ProductCard } from "@/components/product-card"
 import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
 interface BoardBuilderProps extends React.HTMLAttributes<HTMLDivElement> {
