@@ -28,6 +28,7 @@ export type Store = InferModel<typeof stores>
 
 export const storesRelations = relations(stores, ({ many }) => ({
   products: many(products),
+  payments: many(payments),
 }))
 
 export const products = mysqlTable("products", {
@@ -95,6 +96,10 @@ export const payments = mysqlTable("payments", {
 })
 
 export type Payment = InferModel<typeof payments>
+
+export const paymentsRelations = relations(payments, ({ one }) => ({
+  store: one(stores, { fields: [payments.storeId], references: [stores.id] }),
+}))
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const orders = mysqlTable("orders", {

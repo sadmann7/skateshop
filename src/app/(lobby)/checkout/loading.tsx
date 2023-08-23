@@ -1,4 +1,5 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
@@ -21,8 +22,7 @@ export default function CheckoutLoading() {
           Checkout with your cart items
         </PageHeaderDescription>
       </PageHeader>
-
-      {Array.from({ length: 3 }).map((_, i) => (
+      {Array.from({ length: 2 }).map((_, i) => (
         <Card
           key={i}
           as="section"
@@ -35,38 +35,40 @@ export default function CheckoutLoading() {
           </CardHeader>
           <Separator className="mb-4" />
           <CardContent>
-            <div className="flex flex-col gap-5">
-              {Array.from({ length: 3 }).map((_, j) => (
-                <div key={j} className="space-y-3">
-                  <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
-                    <div className="flex items-center space-x-4">
-                      <div className="relative h-16 w-16 overflow-hidden rounded">
-                        <div className="flex h-full items-center justify-center bg-secondary">
-                          <Icons.placeholder
-                            className="h-4 w-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
+            <ScrollArea className="h-full">
+              <div className="flex max-w-[380px] flex-col gap-5">
+                {Array.from({ length: 4 }).map((_, j) => (
+                  <div key={j} className="space-y-3">
+                    <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative h-16 w-16 overflow-hidden rounded">
+                          <div className="flex h-full items-center justify-center bg-secondary">
+                            <Icons.placeholder
+                              className="h-4 w-4 text-muted-foreground"
+                              aria-hidden="true"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-1 flex-col gap-2 self-start text-sm">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-20" />
+                          <Skeleton className="h-2 w-16" />
                         </div>
                       </div>
-                      <div className="flex flex-1 flex-col gap-2 self-start text-sm">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-3 w-20" />
-                        <Skeleton className="h-2 w-16" />
-                      </div>
-                    </div>
-                    <div className="flex w-full items-center justify-between space-x-1 xs:w-auto xs:justify-normal">
-                      <div className="flex items-center space-x-1">
-                        <Skeleton className="h-8 w-8" />
-                        <Skeleton className="h-8 w-14" />
+                      <div className="flex w-full items-center justify-between space-x-1 xs:w-auto xs:justify-normal">
+                        <div className="flex items-center space-x-1">
+                          <Skeleton className="h-8 w-8" />
+                          <Skeleton className="h-8 w-14" />
+                          <Skeleton className="h-8 w-8" />
+                        </div>
                         <Skeleton className="h-8 w-8" />
                       </div>
-                      <Skeleton className="h-8 w-8" />
                     </div>
+                    <Separator />
                   </div>
-                  <Separator />
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ScrollArea>
           </CardContent>
           <Separator className="mb-4" />
           <CardFooter className="justify-between space-x-4">

@@ -78,7 +78,7 @@ export default async function CheckoutPage() {
             <CardContent className="pb-6 pl-6 pr-0">
               <ScrollArea className="h-full">
                 <CartLineItems
-                  className="max-h-[420px] pr-6"
+                  className="max-h-[380px] pr-6"
                   cartLineItems={cartLineItems.filter(
                     (item) => item.storeId === storeId
                   )}
