@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import type { CartLineItem } from "@/types"
-import { toast } from "sonner"
 
+import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
@@ -17,7 +17,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
   const [isPending, startTransition] = React.useTransition()
 
   return (
-    <div className="flex items-center space-x-1">
+    <div className="flex w-full items-center justify-between space-x-1 xs:w-auto xs:justify-normal">
       <div className="flex items-center space-x-1">
         <Button
           variant="outline"
@@ -30,10 +30,8 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                   productId: cartLineItem.id,
                   quantity: Number(cartLineItem.quantity) - 1,
                 })
-              } catch (error) {
-                error instanceof Error
-                  ? toast.error(error.message)
-                  : toast.error("Something went wrong, please try again.")
+              } catch (err) {
+                catchError(err)
               }
             })
           }}
@@ -54,10 +52,8 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                   productId: cartLineItem.id,
                   quantity: Number(e.target.value),
                 })
-              } catch (error) {
-                error instanceof Error
-                  ? toast.error(error.message)
-                  : toast.error("Something went wrong.")
+              } catch (err) {
+                catchError(err)
               }
             })
           }}
@@ -74,10 +70,8 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                   productId: cartLineItem.id,
                   quantity: Number(cartLineItem.quantity) + 1,
                 })
-              } catch (error) {
-                error instanceof Error
-                  ? toast.error(error.message)
-                  : toast.error("Something went wrong.")
+              } catch (err) {
+                catchError(err)
               }
             })
           }}
@@ -97,10 +91,8 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
               await deleteCartItemAction({
                 productId: cartLineItem.id,
               })
-            } catch (error) {
-              error instanceof Error
-                ? toast.error(error.message)
-                : toast.error("Something went wrong.")
+            } catch (err) {
+              catchError(err)
             }
           })
         }}

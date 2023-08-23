@@ -1,5 +1,4 @@
 import { env } from "@/env.mjs"
-import type { CheckoutItem } from "@/types"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
@@ -112,16 +111,4 @@ export function isMacOs() {
   if (typeof window === "undefined") return false
 
   return window.navigator.userAgent.includes("Mac")
-}
-
-export function calculatePaymentAmount(items: CheckoutItem[]) {
-  const total = items.reduce(
-    (acc, item) => acc + Number(item.price) * item.quantity,
-    0
-  )
-  const fee = total * 0.1
-  return {
-    total: Number((total * 100).toFixed(0)),
-    fee: Number((fee * 100).toFixed(0)),
-  }
 }

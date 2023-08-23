@@ -48,7 +48,6 @@ function PageHeaderHeading({
   className,
   size,
   as: Comp = "h1",
-
   ...props
 }: PageHeaderHeadingProps) {
   return (

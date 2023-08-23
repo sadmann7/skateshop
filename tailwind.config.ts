@@ -12,7 +12,8 @@ module.exports = {
     },
     extend: {
       screens: {
-        xs: "380px",
+        xs: "480px",
+        xxs: "380px",
       },
       flex: {
         full: "0 0 100%",
