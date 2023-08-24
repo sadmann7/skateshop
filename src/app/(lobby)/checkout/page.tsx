@@ -54,6 +54,12 @@ export default async function CheckoutPage() {
             as="section"
             id={`store-${storeId}`}
             aria-labelledby={`store-${storeId}-heading`}
+            className={cn(
+              cartLineItems.find((item) => item.storeId === storeId)
+                ?.storeStripeAccountId
+                ? "border-green-500"
+                : "border-destructive"
+            )}
           >
             <CardHeader className="flex flex-row items-center space-x-4 py-4">
               <CardTitle className="line-clamp-1 flex-1">
@@ -111,7 +117,7 @@ export default async function CheckoutPage() {
         <section
           id="checkout-page-empty-cart"
           aria-labelledby="checkout-page-empty-cart-heading"
-          className="flex h-full flex-col items-center justify-center space-y-1"
+          className="flex h-full flex-col items-center justify-center space-y-1 pt-16"
         >
           <Icons.cart
             className="mb-4 h-16 w-16 text-muted-foreground"

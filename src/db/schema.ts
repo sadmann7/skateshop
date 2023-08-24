@@ -65,6 +65,7 @@ export const carts = mysqlTable("carts", {
   paymentIntentId: varchar("paymentIntentId", { length: 191 }),
   clientSecret: varchar("clientSecret", { length: 191 }),
   items: json("items").$type<CartItem[] | null>().default(null),
+  closed: boolean("closed").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow(),
 })
 

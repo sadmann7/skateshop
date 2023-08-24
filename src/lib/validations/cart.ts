@@ -4,7 +4,7 @@ import * as z from "zod"
 export const cartItemSchema = z.object({
   productId: z.number(),
   quantity: z.number().min(0),
-  productSubcategory: z.string().optional().nullable(),
+  subcategory: z.string().optional().nullable(),
 })
 
 export const checkoutItemSchema = cartItemSchema.extend({
@@ -28,9 +28,10 @@ export const cartLineItemSchema = z.object({
   subcategory: z.string().optional().nullable(),
   price: z.string().regex(/^\d+(\.\d{1,2})?$/),
   inventory: z.number().default(0),
+  quantity: z.number(),
   storeId: z.number(),
   storeName: z.string().optional().nullable(),
-  quantity: z.number(),
+  storeStripeAccountId: z.string().optional().nullable(),
 })
 
 export const deleteCartItemSchema = z.object({

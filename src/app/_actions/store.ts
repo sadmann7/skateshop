@@ -108,12 +108,18 @@ export async function getNextStoreIdAction(
   }
 
   const nextStore = await db.query.stores.findFirst({
+    columns: {
+      id: true,
+    },
     where: and(eq(stores.userId, input.userId), gt(stores.id, input.id)),
     orderBy: asc(stores.id),
   })
 
   if (!nextStore) {
     const firstStore = await db.query.stores.findFirst({
+      columns: {
+        id: true,
+      },
       where: eq(stores.userId, input.userId),
       orderBy: asc(stores.id),
     })
@@ -136,12 +142,18 @@ export async function getPreviousStoreIdAction(
   }
 
   const previousStore = await db.query.stores.findFirst({
+    columns: {
+      id: true,
+    },
     where: and(eq(stores.userId, input.userId), lt(stores.id, input.id)),
     orderBy: desc(stores.id),
   })
 
   if (!previousStore) {
     const lastStore = await db.query.stores.findFirst({
+      columns: {
+        id: true,
+      },
       where: eq(stores.userId, input.userId),
       orderBy: desc(stores.id),
     })

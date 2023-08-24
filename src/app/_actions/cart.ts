@@ -5,7 +5,7 @@ import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, products, stores } from "@/db/schema"
 import type { CartLineItem } from "@/types"
-import { eq, inArray } from "drizzle-orm"
+import { asc, desc, eq, inArray } from "drizzle-orm"
 import { type z } from "zod"
 
 import type {
@@ -40,11 +40,13 @@ export async function getCartAction(): Promise<CartLineItem[]> {
       inventory: products.inventory,
       storeId: products.storeId,
       storeName: stores.name,
+      storeStripeAccountId: stores.stripeAccountId,
     })
     .from(products)
     .leftJoin(stores, eq(stores.id, products.storeId))
     .groupBy(products.id)
     .where(inArray(products.id, uniqueProductIds))
+    .orderBy(desc(stores.stripeAccountId), asc(products.createdAt))
 
   const allCartLineItems = cartLineItems.map((item) => {
     const quantity = cart?.items?.find(

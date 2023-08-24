@@ -86,7 +86,7 @@ export default async function BuildABoardPage({
                   )}
                 >
                   {cartItems
-                    ?.map((item) => item.productSubcategory)
+                    ?.map((item) => item.subcategory)
                     ?.includes(subcategory.slug) ? (
                     <Icons.check className="mr-2 h-4 w-4" aria-hidden="true" />
                   ) : (

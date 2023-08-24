@@ -1,10 +1,15 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import CheckoutForm from "@/components/checkout/checkout-form"
+import { CheckoutShell } from "@/components/checkout/checkout-shell"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -12,7 +17,10 @@ import {
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { getCartAction } from "@/app/_actions/cart"
-import { getStripeAccountAction } from "@/app/_actions/stripe"
+import {
+  createPaymentIntentAction,
+  getStripeAccountAction,
+} from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -31,36 +39,29 @@ export default async function StoreCheckoutPage({
 }: StoreCheckoutPageProps) {
   const storeId = Number(params.storeId)
 
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, storeId),
-    columns: {
-      id: true,
-    },
-    with: {
-      payments: {
-        columns: {
-          stripeAccountId: true,
-        },
-      },
-    },
-  })
+  const store = await db
+    .select({
+      id: stores.id,
+      stripeAccountId: stores.stripeAccountId,
+    })
+    .from(stores)
+    .where(eq(stores.id, storeId))
+    .execute()
+    .then((rows) => rows[0])
 
   if (!store) {
     notFound()
   }
 
-  const { isConnected, payment } = await getStripeAccountAction({
+  const { isConnected } = await getStripeAccountAction({
     storeId,
-    retrieveAccount: false,
   })
 
   const cartLineItems = await getCartAction()
 
-  console.log({
-    store,
-    isConnected,
-    payment,
-    cartLineItems,
+  const paymentIntent = createPaymentIntentAction({
+    storeId: store.id,
+    items: cartLineItems,
   })
 
   return (
@@ -71,15 +72,13 @@ export default async function StoreCheckoutPage({
           Checkout with store items
         </PageHeaderDescription>
       </PageHeader>
-      {isConnected ? (
-        <div className="flex flex-col items-center justify-center gap-2 pt-20">
-          <div className="text-center text-2xl font-bold">
-            Under construction
-          </div>
-          <div className="text-center text-muted-foreground">
-            Please check back later
-          </div>
-        </div>
+      {isConnected && store.stripeAccountId ? (
+        <CheckoutShell
+          paymentIntent={paymentIntent}
+          storeStripeAccountId={store.stripeAccountId}
+        >
+          <CheckoutForm storeId={store.id} />
+        </CheckoutShell>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 pt-20">
           <div className="text-center text-2xl font-bold">
@@ -89,6 +88,17 @@ export default async function StoreCheckoutPage({
             Store owner needs to connect their store to Stripe to accept
             payments
           </div>
+          <Link
+            aria-label="Back to checkout"
+            href="/checkout"
+            className={cn(
+              buttonVariants({
+                size: "sm",
+              })
+            )}
+          >
+            Back to checkout
+          </Link>
         </div>
       )}
     </Shell>

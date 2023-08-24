@@ -1,0 +1,1 @@
+ALTER TABLE `carts` RENAME COLUMN `isClosed` TO `closed`;

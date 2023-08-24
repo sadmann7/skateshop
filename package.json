@@ -46,6 +46,8 @@
     "@radix-ui/react-tooltip": "^1.0.6",
     "@react-email/components": "^0.0.7",
     "@react-email/tailwind": "0.0.8",
+    "@stripe/react-stripe-js": "^2.1.2",
+    "@stripe/stripe-js": "^2.1.0",
     "@t3-oss/env-nextjs": "^0.6.1",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.9.3",

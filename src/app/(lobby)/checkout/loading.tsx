@@ -36,7 +36,7 @@ export default function CheckoutLoading() {
           <Separator className="mb-4" />
           <CardContent>
             <ScrollArea className="h-full">
-              <div className="flex max-w-[380px] flex-col gap-5">
+              <div className="flex max-h-[380px] flex-col gap-5">
                 {Array.from({ length: 4 }).map((_, j) => (
                   <div key={j} className="space-y-3">
                     <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
