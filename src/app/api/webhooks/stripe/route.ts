@@ -98,6 +98,7 @@ export async function POST(req: Request) {
       break
     case "payment_intent.succeeded":
       // Handle the payment_intent.succeeded event
+
       const stripeObject = event?.data?.object as Stripe.PaymentIntent
 
       const paymentIntentId = stripeObject?.id
@@ -156,7 +157,7 @@ export async function POST(req: Request) {
           .update(carts)
           .set({
             closed: true,
-            items: null,
+            items: [],
           })
           .where(eq(carts.paymentIntentId, paymentIntentId))
       } catch (err) {

@@ -55,7 +55,7 @@ export async function getCartAction(): Promise<CartLineItem[]> {
 
     return {
       ...item,
-      quantity: Number(quantity),
+      quantity: quantity ?? 0,
     }
   })
 

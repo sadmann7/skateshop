@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
 import { stripe } from "@/lib/stripe"
-import { absoluteUrl } from "@/lib/utils"
+import { absoluteUrl, calculateTotalAndFeeInCents } from "@/lib/utils"
 import type {
   createPaymentIntentSchema,
   getPaymentIntentSchema,
@@ -206,10 +206,6 @@ export async function createPaymentIntentAction(
 
     const cartId = Number(cookies().get("cartId")?.value)
 
-    if (isNaN(cartId)) {
-      throw new Error("Invalid cartId, please try again.")
-    }
-
     const checkoutItems: CheckoutItem[] = input.items.map((item) => ({
       productId: item.id,
       price: Number(item.price),
@@ -222,12 +218,9 @@ export async function createPaymentIntentAction(
       items: JSON.stringify(checkoutItems),
     }
 
-    const total = input.items.reduce((acc, item) => {
-      return acc + Number(item.price) * item.quantity
-    }, 0)
-    const fee = Math.round(total * 0.1)
+    const { total, fee } = calculateTotalAndFeeInCents(input.items)
 
-    if (cartId) {
+    if (!isNaN(cartId)) {
       const cart = await db.query.carts.findFirst({
         columns: {
           paymentIntentId: true,
@@ -236,12 +229,8 @@ export async function createPaymentIntentAction(
         where: eq(carts.id, cartId),
       })
 
-      if (!cart) {
-        throw new Error("Cart not found.")
-      }
-
-      if (cart.paymentIntentId && cart.clientSecret) {
-        const paymentIntent = await stripe.paymentIntents.update(
+      if (cart?.paymentIntentId && cart?.clientSecret) {
+        await stripe.paymentIntents.update(
           cart.paymentIntentId,
           {
             amount: total,
@@ -254,40 +243,39 @@ export async function createPaymentIntentAction(
         )
 
         return {
-          clientSecret: paymentIntent.client_secret,
+          clientSecret: cart.clientSecret,
         }
       }
+    }
 
-      const paymentIntent = await stripe.paymentIntents.create(
-        {
-          amount: total,
-          application_fee_amount: fee,
-          metadata,
-          currency: "usd",
-          automatic_payment_methods: {
-            enabled: true,
-          },
+    const paymentIntent = await stripe.paymentIntents.create(
+      {
+        amount: total,
+        application_fee_amount: fee,
+        metadata,
+        currency: "usd",
+        automatic_payment_methods: {
+          enabled: true,
         },
-        {
-          stripeAccount: payment.stripeAccountId,
-        }
-      )
+      },
+      {
+        stripeAccount: payment.stripeAccountId,
+      }
+    )
 
-      await db.update(carts).set({
+    await db
+      .update(carts)
+      .set({
         paymentIntentId: paymentIntent.id,
         clientSecret: paymentIntent.client_secret,
       })
-
-      return {
-        clientSecret: paymentIntent.client_secret,
-      }
-    }
+      .where(eq(carts.id, cartId))
 
     return {
-      clientSecret: null,
+      clientSecret: paymentIntent.client_secret,
     }
   } catch (err) {
-    console.error(err)
+    // console.error(err)
     return {
       clientSecret: null,
     }

@@ -1,4 +1,5 @@
 import { env } from "@/env.mjs"
+import type { CartLineItem } from "@/types"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
@@ -111,4 +112,20 @@ export function isMacOs() {
   if (typeof window === "undefined") return false
 
   return window.navigator.userAgent.includes("Mac")
+}
+
+// Original source: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
+export function calculateTotalAndFeeInCents(items: CartLineItem[]) {
+  const total = items.reduce((acc, item) => {
+    return acc + Number(item.price) * item.quantity
+  }, 0)
+  const fee = Math.round(total * 0.1)
+
+  const totalInCents = Math.round(total * 100)
+  const feeInCents = Math.round(fee * 100)
+
+  return {
+    total: totalInCents, // Converts to cents which stripe charges in
+    fee: feeInCents,
+  }
 }
