@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
+import { CartLineItems } from "@/components/checkout/cart-line-items"
 import CheckoutForm from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
 import {
@@ -57,7 +58,7 @@ export default async function StoreCheckoutPage({
     storeId,
   })
 
-  const cartLineItems = await getCartAction()
+  const cartLineItems = await getCartAction(storeId)
 
   const paymentIntent = createPaymentIntentAction({
     storeId: store.id,
@@ -78,6 +79,7 @@ export default async function StoreCheckoutPage({
           storeStripeAccountId={store.stripeAccountId}
         >
           <CheckoutForm storeId={store.id} />
+          <CartLineItems cartLineItems={cartLineItems} />
         </CheckoutShell>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 pt-20">
