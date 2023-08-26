@@ -16,16 +16,23 @@ import { StoreCard } from "@/components/cards/store-card"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shells/shell"
 
-// This is equivalent to getServersideProps() in the pages directory
-// Read more: https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config
 export const dynamic = "force-dynamic"
 
 export default async function IndexPage() {
   const someProducts = await db
-    .select()
+    .select({
+      id: products.id,
+      name: products.name,
+      images: products.images,
+      category: products.category,
+      price: products.price,
+      stripeAccountId: stores.stripeAccountId,
+    })
     .from(products)
     .limit(8)
-    .orderBy(desc(products.createdAt))
+    .leftJoin(stores, eq(products.storeId, stores.id))
+    .groupBy(products.id)
+    .orderBy(desc(stores.stripeAccountId), desc(products.createdAt))
 
   const someStores = await db
     .select({

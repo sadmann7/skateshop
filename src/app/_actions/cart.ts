@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
-import { carts, payments, products, stores } from "@/db/schema"
+import { carts, products, stores } from "@/db/schema"
 import type { CartLineItem } from "@/types"
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm"
 import { type z } from "zod"
@@ -43,31 +43,32 @@ export async function getCartAction(storeId?: number): Promise<CartLineItem[]> {
       inventory: products.inventory,
       storeId: products.storeId,
       storeName: stores.name,
-      storeStripeAccountId: payments.stripeAccountId,
+      storeStripeAccountId: stores.stripeAccountId,
     })
     .from(products)
     .leftJoin(stores, eq(stores.id, products.storeId))
-    .leftJoin(payments, eq(payments.storeId, products.storeId))
     .where(
       and(
         inArray(products.id, uniqueProductIds),
         storeId ? eq(products.storeId, storeId) : undefined
       )
     )
+    .groupBy(products.id)
     .orderBy(desc(stores.stripeAccountId), asc(products.createdAt))
+    .then((items) => {
+      return items.map((item) => {
+        const quantity = cart?.items?.find(
+          (cartItem) => cartItem.productId === item.id
+        )?.quantity
 
-  const allCartLineItems = cartLineItems.map((item) => {
-    const quantity = cart?.items?.find(
-      (cartItem) => cartItem.productId === item.id
-    )?.quantity
+        return {
+          ...item,
+          quantity: quantity ?? 0,
+        }
+      })
+    })
 
-    return {
-      ...item,
-      quantity: quantity ?? 0,
-    }
-  })
-
-  return allCartLineItems
+  return cartLineItems
 }
 
 export async function getUniqueStoreIds() {

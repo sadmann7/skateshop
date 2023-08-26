@@ -176,6 +176,13 @@
       "when": 1692993563931,
       "tag": "0024_bouncy_franklin_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1693069894782,
+      "tag": "0025_chunky_patriot",
+      "breakpoints": true
     }
   ]
 }

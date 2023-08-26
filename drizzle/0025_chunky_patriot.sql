@@ -1,0 +1,1 @@
+ALTER TABLE `carts` DROP COLUMN `userId`;

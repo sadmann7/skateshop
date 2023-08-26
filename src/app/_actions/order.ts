@@ -32,20 +32,22 @@ export async function getOrderedProducts(
           input.checkoutItems.map((item) => item.productId)
         )
       )
+      .groupBy(products.id)
       .orderBy(desc(products.createdAt))
+      .then((items) => {
+        return items.map((item) => {
+          const quantity = input.checkoutItems.find(
+            (checkoutItem) => checkoutItem.productId === item.id
+          )?.quantity
 
-    const productsWithQuantity = orderedProducts.map((product) => {
-      const quantity = input.checkoutItems.find(
-        (item) => item.productId === product.id
-      )?.quantity
+          return {
+            ...item,
+            quantity: quantity ?? 0,
+          }
+        })
+      })
 
-      return {
-        ...product,
-        quantity: quantity ?? 0,
-      }
-    })
-
-    return productsWithQuantity
+    return orderedProducts
   } catch (err) {
     console.error(err)
     return []

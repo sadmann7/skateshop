@@ -1,5 +1,5 @@
 import type { CartItem, CheckoutItem, StoredFile } from "@/types"
-import { relations, type InferModel } from "drizzle-orm"
+import { relations } from "drizzle-orm"
 import {
   boolean,
   decimal,
@@ -24,7 +24,8 @@ export const stores = mysqlTable("stores", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type Store = InferModel<typeof stores>
+export type Store = typeof stores.$inferSelect
+export type NewStore = typeof stores.$inferInsert
 
 export const storesRelations = relations(stores, ({ many }) => ({
   products: many(products),
@@ -53,7 +54,8 @@ export const products = mysqlTable("products", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type Product = InferModel<typeof products>
+export type Product = typeof products.$inferSelect
+export type NewProduct = typeof products.$inferInsert
 
 export const productsRelations = relations(products, ({ one }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
@@ -61,7 +63,6 @@ export const productsRelations = relations(products, ({ one }) => ({
 
 export const carts = mysqlTable("carts", {
   id: serial("id").primaryKey(),
-  userId: varchar("userId", { length: 191 }),
   checkoutSessionId: varchar("checkoutSessionId", { length: 191 }),
   paymentIntentId: varchar("paymentIntentId", { length: 191 }),
   clientSecret: varchar("clientSecret", { length: 191 }),
@@ -70,7 +71,8 @@ export const carts = mysqlTable("carts", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type Cart = InferModel<typeof carts>
+export type Cart = typeof carts.$inferSelect
+export type NewCart = typeof carts.$inferInsert
 
 export const emailPreferences = mysqlTable("email_preferences", {
   id: serial("id").primaryKey(),
@@ -83,7 +85,8 @@ export const emailPreferences = mysqlTable("email_preferences", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type EmailPreference = InferModel<typeof emailPreferences>
+export type EmailPreference = typeof emailPreferences.$inferSelect
+export type NewEmailPreference = typeof emailPreferences.$inferInsert
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = mysqlTable("payments", {
@@ -97,7 +100,8 @@ export const payments = mysqlTable("payments", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type Payment = InferModel<typeof payments>
+export type Payment = typeof payments.$inferSelect
+export type NewPayment = typeof payments.$inferInsert
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   store: one(stores, { fields: [payments.storeId], references: [stores.id] }),
@@ -122,7 +126,8 @@ export const orders = mysqlTable("orders", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type Order = InferModel<typeof orders>
+export type Order = typeof orders.$inferSelect
+export type NewOrder = typeof orders.$inferInsert
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const addresses = mysqlTable("addresses", {
@@ -136,4 +141,5 @@ export const addresses = mysqlTable("addresses", {
   createdAt: timestamp("createdAt").defaultNow(),
 })
 
-export type Address = InferModel<typeof addresses>
+export type Address = typeof addresses.$inferSelect
+export type NewAddress = typeof addresses.$inferInsert

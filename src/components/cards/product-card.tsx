@@ -21,7 +21,7 @@ import { Icons } from "@/components/icons"
 import { addToCartAction } from "@/app/_actions/cart"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  product: Product
+  product: Pick<Product, "id" | "name" | "price" | "images" | "category">
   variant?: "default" | "switchable"
   isAddedToCart?: boolean
   onSwitch?: () => Promise<void>

@@ -85,6 +85,7 @@ export async function getProductsAction(
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
+      .groupBy(products.id)
       .orderBy(
         column && column in products
           ? order === "asc"
