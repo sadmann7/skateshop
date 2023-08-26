@@ -8,7 +8,7 @@ import { toast } from "sonner"
 
 import { cn, formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -88,48 +88,35 @@ export function ProductCard({
       </Link>
       <CardFooter className="p-4">
         {variant === "default" ? (
-          <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
-            <Link
-              aria-label="Preview product"
-              href={`/product-preview/${product.id}`}
-              className={buttonVariants({
-                variant: "outline",
-                size: "sm",
-                className: "h-8 w-full rounded-sm",
-              })}
-            >
-              Preview
-            </Link>
-            <Button
-              aria-label="Add to cart"
-              size="sm"
-              className="h-8 w-full rounded-sm"
-              onClick={() => {
-                startTransition(async () => {
-                  try {
-                    await addToCartAction({
-                      productId: product.id,
-                      quantity: 1,
-                    })
-                    toast.success("Added to cart.")
-                  } catch (error) {
-                    error instanceof Error
-                      ? toast.error(error.message)
-                      : toast.error("Something went wrong, please try again.")
-                  }
-                })
-              }}
-              disabled={isPending}
-            >
-              {isPending && (
-                <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Add to cart
-            </Button>
-          </div>
+          <Button
+            aria-label="Add to cart"
+            size="sm"
+            className="h-8 w-full rounded-sm"
+            onClick={() => {
+              startTransition(async () => {
+                try {
+                  await addToCartAction({
+                    productId: product.id,
+                    quantity: 1,
+                  })
+                  toast.success("Added to cart.")
+                } catch (error) {
+                  error instanceof Error
+                    ? toast.error(error.message)
+                    : toast.error("Something went wrong, please try again.")
+                }
+              })
+            }}
+            disabled={isPending}
+          >
+            {isPending && (
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Add to cart
+          </Button>
         ) : (
           <Button
             aria-label={isAddedToCart ? "Remove from cart" : "Add to cart"}

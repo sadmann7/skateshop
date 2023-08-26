@@ -53,7 +53,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const productsFromStore = store
     ? await db
-        .select()
+        .select({
+          id: products.id,
+          name: products.name,
+          price: products.price,
+          images: products.images,
+          category: products.category,
+          inventory: products.inventory,
+        })
         .from(products)
         .limit(4)
         .where(

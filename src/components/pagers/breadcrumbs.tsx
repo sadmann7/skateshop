@@ -4,7 +4,7 @@ import { ChevronRightIcon } from "@radix-ui/react-icons"
 
 import { cn, truncate } from "@/lib/utils"
 
-interface BreadcrumbsProps {
+interface BreadcrumbsProps extends React.ComponentPropsWithoutRef<"nav"> {
   segments: {
     title: string
     href: string
@@ -17,13 +17,19 @@ export function Breadcrumbs({
   segments,
   separator,
   truncationLength = 0,
+  className,
+  ...props
 }: BreadcrumbsProps) {
   const SeparatorIcon = separator ?? ChevronRightIcon
 
   return (
     <nav
       aria-label="breadcrumbs"
-      className="flex items-center text-sm font-medium text-muted-foreground"
+      className={cn(
+        "flex w-full items-center overflow-auto text-sm font-medium text-muted-foreground",
+        className
+      )}
+      {...props}
     >
       {segments.map((segment, index) => {
         const isLastSegment = index === segments.length - 1

@@ -47,12 +47,9 @@ export default function ProductLoading() {
             <Skeleton className="h-6 w-14" />
           </div>
           <Separator className="my-1.5" />
-          <div className="grid gap-4 sm:max-w-[240px]">
-            <div className="grid space-y-2">
-              <Skeleton className="h-5 w-12" />
-              <Skeleton className="h-9 w-full" />
-            </div>
-            <Skeleton className="h-9 w-full" />
+          <div className="flex items-center space-x-2">
+            <Skeleton className="h-8 w-[7.5rem]" />
+            <Skeleton className="h-8 w-24" />
           </div>
           <Separator className="mb-2.5 mt-5" />
           <div className="flex items-center">

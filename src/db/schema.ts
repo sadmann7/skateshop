@@ -61,6 +61,7 @@ export const productsRelations = relations(products, ({ one }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
 }))
 
+// Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const carts = mysqlTable("carts", {
   id: serial("id").primaryKey(),
   checkoutSessionId: varchar("checkoutSessionId", { length: 191 }),

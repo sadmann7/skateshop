@@ -14,15 +14,17 @@ interface UpdateCartProps {
 }
 
 export function UpdateCart({ cartLineItem }: UpdateCartProps) {
+  const id = React.useId()
   const [isPending, startTransition] = React.useTransition()
 
   return (
-    <div className="flex w-full items-center justify-between space-x-1 xs:w-auto xs:justify-normal">
-      <div className="flex items-center space-x-1">
+    <div className="flex w-full items-center justify-between space-x-2 xs:w-auto xs:justify-normal">
+      <div className="flex items-center">
         <Button
+          id={`${id}-decrement`}
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 rounded-r-none"
           onClick={() => {
             startTransition(async () => {
               try {
@@ -41,9 +43,10 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           <span className="sr-only">Remove one item</span>
         </Button>
         <Input
+          id={`${id}-quantity`}
           type="number"
           min="0"
-          className="h-8 w-14"
+          className="h-8 w-14 rounded-none border-x-0"
           value={cartLineItem.quantity}
           onChange={(e) => {
             startTransition(async () => {
@@ -60,9 +63,10 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           disabled={isPending}
         />
         <Button
+          id={`${id}-increment`}
           variant="outline"
           size="icon"
-          className="h-8 w-8"
+          className="h-8 w-8 rounded-l-none"
           onClick={() => {
             startTransition(async () => {
               try {
@@ -82,6 +86,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         </Button>
       </div>
       <Button
+        id={`${id}-delete`}
         variant="outline"
         size="icon"
         className="h-8 w-8"
