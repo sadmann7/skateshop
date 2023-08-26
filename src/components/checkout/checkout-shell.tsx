@@ -20,7 +20,10 @@ export function CheckoutShell({
   storeStripeAccountId,
   paymentIntent,
 }: CheckoutShellProps) {
-  const stripePromise = getStripe(storeStripeAccountId)
+  const stripePromise = React.useMemo(
+    () => getStripe(storeStripeAccountId),
+    [storeStripeAccountId]
+  )
   const { clientSecret } = React.use(paymentIntent)
   const { theme } = useTheme()
 

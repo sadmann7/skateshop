@@ -169,6 +169,13 @@
       "when": 1692902340324,
       "tag": "0023_groovy_hammerhead",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1692993563931,
+      "tag": "0024_bouncy_franklin_richards",
+      "breakpoints": true
     }
   ]
 }

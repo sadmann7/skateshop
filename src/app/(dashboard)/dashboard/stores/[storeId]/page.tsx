@@ -103,7 +103,9 @@ export default async function UpdateStorePage({
     notFound()
   }
 
-  const { account: stripeAccount } = await getStripeAccountAction({ storeId })
+  const { account: stripeAccount } = await getStripeAccountAction({
+    storeId,
+  })
 
   return (
     <div className="space-y-6">

@@ -4,5 +4,8 @@ import { checkoutItemSchema } from "@/lib/validations/cart"
 
 export const getOrderedProductsSchema = z.object({
   checkoutItems: z.array(checkoutItemSchema),
-  storeId: z.number(),
+})
+
+export const getCheckoutSessionProductsSchema = z.object({
+  storeId: z.number().optional(),
 })

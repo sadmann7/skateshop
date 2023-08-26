@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { CheckoutItem } from "@/types"
+import type { CheckoutItem } from "@/types"
+import { eq } from "drizzle-orm"
 
 import {
   PageHeader,
@@ -38,6 +41,13 @@ export default async function OrderSummaryPage({
     delivery_postal_code,
   } = searchParams ?? {}
 
+  const store = await db.query.stores.findFirst({
+    columns: {
+      name: true,
+    },
+    where: eq(stores.id, storeId),
+  })
+
   const { isVerified, paymentIntent } = await getPaymentIntentAction({
     storeId,
     paymentIntentId: typeof payment_intent === "string" ? payment_intent : "",
@@ -50,9 +60,8 @@ export default async function OrderSummaryPage({
   ) as unknown as CheckoutItem[]
 
   if (isVerified) {
-    const { orderedProducts, storeName } = await getOrderedProducts({
+    const orderedProducts = await getOrderedProducts({
       checkoutItems,
-      storeId,
     })
 
     return (
@@ -65,7 +74,7 @@ export default async function OrderSummaryPage({
         </PageHeader>
         <div>
           <h2>Order Summary</h2>
-          <h3>{storeName}</h3>
+          {store?.name && <h3>{store.name}</h3>}
           <ul>
             {orderedProducts.map((product) => (
               <li key={product.id}>

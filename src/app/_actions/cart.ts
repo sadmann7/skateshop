@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
-import { carts, products, stores } from "@/db/schema"
+import { carts, payments, products, stores } from "@/db/schema"
 import type { CartLineItem } from "@/types"
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm"
 import { type z } from "zod"
@@ -43,11 +43,11 @@ export async function getCartAction(storeId?: number): Promise<CartLineItem[]> {
       inventory: products.inventory,
       storeId: products.storeId,
       storeName: stores.name,
-      storeStripeAccountId: stores.stripeAccountId,
+      storeStripeAccountId: payments.stripeAccountId,
     })
     .from(products)
     .leftJoin(stores, eq(stores.id, products.storeId))
-    .groupBy(products.id)
+    .leftJoin(payments, eq(payments.storeId, products.storeId))
     .where(
       and(
         inArray(products.id, uniqueProductIds),
@@ -122,12 +122,16 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
     where: eq(carts.id, Number(cartId)),
   })
 
+  // TODO: Find a better way to deal with expired carts
   if (!cart) {
     cookieStore.set({
       name: "cartId",
       value: "",
       expires: new Date(0),
     })
+
+    await db.delete(carts).where(eq(carts.id, Number(cartId)))
+
     throw new Error("Cart not found, please try again.")
   }
 

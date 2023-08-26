@@ -1,0 +1,1 @@
+ALTER TABLE `carts` ADD `checkoutSessionId` varchar(191);

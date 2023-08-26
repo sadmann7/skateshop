@@ -1,7 +1,4 @@
-import Link from "next/link"
-
 import { cn, formatPrice } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -12,6 +9,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
+import { CheckoutButton } from "@/components/checkout/checkout-button"
 import { getCartAction } from "@/app/_actions/cart"
 
 interface CheckoutCardProps {
@@ -37,8 +35,8 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
         <CardTitle className="line-clamp-1 flex-1">
           {cartLineItems[0]?.storeName}
         </CardTitle>
-        <Link
-          aria-label="Checkout with your cart items"
+        <CheckoutButton storeId={storeId} cartLineItems={cartLineItems} />
+        {/* <Link
           href={`/checkout/${storeId}`}
           className={cn(
             buttonVariants({
@@ -47,7 +45,7 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
           )}
         >
           Checkout
-        </Link>
+        </Link> */}
       </CardHeader>
       <Separator className="mb-4" />
       <CardContent className="pb-6 pl-6 pr-0">
