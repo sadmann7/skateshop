@@ -19,6 +19,7 @@ export function CheckoutButton({
   cartLineItems,
 }: CheckoutButtonProps) {
   const [isPending, startTransition] = React.useTransition()
+
   const stripePromise = React.useMemo(
     () => getStripe(cartLineItems[0]?.storeStripeAccountId ?? ""),
     [cartLineItems]
@@ -32,11 +33,20 @@ export function CheckoutButton({
       onClick={() => {
         startTransition(async () => {
           try {
+            const stripe = await stripePromise
+            if (!stripe) return
+
             const session = await createCheckoutSessionAction({
               storeId,
               items: cartLineItems,
             })
-            window.location.href = session.url
+
+            const { error } = await stripe.redirectToCheckout({
+              sessionId: session.id,
+            })
+            if (error) {
+              catchError(error)
+            }
           } catch (err) {
             catchError(err)
           }

@@ -76,9 +76,13 @@ export async function getCheckoutSessionProducts(
     }
 
     // Clear the cart
-    await db.update(carts).set({ items: [] }).where(eq(carts.id, cartId))
+    await db
+      .update(carts)
+      .set({ closed: true, items: [] })
+      .where(eq(carts.id, cartId))
 
     // Retrieve the checkout session
+    // checkout session is not found for some reason
     const checkoutSession = await stripe.checkout.sessions.retrieve(
       cart.checkoutSessionId
     )
@@ -89,31 +93,12 @@ export async function getCheckoutSessionProducts(
     ) as unknown as CheckoutItem[]
 
     // TODO: Create order on webhook instead
-    // Create or update the order
-    const order = await db.query.orders.findFirst({
-      columns: {
-        id: true,
-      },
-      where: eq(orders.storeId, input.storeId),
-    })
-
-    if (order) {
-      await db
-        .update(orders)
-        .set({
-          items: checkoutItems,
-          stripePaymentIntentId: String(checkoutSession.payment_intent),
-          stripePaymentIntentStatus: checkoutSession.payment_status,
-        })
-        .where(eq(orders.id, order.id))
-    } else {
-      await db.insert(orders).values({
-        storeId: input.storeId,
-        items: checkoutItems,
-        stripePaymentIntentId: String(checkoutSession.payment_intent),
-        stripePaymentIntentStatus: checkoutSession.payment_status,
-      })
-    }
+    // await db.insert(orders).values({
+    //   storeId: input.storeId,
+    //   items: checkoutItems,
+    //   stripePaymentIntentId: String(checkoutSession.payment_intent),
+    //   stripePaymentIntentStatus: checkoutSession.payment_status,
+    // })
 
     // Get products from the checkout items
     const orderedProducts = await db
@@ -146,7 +131,7 @@ export async function getCheckoutSessionProducts(
 
     return productsWithQuantity
   } catch (err) {
-    console.error(err)
+    err instanceof Error && console.error(err.message)
     return []
   }
 }

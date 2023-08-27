@@ -34,6 +34,7 @@ export default async function OrderSuccessPage({
     columns: {
       id: true,
       name: true,
+      stripeAccountId: true,
     },
     where: storeId ? eq(stores.id, storeId) : undefined,
   })
@@ -50,7 +51,17 @@ export default async function OrderSuccessPage({
           Your order has been placed and will be processed as soon as possible.
         </PageHeaderDescription>
       </PageHeader>
-      <section>
+      <pre>
+        {JSON.stringify(
+          {
+            storeId,
+            products,
+          },
+          null,
+          2
+        )}
+      </pre>
+      {/* <section>
         <h2>Order Summary</h2>
         {store && <p>Store: {store.name}</p>}
         <ul>
@@ -58,7 +69,7 @@ export default async function OrderSuccessPage({
             <li key={product.id}>{product.name}</li>
           ))}
         </ul>
-      </section>
+      </section> */}
     </Shell>
   )
 }

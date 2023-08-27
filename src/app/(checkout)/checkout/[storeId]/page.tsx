@@ -11,11 +11,6 @@ import { buttonVariants } from "@/components/ui/button"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
 import CheckoutForm from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
-import {
-  PageHeader,
-  PageHeaderDescription,
-  PageHeaderHeading,
-} from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { getCartAction } from "@/app/_actions/cart"
 import {
@@ -29,15 +24,15 @@ export const metadata: Metadata = {
   description: "Checkout with store items",
 }
 
-interface StoreCheckoutPageProps {
+interface IndieCheckoutPageProps {
   params: {
     storeId: string
   }
 }
 
-export default async function StoreCheckoutPage({
+export default async function IndieCheckoutPage({
   params,
-}: StoreCheckoutPageProps) {
+}: IndieCheckoutPageProps) {
   const storeId = Number(params.storeId)
 
   const store = await db
@@ -67,20 +62,16 @@ export default async function StoreCheckoutPage({
 
   return (
     <Shell>
-      <PageHeader>
-        <PageHeaderHeading size="sm">Store Checkout</PageHeaderHeading>
-        <PageHeaderDescription size="sm">
-          Checkout with store items
-        </PageHeaderDescription>
-      </PageHeader>
       {isConnected && store.stripeAccountId ? (
-        <CheckoutShell
-          paymentIntent={paymentIntent}
-          storeStripeAccountId={store.stripeAccountId}
-        >
-          <CheckoutForm storeId={store.id} />
-          <CartLineItems cartLineItems={cartLineItems} />
-        </CheckoutShell>
+        <div className="flex gap-20">
+          <CartLineItems cartLineItems={cartLineItems} className="w-full" />
+          <CheckoutShell
+            paymentIntent={paymentIntent}
+            storeStripeAccountId={store.stripeAccountId}
+          >
+            <CheckoutForm storeId={store.id} />
+          </CheckoutShell>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 pt-20">
           <div className="text-center text-2xl font-bold">

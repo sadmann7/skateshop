@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
 import { stripe } from "@/lib/stripe"
-import { absoluteUrl, calculateTotalAndFeeInCents } from "@/lib/utils"
+import { absoluteUrl, calculateOrderAmount } from "@/lib/utils"
 import type {
   createPaymentIntentSchema,
   getPaymentIntentSchema,
@@ -223,41 +223,43 @@ export async function createCheckoutSessionAction(
   }))
 
   // Create a checkout session
-  const checkoutSession = await stripe.checkout.sessions.create({
-    success_url: absoluteUrl(`/checkout/success/?store_id=${input.storeId}`),
-    cancel_url: absoluteUrl("/checkout"),
-    payment_method_types: ["card"],
-    mode: "payment",
-    line_items: input.items.map((item) => ({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: item.name,
+  const checkoutSession = await stripe.checkout.sessions.create(
+    {
+      success_url: absoluteUrl(`/checkout/success/?store_id=${input.storeId}`),
+      cancel_url: absoluteUrl("/checkout"),
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: input.items.map((item) => ({
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: Number(item.price) * 100,
         },
-        unit_amount: Number(item.price) * 100,
-      },
-      quantity: item.quantity,
-    })),
-    metadata: {
-      cartId,
-      items: JSON.stringify(checkoutItems),
-    },
-    payment_intent_data: {
-      transfer_data: {
-        destination: payment.stripeAccountId,
+        quantity: item.quantity,
+      })),
+      metadata: {
+        cartId,
+        items: JSON.stringify(checkoutItems),
       },
     },
-  })
+    {
+      stripeAccount: payment.stripeAccountId,
+    }
+  )
 
   // Update the cart with the checkout session id
   await db
     .update(carts)
     .set({
       checkoutSessionId: checkoutSession.id,
+      paymentIntentId: String(checkoutSession.payment_intent),
     })
     .where(eq(carts.id, cartId))
 
   return {
+    id: checkoutSession.id,
     url: checkoutSession.url ?? "/checkout",
   }
 }
@@ -292,7 +294,7 @@ export async function createPaymentIntentAction(
       items: JSON.stringify(checkoutItems),
     }
 
-    const { total, fee } = calculateTotalAndFeeInCents(input.items)
+    const { total, fee } = calculateOrderAmount(input.items)
 
     // if (!isNaN(cartId)) {
     //   const cart = await db.query.carts.findFirst({

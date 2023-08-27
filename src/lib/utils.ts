@@ -115,7 +115,7 @@ export function isMacOs() {
 }
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
-export function calculateTotalAndFeeInCents(items: CartLineItem[]) {
+export function calculateOrderAmount(items: CartLineItem[]) {
   const total = items.reduce((acc, item) => {
     return acc + Number(item.price) * item.quantity
   }, 0)
