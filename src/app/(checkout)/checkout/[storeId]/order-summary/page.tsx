@@ -60,7 +60,7 @@ export default async function OrderSummaryPage({
   ) as unknown as CheckoutItem[]
 
   if (isVerified) {
-    const orderedProducts = await getOrderedProducts({
+    const products = await getOrderedProducts({
       checkoutItems,
     })
 
@@ -76,7 +76,7 @@ export default async function OrderSummaryPage({
           <h2>Order Summary</h2>
           {store?.name && <h3>{store.name}</h3>}
           <ul>
-            {orderedProducts.map((product) => (
+            {products.map((product) => (
               <li key={product.id}>
                 <h4>{product.name}</h4>
                 <p>{product.price}</p>

@@ -10,7 +10,7 @@ import {
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 
-export default function CheckoutLoading() {
+export default function CartLoading() {
   return (
     <Shell>
       <PageHeader>

@@ -86,14 +86,14 @@ export async function CartSheet() {
               <SheetFooter className="mt-1.5">
                 <SheetTrigger asChild>
                   <Link
-                    aria-label="Proceed to checkout"
-                    href="/checkout"
+                    aria-label="View your cart"
+                    href="/cart"
                     className={buttonVariants({
                       size: "sm",
                       className: "w-full",
                     })}
                   >
-                    Proceed to Checkout
+                    View your cart
                   </Link>
                 </SheetTrigger>
               </SheetFooter>

@@ -38,8 +38,8 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
         <CardTitle className="line-clamp-1 flex-1">
           {cartLineItems[0]?.storeName}
         </CardTitle>
-        <CheckoutButton storeId={storeId} cartLineItems={cartLineItems} />
-        {/* <Link
+        {/* <CheckoutButton storeId={storeId} cartLineItems={cartLineItems} /> */}
+        <Link
           href={`/checkout/${storeId}`}
           className={cn(
             buttonVariants({
@@ -48,7 +48,7 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
           )}
         >
           Checkout
-        </Link> */}
+        </Link>
       </CardHeader>
       <Separator className="mb-4" />
       <CardContent className="pb-6 pl-6 pr-0">

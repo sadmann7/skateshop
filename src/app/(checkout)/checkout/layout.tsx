@@ -14,5 +14,5 @@ export default async function CheckoutLayout({
     redirect("/signin")
   }
 
-  return <>{children}</>
+  return <main>{children}</main>
 }

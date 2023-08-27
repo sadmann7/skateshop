@@ -117,19 +117,20 @@ export async function getCheckoutSessionProducts(
         )
       )
       .orderBy(desc(products.createdAt))
+      .then((items) => {
+        return items.map((item) => {
+          const quantity = checkoutItems.find(
+            (checkoutItem) => checkoutItem.productId === item.id
+          )?.quantity
 
-    const productsWithQuantity = orderedProducts.map((product) => {
-      const quantity = checkoutItems.find(
-        (item) => item.productId === product.id
-      )?.quantity
+          return {
+            ...item,
+            quantity: quantity ?? 0,
+          }
+        })
+      })
 
-      return {
-        ...product,
-        quantity: quantity ?? 0,
-      }
-    })
-
-    return productsWithQuantity
+    return orderedProducts
   } catch (err) {
     err instanceof Error && console.error(err.message)
     return []

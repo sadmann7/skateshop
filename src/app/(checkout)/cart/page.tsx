@@ -16,18 +16,18 @@ import { getUniqueStoreIds } from "@/app/_actions/cart"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Checkout",
+  title: "Cart",
   description: "Checkout with your cart items",
 }
 
-export default async function CheckoutPage() {
+export default async function CartPage() {
   const uniqueStoreIds = await getUniqueStoreIds()
 
   return (
     <Shell>
       <PageHeader
-        id="checkout-page-header"
-        aria-labelledby="checkout-page-header-heading"
+        id="cart-page-header"
+        aria-labelledby="cart-page-header-heading"
       >
         <PageHeaderHeading size="sm">Checkout</PageHeaderHeading>
         <PageHeaderDescription size="sm">
@@ -40,8 +40,8 @@ export default async function CheckoutPage() {
         ))
       ) : (
         <section
-          id="checkout-page-empty-cart"
-          aria-labelledby="checkout-page-empty-cart-heading"
+          id="cart-page-empty-cart"
+          aria-labelledby="cart-page-empty-cart-heading"
           className="flex h-full flex-col items-center justify-center space-y-1 pt-16"
         >
           <Icons.cart
