@@ -7,7 +7,7 @@ import { env } from "@/env.mjs"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { eq } from "drizzle-orm"
 
-import { cn } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
@@ -62,6 +62,11 @@ export default async function IndieCheckoutPage({
     items: cartLineItems,
   })
 
+  const total = cartLineItems.reduce(
+    (total, item) => total + item.quantity * Number(item.price),
+    0
+  )
+
   if (!(isConnected && store.stripeAccountId)) {
     return (
       <Shell
@@ -94,9 +99,9 @@ export default async function IndieCheckoutPage({
   }
 
   return (
-    <section className="flex h-[100dvh] flex-col items-start justify-center overflow-hidden lg:flex-row">
-      <div className="w-full pb-10 pt-8 lg:h-full lg:pt-20">
-        <div className="container flex w-full max-w-xl flex-col gap-8">
+    <section className="flex flex-col items-start justify-center overflow-hidden lg:h-[100dvh] lg:flex-row">
+      <div className="w-full pb-10 pt-8 lg:h-full lg:pr-12 lg:pt-16">
+        <div className="container flex w-full max-w-xl flex-col gap-8 lg:ml-auto lg:mr-0">
           <div className="flex items-center space-x-2">
             <Link
               aria-label="Back to cart"
@@ -116,23 +121,29 @@ export default async function IndieCheckoutPage({
             </Link>
             <Badge
               variant="secondary"
-              className="pointer-events-none z-10 text-[0.65rem]"
+              className="pointer-events-none text-[0.65rem]"
             >
               TEST MODE
             </Badge>
           </div>
+          <div className="space-y-1">
+            <div className="font-semibold text-muted-foreground">
+              Pay Skateshop
+            </div>
+            <div className="text-3xl font-bold">{formatPrice(total)}</div>
+          </div>
           <CartLineItems
             cartLineItems={cartLineItems}
             isEditable={false}
-            className="max-h-[180px] lg:max-h-[640px]"
+            className="max-h-[180px] lg:max-h-[580px]"
           />
         </div>
       </div>
-      <div className="h-full w-full bg-white py-10 lg:pb-10 lg:pt-20">
+      <div className="h-full w-full bg-white pb-12 pt-10 lg:pl-12 lg:pt-16">
         <CheckoutShell
           paymentIntent={paymentIntent}
           storeStripeAccountId={store.stripeAccountId}
-          className="container max-w-xl"
+          className="container min-h-[420px] max-w-xl lg:ml-0 lg:mr-auto"
         >
           <CheckoutForm storeId={store.id} />
         </CheckoutShell>
