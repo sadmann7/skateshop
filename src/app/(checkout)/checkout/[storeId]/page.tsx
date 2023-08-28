@@ -99,10 +99,10 @@ export default async function IndieCheckoutPage({
   }
 
   return (
-    <section className="flex flex-col items-start justify-center overflow-hidden lg:h-[100dvh] lg:flex-row">
-      <div className="w-full pb-10 pt-8 lg:h-full lg:pr-12 lg:pt-16">
-        <div className="container flex w-full max-w-xl flex-col gap-8 lg:ml-auto lg:mr-0">
-          <div className="flex items-center space-x-2">
+    <section className="relative flex flex-col items-start justify-center overflow-hidden lg:h-[100dvh] lg:flex-row">
+      <div className="w-full space-y-12 py-8 lg:pt-16">
+        <div className="fixed top-0 z-40 h-16 w-full bg-zinc-950 py-4 lg:static lg:top-auto lg:z-0 lg:h-0 lg:py-0">
+          <div className="container flex max-w-xl items-center space-x-2 lg:ml-auto lg:mr-0 lg:pr-[4.5rem]">
             <Link
               aria-label="Back to cart"
               href="/cart"
@@ -126,18 +126,18 @@ export default async function IndieCheckoutPage({
               TEST MODE
             </Badge>
           </div>
-          <div className="space-y-1">
-            <div className="font-semibold text-muted-foreground">
-              Pay Skateshop
-            </div>
-            <div className="text-3xl font-bold">{formatPrice(total)}</div>
-          </div>
-          <CartLineItems
-            cartLineItems={cartLineItems}
-            isEditable={false}
-            className="max-h-[180px] lg:max-h-[580px]"
-          />
         </div>
+        <div className="container max-w-xl space-y-1 lg:ml-auto lg:mr-0 lg:pr-[4.5rem]">
+          <div className="font-semibold text-muted-foreground">
+            Pay Skateshop
+          </div>
+          <div className="text-3xl font-bold">{formatPrice(total)}</div>
+        </div>
+        <CartLineItems
+          cartLineItems={cartLineItems}
+          isEditable={false}
+          className="container max-h-[180px] w-full max-w-xl lg:ml-auto lg:mr-0 lg:max-h-[580px] lg:pr-[4.5rem]"
+        />
       </div>
       <div className="h-full w-full bg-white pb-12 pt-10 lg:pl-12 lg:pt-16">
         <CheckoutShell

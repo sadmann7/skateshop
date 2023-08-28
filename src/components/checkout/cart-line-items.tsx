@@ -26,7 +26,11 @@ export function CartLineItems({
   return (
     <Wrapper className="h-full">
       <div
-        className={cn("flex w-full flex-col gap-5 pr-6", className)}
+        className={cn(
+          "flex w-full flex-col gap-5",
+          isScrollable && "pr-6",
+          className
+        )}
         {...props}
       >
         {cartLineItems.map((item) => (

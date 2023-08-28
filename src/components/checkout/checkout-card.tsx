@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
+import { CheckoutButton } from "@/components/checkout/checkout-button"
 import { getCartAction } from "@/app/_actions/cart"
 
 interface CheckoutCardProps {
