@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
-import { CheckoutButton } from "@/components/checkout/checkout-button"
 import { getCartAction } from "@/app/_actions/cart"
 
 interface CheckoutCardProps {
@@ -26,8 +24,8 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
     <Card
       key={storeId}
       as="section"
-      id={`store-${storeId}`}
-      aria-labelledby={`store-${storeId}-heading`}
+      id={`checkout-store-${storeId}`}
+      aria-labelledby={`checkout-store-${storeId}-heading`}
       className={cn(
         cartLineItems[0]?.storeStripeAccountId
           ? "border-green-500"
@@ -52,12 +50,10 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
       </CardHeader>
       <Separator className="mb-4" />
       <CardContent className="pb-6 pl-6 pr-0">
-        <ScrollArea className="h-full">
-          <CartLineItems
-            className="max-h-[380px] pr-6"
-            cartLineItems={cartLineItems}
-          />
-        </ScrollArea>
+        <CartLineItems
+          cartLineItems={cartLineItems}
+          className="max-h-[280px]"
+        />
       </CardContent>
       <Separator className="mb-4" />
       <CardFooter className="space-x-4">

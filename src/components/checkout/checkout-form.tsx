@@ -106,6 +106,7 @@ export default function CheckoutForm({ storeId }: CheckoutFormProps) {
         type="submit"
         aria-label="Pay"
         id={`${id}-checkout-form-submit`}
+        variant="secondary"
         className="w-full"
         disabled={!stripe || !elements || isPending}
       >

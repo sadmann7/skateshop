@@ -3,7 +3,6 @@ import Link from "next/link"
 import { cn, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import {
   Sheet,
@@ -60,9 +59,7 @@ export async function CartSheet() {
         {itemCount > 0 ? (
           <>
             <div className="flex flex-1 flex-col gap-5 overflow-hidden">
-              <ScrollArea className="h-full">
-                <CartLineItems cartLineItems={cartLineItems} className="pr-6" />
-              </ScrollArea>
+              <CartLineItems cartLineItems={cartLineItems} />
             </div>
             <div className="grid gap-1.5 pr-6 text-sm">
               <Separator className="mb-2" />

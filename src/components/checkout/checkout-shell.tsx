@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Elements } from "@stripe/react-stripe-js"
 import { type StripeElementsOptions } from "@stripe/stripe-js"
-import { useTheme } from "next-themes"
 
 import { getStripe } from "@/lib/get-stripe"
 import { cn } from "@/lib/utils"
@@ -28,19 +27,18 @@ export function CheckoutShell({
     [storeStripeAccountId]
   )
   const { clientSecret } = React.use(paymentIntent)
-  const { theme } = useTheme()
 
   if (!clientSecret) return null
 
   const options: StripeElementsOptions = {
     appearance: {
-      theme: theme === "dark" ? "night" : "stripe",
+      theme: "stripe",
     },
     clientSecret: clientSecret,
   }
 
   return (
-    <section className={cn("w-full", className)} {...props}>
+    <section className={cn("h-full w-full", className)} {...props}>
       <Elements options={options} stripe={stripePromise}>
         {children}
       </Elements>
