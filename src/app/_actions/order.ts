@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, orders, products } from "@/db/schema"
-import type { CheckoutItem } from "@/types"
+import type { CartLineItem, CheckoutItem } from "@/types"
 import { desc, eq, inArray } from "drizzle-orm"
 import { type z } from "zod"
 
@@ -13,16 +13,19 @@ import type {
   getOrderedProductsSchema,
 } from "@/lib/validations/order"
 
-export async function getOrderedProducts(
+export async function getOrderLineItems(
   input: z.infer<typeof getOrderedProductsSchema>
-) {
+): Promise<CartLineItem[]> {
   try {
     const orderedProducts = await db
       .select({
         id: products.id,
         name: products.name,
-        price: products.price,
         images: products.images,
+        category: products.category,
+        subcategory: products.subcategory,
+        price: products.price,
+        inventory: products.inventory,
         storeId: products.storeId,
       })
       .from(products)

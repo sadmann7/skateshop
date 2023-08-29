@@ -18,6 +18,7 @@ export function CartLineItems({
   cartLineItems,
   isScrollable = true,
   isEditable = true,
+
   className,
   ...props
 }: CartLineItemsProps) {
@@ -25,7 +26,7 @@ export function CartLineItems({
 
   return (
     <Wrapper className="h-full">
-      <div
+      <section
         className={cn(
           "flex w-full flex-col gap-5",
           isScrollable && "pr-6",
@@ -35,9 +36,14 @@ export function CartLineItems({
       >
         {cartLineItems.map((item) => (
           <div key={item.id} className="space-y-3">
-            <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
+            <div
+              className={cn(
+                "flex items-start justify-between gap-4",
+                isEditable && "flex-col xs:flex-row"
+              )}
+            >
               <div className="flex items-center space-x-4">
-                <div className="relative h-16 w-16 overflow-hidden rounded">
+                <div className="relative aspect-square h-16 w-16 min-w-fit overflow-hidden rounded">
                   {item?.images?.length ? (
                     <Image
                       src={
@@ -60,13 +66,19 @@ export function CartLineItems({
                   )}
                 </div>
                 <div className="flex flex-col gap-1 self-start text-sm">
-                  <span className="line-clamp-1">{item.name}</span>
-                  <span className="line-clamp-1 text-muted-foreground">
-                    {formatPrice(item.price)} x {item.quantity} ={" "}
-                    {formatPrice(
-                      (Number(item.price) * Number(item.quantity)).toFixed(2)
-                    )}
-                  </span>
+                  <span className="line-clamp-1 font-medium">{item.name}</span>
+                  {isEditable ? (
+                    <span className="line-clamp-1 text-xs text-muted-foreground">
+                      {formatPrice(item.price)} x {item.quantity} ={" "}
+                      {formatPrice(
+                        (Number(item.price) * Number(item.quantity)).toFixed(2)
+                      )}
+                    </span>
+                  ) : (
+                    <span className="line-clamp-1 text-xs text-muted-foreground">
+                      Qty {item.quantity}
+                    </span>
+                  )}
                   <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
                     {`${item.category} ${
                       item.subcategory ? `/ ${item.subcategory}` : ""
@@ -74,12 +86,18 @@ export function CartLineItems({
                   </span>
                 </div>
               </div>
-              {isEditable && <UpdateCart cartLineItem={item} />}
+              {isEditable ? (
+                <UpdateCart cartLineItem={item} />
+              ) : (
+                <div className="text-sm font-medium">
+                  {formatPrice(item.price)}
+                </div>
+              )}
             </div>
             <Separator />
           </div>
         ))}
-      </div>
+      </section>
     </Wrapper>
   )
 }

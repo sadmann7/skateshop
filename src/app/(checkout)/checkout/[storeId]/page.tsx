@@ -149,9 +149,9 @@ export default async function IndieCheckoutPage({
                   </div>
                 </ScrollArea>
                 <div className="px-4">
-                  <div className="container flex max-w-6xl">
-                    <div className="flex-1 font-medium">Total</div>
-                    <div className="font-bold">{formatPrice(total)}</div>
+                  <div className="container flex max-w-6xl font-medium">
+                    <div className="flex-1">Total</div>
+                    <div>{formatPrice(total)}</div>
                   </div>
                 </div>
               </DrawerContent>

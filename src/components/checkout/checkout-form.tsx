@@ -68,7 +68,7 @@ export default function CheckoutForm({ storeId }: CheckoutFormProps) {
         //`Elements` instance that was used to create the Payment Element
         elements,
         confirmParams: {
-          return_url: absoluteUrl(`/checkout/${storeId}/order-summary`),
+          return_url: absoluteUrl(`/checkout/${storeId}/success`),
           receipt_email: email,
         },
       })
