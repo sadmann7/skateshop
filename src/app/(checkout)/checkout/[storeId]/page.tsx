@@ -8,8 +8,9 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { eq } from "drizzle-orm"
 
 import { cn, formatPrice } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
 import CheckoutForm from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
@@ -99,14 +100,14 @@ export default async function IndieCheckoutPage({
   }
 
   return (
-    <section className="relative flex flex-col items-start justify-center overflow-hidden lg:h-[100dvh] lg:flex-row">
-      <div className="w-full space-y-12 py-8 lg:pt-16">
-        <div className="fixed top-0 z-40 h-16 w-full bg-zinc-950 py-4 lg:static lg:top-auto lg:z-0 lg:h-0 lg:py-0">
-          <div className="container flex max-w-xl items-center space-x-2 lg:ml-auto lg:mr-0 lg:pr-[4.5rem]">
+    <section className="relative flex h-full min-h-[100dvh] flex-col items-start justify-center lg:h-[100dvh] lg:flex-row lg:overflow-hidden">
+      <div className="w-full space-y-12 pt-8 lg:pt-16">
+        <div className="fixed top-0 z-40 h-16 w-full bg-[#09090b] py-4 lg:static lg:top-auto lg:z-0 lg:h-0 lg:py-0">
+          <div className="container flex max-w-xl items-center justify-between space-x-2 lg:ml-auto lg:mr-0 lg:pr-[4.5rem]">
             <Link
               aria-label="Back to cart"
               href="/cart"
-              className="group flex w-28 items-center space-x-2"
+              className="group flex w-28 items-center space-x-2 lg:flex-auto"
             >
               <ArrowLeftIcon
                 className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary"
@@ -119,15 +120,45 @@ export default async function IndieCheckoutPage({
                 Back
               </div>
             </Link>
-            <Badge
-              variant="secondary"
-              className="pointer-events-none text-[0.65rem]"
-            >
-              TEST MODE
-            </Badge>
+            <Drawer>
+              <DrawerTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Details
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent className="flex h-[80%] flex-col space-y-5 bg-zinc-50 py-8 text-zinc-950">
+                <ScrollArea className="h-full px-4">
+                  <div className="container flex max-w-6xl flex-col gap-5">
+                    {cartLineItems.map((item) => (
+                      <div key={item.id} className="flex space-x-4 text-sm">
+                        <div className="flex flex-1 flex-col space-y-1.5">
+                          <span className="line-clamp-1 font-medium">
+                            {item.name}
+                          </span>
+                          <span className="line-clamp-1 text-xs text-muted-foreground">
+                            Qty {item.quantity}
+                          </span>
+                        </div>
+                        <div className="line-clamp-1 font-medium">
+                          {formatPrice(
+                            (Number(item.price) * item.quantity).toFixed(2)
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+                <div className="px-4">
+                  <div className="container flex max-w-6xl">
+                    <div className="flex-1 font-medium">Total</div>
+                    <div className="font-bold">{formatPrice(total)}</div>
+                  </div>
+                </div>
+              </DrawerContent>
+            </Drawer>
           </div>
         </div>
-        <div className="container max-w-xl space-y-1 lg:ml-auto lg:mr-0 lg:pr-[4.5rem]">
+        <div className="container flex max-w-xl flex-col items-center space-y-1 lg:ml-auto lg:mr-0 lg:items-start lg:pr-[4.5rem]">
           <div className="font-semibold text-muted-foreground">
             Pay Skateshop
           </div>
@@ -136,14 +167,14 @@ export default async function IndieCheckoutPage({
         <CartLineItems
           cartLineItems={cartLineItems}
           isEditable={false}
-          className="container max-h-[180px] w-full max-w-xl lg:ml-auto lg:mr-0 lg:max-h-[580px] lg:pr-[4.5rem]"
+          className="container hidden w-full max-w-xl lg:ml-auto lg:mr-0 lg:flex lg:max-h-[580px] lg:pr-[4.5rem]"
         />
       </div>
-      <div className="h-full w-full bg-white pb-12 pt-10 lg:pl-12 lg:pt-16">
+      <div className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16">
         <CheckoutShell
           paymentIntent={paymentIntent}
           storeStripeAccountId={store.stripeAccountId}
-          className="container min-h-[420px] max-w-xl lg:ml-0 lg:mr-auto"
+          className="container max-w-xl lg:ml-0 lg:mr-auto"
         >
           <CheckoutForm storeId={store.id} />
         </CheckoutShell>
