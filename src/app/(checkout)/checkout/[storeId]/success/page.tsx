@@ -86,19 +86,17 @@ export default async function OrderSuccessPage({
               {store?.name ?? "Store"} will be in touch with you shortly
             </PageHeaderDescription>
           </PageHeader>
-          <CartLineItems
+          <section
             id="order-success-cart-line-items"
             aria-labelledby="order-success-cart-line-items-heading"
-            cartLineItems={lineItems}
-            isEditable={false}
-            className="container max-w-7xl"
-          />
-          <div className="container flex max-w-7xl flex-col space-y-4">
-            <div
-              id="order-success-cart-line-items-total"
-              aria-labelledby="order-success-cart-line-items-total-heading"
-              className="flex items-center"
-            >
+            className="flex flex-col space-y-6 overflow-auto"
+          >
+            <CartLineItems
+              cartLineItems={lineItems}
+              isEditable={false}
+              className="container max-w-7xl"
+            />
+            <div className="container flex w-full max-w-7xl items-center">
               <span className="flex-1">
                 Total (
                 {lineItems.reduce(
@@ -117,19 +115,20 @@ export default async function OrderSuccessPage({
                 )}
               </span>
             </div>
-            <Link
-              aria-label="Continue shopping"
-              href="/products"
-              className={cn(
-                buttonVariants({
-                  variant: "link",
-                  size: "sm",
-                })
-              )}
-            >
-              Continue shopping
-            </Link>
-          </div>
+          </section>
+          <Link
+            aria-label="Continue shopping"
+            href="/products"
+            className={cn(
+              buttonVariants({
+                variant: "link",
+                size: "sm",
+                className: "container max-w-7xl",
+              })
+            )}
+          >
+            Continue shopping
+          </Link>
         </div>
       ) : (
         <div className="container grid max-w-7xl gap-10">
@@ -145,7 +144,7 @@ export default async function OrderSuccessPage({
           <VerifyOderForm
             id="order-success-verify-order-form"
             aria-labelledby="order-success-verify-order-form-heading"
-            className="mx-auto w-full max-w-xl pt-40"
+            className="mx-auto w-full max-w-md pt-40"
           />
         </div>
       )}

@@ -18,7 +18,6 @@ export function CartLineItems({
   cartLineItems,
   isScrollable = true,
   isEditable = true,
-
   className,
   ...props
 }: CartLineItemsProps) {

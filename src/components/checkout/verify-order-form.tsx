@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
 
-import { catchError, cn } from "@/lib/utils"
-import { verifyOrderSchema } from "@/lib/validations/stripe"
+import { cn } from "@/lib/utils"
+import { verifyOrderSchema } from "@/lib/validations/order"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -37,14 +37,12 @@ export function VerifyOderForm({ className, ...props }: VerifyOderFormProps) {
 
   function onSubmit(data: Inputs) {
     startTransition(() => {
+      console.log(data)
+      // Original source: https://github.com/jackblatch/OneStopShop/blob/main/app/(storefront)/checkout/%5BstoreSlug%5D/order-confirmation/components/verification.tsx
       const location = `${
         window.location.href.split("&delivery_postal_code=")[0]
       }&delivery_postal_code=${data.deliveryPostalCode.split(" ").join("")}`
       router.push(location)
-      try {
-      } catch (err) {
-        catchError(err)
-      }
     })
   }
 

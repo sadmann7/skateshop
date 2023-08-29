@@ -18,39 +18,40 @@ export default function OrderSuccessLoading() {
             Store will be in touch with you shortly
           </PageHeaderDescription>
         </PageHeader>
-        <ScrollArea className="h-full">
-          <div className="container flex max-w-7xl flex-col gap-5">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-3">
-                <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
-                  <div className="flex items-center space-x-4">
-                    <div className="relative h-16 w-16 overflow-hidden rounded">
-                      <div className="flex h-full items-center justify-center bg-secondary">
-                        <Icons.placeholder
-                          className="h-4 w-4 text-muted-foreground"
-                          aria-hidden="true"
-                        />
+        <section className="flex flex-col space-y-6 overflow-auto">
+          <ScrollArea className="h-full">
+            <div className="container flex max-w-7xl flex-col gap-5">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="space-y-3">
+                  <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
+                    <div className="flex items-center space-x-4">
+                      <div className="relative h-16 w-16 overflow-hidden rounded">
+                        <div className="flex h-full items-center justify-center bg-secondary">
+                          <Icons.placeholder
+                            className="h-4 w-4 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col gap-2 self-start text-sm">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-10" />
+                        <Skeleton className="h-2 w-16" />
                       </div>
                     </div>
-                    <div className="flex flex-1 flex-col gap-2 self-start text-sm">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-3 w-20" />
-                      <Skeleton className="h-2 w-16" />
-                    </div>
+                    <Skeleton className="h-4 w-12" />
                   </div>
+                  <Separator />
                 </div>
-                <Separator />
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-        <div className="container flex max-w-7xl flex-col space-y-4">
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-4 w-20" />
+              ))}
+            </div>
+          </ScrollArea>
+          <div className="container flex max-w-7xl items-center justify-between">
+            <Skeleton className="h-4 w-16" />
             <Skeleton className="h-4 w-20" />
           </div>
-          <Skeleton className="h-4 w-20 self-center" />
-        </div>
+        </section>
+        <Skeleton className="container h-4 w-20 max-w-7xl self-center" />
       </div>
     </div>
   )

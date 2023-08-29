@@ -35,7 +35,3 @@ export const getPaymentIntentSchema = z.object({
   paymentIntentId: z.string(),
   deliveryPostalCode: z.string().optional().nullable(),
 })
-
-export const verifyOrderSchema = z.object({
-  deliveryPostalCode: z.string(),
-})

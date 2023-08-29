@@ -9,3 +9,9 @@ export const getOrderedProductsSchema = z.object({
 export const getCheckoutSessionProductsSchema = z.object({
   storeId: z.number().optional(),
 })
+
+export const verifyOrderSchema = z.object({
+  deliveryPostalCode: z.string().min(1, {
+    message: "Please enter a valid postal code",
+  }),
+})
