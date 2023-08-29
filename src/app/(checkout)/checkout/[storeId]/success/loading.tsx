@@ -10,14 +10,14 @@ import {
 
 export default function OrderSuccessLoading() {
   return (
-    <div className="flex h-[100dvh] w-full flex-col gap-10 pb-8 pt-6 md:py-8">
-      <PageHeader className="container flex max-w-7xl flex-col">
-        <PageHeaderHeading>Thank you for your order</PageHeaderHeading>
-        <PageHeaderDescription>
-          Store will be in touch with you shortly
-        </PageHeaderDescription>
-      </PageHeader>
-      <div className="flex flex-col space-y-6 overflow-auto">
+    <div className="flex h-full max-h-[100dvh] w-full flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
+      <div className="grid gap-10 overflow-auto">
+        <PageHeader className="container flex max-w-7xl flex-col">
+          <PageHeaderHeading>Thank you for your order</PageHeaderHeading>
+          <PageHeaderDescription>
+            Store will be in touch with you shortly
+          </PageHeaderDescription>
+        </PageHeader>
         <ScrollArea className="h-full">
           <div className="container flex max-w-7xl flex-col gap-5">
             {Array.from({ length: 4 }).map((_, i) => (

@@ -9,19 +9,19 @@ import { eq } from "drizzle-orm"
 import { cn, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
+import { VerifyOderForm } from "@/components/checkout/verify-order-form"
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { Shell } from "@/components/shells/shell"
 import { getOrderLineItems } from "@/app/_actions/order"
 import { getPaymentIntentAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Order Summary",
-  description: "Order Summary for your purchase",
+  title: "Order Success",
+  description: "Order summary for your purchase",
 }
 
 interface OrderSuccessPageProps {
@@ -59,28 +59,33 @@ export default async function OrderSuccessPage({
       typeof delivery_postal_code === "string" ? delivery_postal_code : "",
   })
 
-  const checkoutItems = JSON.parse(
-    paymentIntent?.metadata?.items ?? ""
-  ) as unknown as CheckoutItem[]
+  const checkoutItems = paymentIntent
+    ? (JSON.parse(
+        paymentIntent?.metadata?.items ?? ""
+      ) as unknown as CheckoutItem[])
+    : []
 
-  if (isVerified) {
-    const lineItems = await getOrderLineItems({
-      checkoutItems,
-    })
+  const lineItems =
+    checkoutItems.length > 0
+      ? await getOrderLineItems({
+          checkoutItems,
+        })
+      : []
 
-    return (
-      <div className="grid h-[100dvh] w-full gap-10 pb-8 pt-6 md:py-8">
-        <PageHeader
-          id="order-success-page-header"
-          aria-labelledby="order-success-page-header-heading"
-          className="container max-w-7xl"
-        >
-          <PageHeaderHeading>Thank you for your order</PageHeaderHeading>
-          <PageHeaderDescription>
-            {store?.name ?? "Store"} will be in touch with you shortly
-          </PageHeaderDescription>
-        </PageHeader>
-        <div className="flex flex-col space-y-6 overflow-auto">
+  return (
+    <div className="flex h-full max-h-[100dvh] w-full flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
+      {isVerified ? (
+        <div className="grid gap-10 overflow-auto">
+          <PageHeader
+            id="order-success-page-header"
+            aria-labelledby="order-success-page-header-heading"
+            className="container flex max-w-7xl flex-col"
+          >
+            <PageHeaderHeading>Thank you for your order</PageHeaderHeading>
+            <PageHeaderDescription>
+              {store?.name ?? "Store"} will be in touch with you shortly
+            </PageHeaderDescription>
+          </PageHeader>
           <CartLineItems
             id="order-success-cart-line-items"
             aria-labelledby="order-success-cart-line-items-heading"
@@ -95,11 +100,12 @@ export default async function OrderSuccessPage({
               className="flex items-center"
             >
               <span className="flex-1">
+                Total (
                 {lineItems.reduce(
                   (acc, item) => acc + Number(item.quantity),
                   0
-                )}{" "}
-                items
+                )}
+                )
               </span>
               <span>
                 {formatPrice(
@@ -125,18 +131,24 @@ export default async function OrderSuccessPage({
             </Link>
           </div>
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <Shell>
-      <PageHeader>
-        <PageHeaderHeading size="sm">Order Summary</PageHeaderHeading>
-        <PageHeaderDescription size="sm">
-          Order Summary for your purchase
-        </PageHeaderDescription>
-      </PageHeader>
-    </Shell>
+      ) : (
+        <div className="container grid max-w-7xl gap-10">
+          <PageHeader
+            id="order-success-page-header"
+            aria-labelledby="order-success-page-header-heading"
+          >
+            <PageHeaderHeading>Thank you for your order</PageHeaderHeading>
+            <PageHeaderDescription>
+              Please enter your delivery postal code to verify your order
+            </PageHeaderDescription>
+          </PageHeader>
+          <VerifyOderForm
+            id="order-success-verify-order-form"
+            aria-labelledby="order-success-verify-order-form-heading"
+            className="mx-auto w-full max-w-xl pt-40"
+          />
+        </div>
+      )}
+    </div>
   )
 }

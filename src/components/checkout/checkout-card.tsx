@@ -59,8 +59,8 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
       <Separator className="mb-4" />
       <CardFooter className="space-x-4">
         <span className="flex-1">
-          {cartLineItems.reduce((acc, item) => acc + Number(item.quantity), 0)}{" "}
-          items
+          Total (
+          {cartLineItems.reduce((acc, item) => acc + Number(item.quantity), 0)})
         </span>
         <span>
           {formatPrice(
