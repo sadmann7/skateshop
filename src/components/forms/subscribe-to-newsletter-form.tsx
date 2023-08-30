@@ -46,26 +46,27 @@ export function SubscribeToNewsletterForm() {
         }),
       })
 
-      if (response.status === 409) {
-        toast.error("You are already subscribed to our newsletter.")
+      if (!response.ok) {
+        switch (response.status) {
+          case 409:
+            toast.error("You are already subscribed to our newsletter.")
+            break
+          case 422:
+            toast.error("Invalid input.")
+            break
+          case 429:
+            toast.error("The daily email limit has been reached.")
+            break
+          case 500:
+            toast.error("Something went wrong. Please try again later.")
+            break
+          default:
+            toast.error("Something went wrong. Please try again later.")
+        }
       }
 
-      if (response.status === 422) {
-        toast.error("Invalid input.")
-      }
-
-      if (response.status === 429) {
-        toast.error("The daily email limit has been reached.")
-      }
-
-      if (response.status === 500) {
-        toast.error("Something went wrong. Please try again later.")
-      }
-
-      if (response.ok) {
-        toast.success("You have been subscribed to our newsletter.")
-        form.reset()
-      }
+      toast.success("You have been subscribed to our newsletter.")
+      form.reset()
     })
   }
 
@@ -79,7 +80,7 @@ export function SubscribeToNewsletterForm() {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="relative">
+            <FormItem className="relative space-y-0">
               <FormLabel className="sr-only">Email</FormLabel>
               <FormControl>
                 <Input
@@ -90,7 +91,7 @@ export function SubscribeToNewsletterForm() {
               </FormControl>
               <FormMessage />
               <Button
-                className="absolute right-[5.2px] top-[5.5px] z-20 h-7 w-7"
+                className="absolute right-[3.5px] top-[4px] z-20 h-7 w-7"
                 size="icon"
                 disabled={isPending}
               >

@@ -27,6 +27,22 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
   const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
 
+  const navItems = React.useMemo(() => {
+    const items = mainNavItems ?? []
+    const myAccountItem = {
+      title: "My Account",
+      items: sidebarNavItems,
+    }
+    const myAccountIndex = items.findIndex(
+      (item) => item.title === "My Account"
+    )
+    if (myAccountIndex !== -1) {
+      items.splice(myAccountIndex, 1)
+    }
+    items.splice(1, 0, myAccountItem)
+    return items
+  }, [mainNavItems, sidebarNavItems])
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -52,8 +68,12 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
         </div>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="pl-1 pr-7">
-            <Accordion type="single" collapsible className="w-full">
-              {mainNavItems?.map((item, index) => (
+            <Accordion
+              type="multiple"
+              defaultValue={navItems.map((item) => item.title)}
+              className="w-full"
+            >
+              {navItems?.map((item, index) => (
                 <AccordionItem value={item.title} key={index}>
                   <AccordionTrigger className="text-sm capitalize">
                     {item.title}
@@ -84,35 +104,6 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
                   </AccordionContent>
                 </AccordionItem>
               ))}
-              <AccordionItem value="sidebar">
-                <AccordionTrigger className="text-sm">
-                  Sidebar Menu
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="flex flex-col space-y-2">
-                    {sidebarNavItems?.map((item, index) =>
-                      item.href ? (
-                        <MobileLink
-                          key={index}
-                          href={String(item.href)}
-                          pathname={pathname}
-                          setIsOpen={setIsOpen}
-                          disabled={item.disabled}
-                        >
-                          {item.title}
-                        </MobileLink>
-                      ) : (
-                        <div
-                          key={index}
-                          className="text-foreground/70 transition-colors"
-                        >
-                          {item.title}
-                        </div>
-                      )
-                    )}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
             </Accordion>
           </div>
         </ScrollArea>
