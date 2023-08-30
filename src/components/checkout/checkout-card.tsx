@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
-import { CheckoutButton } from "@/components/checkout/checkout-button"
 import { getCartAction } from "@/app/_actions/cart"
 
 interface CheckoutCardProps {
@@ -37,8 +36,8 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
         <CardTitle className="line-clamp-1 flex-1">
           {cartLineItems[0]?.storeName}
         </CardTitle>
-        {/* <CheckoutButton storeId={storeId} cartLineItems={cartLineItems} /> */}
         <Link
+          aria-label="Checkout"
           href={`/checkout/${storeId}`}
           className={cn(
             buttonVariants({

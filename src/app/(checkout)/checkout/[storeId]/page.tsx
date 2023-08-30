@@ -27,20 +27,19 @@ export const metadata: Metadata = {
   description: "Checkout with store items",
 }
 
-interface IndieCheckoutPageProps {
+interface CheckoutPageProps {
   params: {
     storeId: string
   }
 }
 
-export default async function IndieCheckoutPage({
-  params,
-}: IndieCheckoutPageProps) {
+export default async function CheckoutPage({ params }: CheckoutPageProps) {
   const storeId = Number(params.storeId)
 
   const store = await db
     .select({
       id: stores.id,
+      name: stores.name,
       stripeAccountId: stores.stripeAccountId,
     })
     .from(stores)
@@ -160,7 +159,7 @@ export default async function IndieCheckoutPage({
         </div>
         <div className="container flex max-w-xl flex-col items-center space-y-1 lg:ml-auto lg:mr-0 lg:items-start lg:pr-[4.5rem]">
           <div className="font-semibold text-muted-foreground">
-            Pay Skateshop
+            Pay {store.name}
           </div>
           <div className="text-3xl font-bold">{formatPrice(total)}</div>
         </div>

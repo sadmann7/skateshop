@@ -59,16 +59,10 @@ export default async function OrderSuccessPage({
       typeof delivery_postal_code === "string" ? delivery_postal_code : "",
   })
 
-  const checkoutItems = paymentIntent
-    ? (JSON.parse(
-        paymentIntent?.metadata?.items ?? ""
-      ) as unknown as CheckoutItem[])
-    : []
-
   const lineItems =
-    checkoutItems.length > 0
+    isVerified && paymentIntent
       ? await getOrderLineItems({
-          checkoutItems,
+          storeId,
         })
       : []
 

@@ -2,22 +2,32 @@
 
 import { cookies } from "next/headers"
 import { db } from "@/db"
-import { carts, orders, products } from "@/db/schema"
+import { carts, products } from "@/db/schema"
 import type { CartLineItem, CheckoutItem } from "@/types"
 import { desc, eq, inArray } from "drizzle-orm"
 import { type z } from "zod"
 
 import { stripe } from "@/lib/stripe"
-import type {
-  getCheckoutSessionProductsSchema,
-  getOrderedProductsSchema,
-} from "@/lib/validations/order"
+import type { getOrderLineItemsSchema } from "@/lib/validations/order"
 
 export async function getOrderLineItems(
-  input: z.infer<typeof getOrderedProductsSchema>
+  input: z.infer<typeof getOrderLineItemsSchema>
 ): Promise<CartLineItem[]> {
   try {
-    const orderedProducts = await db
+    const checkoutItems: CheckoutItem[] = []
+
+    const parsedItems: unknown = JSON.parse(input.items ?? "[]")
+    if (Array.isArray(parsedItems)) {
+      checkoutItems.forEach((item) => {
+        if (typeof item === "object") {
+          checkoutItems.push(item)
+        }
+      })
+    }
+
+    if (checkoutItems.length === 0) return []
+
+    const lineItems = await db
       .select({
         id: products.id,
         name: products.name,
@@ -32,14 +42,14 @@ export async function getOrderLineItems(
       .where(
         inArray(
           products.id,
-          input.checkoutItems.map((item) => item.productId)
+          checkoutItems.map((item) => item.productId)
         )
       )
       .groupBy(products.id)
       .orderBy(desc(products.createdAt))
       .then((items) => {
         return items.map((item) => {
-          const quantity = input.checkoutItems.find(
+          const quantity = checkoutItems.find(
             (checkoutItem) => checkoutItem.productId === item.id
           )?.quantity
 
@@ -50,15 +60,15 @@ export async function getOrderLineItems(
         })
       })
 
-    return orderedProducts
+    return lineItems
   } catch (err) {
     console.error(err)
     return []
   }
 }
 
-export async function getCheckoutSessionProducts(
-  input: z.infer<typeof getCheckoutSessionProductsSchema>
+export async function getCheckoutSessionLineItems(
+  input: z.infer<typeof getOrderLineItemsSchema>
 ) {
   try {
     if (!input.storeId) {
@@ -91,9 +101,18 @@ export async function getCheckoutSessionProducts(
     )
 
     // Get checkout items from the checkout session metadata
-    const checkoutItems = JSON.parse(
+    const checkoutItems: CheckoutItem[] = []
+
+    const parsedItems: unknown = JSON.parse(
       checkoutSession?.metadata?.items ?? ""
-    ) as unknown as CheckoutItem[]
+    )
+    if (Array.isArray(parsedItems)) {
+      checkoutItems.forEach((item) => {
+        if (typeof item === "object") {
+          checkoutItems.push(item)
+        }
+      })
+    }
 
     // TODO: Create order on webhook instead
     // await db.insert(orders).values({
@@ -104,7 +123,7 @@ export async function getCheckoutSessionProducts(
     // })
 
     // Get products from the checkout items
-    const orderedProducts = await db
+    const lineItems = await db
       .select({
         id: products.id,
         name: products.name,
@@ -133,7 +152,7 @@ export async function getCheckoutSessionProducts(
         })
       })
 
-    return orderedProducts
+    return lineItems
   } catch (err) {
     err instanceof Error && console.error(err.message)
     return []
