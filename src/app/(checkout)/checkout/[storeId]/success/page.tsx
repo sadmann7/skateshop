@@ -63,6 +63,7 @@ export default async function OrderSuccessPage({
     isVerified && paymentIntent
       ? await getOrderLineItems({
           storeId,
+          items: paymentIntent?.metadata?.items,
         })
       : []
 

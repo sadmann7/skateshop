@@ -3,29 +3,27 @@
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, products } from "@/db/schema"
-import type { CartLineItem, CheckoutItem } from "@/types"
+import type { CartLineItem } from "@/types"
 import { desc, eq, inArray } from "drizzle-orm"
-import { type z } from "zod"
+import { z } from "zod"
 
 import { stripe } from "@/lib/stripe"
+import { checkoutItemSchema } from "@/lib/validations/cart"
 import type { getOrderLineItemsSchema } from "@/lib/validations/order"
 
 export async function getOrderLineItems(
   input: z.infer<typeof getOrderLineItemsSchema>
 ): Promise<CartLineItem[]> {
   try {
-    const checkoutItems: CheckoutItem[] = []
+    const safeParsedItems = z
+      .array(checkoutItemSchema)
+      .safeParse(JSON.parse(input.items ?? "[]"))
 
-    const parsedItems: unknown = JSON.parse(input.items ?? "[]")
-    if (Array.isArray(parsedItems)) {
-      checkoutItems.forEach((item) => {
-        if (typeof item === "object") {
-          checkoutItems.push(item)
-        }
-      })
+    if (!safeParsedItems.success) {
+      throw new Error("Invalid items.")
     }
 
-    if (checkoutItems.length === 0) return []
+    const { data: checkoutItems } = safeParsedItems
 
     const lineItems = await db
       .select({
@@ -101,18 +99,15 @@ export async function getCheckoutSessionLineItems(
     )
 
     // Get checkout items from the checkout session metadata
-    const checkoutItems: CheckoutItem[] = []
+    const safeParsedItems = z
+      .array(checkoutItemSchema)
+      .safeParse(JSON.parse(checkoutSession?.metadata?.items ?? "[]"))
 
-    const parsedItems: unknown = JSON.parse(
-      checkoutSession?.metadata?.items ?? ""
-    )
-    if (Array.isArray(parsedItems)) {
-      checkoutItems.forEach((item) => {
-        if (typeof item === "object") {
-          checkoutItems.push(item)
-        }
-      })
+    if (!safeParsedItems.success) {
+      throw new Error("Invalid items.")
     }
+
+    const { data: checkoutItems } = safeParsedItems
 
     // TODO: Create order on webhook instead
     // await db.insert(orders).values({
