@@ -106,12 +106,6 @@ export async function POST(req: Request) {
   //     const cartItems = stripeObject?.metadata
   //       ?.items as unknown as CheckoutItem[]
 
-  //     console.log({
-  //       paymentIntentId,
-  //       orderTotal,
-  //       cartItems,
-  //     })
-
   //     try {
   //       if (!event.account) throw new Error("No account on event")
 
@@ -180,6 +174,14 @@ export async function POST(req: Request) {
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
       console.log(`PaymentIntent status: ${paymentIntent.status}`)
+
+      await db
+        .update(carts)
+        .set({
+          closed: true,
+          items: [],
+        })
+        .where(eq(carts.id, 3820))
       break
     }
     case "payment_intent.payment_failed": {

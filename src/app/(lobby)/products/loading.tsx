@@ -34,10 +34,7 @@ export default function ProductsLoading() {
                 <Skeleton className="h-4 w-1/4" />
               </CardContent>
               <CardFooter className="p-4">
-                <div className="flex w-full flex-col items-center gap-2 sm:flex-row sm:justify-between">
-                  <Skeleton className="h-8 w-full rounded-sm" />
-                  <Skeleton className="h-8 w-full rounded-sm" />
-                </div>
+                <Skeleton className="h-8 w-full rounded-sm" />
               </CardFooter>
             </Card>
           ))}

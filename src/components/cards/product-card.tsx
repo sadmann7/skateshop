@@ -6,7 +6,7 @@ import Link from "next/link"
 import { type Product } from "@/db/schema"
 import { toast } from "sonner"
 
-import { cn, formatPrice } from "@/lib/utils"
+import { catchError, cn, formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
 import {
@@ -100,10 +100,8 @@ export function ProductCard({
                     quantity: 1,
                   })
                   toast.success("Added to cart.")
-                } catch (error) {
-                  error instanceof Error
-                    ? toast.error(error.message)
-                    : toast.error("Something went wrong, please try again.")
+                } catch (err) {
+                  catchError(err)
                 }
               })
             }}

@@ -51,7 +51,14 @@ export default function OrderSuccessLoading() {
             <Skeleton className="h-4 w-20" />
           </div>
         </section>
-        <Skeleton className="container h-4 w-20 max-w-7xl self-center" />
+        <section
+          id="order-success-actions"
+          aria-labelledby="order-success-actions-heading"
+          className="container flex max-w-7xl items-center justify-center space-x-2.5"
+        >
+          <Skeleton className="h-8 w-24" />
+          <Skeleton className="h-8 w-16" />
+        </section>
       </div>
     </div>
   )

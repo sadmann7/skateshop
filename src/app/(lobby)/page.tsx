@@ -101,7 +101,8 @@ export default async function IndexPage() {
         </Balancer>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link href="/products" className={cn(buttonVariants())}>
-            Buy Now
+            Buy now
+            <span className="sr-only">Buy now</span>
           </Link>
           <Link
             href="/dashboard/stores"
@@ -111,7 +112,8 @@ export default async function IndexPage() {
               })
             )}
           >
-            Sell Now
+            Sell now
+            <span className="sr-only">Sell now</span>
           </Link>
         </div>
       </section>
@@ -156,21 +158,6 @@ export default async function IndexPage() {
             </Link>
           ))}
         </div>
-      </section>
-      <section
-        id="create-a-store-banner"
-        aria-labelledby="create-a-store-banner-heading"
-        className="grid place-items-center gap-6 rounded-lg border bg-card px-6 py-16 text-center text-card-foreground shadow-sm"
-      >
-        <div className="text-2xl font-medium sm:text-3xl">
-          Do you want to sell your products on our website?
-        </div>
-        <Link href="/dashboard/stores">
-          <div className={cn(buttonVariants())}>
-            Create a store
-            <span className="sr-only">Create a store</span>
-          </div>
-        </Link>
       </section>
       <section
         id="featured-products"

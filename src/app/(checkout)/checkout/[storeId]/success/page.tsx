@@ -110,19 +110,37 @@ export default async function OrderSuccessPage({
               </span>
             </div>
           </section>
-          <Link
-            aria-label="Continue shopping"
-            href="/products"
-            className={cn(
-              buttonVariants({
-                variant: "link",
-                size: "sm",
-                className: "container max-w-7xl",
-              })
-            )}
+          <section
+            id="order-success-actions"
+            aria-labelledby="order-success-actions-heading"
+            className="container flex max-w-7xl items-center justify-center space-x-2.5"
           >
-            Continue shopping
-          </Link>
+            <Link
+              aria-label="Continue shopping"
+              href="/products"
+              className={cn(
+                buttonVariants({
+                  size: "sm",
+                  className: "text-center",
+                })
+              )}
+            >
+              Continue shopping
+            </Link>
+            <Link
+              aria-label="Back to cart"
+              href="/cart"
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  size: "sm",
+                  className: "text-center",
+                })
+              )}
+            >
+              Back to cart
+            </Link>
+          </section>
         </div>
       ) : (
         <div className="container grid max-w-7xl gap-10">

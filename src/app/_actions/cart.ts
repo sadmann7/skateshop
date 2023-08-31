@@ -86,7 +86,7 @@ export async function getUniqueStoreIds() {
     .groupBy(products.storeId)
     .where(eq(carts.id, Number(cartId)))
 
-  const storeIds = cart.map((item) => Number(item.storeId))
+  const storeIds = cart.map((item) => Number(item.storeId)).filter((id) => id)
 
   const uniqueStoreIds = [...new Set(storeIds)]
 
