@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { and, asc, desc, eq, like, sql } from "drizzle-orm"
+import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
 import { OrdersTableShell } from "@/components/shells/orders-table-shell"
 
@@ -28,7 +28,8 @@ export default async function OrdersPage({
 }: OrdersPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, email } = searchParams ?? {}
+  const { page, per_page, sort, email, stripePaymentIntentStatus } =
+    searchParams ?? {}
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -60,6 +61,11 @@ export default async function OrdersPage({
         ])
       : []
 
+  const paymentStatuses =
+    typeof stripePaymentIntentStatus === "string"
+      ? stripePaymentIntentStatus.split(".")
+      : []
+
   // Transaction is used to ensure both queries are executed in a single transaction
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
@@ -73,6 +79,10 @@ export default async function OrdersPage({
           // Filter by name
           typeof email === "string"
             ? like(orders.email, `%${email}%`)
+            : undefined,
+          // Filter by status
+          paymentStatuses.length > 0
+            ? inArray(orders.stripePaymentIntentStatus, paymentStatuses)
             : undefined
         )
       )
@@ -95,6 +105,10 @@ export default async function OrdersPage({
           // Filter by name
           typeof email === "string"
             ? like(orders.email, `%${email}%`)
+            : undefined,
+          // Filter by status
+          paymentStatuses.length > 0
+            ? inArray(orders.stripePaymentIntentStatus, paymentStatuses)
             : undefined
         )
       )
@@ -108,5 +122,7 @@ export default async function OrdersPage({
 
   const pageCount = Math.ceil(total / limit)
 
-  return <OrdersTableShell data={items} pageCount={pageCount} />
+  return (
+    <OrdersTableShell data={items} pageCount={pageCount} storeId={storeId} />
+  )
 }

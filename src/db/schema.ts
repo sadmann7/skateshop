@@ -92,7 +92,6 @@ export type NewEmailPreference = typeof emailPreferences.$inferInsert
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = mysqlTable("payments", {
   id: serial("id").primaryKey(),
-  userId: varchar("userId", { length: 191 }),
   storeId: int("storeId").notNull(),
   stripeAccountId: varchar("stripeAccountId", { length: 191 }).notNull(),
   stripeAccountCreatedAt: int("stripeAccountCreatedAt"),
@@ -111,7 +110,6 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const orders = mysqlTable("orders", {
   id: serial("id").primaryKey(),
-  userId: varchar("userId", { length: 191 }),
   storeId: int("storeId").notNull(),
   items: json("items").$type<CheckoutItem[] | null>().default(null),
   total: decimal("total", { precision: 10, scale: 2 }).notNull().default("0"),

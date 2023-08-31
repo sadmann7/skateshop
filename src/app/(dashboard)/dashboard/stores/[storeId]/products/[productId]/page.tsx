@@ -46,7 +46,9 @@ export default async function UpdateProductPage({
     <Card>
       <CardHeader className="space-y-1">
         <div className="flex items-center justify-between space-x-2">
-          <CardTitle className="text-2xl">Update product</CardTitle>
+          <CardTitle as="h2" className="text-2xl">
+            Update product
+          </CardTitle>
           <ProductPager product={product} />
         </div>
         <CardDescription>

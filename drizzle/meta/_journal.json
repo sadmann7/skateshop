@@ -183,6 +183,20 @@
       "when": 1693069894782,
       "tag": "0025_chunky_patriot",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1693509951657,
+      "tag": "0026_loose_sabra",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1693515799469,
+      "tag": "0027_tense_moondragon",
+      "breakpoints": true
     }
   ]
 }

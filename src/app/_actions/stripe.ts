@@ -295,33 +295,41 @@ export async function createPaymentIntentAction(
 
     const { total, fee } = calculateOrderAmount(input.items)
 
-    // if (!isNaN(cartId)) {
-    //   const cart = await db.query.carts.findFirst({
-    //     columns: {
-    //       paymentIntentId: true,
-    //       clientSecret: true,
-    //     },
-    //     where: eq(carts.id, cartId),
-    //   })
+    if (!isNaN(cartId)) {
+      const cart = await db.query.carts.findFirst({
+        columns: {
+          paymentIntentId: true,
+          clientSecret: true,
+        },
+        where: eq(carts.id, cartId),
+      })
 
-    //   if (cart?.paymentIntentId && cart?.clientSecret) {
-    //     await stripe.paymentIntents.update(
-    //       cart.paymentIntentId,
-    //       {
-    //         amount: total,
-    //         application_fee_amount: fee,
-    //         metadata,
-    //       },
-    //       {
-    //         stripeAccount: payment.stripeAccountId,
-    //       }
-    //     )
+      if (cart?.paymentIntentId && cart?.clientSecret) {
+        const paymentIntent = await stripe.paymentIntents.retrieve(
+          cart.paymentIntentId,
+          {
+            stripeAccount: payment.stripeAccountId,
+          }
+        )
 
-    //     return {
-    //       clientSecret: cart.clientSecret,
-    //     }
-    //   }
-    // }
+        if (paymentIntent.status !== "succeeded") {
+          await stripe.paymentIntents.update(
+            cart.paymentIntentId,
+            {
+              amount: total,
+              application_fee_amount: fee,
+              metadata,
+            },
+            {
+              stripeAccount: payment.stripeAccountId,
+            }
+          )
+          return {
+            clientSecret: cart.clientSecret,
+          }
+        }
+      }
+    }
 
     const paymentIntent = await stripe.paymentIntents.create(
       {

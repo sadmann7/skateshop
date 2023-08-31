@@ -1,5 +1,6 @@
 import type { Store } from "@/db/schema"
 import { type FileWithPath } from "react-dropzone"
+import type Stripe from "stripe"
 import { type z } from "zod"
 
 import { type userPrivateMetadataSchema } from "@/lib/validations/auth"
@@ -82,6 +83,8 @@ export type CartItem = z.infer<typeof cartItemSchema>
 export type CheckoutItem = z.infer<typeof checkoutItemSchema>
 
 export type CartLineItem = z.infer<typeof cartLineItemSchema>
+
+export type StripePaymentStatus = Stripe.PaymentIntent.Status
 
 export interface SubscriptionPlan {
   id: "basic" | "standard" | "pro"

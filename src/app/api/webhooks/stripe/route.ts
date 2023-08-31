@@ -24,11 +24,99 @@ export async function POST(req: Request) {
     )
   } catch (err) {
     return new Response(
-      `Webhook Error: ${err instanceof Error ? err.message : "Unknown error"}`,
+      `Webhook Error: ${err instanceof Error ? err.message : "Unknown error."}`,
       { status: 400 }
     )
   }
 
+  // Handle payment events
+  switch (event.type) {
+    case "payment_intent.succeeded":
+      const stripeObject = event.data.object as Stripe.PaymentIntent
+
+      const paymentIntentId = stripeObject?.id
+      const orderTotal = stripeObject?.amount
+      const cartItems = stripeObject?.metadata
+        ?.items as unknown as CheckoutItem[]
+
+      try {
+        if (!event.account) throw new Error("No account on event.")
+
+        const payment = await db.query.payments.findFirst({
+          columns: {
+            storeId: true,
+          },
+          where: eq(payments.stripeAccountId, event.account),
+        })
+
+        if (!payment?.storeId) {
+          return new Response("Store not found.", { status: 404 })
+        }
+
+        // Create new address in DB
+        const stripeAddress = stripeObject?.shipping?.address
+
+        const newAddress = await db.insert(addresses).values({
+          line1: stripeAddress?.line1,
+          line2: stripeAddress?.line2,
+          city: stripeAddress?.city,
+          state: stripeAddress?.state,
+          country: stripeAddress?.country,
+          postalCode: stripeAddress?.postal_code,
+        })
+
+        if (!newAddress.insertId) throw new Error("No address created.")
+
+        // Create new order in DB
+        await db.insert(orders).values({
+          storeId: payment.storeId,
+          items: cartItems ?? [],
+          total: String(Number(orderTotal) / 100),
+          stripePaymentIntentId: paymentIntentId,
+          stripePaymentIntentStatus: stripeObject?.status,
+          name: stripeObject?.shipping?.name,
+          email: stripeObject?.receipt_email,
+          addressId: Number(newAddress.insertId),
+        })
+
+        // Close cart and clear items
+        await db
+          .update(carts)
+          .set({
+            closed: true,
+            items: [],
+          })
+          .where(eq(carts.paymentIntentId, paymentIntentId))
+      } catch (err) {
+        console.log("Error creating order.", err)
+      }
+
+      break
+
+    case "payment_intent.payment_failed":
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      console.log(
+        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
+      )
+      break
+    case "payment_intent.processing":
+      const paymentIntentProcessing = event.data.object as Stripe.PaymentIntent
+      console.log(
+        `❌ Payment processing: ${paymentIntentProcessing.last_payment_error?.message}`
+      )
+      break
+    case "charge.succeeded": {
+      const charge = event.data.object as Stripe.Charge
+      console.log(`Charge id: ${charge.id}`)
+      break
+    }
+    default: {
+      console.warn(`Unhandled event type: ${event.type}`)
+      break
+    }
+  }
+
+  // Handle subscription events
   const session = event.data.object as Stripe.Checkout.Session
 
   if (!session?.metadata?.userId) {
@@ -86,120 +174,6 @@ export async function POST(req: Request) {
         ),
       },
     })
-  }
-
-  // // Handle payment intents
-  // switch (event.type) {
-  //   case "payment_intent.payment_failed":
-  //     // Handle the payment_intent.payment_failed event
-  //     break
-  //   case "payment_intent.processing":
-  //     // Handle the payment_intent.processing event
-  //     break
-  //   case "payment_intent.succeeded":
-  //     // Handle the payment_intent.succeeded event
-
-  //     const stripeObject = event?.data?.object as Stripe.PaymentIntent
-
-  //     const paymentIntentId = stripeObject?.id
-  //     const orderTotal = stripeObject?.amount
-  //     const cartItems = stripeObject?.metadata
-  //       ?.items as unknown as CheckoutItem[]
-
-  //     try {
-  //       if (!event.account) throw new Error("No account on event")
-
-  //       const payment = await db.query.payments.findFirst({
-  //         columns: {
-  //           storeId: true,
-  //         },
-  //         where: eq(payments.stripeAccountId, event.account),
-  //       })
-
-  //       if (!payment?.storeId) {
-  //         return new Response("Store not found", { status: 404 })
-  //       }
-
-  //       // Create new address in DB
-  //       const stripeAddress = stripeObject?.shipping?.address
-
-  //       const newAddress = await db.insert(addresses).values({
-  //         line1: stripeAddress?.line1,
-  //         line2: stripeAddress?.line2,
-  //         city: stripeAddress?.city,
-  //         state: stripeAddress?.state,
-  //         country: stripeAddress?.country,
-  //         postalCode: stripeAddress?.postal_code,
-  //       })
-
-  //       if (!newAddress.insertId) throw new Error("No address created.")
-
-  //       // Create new order in DB
-  //       const newOrder = await db.insert(orders).values({
-  //         storeId: payment.storeId,
-  //         items: cartItems ?? [],
-  //         total: String(Number(orderTotal) / 100),
-  //         stripePaymentIntentId: paymentIntentId,
-  //         stripePaymentIntentStatus: stripeObject?.status,
-  //         name: stripeObject?.shipping?.name,
-  //         email: stripeObject?.receipt_email,
-  //         addressId: Number(newAddress.insertId),
-  //       })
-
-  //       console.log("Order created", newOrder)
-  //     } catch (err) {
-  //       console.log("Error creating order.", err)
-  //     }
-
-  //     try {
-  //       // Close cart and clear items
-  //       await db
-  //         .update(carts)
-  //         .set({
-  //           closed: true,
-  //           items: [],
-  //         })
-  //         .where(eq(carts.paymentIntentId, paymentIntentId))
-  //     } catch (err) {
-  //       console.error(err)
-  //       return new Response("Error updating cart", { status: 500 })
-  //     }
-
-  //     break
-  //   default:
-  //     console.log(`Unhandled event type ${event.type}`)
-  // }
-
-  switch (event.type) {
-    case "payment_intent.succeeded": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(`PaymentIntent status: ${paymentIntent.status}`)
-
-      await db
-        .update(carts)
-        .set({
-          closed: true,
-          items: [],
-        })
-        .where(eq(carts.id, 3820))
-      break
-    }
-    case "payment_intent.payment_failed": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(
-        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
-      )
-      break
-    }
-    case "charge.succeeded": {
-      const charge = event.data.object as Stripe.Charge
-      console.log(`Charge id: ${charge.id}`)
-      break
-    }
-    default: {
-      console.warn(`Unhandled event type: ${event.type}`)
-      break
-    }
   }
 
   return new Response(null, { status: 200 })

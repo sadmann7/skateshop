@@ -4,6 +4,7 @@ import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu"
 import { MixerHorizontalIcon } from "@radix-ui/react-icons"
 import { type Table } from "@tanstack/react-table"
 
+import { toSentenceCase } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -50,7 +51,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {toSentenceCase(column.id)}
               </DropdownMenuCheckboxItem>
             )
           })}

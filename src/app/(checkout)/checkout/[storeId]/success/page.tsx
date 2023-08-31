@@ -14,7 +14,7 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { getOrderLineItems } from "@/app/_actions/order"
+import { getOrderLineItemsAction } from "@/app/_actions/order"
 import { getPaymentIntentAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
@@ -60,7 +60,7 @@ export default async function OrderSuccessPage({
 
   const lineItems =
     isVerified && paymentIntent
-      ? await getOrderLineItems({
+      ? await getOrderLineItemsAction({
           storeId,
           items: paymentIntent?.metadata?.items,
         })
