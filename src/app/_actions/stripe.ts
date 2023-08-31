@@ -219,7 +219,6 @@ export async function createCheckoutSessionAction(
     productId: item.id,
     price: Number(item.price),
     quantity: item.quantity,
-    subcategory: item.subcategory,
   }))
 
   // Create a checkout session

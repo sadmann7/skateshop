@@ -126,58 +126,51 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                 </Button>
               </DrawerTrigger>
               <DrawerContent className="flex h-[80%] flex-col space-y-5 bg-zinc-50 py-8 text-zinc-950">
-                <ScrollArea className="h-full px-4">
-                  <div className="container flex max-w-6xl flex-col gap-5">
-                    {cartLineItems.map((item) => (
-                      <div key={item.id} className="flex space-x-4 text-sm">
-                        <div className="flex flex-1 flex-col space-y-1.5">
-                          <span className="line-clamp-1 font-medium">
-                            {item.name}
-                          </span>
-                          <span className="line-clamp-1 text-xs text-muted-foreground">
-                            Qty {item.quantity}
-                          </span>
-                        </div>
-                        <div className="line-clamp-1 font-medium">
-                          {formatPrice(
-                            (Number(item.price) * item.quantity).toFixed(2)
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                <CartLineItems
+                  items={cartLineItems}
+                  variant="minimal"
+                  isEditable={false}
+                  className="container max-w-6xl"
+                />
+                <div className="container flex max-w-6xl pr-6 font-medium">
+                  <div className="flex-1">
+                    Total (
+                    {cartLineItems.reduce(
+                      (acc, item) => acc + item.quantity,
+                      0
+                    )}
+                    )
                   </div>
-                </ScrollArea>
-                <div className="px-4">
-                  <div className="container flex max-w-6xl font-medium">
-                    <div className="flex-1">Total</div>
-                    <div>{formatPrice(total)}</div>
-                  </div>
+                  <div>{formatPrice(total)}</div>
                 </div>
               </DrawerContent>
             </Drawer>
           </div>
         </div>
         <div className="container flex max-w-xl flex-col items-center space-y-1 lg:ml-auto lg:mr-0 lg:items-start lg:pr-[4.5rem]">
-          <div className="font-semibold text-muted-foreground">
+          <div className="line-clamp-1 font-semibold text-muted-foreground">
             Pay {store.name}
           </div>
           <div className="text-3xl font-bold">{formatPrice(total)}</div>
         </div>
         <CartLineItems
-          cartLineItems={cartLineItems}
+          items={cartLineItems}
           isEditable={false}
           className="container hidden w-full max-w-xl lg:ml-auto lg:mr-0 lg:flex lg:max-h-[580px] lg:pr-[4.5rem]"
         />
       </div>
-      <div className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16">
-        <CheckoutShell
-          paymentIntent={paymentIntent}
-          storeStripeAccountId={store.stripeAccountId}
-          className="container max-w-xl lg:ml-0 lg:mr-auto"
-        >
-          <CheckoutForm storeId={store.id} />
-        </CheckoutShell>
-      </div>
+      <CheckoutShell
+        paymentIntent={paymentIntent}
+        storeStripeAccountId={store.stripeAccountId}
+        className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
+      >
+        <ScrollArea className="h-full">
+          <CheckoutForm
+            storeId={store.id}
+            className="container max-w-xl pr-6 lg:ml-0 lg:mr-auto"
+          />
+        </ScrollArea>
+      </CheckoutShell>
     </section>
   )
 }

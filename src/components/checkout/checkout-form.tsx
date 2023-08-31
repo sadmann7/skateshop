@@ -9,15 +9,19 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js"
 
-import { absoluteUrl } from "@/lib/utils"
+import { absoluteUrl, cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-interface CheckoutFormProps {
+interface CheckoutFormProps extends React.ComponentPropsWithoutRef<"form"> {
   storeId: number
 }
 
-export default function CheckoutForm({ storeId }: CheckoutFormProps) {
+export default function CheckoutForm({
+  storeId,
+  className,
+  ...props
+}: CheckoutFormProps) {
   const id = React.useId()
   const stripe = useStripe()
   const elements = useElements()
@@ -90,8 +94,9 @@ export default function CheckoutForm({ storeId }: CheckoutFormProps) {
     <form
       id={`${id}-checkout-form`}
       aria-labelledby={`${id}-checkout-form-heading`}
-      className="grid gap-4"
+      className={cn("grid gap-4", className)}
       onSubmit={onSubmit}
+      {...props}
     >
       <LinkAuthenticationElement
         id={`payment-element-${id}`}

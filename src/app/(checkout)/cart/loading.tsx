@@ -42,8 +42,8 @@ export default function CartLoading() {
                       </div>
                       <div className="flex flex-1 flex-col gap-2 self-start text-sm">
                         <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-3 w-20" />
-                        <Skeleton className="h-2 w-16" />
+                        <Skeleton className="h-2.5 w-20" />
+                        <Skeleton className="h-2.5 w-10" />
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between space-x-1 xs:w-auto xs:justify-normal">

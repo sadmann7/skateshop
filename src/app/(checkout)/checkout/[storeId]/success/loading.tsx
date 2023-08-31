@@ -35,8 +35,8 @@ export default function OrderSuccessLoading() {
                       </div>
                       <div className="flex flex-1 flex-col gap-2 self-start text-sm">
                         <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-3 w-10" />
-                        <Skeleton className="h-2 w-16" />
+                        <Skeleton className="h-2.5 w-10" />
+                        <Skeleton className="h-2.5 w-20" />
                       </div>
                     </div>
                     <Skeleton className="h-4 w-12" />

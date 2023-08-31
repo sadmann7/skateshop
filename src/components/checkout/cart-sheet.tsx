@@ -59,7 +59,7 @@ export async function CartSheet() {
         {itemCount > 0 ? (
           <>
             <div className="flex flex-1 flex-col gap-5 overflow-hidden">
-              <CartLineItems cartLineItems={cartLineItems} />
+              <CartLineItems items={cartLineItems} />
             </div>
             <div className="grid gap-1.5 pr-6 text-sm">
               <Separator className="mb-2" />

@@ -9,15 +9,17 @@ import { UpdateCart } from "@/components/checkout/update-cart"
 import { Icons } from "@/components/icons"
 
 interface CartLineItemsProps extends React.HTMLAttributes<HTMLDivElement> {
-  cartLineItems: CartLineItem[]
+  items: CartLineItem[]
   isScrollable?: boolean
   isEditable?: boolean
+  variant?: "default" | "minimal"
 }
 
 export function CartLineItems({
-  cartLineItems,
+  items,
   isScrollable = true,
   isEditable = true,
+  variant = "default",
   className,
   ...props
 }: CartLineItemsProps) {
@@ -25,7 +27,7 @@ export function CartLineItems({
 
   return (
     <Wrapper className="h-full">
-      <section
+      <div
         className={cn(
           "flex w-full flex-col gap-5",
           isScrollable && "pr-6",
@@ -33,7 +35,7 @@ export function CartLineItems({
         )}
         {...props}
       >
-        {cartLineItems.map((item) => (
+        {items.map((item) => (
           <div key={item.id} className="space-y-3">
             <div
               className={cn(
@@ -42,30 +44,34 @@ export function CartLineItems({
               )}
             >
               <div className="flex items-center space-x-4">
-                <div className="relative aspect-square h-16 w-16 min-w-fit overflow-hidden rounded">
-                  {item?.images?.length ? (
-                    <Image
-                      src={
-                        item.images[0]?.url ??
-                        "/images/product-placeholder.webp"
-                      }
-                      alt={item.images[0]?.name ?? item.name}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      fill
-                      className="absolute object-cover"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center bg-secondary">
-                      <Icons.placeholder
-                        className="h-4 w-4 text-muted-foreground"
-                        aria-hidden="true"
+                {variant === "default" ? (
+                  <div className="relative aspect-square h-16 w-16 min-w-fit overflow-hidden rounded">
+                    {item?.images?.length ? (
+                      <Image
+                        src={
+                          item.images[0]?.url ??
+                          "/images/product-placeholder.webp"
+                        }
+                        alt={item.images[0]?.name ?? item.name}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        fill
+                        className="absolute object-cover"
+                        loading="lazy"
                       />
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-col gap-1 self-start text-sm">
-                  <span className="line-clamp-1 font-medium">{item.name}</span>
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-secondary">
+                        <Icons.placeholder
+                          className="h-4 w-4 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : null}
+                <div className="flex flex-col space-y-1 self-start">
+                  <span className="line-clamp-1 text-sm font-medium">
+                    {item.name}
+                  </span>
                   {isEditable ? (
                     <span className="line-clamp-1 text-xs text-muted-foreground">
                       {formatPrice(item.price)} x {item.quantity} ={" "}
@@ -78,25 +84,34 @@ export function CartLineItems({
                       Qty {item.quantity}
                     </span>
                   )}
-                  <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
-                    {`${item.category} ${
-                      item.subcategory ? `/ ${item.subcategory}` : ""
-                    }`}
-                  </span>
+                  {variant === "default" ? (
+                    <span className="line-clamp-1 text-xs capitalize text-muted-foreground">
+                      {`${item.category} ${
+                        item.subcategory ? `/ ${item.subcategory}` : ""
+                      }`}
+                    </span>
+                  ) : null}
                 </div>
               </div>
               {isEditable ? (
                 <UpdateCart cartLineItem={item} />
               ) : (
-                <div className="text-sm font-medium">
-                  {formatPrice(item.price)}
+                <div className="flex flex-col space-y-1 font-medium">
+                  <span className="ml-auto line-clamp-1 text-sm">
+                    {formatPrice(
+                      (Number(item.price) * item.quantity).toFixed(2)
+                    )}
+                  </span>
+                  <span className="line-clamp-1 text-xs text-muted-foreground">
+                    {formatPrice(item.price)} each
+                  </span>
                 </div>
               )}
             </div>
-            <Separator />
+            {variant === "default" ? <Separator /> : null}
           </div>
         ))}
-      </section>
+      </div>
     </Wrapper>
   )
 }

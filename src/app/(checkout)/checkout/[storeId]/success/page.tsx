@@ -3,7 +3,6 @@ import Link from "next/link"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import type { CheckoutItem } from "@/types"
 import { eq } from "drizzle-orm"
 
 import { cn, formatPrice } from "@/lib/utils"
@@ -87,7 +86,7 @@ export default async function OrderSuccessPage({
             className="flex flex-col space-y-6 overflow-auto"
           >
             <CartLineItems
-              cartLineItems={lineItems}
+              items={lineItems}
               isEditable={false}
               className="container max-w-7xl"
             />
