@@ -29,7 +29,7 @@ export async function POST(req: Request) {
     )
   }
 
-  // Handle payment events
+  // Handling payment events
   switch (event.type) {
     case "payment_intent.succeeded":
       const stripeObject = event.data.object as Stripe.PaymentIntent
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
         ?.items as unknown as CheckoutItem[]
 
       try {
-        if (!event.account) throw new Error("No account on event.")
+        if (!event.account) throw new Error("No account found.")
 
         const payment = await db.query.payments.findFirst({
           columns: {
@@ -51,6 +51,10 @@ export async function POST(req: Request) {
 
         if (!payment?.storeId) {
           return new Response("Store not found.", { status: 404 })
+        }
+
+        if (payment.storeId !== Number(stripeObject?.metadata?.storeId)) {
+          return new Response("Store ID mismatch.", { status: 404 })
         }
 
         // Create new address in DB
@@ -116,7 +120,7 @@ export async function POST(req: Request) {
     }
   }
 
-  // Handle subscription events
+  // Handling subscription events
   const session = event.data.object as Stripe.Checkout.Session
 
   if (!session?.metadata?.userId) {
