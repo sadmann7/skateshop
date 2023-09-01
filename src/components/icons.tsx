@@ -24,15 +24,12 @@ import {
   EyeOff,
   FileTerminal,
   Filter,
-  Footprints,
-  HardHat,
   Image,
   Loader2,
   LogOut,
   Menu,
   MessageSquare,
   Minus,
-  Moon,
   MoreHorizontal,
   MoreVertical,
   Package,
@@ -42,13 +39,11 @@ import {
   Search,
   Send,
   Settings,
-  Shirt,
   ShoppingBag,
   ShoppingCart,
   Sliders,
   SlidersHorizontal,
   Star,
-  SunMedium,
   Trash,
   Twitter,
   UploadCloud,
@@ -64,8 +59,6 @@ import {
 export type Icon = LucideIcon
 
 export const Icons = {
-  sun: SunMedium,
-  moon: Moon,
   star: Star,
   twitter: Twitter,
   close: X,
@@ -119,9 +112,6 @@ export const Icons = {
   chart: BarChart3,
   upload: UploadCloud,
   placeholder: Image,
-  clothing: Shirt,
-  shoes: Footprints,
-  accessories: HardHat,
   logo: (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"

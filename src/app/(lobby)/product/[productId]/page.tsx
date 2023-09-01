@@ -1,9 +1,7 @@
-import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
-import { env } from "@/env.mjs"
 import { and, desc, eq, not } from "drizzle-orm"
 
 import { formatPrice, toTitleCase } from "@/lib/utils"
@@ -20,15 +18,30 @@ import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Shell } from "@/components/shells/shell"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Product",
-  description: "Product description",
-}
-
 interface ProductPageProps {
   params: {
     productId: string
+  }
+}
+
+export async function generateMetadata({ params }: ProductPageProps) {
+  const productId = Number(params.productId)
+
+  const product = await db.query.products.findFirst({
+    columns: {
+      name: true,
+      description: true,
+    },
+    where: eq(products.id, productId),
+  })
+
+  if (!product) {
+    return {}
+  }
+
+  return {
+    title: toTitleCase(product.name),
+    description: product.description ?? undefined,
   }
 }
 
@@ -36,6 +49,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const productId = Number(params.productId)
 
   const product = await db.query.products.findFirst({
+    columns: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      images: true,
+      category: true,
+      storeId: true,
+    },
     where: eq(products.id, productId),
   })
 
@@ -51,7 +73,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     where: eq(stores.id, product.storeId),
   })
 
-  const productsFromStore = store
+  const otherProducts = store
     ? await db
         .select({
           id: products.id,
@@ -128,14 +150,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </Accordion>
         </div>
       </div>
-      {store && productsFromStore.length > 0 ? (
+      {store && otherProducts.length > 0 ? (
         <div className="overflow-hidden md:pt-6">
           <h2 className="line-clamp-1 flex-1 text-2xl font-bold">
             More products from {store.name}
           </h2>
           <div className="overflow-x-auto pb-2 pt-6">
             <div className="flex w-fit gap-4">
-              {productsFromStore.map((product) => (
+              {otherProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}

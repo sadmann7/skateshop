@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useSelectedLayoutSegment } from "next/navigation"
 import type { MainNavItem, SidebarNavItem } from "@/types"
 
 import { siteConfig } from "@/config/site"
@@ -24,7 +24,7 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
-  const pathname = usePathname()
+  const segment = useSelectedLayoutSegment()
   const [isOpen, setIsOpen] = React.useState(false)
 
   const navItems = React.useMemo(() => {
@@ -85,7 +85,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
                           <MobileLink
                             key={index}
                             href={String(subItem.href)}
-                            pathname={pathname}
+                            segment={String(segment)}
                             setIsOpen={setIsOpen}
                             disabled={subItem.disabled}
                           >
@@ -116,7 +116,7 @@ interface MobileLinkProps {
   children?: React.ReactNode
   href: string
   disabled?: boolean
-  pathname: string
+  segment: string
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -124,7 +124,7 @@ function MobileLink({
   children,
   href,
   disabled,
-  pathname,
+  segment,
   setIsOpen,
 }: MobileLinkProps) {
   return (
@@ -132,7 +132,7 @@ function MobileLink({
       href={href}
       className={cn(
         "text-foreground/70 transition-colors hover:text-foreground",
-        pathname === href && "text-foreground",
+        href.includes(segment) && "text-foreground",
         disabled && "pointer-events-none opacity-60"
       )}
       onClick={() => setIsOpen(false)}

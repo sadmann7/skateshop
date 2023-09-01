@@ -21,7 +21,10 @@ import { Icons } from "@/components/icons"
 import { addToCartAction } from "@/app/_actions/cart"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  product: Pick<Product, "id" | "name" | "price" | "images" | "category">
+  product: Pick<
+    Product,
+    "id" | "name" | "price" | "images" | "category" | "inventory"
+  >
   variant?: "default" | "switchable"
   isAddedToCart?: boolean
   onSwitch?: () => Promise<void>
@@ -105,7 +108,7 @@ export function ProductCard({
                 }
               })
             }}
-            disabled={isPending}
+            disabled={isPending || product.inventory === 0}
           >
             {isPending && (
               <Icons.spinner
@@ -125,7 +128,7 @@ export function ProductCard({
                 await onSwitch?.()
               })
             }}
-            disabled={isPending}
+            disabled={isPending || product.inventory === 0}
           >
             {isPending ? (
               <Icons.spinner

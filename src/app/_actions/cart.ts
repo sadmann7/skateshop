@@ -104,6 +104,22 @@ export async function getCartItemsAction(input: { cartId?: number }) {
 }
 
 export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
+  // Checking if product is in stock
+  const product = await db.query.products.findFirst({
+    columns: {
+      inventory: true,
+    },
+    where: eq(products.id, input.productId),
+  })
+
+  if (!product) {
+    throw new Error("Product not found, please try again.")
+  }
+
+  if (product.inventory < input.quantity) {
+    throw new Error("Product is out of stock, please try again.")
+  }
+
   const cookieStore = cookies()
   const cartId = cookieStore.get("cartId")?.value
 

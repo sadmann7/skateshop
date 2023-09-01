@@ -80,6 +80,10 @@ export function absoluteUrl(path: string) {
   return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
+export function formatOrderId(orderId: number) {
+  return `#${orderId.toString().padStart(6, "0")}`
+}
+
 export function catchError(err: unknown) {
   if (err instanceof z.ZodError) {
     const errors = err.issues.map((issue) => {

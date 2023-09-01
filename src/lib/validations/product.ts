@@ -37,6 +37,10 @@ export const getProductSchema = z.object({
   storeId: z.number(),
 })
 
+export const getProductInventorySchema = z.object({
+  id: z.number(),
+})
+
 export const getProductsSchema = z.object({
   limit: z.number().default(10),
   offset: z.number().default(0),

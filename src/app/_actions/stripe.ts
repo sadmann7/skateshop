@@ -289,7 +289,6 @@ export async function createPaymentIntentAction(
 
     const metadata = {
       cartId: isNaN(cartId) ? "" : cartId,
-      storeId: input.storeId,
       // Stripe metadata values must be within 500 characters string
       items: JSON.stringify(checkoutItems),
     }

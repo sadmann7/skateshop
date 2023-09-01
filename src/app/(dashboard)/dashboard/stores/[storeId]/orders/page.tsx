@@ -28,8 +28,7 @@ export default async function OrdersPage({
 }: OrdersPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, email, stripePaymentIntentStatus } =
-    searchParams ?? {}
+  const { page, per_page, sort, customer, status } = searchParams ?? {}
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -61,31 +60,38 @@ export default async function OrdersPage({
         ])
       : []
 
-  const paymentStatuses =
-    typeof stripePaymentIntentStatus === "string"
-      ? stripePaymentIntentStatus.split(".")
-      : []
+  const statuses = typeof status === "string" ? status.split(".") : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
   const { items, total } = await db.transaction(async (tx) => {
     const items = await tx
-      .select()
+      .select({
+        id: orders.id,
+        storeId: orders.storeId,
+        items: orders.items,
+        amount: orders.amount,
+        paymentIntentId: orders.stripePaymentIntentId,
+        status: orders.stripePaymentIntentStatus,
+        customer: orders.email,
+        createdAt: orders.createdAt,
+      })
       .from(orders)
       .limit(limit)
       .offset(offset)
       .where(
         and(
           eq(orders.storeId, storeId),
-          // Filter by name
-          typeof email === "string"
-            ? like(orders.email, `%${email}%`)
+          // Filter by email
+          typeof customer === "string"
+            ? like(orders.email, `%${customer}%`)
             : undefined,
           // Filter by status
-          paymentStatuses.length > 0
-            ? inArray(orders.stripePaymentIntentStatus, paymentStatuses)
+          statuses.length > 0
+            ? inArray(orders.stripePaymentIntentStatus, statuses)
             : undefined
         )
       )
+      .groupBy(orders.id)
       .orderBy(
         column && column in orders
           ? order === "asc"
@@ -102,16 +108,17 @@ export default async function OrdersPage({
       .where(
         and(
           eq(orders.storeId, storeId),
-          // Filter by name
-          typeof email === "string"
-            ? like(orders.email, `%${email}%`)
+          // Filter by email
+          typeof customer === "string"
+            ? like(orders.email, `%${customer}%`)
             : undefined,
           // Filter by status
-          paymentStatuses.length > 0
-            ? inArray(orders.stripePaymentIntentStatus, paymentStatuses)
+          statuses.length > 0
+            ? inArray(orders.stripePaymentIntentStatus, statuses)
             : undefined
         )
       )
+      .groupBy(orders.id)
       .then((res) => res[0]?.count ?? 0)
 
     return {

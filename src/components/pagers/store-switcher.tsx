@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { type Store } from "@/db/schema"
 import {
   CaretSortIcon,
@@ -43,6 +43,7 @@ export function StoreSwitcher({
   ...props
 }: StoreSwitcherProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const [isOpen, setIsOpen] = React.useState(false)
   const [isDialogOpen, setIsDialogOpen] = React.useState(false)
 
@@ -56,7 +57,7 @@ export function StoreSwitcher({
             aria-expanded={isOpen}
             aria-label="Select a store"
             className={cn(
-              "w-[140px] justify-between px-3 sm:w-[180px]",
+              "w-full justify-between px-3 xxs:w-[180px]",
               className
             )}
             {...props}
@@ -72,7 +73,7 @@ export function StoreSwitcher({
             />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[140px] p-0 sm:w-[180px]">
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
           <Command>
             <CommandList>
               <CommandInput placeholder="Search store..." />
@@ -82,7 +83,12 @@ export function StoreSwitcher({
                   <CommandItem
                     key={store.id}
                     onSelect={() => {
-                      router.push(`/dashboard/stores/${store.id}`)
+                      router.replace(
+                        pathname.replace(
+                          String(currentStore.id),
+                          String(store.id)
+                        )
+                      )
                       setIsOpen(false)
                     }}
                     className="text-sm"

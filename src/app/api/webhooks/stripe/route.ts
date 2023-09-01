@@ -1,14 +1,16 @@
 import { headers } from "next/headers"
 import { db } from "@/db"
-import { addresses, carts, orders, payments } from "@/db/schema"
+import { addresses, carts, orders, payments, products } from "@/db/schema"
 import { env } from "@/env.mjs"
 import type { CheckoutItem } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import type Stripe from "stripe"
+import { z } from "zod"
 
 import { stripe } from "@/lib/stripe"
 import { userPrivateMetadataSchema } from "@/lib/validations/auth"
+import { checkoutItemSchema } from "@/lib/validations/cart"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -35,11 +37,20 @@ export async function POST(req: Request) {
       const stripeObject = event.data.object as Stripe.PaymentIntent
 
       const paymentIntentId = stripeObject?.id
-      const orderTotal = stripeObject?.amount
-      const cartItems = stripeObject?.metadata
+      const orderAmount = stripeObject?.amount
+      const checkoutItems = stripeObject?.metadata
         ?.items as unknown as CheckoutItem[]
 
       try {
+        // Parsing items from metadata, didn't parse before because can pass the unparsed data directly to the order table items json column in the db
+        const safeParsedItems = z
+          .array(checkoutItemSchema)
+          .safeParse(JSON.parse(stripeObject?.metadata?.items ?? "[]"))
+
+        if (!safeParsedItems.success) {
+          throw new Error("Could not parse items.")
+        }
+
         if (!event.account) throw new Error("No account found.")
 
         const payment = await db.query.payments.findFirst({
@@ -51,10 +62,6 @@ export async function POST(req: Request) {
 
         if (!payment?.storeId) {
           return new Response("Store not found.", { status: 404 })
-        }
-
-        if (payment.storeId !== Number(stripeObject?.metadata?.storeId)) {
-          return new Response("Store ID mismatch.", { status: 404 })
         }
 
         // Create new address in DB
@@ -71,17 +78,45 @@ export async function POST(req: Request) {
 
         if (!newAddress.insertId) throw new Error("No address created.")
 
-        // Create new order in DB
+        // Create new order in db
         await db.insert(orders).values({
           storeId: payment.storeId,
-          items: cartItems ?? [],
-          total: String(Number(orderTotal) / 100),
+          items: checkoutItems ?? [],
+          amount: String(Number(orderAmount) / 100),
           stripePaymentIntentId: paymentIntentId,
           stripePaymentIntentStatus: stripeObject?.status,
           name: stripeObject?.shipping?.name,
           email: stripeObject?.receipt_email,
           addressId: Number(newAddress.insertId),
         })
+
+        // Update product inventory in db
+        for (const item of safeParsedItems.data) {
+          const product = await db.query.products.findFirst({
+            columns: {
+              id: true,
+              inventory: true,
+            },
+            where: eq(products.id, item.productId),
+          })
+
+          if (!product) {
+            throw new Error("Product not found.")
+          }
+
+          const inventory = product.inventory - item.quantity
+
+          if (inventory < 0) {
+            throw new Error("Product out of stock.")
+          }
+
+          await db
+            .update(products)
+            .set({
+              inventory: product.inventory - item.quantity,
+            })
+            .where(eq(products.id, item.productId))
+        }
 
         // Close cart and clear items
         await db

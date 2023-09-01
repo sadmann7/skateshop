@@ -31,23 +31,23 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-type CuratedOrder = Pick<Order, "id" | "items" | "amount" | "createdAt"> & {
-  customer: string | null
+export type CuratedOrder = Pick<
+  Order,
+  "id" | "email" | "items" | "amount" | "createdAt" | "storeId"
+> & {
+  store: string | null
   status: string
-  paymentIntentId: string
 }
 
-interface OrdersTableShellProps {
+interface PurchasesTableShellProps {
   data: CuratedOrder[]
   pageCount: number
-  storeId: number
 }
 
-export function OrdersTableShell({
+export function PurchasesTableShell({
   data,
   pageCount,
-  storeId,
-}: OrdersTableShellProps) {
+}: PurchasesTableShellProps) {
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<CuratedOrder, unknown>[]>(
     () => [
@@ -83,12 +83,11 @@ export function OrdersTableShell({
         },
       },
       {
-        accessorKey: "customer",
+        accessorKey: "store",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Customer" />
+          <DataTableColumnHeader column={column} title="Store Name" />
         ),
       },
-
       {
         accessorKey: "items",
         header: ({ column }) => (
@@ -142,19 +141,13 @@ export function OrdersTableShell({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[160px]">
               <DropdownMenuItem asChild>
-                <Link
-                  href={`/dashboard/stores/${storeId}/orders/${row.original.id}`}
-                >
-                  View details
+                <Link href={`/dashboard/purchases/${row.original.id}`}>
+                  Purchase details
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link
-                  href={`https://dashboard.stripe.com/test/payments/${row.original.paymentIntentId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on Stripe
+                <Link href={`/products?store_ids=${row.original.storeId}`}>
+                  View store
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -162,7 +155,7 @@ export function OrdersTableShell({
         ),
       },
     ],
-    [storeId]
+    []
   )
 
   return (
@@ -172,8 +165,8 @@ export function OrdersTableShell({
       pageCount={pageCount}
       searchableColumns={[
         {
-          id: "customer",
-          title: "customers",
+          id: "store",
+          title: "stores",
         },
       ]}
       filterableColumns={[

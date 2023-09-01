@@ -11,28 +11,20 @@ import { Shell } from "@/components/shells/shell"
 export default function BillingLoading() {
   return (
     <Shell variant="sidebar" as="div">
-      <PageHeader id="billing-header" aria-labelledby="billing-header-heading">
+      <PageHeader>
         <PageHeaderHeading size="sm">Billing</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your billing and subscription
         </PageHeaderDescription>
       </PageHeader>
-      <section
-        id="billing-info"
-        aria-labelledby="billing-info-heading"
-        className="space-y-5"
-      >
+      <section className="space-y-5">
         <h2 className="text-xl font-semibold sm:text-2xl">Billing info</h2>
         <Card className="grid gap-4 p-6">
           <Skeleton className="h-6 w-1/2" />
           <Skeleton className="h-4 w-1/4" />
         </Card>
       </section>
-      <section
-        id="subscription-plans"
-        aria-labelledby="subscription-plans-heading"
-        className="space-y-5 pb-2.5"
-      >
+      <section className="space-y-5 pb-2.5">
         <h2 className="text-xl font-semibold sm:text-2xl">
           Subscription plans
         </h2>

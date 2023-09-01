@@ -8,7 +8,11 @@ import {
   getDashboardRedirectPath,
   getUserSubscriptionPlan,
 } from "@/lib/subscription"
-import { PageHeaderHeading } from "@/components/page-header"
+import {
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { StoreSwitcher } from "@/components/pagers/store-switcher"
 import { StoreTabs } from "@/components/pagers/store-tabs"
 import { Shell } from "@/components/shells/shell"
@@ -49,11 +53,14 @@ export default async function StoreLayout({
   const subscriptionPlan = await getUserSubscriptionPlan(user.id)
 
   return (
-    <Shell variant="sidebar" className="gap-4">
-      <div className="flex items-center space-x-4 pr-1">
-        <PageHeaderHeading className="line-clamp-1 flex-1" size="sm">
-          {store.name}
-        </PageHeaderHeading>
+    <Shell variant="sidebar">
+      <div className="flex flex-col gap-4 pr-1 xxs:flex-row">
+        <PageHeader className="flex-1">
+          <PageHeaderHeading size="sm">Dashboard</PageHeaderHeading>
+          <PageHeaderDescription size="sm">
+            Manage your store
+          </PageHeaderDescription>
+        </PageHeader>
         {allStores.length > 1 ? (
           <StoreSwitcher
             currentStore={store}
@@ -65,7 +72,7 @@ export default async function StoreLayout({
           />
         ) : null}
       </div>
-      <div className="space-y-4 overflow-hidden">
+      <div className="space-y-8 overflow-auto">
         <StoreTabs storeId={storeId} />
         {children}
       </div>

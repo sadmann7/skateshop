@@ -51,7 +51,6 @@ export default async function BuildABoardPage({
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value
-
   const cartItems = await getCartItemsAction({ cartId: Number(cartId) })
 
   return (
@@ -65,7 +64,7 @@ export default async function BuildABoardPage({
           Select the components for your board
         </PageHeaderDescription>
       </PageHeader>
-      <section
+      <nav
         id="build-a-board-categories"
         aria-labelledby="build-a-board-categories-heading"
         className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-md"
@@ -98,7 +97,7 @@ export default async function BuildABoardPage({
             ))}
           </div>
         </div>
-      </section>
+      </nav>
       <BoardBuilder
         id="build-a-board-products"
         aria-labelledby="build-a-board-products-heading"

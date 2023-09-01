@@ -6,7 +6,7 @@ import { orders, products } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, eq } from "drizzle-orm"
 
-import { formatPrice } from "@/lib/utils"
+import { formatOrderId, formatPrice } from "@/lib/utils"
 import {
   Card,
   CardContent,
@@ -18,8 +18,8 @@ import { getOrderLineItemsAction } from "@/app/_actions/order"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Manage Product",
-  description: "Manage your product",
+  title: "Order",
+  description: "View your order details",
 }
 
 interface OrderPageProps {
@@ -43,14 +43,14 @@ export default async function OrderPage({ params }: OrderPageProps) {
 
   const orderLineItems = await getOrderLineItemsAction({
     items: String(order.items),
-    storeId,
+    storeId: order.storeId,
   })
 
   return (
     <Card>
       <CardHeader className="space-y-1">
         <CardTitle as="h2" className="text-2xl">
-          Order #{String(order.id).padStart(6, "0")}
+          Order {formatOrderId(order.id)}
         </CardTitle>
         <CardDescription>View your order details</CardDescription>
       </CardHeader>

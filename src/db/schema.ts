@@ -112,7 +112,7 @@ export const orders = mysqlTable("orders", {
   id: serial("id").primaryKey(),
   storeId: int("storeId").notNull(),
   items: json("items").$type<CheckoutItem[] | null>().default(null),
-  total: decimal("total", { precision: 10, scale: 2 }).notNull().default("0"),
+  amount: decimal("amount", { precision: 10, scale: 2 }).notNull().default("0"),
   stripePaymentIntentId: varchar("stripePaymentIntentId", {
     length: 191,
   }).notNull(),

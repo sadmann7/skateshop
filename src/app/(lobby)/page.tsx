@@ -26,6 +26,7 @@ export default async function IndexPage() {
       images: products.images,
       category: products.category,
       price: products.price,
+      inventory: products.inventory,
       stripeAccountId: stores.stripeAccountId,
     })
     .from(products)
