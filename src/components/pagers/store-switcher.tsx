@@ -6,10 +6,10 @@ import { type Store } from "@/db/schema"
 import {
   CaretSortIcon,
   CheckIcon,
+  CircleIcon,
   PlusCircledIcon,
 } from "@radix-ui/react-icons"
 
-import { getRandomPatternStyle } from "@/lib/generate-pattern"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -62,10 +62,7 @@ export function StoreSwitcher({
             )}
             {...props}
           >
-            <div
-              className="mr-2 aspect-square h-4 w-4 rounded-full"
-              style={getRandomPatternStyle(String(currentStore.id))}
-            />
+            <CircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             <span className="line-clamp-1">{currentStore.name}</span>
             <CaretSortIcon
               className="ml-auto h-4 w-4 shrink-0 opacity-50"
@@ -93,10 +90,7 @@ export function StoreSwitcher({
                     }}
                     className="text-sm"
                   >
-                    <div
-                      className="mr-2 aspect-square h-4 w-4 rounded-full"
-                      style={getRandomPatternStyle(String(store.id))}
-                    />
+                    <CircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                     <span className="line-clamp-1">{store.name}</span>
                     <CheckIcon
                       className={cn(

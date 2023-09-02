@@ -39,11 +39,11 @@ export function StoreTabs({ storeId }: StoreTabsProps) {
 
   return (
     <Tabs
-      className="sticky top-0 z-30 w-full overflow-auto bg-background px-1"
       defaultValue={tabs.find((tab) => tab.isActive)?.href ?? tabs[0]?.href}
+      className="sticky top-0 z-30 w-full overflow-auto bg-background px-1"
       onValueChange={(value) => router.push(value)}
     >
-      <TabsList className=" inline-flex items-center justify-center space-x-1.5 text-muted-foreground">
+      <TabsList className="inline-flex items-center justify-center space-x-1.5 text-muted-foreground">
         {tabs.map((tab) => (
           <div
             role="none"
@@ -56,8 +56,8 @@ export function StoreTabs({ storeId }: StoreTabsProps) {
             <TabsTrigger
               value={tab.href}
               className={cn(
-                "rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary",
-                tab.isActive && "text-foreground shadow"
+                "inline-flex items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground ring-offset-background transition-all hover:bg-muted hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+                tab.isActive && "text-foreground"
               )}
             >
               {tab.title}

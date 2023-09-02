@@ -32,128 +32,128 @@ export async function POST(req: Request) {
   }
 
   // Handling payment events
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      const stripeObject = event.data.object as Stripe.PaymentIntent
+  // switch (event.type) {
+  //   case "payment_intent.succeeded":
+  //     const stripeObject = event.data.object as Stripe.PaymentIntent
 
-      const paymentIntentId = stripeObject?.id
-      const orderAmount = stripeObject?.amount
-      const checkoutItems = stripeObject?.metadata
-        ?.items as unknown as CheckoutItem[]
+  //     const paymentIntentId = stripeObject?.id
+  //     const orderAmount = stripeObject?.amount
+  //     const checkoutItems = stripeObject?.metadata
+  //       ?.items as unknown as CheckoutItem[]
 
-      try {
-        // Parsing items from metadata, didn't parse before because can pass the unparsed data directly to the order table items json column in the db
-        const safeParsedItems = z
-          .array(checkoutItemSchema)
-          .safeParse(JSON.parse(stripeObject?.metadata?.items ?? "[]"))
+  //     try {
+  //       // Parsing items from metadata, didn't parse before because can pass the unparsed data directly to the order table items json column in the db
+  //       const safeParsedItems = z
+  //         .array(checkoutItemSchema)
+  //         .safeParse(JSON.parse(stripeObject?.metadata?.items ?? "[]"))
 
-        if (!safeParsedItems.success) {
-          throw new Error("Could not parse items.")
-        }
+  //       if (!safeParsedItems.success) {
+  //         throw new Error("Could not parse items.")
+  //       }
 
-        if (!event.account) throw new Error("No account found.")
+  //       if (!event.account) throw new Error("No account found.")
 
-        const payment = await db.query.payments.findFirst({
-          columns: {
-            storeId: true,
-          },
-          where: eq(payments.stripeAccountId, event.account),
-        })
+  //       const payment = await db.query.payments.findFirst({
+  //         columns: {
+  //           storeId: true,
+  //         },
+  //         where: eq(payments.stripeAccountId, event.account),
+  //       })
 
-        if (!payment?.storeId) {
-          return new Response("Store not found.", { status: 404 })
-        }
+  //       if (!payment?.storeId) {
+  //         return new Response("Store not found.", { status: 404 })
+  //       }
 
-        // Create new address in DB
-        const stripeAddress = stripeObject?.shipping?.address
+  //       // Create new address in DB
+  //       const stripeAddress = stripeObject?.shipping?.address
 
-        const newAddress = await db.insert(addresses).values({
-          line1: stripeAddress?.line1,
-          line2: stripeAddress?.line2,
-          city: stripeAddress?.city,
-          state: stripeAddress?.state,
-          country: stripeAddress?.country,
-          postalCode: stripeAddress?.postal_code,
-        })
+  //       const newAddress = await db.insert(addresses).values({
+  //         line1: stripeAddress?.line1,
+  //         line2: stripeAddress?.line2,
+  //         city: stripeAddress?.city,
+  //         state: stripeAddress?.state,
+  //         country: stripeAddress?.country,
+  //         postalCode: stripeAddress?.postal_code,
+  //       })
 
-        if (!newAddress.insertId) throw new Error("No address created.")
+  //       if (!newAddress.insertId) throw new Error("No address created.")
 
-        // Create new order in db
-        await db.insert(orders).values({
-          storeId: payment.storeId,
-          items: checkoutItems ?? [],
-          amount: String(Number(orderAmount) / 100),
-          stripePaymentIntentId: paymentIntentId,
-          stripePaymentIntentStatus: stripeObject?.status,
-          name: stripeObject?.shipping?.name,
-          email: stripeObject?.receipt_email,
-          addressId: Number(newAddress.insertId),
-        })
+  //       // Create new order in db
+  //       await db.insert(orders).values({
+  //         storeId: payment.storeId,
+  //         items: checkoutItems ?? [],
+  //         amount: String(Number(orderAmount) / 100),
+  //         stripePaymentIntentId: paymentIntentId,
+  //         stripePaymentIntentStatus: stripeObject?.status,
+  //         name: stripeObject?.shipping?.name,
+  //         email: stripeObject?.receipt_email,
+  //         addressId: Number(newAddress.insertId),
+  //       })
 
-        // Update product inventory in db
-        for (const item of safeParsedItems.data) {
-          const product = await db.query.products.findFirst({
-            columns: {
-              id: true,
-              inventory: true,
-            },
-            where: eq(products.id, item.productId),
-          })
+  //       // Update product inventory in db
+  //       for (const item of safeParsedItems.data) {
+  //         const product = await db.query.products.findFirst({
+  //           columns: {
+  //             id: true,
+  //             inventory: true,
+  //           },
+  //           where: eq(products.id, item.productId),
+  //         })
 
-          if (!product) {
-            throw new Error("Product not found.")
-          }
+  //         if (!product) {
+  //           throw new Error("Product not found.")
+  //         }
 
-          const inventory = product.inventory - item.quantity
+  //         const inventory = product.inventory - item.quantity
 
-          if (inventory < 0) {
-            throw new Error("Product out of stock.")
-          }
+  //         if (inventory < 0) {
+  //           throw new Error("Product out of stock.")
+  //         }
 
-          await db
-            .update(products)
-            .set({
-              inventory: product.inventory - item.quantity,
-            })
-            .where(eq(products.id, item.productId))
-        }
+  //         await db
+  //           .update(products)
+  //           .set({
+  //             inventory: product.inventory - item.quantity,
+  //           })
+  //           .where(eq(products.id, item.productId))
+  //       }
 
-        // Close cart and clear items
-        await db
-          .update(carts)
-          .set({
-            closed: true,
-            items: [],
-          })
-          .where(eq(carts.paymentIntentId, paymentIntentId))
-      } catch (err) {
-        console.log("Error creating order.", err)
-      }
+  //       // Close cart and clear items
+  //       await db
+  //         .update(carts)
+  //         .set({
+  //           closed: true,
+  //           items: [],
+  //         })
+  //         .where(eq(carts.paymentIntentId, paymentIntentId))
+  //     } catch (err) {
+  //       console.log("Error creating order.", err)
+  //     }
 
-      break
+  //     break
 
-    case "payment_intent.payment_failed":
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(
-        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
-      )
-      break
-    case "payment_intent.processing":
-      const paymentIntentProcessing = event.data.object as Stripe.PaymentIntent
-      console.log(
-        `❌ Payment processing: ${paymentIntentProcessing.last_payment_error?.message}`
-      )
-      break
-    case "charge.succeeded": {
-      const charge = event.data.object as Stripe.Charge
-      console.log(`Charge id: ${charge.id}`)
-      break
-    }
-    default: {
-      console.warn(`Unhandled event type: ${event.type}`)
-      break
-    }
-  }
+  //   case "payment_intent.payment_failed":
+  //     const paymentIntent = event.data.object as Stripe.PaymentIntent
+  //     console.log(
+  //       `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
+  //     )
+  //     break
+  //   case "payment_intent.processing":
+  //     const paymentIntentProcessing = event.data.object as Stripe.PaymentIntent
+  //     console.log(
+  //       `❌ Payment processing: ${paymentIntentProcessing.last_payment_error?.message}`
+  //     )
+  //     break
+  //   case "charge.succeeded": {
+  //     const charge = event.data.object as Stripe.Charge
+  //     console.log(`Charge id: ${charge.id}`)
+  //     break
+  //   }
+  //   default: {
+  //     console.warn(`Unhandled event type: ${event.type}`)
+  //     break
+  //   }
+  // }
 
   // Handling subscription events
   const session = event.data.object as Stripe.Checkout.Session
