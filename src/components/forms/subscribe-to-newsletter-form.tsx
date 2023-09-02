@@ -36,7 +36,7 @@ export function SubscribeToNewsletterForm() {
     console.log(data)
 
     startTransition(async () => {
-      const response = await fetch("/api/newsletter/subscribe", {
+      const response = await fetch("/api/email/newsletter", {
         method: "POST",
         body: JSON.stringify({
           email: data.email,
@@ -63,6 +63,7 @@ export function SubscribeToNewsletterForm() {
           default:
             toast.error("Something went wrong. Please try again later.")
         }
+        return
       }
 
       toast.success("You have been subscribed to our newsletter.")

@@ -5,7 +5,6 @@ import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
-import { getUserSubscriptionPlan } from "@/lib/subscription"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -24,6 +23,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
+import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -38,7 +38,7 @@ export default async function BillingPage() {
     redirect("/signin")
   }
 
-  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+  const subscriptionPlan = await getSubscriptionPlanAction(user.id)
 
   return (
     <Shell variant="sidebar" as="div">

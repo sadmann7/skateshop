@@ -1,6 +1,22 @@
-import type { StripePaymentStatus } from "@/types"
+import type { CartLineItem, StripePaymentStatus } from "@/types"
 
 import { cn } from "@/lib/utils"
+
+// Original source: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
+export function calculateOrderAmount(items: CartLineItem[]) {
+  const total = items.reduce((acc, item) => {
+    return acc + Number(item.price) * item.quantity
+  }, 0)
+  const fee = Math.round(total * 0.1)
+
+  const totalInCents = Math.round(total * 100)
+  const feeInCents = Math.round(fee * 100)
+
+  return {
+    total: totalInCents, // Converts to cents which stripe charges in
+    fee: feeInCents,
+  }
+}
 
 export const stripePaymentStatuses: StripePaymentStatus[] = [
   "canceled",

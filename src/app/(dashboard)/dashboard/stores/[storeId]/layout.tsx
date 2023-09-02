@@ -4,10 +4,7 @@ import { stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 
-import {
-  getDashboardRedirectPath,
-  getUserSubscriptionPlan,
-} from "@/lib/subscription"
+import { getDashboardRedirectPath } from "@/lib/subscription"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -16,6 +13,7 @@ import {
 import { StoreSwitcher } from "@/components/pagers/store-switcher"
 import { StoreTabs } from "@/components/pagers/store-tabs"
 import { Shell } from "@/components/shells/shell"
+import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
 interface StoreLayoutProps {
   children: React.ReactNode
@@ -50,7 +48,7 @@ export default async function StoreLayout({
     notFound()
   }
 
-  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+  const subscriptionPlan = await getSubscriptionPlanAction(user.id)
 
   return (
     <Shell variant="sidebar">

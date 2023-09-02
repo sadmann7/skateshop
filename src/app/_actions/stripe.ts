@@ -3,13 +3,18 @@
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, payments, stores } from "@/db/schema"
-import type { CheckoutItem } from "@/types"
-import { currentUser } from "@clerk/nextjs"
+import type { CheckoutItem, UserSubscriptionPlan } from "@/types"
+import { clerkClient, currentUser } from "@clerk/nextjs"
+import dayjs from "dayjs"
 import { eq } from "drizzle-orm"
+import Stripe from "stripe"
 import { type z } from "zod"
 
+import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { calculateOrderAmount } from "@/lib/checkout"
 import { stripe } from "@/lib/stripe"
-import { absoluteUrl, calculateOrderAmount } from "@/lib/utils"
+import { absoluteUrl, getUserEmail } from "@/lib/utils"
+import { userPrivateMetadataSchema } from "@/lib/validations/auth"
 import type {
   createPaymentIntentSchema,
   getPaymentIntentSchema,
@@ -17,6 +22,61 @@ import type {
   getStripeAccountSchema,
   manageSubscriptionSchema,
 } from "@/lib/validations/stripe"
+
+// Getting the subscription plan for a user
+export async function getSubscriptionPlanAction(
+  userId: string
+): Promise<UserSubscriptionPlan | null> {
+  try {
+    const user = await clerkClient.users.getUser(userId)
+
+    if (!user) {
+      throw new Error("User not found.")
+    }
+
+    const userPrivateMetadata = userPrivateMetadataSchema.parse(
+      user.privateMetadata
+    )
+
+    // Check if user is subscribed
+    const isSubscribed =
+      !!userPrivateMetadata.stripePriceId &&
+      dayjs(userPrivateMetadata.stripeCurrentPeriodEnd).valueOf() + 86_400_000 >
+        Date.now()
+
+    const plan = isSubscribed
+      ? storeSubscriptionPlans.find(
+          (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
+        )
+      : storeSubscriptionPlans[0]
+
+    if (!plan) {
+      throw new Error("Plan not found.")
+    }
+
+    // Check if user has canceled subscription
+    let isCanceled = false
+    if (isSubscribed && !!userPrivateMetadata.stripeSubscriptionId) {
+      const stripePlan = await stripe.subscriptions.retrieve(
+        userPrivateMetadata.stripeSubscriptionId
+      )
+      isCanceled = stripePlan.cancel_at_period_end
+    }
+
+    return {
+      ...plan,
+      stripeSubscriptionId: userPrivateMetadata.stripeSubscriptionId,
+      stripeCurrentPeriodEnd: userPrivateMetadata.stripeCurrentPeriodEnd,
+      stripeCustomerId: userPrivateMetadata.stripeCustomerId,
+      isSubscribed,
+      isCanceled,
+      isActive: isSubscribed && !isCanceled,
+    }
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+}
 
 // Managing stripe subscriptions for a user
 export async function manageSubscriptionAction(
@@ -30,9 +90,7 @@ export async function manageSubscriptionAction(
     throw new Error("User not found.")
   }
 
-  const email =
-    user.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
-      ?.emailAddress ?? ""
+  const email = getUserEmail(user)
 
   // If the user is already subscribed to a plan, we redirect them to the Stripe billing portal
   if (input.isSubscribed && input.stripeCustomerId && input.isCurrentPlan) {
