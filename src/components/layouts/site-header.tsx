@@ -1,8 +1,9 @@
 import Link from "next/link"
-import type { User } from "@clerk/nextjs/dist/types/server"
+import type { User } from "@clerk/nextjs/server"
 
 import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
+import { getUserEmail } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -29,9 +30,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
   const initials = `${user?.firstName?.charAt(0) ?? ""} ${
     user?.lastName?.charAt(0) ?? ""
   }`
-  const email =
-    user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
-      ?.emailAddress ?? ""
+  const email = getUserEmail(user)
 
   return (
     <header className="sticky top-0 z-[60] w-full border-b bg-background">

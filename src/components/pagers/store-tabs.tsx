@@ -1,16 +1,17 @@
 "use client"
 
-import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
+import { useRouter, useSelectedLayoutSegment } from "next/navigation"
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 
-interface StoreTabsProps extends React.ComponentPropsWithoutRef<"nav"> {
+interface StoreTabsProps {
   storeId: number
 }
 
-export function StoreTabs({ className, storeId, ...props }: StoreTabsProps) {
+export function StoreTabs({ storeId }: StoreTabsProps) {
+  const router = useRouter()
   const segment = useSelectedLayoutSegment()
 
   const tabs = [
@@ -37,37 +38,34 @@ export function StoreTabs({ className, storeId, ...props }: StoreTabsProps) {
   ]
 
   return (
-    <nav
-      aria-label="Store navigation"
-      className={cn("sticky top-0 z-30 w-full bg-background", className)}
-      {...props}
+    <Tabs
+      className="sticky top-0 z-30 w-full overflow-auto bg-background px-1"
+      defaultValue={tabs.find((tab) => tab.isActive)?.href ?? tabs[0]?.href}
+      onValueChange={(value) => router.push(value)}
     >
-      <ul role="tablist" className="flex w-full items-center space-x-1">
+      <TabsList className=" inline-flex items-center justify-center space-x-1.5 text-muted-foreground">
         {tabs.map((tab) => (
-          <li
-            role="tab"
+          <div
+            role="none"
             key={tab.href}
             className={cn(
-              "border-b-2 border-transparent py-2.5",
-              tab.isActive && "border-primary"
+              "border-b-2 border-transparent py-1.5",
+              tab.isActive && "border-foreground"
             )}
           >
-            <Link
-              href={tab.href}
+            <TabsTrigger
+              value={tab.href}
               className={cn(
-                "rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-primary",
-                tab.isActive && "bg-muted text-primary"
+                "rounded-sm px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-primary",
+                tab.isActive && "text-foreground shadow"
               )}
-              aria-selected={tab.isActive}
-              aria-controls={`panel-${tab.title.toLowerCase()}`}
-              tabIndex={tab.isActive ? 0 : -1}
             >
               {tab.title}
-            </Link>
-          </li>
+            </TabsTrigger>
+          </div>
         ))}
-      </ul>
+      </TabsList>
       <Separator />
-    </nav>
+    </Tabs>
   )
 }

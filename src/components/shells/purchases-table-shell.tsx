@@ -15,7 +15,7 @@ import {
 import {
   cn,
   formatDate,
-  formatOrderId,
+  formatId,
   formatPrice,
   toSentenceCase,
 } from "@/lib/utils"
@@ -57,7 +57,7 @@ export function PurchasesTableShell({
           <DataTableColumnHeader column={column} title="Order ID" />
         ),
         cell: ({ cell }) => {
-          return <span>{formatOrderId(Number(cell.getValue()))}</span>
+          return <span>{formatId(Number(cell.getValue()))}</span>
         },
       },
       {

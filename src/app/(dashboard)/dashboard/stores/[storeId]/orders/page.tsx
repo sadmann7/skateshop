@@ -91,7 +91,6 @@ export default async function OrdersPage({
             : undefined
         )
       )
-      .groupBy(orders.id)
       .orderBy(
         column && column in orders
           ? order === "asc"
@@ -118,7 +117,7 @@ export default async function OrdersPage({
             : undefined
         )
       )
-      .groupBy(orders.id)
+      .execute()
       .then((res) => res[0]?.count ?? 0)
 
     return {

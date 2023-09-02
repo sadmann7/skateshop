@@ -24,7 +24,7 @@ export function SiteFooter() {
             <Link
               aria-label="Home"
               href="/"
-              className="flex items-center space-x-2"
+              className="flex w-fit items-center space-x-2"
             >
               <Icons.logo className="h-6 w-6" aria-hidden="true" />
               <span className="font-bold">{siteConfig.name}</span>

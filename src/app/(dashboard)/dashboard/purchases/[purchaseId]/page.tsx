@@ -6,7 +6,7 @@ import { orders, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, eq } from "drizzle-orm"
 
-import { formatOrderId, formatPrice } from "@/lib/utils"
+import { formatId, formatPrice } from "@/lib/utils"
 import {
   Card,
   CardContent,
@@ -72,7 +72,7 @@ export default async function PurchasePage({ params }: PurchasePageProps) {
       <Card>
         <CardHeader className="space-y-1">
           <CardTitle as="h2" className="text-2xl">
-            Order {formatOrderId(orderId)}
+            Order {formatId(orderId)}
           </CardTitle>
           <CardDescription>{store?.name ?? "Unknown store"}</CardDescription>
         </CardHeader>

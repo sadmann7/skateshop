@@ -83,7 +83,7 @@ export function StoreSwitcher({
                   <CommandItem
                     key={store.id}
                     onSelect={() => {
-                      router.replace(
+                      router.push(
                         pathname.replace(
                           String(currentStore.id),
                           String(store.id)

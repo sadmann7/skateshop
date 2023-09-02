@@ -55,6 +55,7 @@ export async function getCartAction(storeId?: number): Promise<CartLineItem[]> {
     )
     .groupBy(products.id)
     .orderBy(desc(stores.stripeAccountId), asc(products.createdAt))
+    .execute()
     .then((items) => {
       return items.map((item) => {
         const quantity = cart?.items?.find(

@@ -6,6 +6,7 @@ import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
+import { getUserEmail } from "@/lib/utils"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -37,11 +38,7 @@ export default async function PurchasesPage({
     redirect("/signin")
   }
 
-  console.log(store)
-
-  const email =
-    user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
-      ?.emailAddress ?? ""
+  const email = getUserEmail(user)
 
   // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
@@ -93,7 +90,6 @@ export default async function PurchasesPage({
             : undefined
         )
       )
-      .groupBy(orders.id)
       .orderBy(
         column && column in orders
           ? order === "asc"
@@ -121,7 +117,6 @@ export default async function PurchasesPage({
             : undefined
         )
       )
-      .groupBy(orders.id)
       .then((res) => res[0]?.count ?? 0)
 
     return {

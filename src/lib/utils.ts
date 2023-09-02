@@ -1,6 +1,7 @@
 import { env } from "@/env.mjs"
 import type { CartLineItem } from "@/types"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
+import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
 import dayjs from "dayjs"
 import { toast } from "sonner"
@@ -39,6 +40,10 @@ export function formatBytes(
   return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${
     sizeType === "accurate" ? accurateSizes[i] ?? "Bytest" : sizes[i] ?? "Bytes"
   }`
+}
+
+export function formatId(id: number) {
+  return `#${id.toString().padStart(4, "0")}`
 }
 
 export function slugify(str: string) {
@@ -80,8 +85,12 @@ export function absoluteUrl(path: string) {
   return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
-export function formatOrderId(orderId: number) {
-  return `#${orderId.toString().padStart(6, "0")}`
+export function getUserEmail(user: User | null) {
+  const email =
+    user?.emailAddresses?.find((e) => e.id === user.primaryEmailAddressId)
+      ?.emailAddress ?? ""
+
+  return email
 }
 
 export function catchError(err: unknown) {

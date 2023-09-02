@@ -64,7 +64,7 @@ export default async function BuildABoardPage({
           Select the components for your board
         </PageHeaderDescription>
       </PageHeader>
-      <nav
+      <section
         id="build-a-board-categories"
         aria-labelledby="build-a-board-categories-heading"
         className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-md"
@@ -97,7 +97,7 @@ export default async function BuildABoardPage({
             ))}
           </div>
         </div>
-      </nav>
+      </section>
       <BoardBuilder
         id="build-a-board-products"
         aria-labelledby="build-a-board-products-heading"

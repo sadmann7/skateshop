@@ -41,6 +41,7 @@ export async function getOrderLineItemsAction(
       )
       .groupBy(products.id)
       .orderBy(desc(products.createdAt))
+      .execute()
       .then((items) => {
         return items.map((item) => {
           const quantity = safeParsedItems.data.find(
