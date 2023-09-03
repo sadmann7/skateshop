@@ -82,18 +82,6 @@ export async function POST(req: Request) {
     }
 
     // Handling payment events
-    case "payment_intent.payment_failed": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(
-        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
-      )
-      break
-    }
-    case "payment_intent.processing": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(`⏳ Payment processing: ${paymentIntent.id}`)
-      break
-    }
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent
 
@@ -194,6 +182,18 @@ export async function POST(req: Request) {
           console.log("Error creating order.", err)
         }
       }
+      break
+    }
+    case "payment_intent.payment_failed": {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      console.log(
+        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
+      )
+      break
+    }
+    case "payment_intent.processing": {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      console.log(`⏳ Payment processing: ${paymentIntent.id}`)
       break
     }
     case "charge.succeeded": {

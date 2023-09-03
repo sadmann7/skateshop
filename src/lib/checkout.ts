@@ -18,14 +18,17 @@ export function calculateOrderAmount(items: CartLineItem[]) {
   }
 }
 
-export const stripePaymentStatuses: StripePaymentStatus[] = [
-  "canceled",
-  "processing",
-  "requires_action",
-  "requires_capture",
-  "requires_confirmation",
-  "requires_payment_method",
-  "succeeded",
+export const stripePaymentStatuses: {
+  label: string
+  value: StripePaymentStatus
+}[] = [
+  { label: "Canceled", value: "canceled" },
+  { label: "Processing", value: "processing" },
+  { label: "Requires Action", value: "requires_action" },
+  { label: "Requires Capture", value: "requires_capture" },
+  { label: "Requires Confirmation", value: "requires_confirmation" },
+  { label: "Requires Payment Method", value: "requires_payment_method" },
+  { label: "Succeeded", value: "succeeded" },
 ]
 
 export function getStripePaymentStatusColor({

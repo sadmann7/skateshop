@@ -12,13 +12,7 @@ import {
   getStripePaymentStatusColor,
   stripePaymentStatuses,
 } from "@/lib/checkout"
-import {
-  cn,
-  formatDate,
-  formatId,
-  formatPrice,
-  toSentenceCase,
-} from "@/lib/utils"
+import { cn, formatDate, formatId, formatPrice } from "@/lib/utils"
 import { checkoutItemSchema } from "@/lib/validations/cart"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -173,10 +167,7 @@ export function PurchasesTableShell({
         {
           id: "status",
           title: "Status",
-          options: stripePaymentStatuses.map((status) => ({
-            value: status,
-            label: toSentenceCase(status.replaceAll("_", " ")),
-          })),
+          options: stripePaymentStatuses,
         },
       ]}
     />
