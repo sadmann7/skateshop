@@ -1,3 +1,4 @@
+import type { Readable } from "stream"
 import { headers } from "next/headers"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
@@ -11,9 +12,17 @@ import { z } from "zod"
 import { stripe } from "@/lib/stripe"
 import { checkoutItemSchema } from "@/lib/validations/cart"
 
+async function getRawBody(readable: Readable): Promise<Buffer> {
+  const chunks = []
+  for await (const chunk of readable) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
+  }
+  return Buffer.concat(chunks)
+}
+
 export async function POST(req: Request) {
-  const body = await req.text()
-  const signature = headers().get("Stripe-Signature") ?? ""
+  const body = await getRawBody(req.body as unknown as Readable)
+  const signature = headers().get("stripe-signature") ?? ""
 
   let event: Stripe.Event
 
@@ -30,10 +39,13 @@ export async function POST(req: Request) {
     )
   }
 
+  let session = null
+  let paymentIntent = null
+
   switch (event.type) {
     // Handling subscription events
     case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session
+      session = event.data.object as Stripe.Checkout.Session
 
       // If there is a user id in the metadata, then this is a new subscription
       if (session?.metadata?.userId) {
@@ -59,7 +71,7 @@ export async function POST(req: Request) {
       break
     }
     case "invoice.payment_succeeded": {
-      const session = event.data.object as Stripe.Checkout.Session
+      session = event.data.object as Stripe.Checkout.Session
 
       // If there is a user id in the metadata, then this is a new subscription
       if (session?.metadata?.userId) {
@@ -83,7 +95,7 @@ export async function POST(req: Request) {
 
     // Handling payment events
     case "payment_intent.succeeded": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      paymentIntent = event.data.object as Stripe.PaymentIntent
 
       const paymentIntentId = paymentIntent?.id
       const orderAmount = paymentIntent?.amount
@@ -185,14 +197,14 @@ export async function POST(req: Request) {
       break
     }
     case "payment_intent.payment_failed": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      paymentIntent = event.data.object as Stripe.PaymentIntent
       console.log(
         `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
       )
       break
     }
     case "payment_intent.processing": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+      paymentIntent = event.data.object as Stripe.PaymentIntent
       console.log(`⏳ Payment processing: ${paymentIntent.id}`)
       break
     }
