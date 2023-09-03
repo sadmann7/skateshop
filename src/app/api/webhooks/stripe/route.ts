@@ -35,13 +35,6 @@ export async function POST(req: Request) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session
 
-      await db
-        .update(carts)
-        .set({
-          items: [],
-        })
-        .where(eq(carts.id, 3821))
-
       // If there is a user id in the metadata, then this is a new subscription
       if (session?.metadata?.userId) {
         // Retrieve the subscription details from Stripe
@@ -90,6 +83,13 @@ export async function POST(req: Request) {
 
     // Handling payment events
     case "payment_intent.succeeded": {
+      await db
+        .update(carts)
+        .set({
+          items: [],
+        })
+        .where(eq(carts.id, 3821))
+
       const paymentIntent = event.data.object as Stripe.PaymentIntent
 
       const paymentIntentId = paymentIntent?.id
