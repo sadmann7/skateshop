@@ -29,7 +29,7 @@ export default function CheckoutForm({
   const elements = useElements()
   const [email, setEmail] = React.useState("")
   const [message, setMessage] = React.useState<string | null>(null)
-  const [isPending, startTransaction] = React.useTransition()
+  const [isLoading, setIsLoading] = React.useState(false)
 
   React.useEffect(() => {
     if (!stripe) return
@@ -60,36 +60,39 @@ export default function CheckoutForm({
       })
   }, [stripe])
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    startTransaction(async () => {
-      if (!stripe || !elements) {
-        // Stripe.js hasn't yet loaded.
-        // Make sure to disable form submission until Stripe.js has loaded.
-        return
-      }
+    if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return
+    }
 
-      const { error } = await stripe.confirmPayment({
-        //`Elements` instance that was used to create the Payment Element
-        elements,
-        confirmParams: {
-          return_url: absoluteUrl(`/checkout/${storeId}/success`),
-          receipt_email: email,
-        },
-      })
+    setIsLoading(true)
+    setMessage(null)
 
-      // This point will only be reached if there is an immediate error when
-      // confirming the payment. Otherwise, your customer will be redirected to
-      // your `return_url`. For some payment methods like iDEAL, your customer will
-      // be redirected to an intermediate site first to authorize the payment, then
-      // redirected to the `return_url`.
-      if (error.type === "card_error" || error.type === "validation_error") {
-        setMessage(error.message ?? "Something went wrong, please try again.")
-      } else {
-        setMessage("Something went wrong, please try again.")
-      }
+    const { error } = await stripe.confirmPayment({
+      //`Elements` instance that was used to create the Payment Element
+      elements,
+      confirmParams: {
+        return_url: absoluteUrl(`/checkout/${storeId}/success`),
+        receipt_email: email,
+      },
     })
+
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+    if (error.type === "card_error" || error.type === "validation_error") {
+      setMessage(error.message ?? "Something went wrong, please try again.")
+    } else {
+      setMessage("Something went wrong, please try again.")
+    }
+
+    setIsLoading(false)
   }
 
   return (
@@ -97,20 +100,19 @@ export default function CheckoutForm({
       id={`${id}-checkout-form`}
       aria-labelledby={`${id}-checkout-form-heading`}
       className={cn("grid gap-4", className)}
-      onSubmit={onSubmit}
+      onSubmit={(...args) => void onSubmit(...args)}
       {...props}
     >
       <LinkAuthenticationElement
-        id={`payment-element-${id}`}
+        id={`${id}-link-authentication-element`}
         onChange={(e) => setEmail(e.value.email)}
       />
       <AddressElement
-        options={{
-          mode: "shipping",
-        }}
+        id={`${id}-address-element`}
+        options={{ mode: "shipping" }}
       />
       <PaymentElement
-        id={`payment-element-${id}`}
+        id={`${id}-payment-element`}
         options={{
           layout: "tabs",
         }}
@@ -121,9 +123,9 @@ export default function CheckoutForm({
         id={`${id}-checkout-form-submit`}
         variant="secondary"
         className="w-full bg-blue-600 hover:bg-blue-500 hover:shadow-md"
-        disabled={!stripe || !elements || isPending}
+        disabled={!stripe || !elements || isLoading}
       >
-        {isPending && (
+        {isLoading && (
           <Icons.spinner
             className="mr-2 h-4 w-4 animate-spin"
             aria-hidden="true"
