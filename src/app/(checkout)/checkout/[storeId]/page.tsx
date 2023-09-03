@@ -83,15 +83,15 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
             payments
           </div>
           <Link
-            aria-label="Back to checkout"
-            href="/checkout"
+            aria-label="Back to cart"
+            href="/cart"
             className={cn(
               buttonVariants({
                 size: "sm",
               })
             )}
           >
-            Back to checkout
+            Back to cart
           </Link>
         </div>
       </Shell>

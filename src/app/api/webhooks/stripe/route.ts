@@ -34,54 +34,51 @@ export async function POST(req: Request) {
 
   switch (event.type) {
     // Handling subscription events
-    case "checkout.session.completed": {
-      // If there is a user id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId) {
-        // Retrieve the subscription details from Stripe
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
-        )
+    // case "checkout.session.completed":
+    //   // If there is a user id in the metadata, then this is a new subscription
+    //   if (session?.metadata?.userId) {
+    //     // Retrieve the subscription details from Stripe
+    //     const subscription = await stripe.subscriptions.retrieve(
+    //       session.subscription as string
+    //     )
 
-        // Update the user stripe into in our database.
-        // Since this is the initial subscription, we need to update
-        // the subscription id and customer id.
+    //     // Update the user stripe into in our database.
+    //     // Since this is the initial subscription, we need to update
+    //     // the subscription id and customer id.
+    //     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
+    //       privateMetadata: {
+    //         stripeSubscriptionId: subscription.id,
+    //         stripeCustomerId: subscription.customer as string,
+    //         stripePriceId: subscription.items.data[0]?.price.id,
+    //         stripeCurrentPeriodEnd: new Date(
+    //           subscription.current_period_end * 1000
+    //         ),
+    //       },
+    //     })
+    //   }
 
-        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-          privateMetadata: {
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer as string,
-            stripePriceId: subscription.items.data[0]?.price.id,
-            stripeCurrentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-          },
-        })
-      }
+    //   break
 
-      break
-    }
-    case "invoice.payment_succeeded": {
-      // If there is a user id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId) {
-        // Retrieve the subscription details from Stripe
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
-        )
+    // case "invoice.payment_succeeded":
+    //   // If there is a user id in the metadata, then this is a new subscription
+    //   if (session?.metadata?.userId) {
+    //     // Retrieve the subscription details from Stripe
+    //     const subscription = await stripe.subscriptions.retrieve(
+    //       session.subscription as string
+    //     )
 
-        // Update the price id and set the new period end
+    //     // Update the price id and set the new period end
+    //     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
+    //       privateMetadata: {
+    //         stripePriceId: subscription.items.data[0]?.price.id,
+    //         stripeCurrentPeriodEnd: new Date(
+    //           subscription.current_period_end * 1000
+    //         ),
+    //       },
+    //     })
+    //   }
 
-        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-          privateMetadata: {
-            stripePriceId: subscription.items.data[0]?.price.id,
-            stripeCurrentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-          },
-        })
-      }
-
-      break
-    }
+    //   break
 
     // Handling payment events
     case "payment_intent.succeeded":
@@ -95,6 +92,8 @@ export async function POST(req: Request) {
       // If there are items in metadata, then create order
       if (checkoutItems) {
         try {
+          if (!event.account) throw new Error("No account found.")
+
           // Parsing items from metadata, didn't parse before because can pass the unparsed data directly to the order table items json column in the db
           const safeParsedItems = z
             .array(checkoutItemSchema)
@@ -105,8 +104,6 @@ export async function POST(req: Request) {
           if (!safeParsedItems.success) {
             throw new Error("Could not parse items.")
           }
-
-          if (!event.account) throw new Error("No account found.")
 
           const payment = await db.query.payments.findFirst({
             columns: {
@@ -200,15 +197,16 @@ export async function POST(req: Request) {
         `❌ Payment processing: ${paymentIntentProcessing.last_payment_error?.message}`
       )
       break
-    case "charge.succeeded": {
+    case "charge.succeeded":
       const charge = event.data.object as Stripe.Charge
       console.log(`Charge id: ${charge.id}`)
       break
-    }
-    default: {
+    case "application_fee.created":
+      const applicationFee = event.data.object as Stripe.ApplicationFee
+      console.log(`Application fee id: ${applicationFee.id}`)
+    default:
       console.warn(`Unhandled event type: ${event.type}`)
       break
-    }
   }
 
   return new Response(null, { status: 200 })

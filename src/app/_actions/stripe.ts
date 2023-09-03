@@ -7,7 +7,6 @@ import type { CheckoutItem, UserSubscriptionPlan } from "@/types"
 import { clerkClient, currentUser } from "@clerk/nextjs"
 import dayjs from "dayjs"
 import { eq } from "drizzle-orm"
-import Stripe from "stripe"
 import { type z } from "zod"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
