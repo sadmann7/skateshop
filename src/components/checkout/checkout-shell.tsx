@@ -1,12 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { env } from "@/env.mjs"
 import { Elements } from "@stripe/react-stripe-js"
-import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js"
+import { type StripeElementsOptions } from "@stripe/stripe-js"
 
 import { getStripe } from "@/lib/get-stripe"
 import { cn } from "@/lib/utils"
+
+// Docs: https://stripe.com/docs/payments/quickstart
 
 interface CheckoutShellProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
@@ -23,28 +24,13 @@ export function CheckoutShell({
   className,
   ...props
 }: CheckoutShellProps) {
-  const [clientSecret, setClientSecret] = React.useState("")
   const stripePromise = React.useMemo(
-    () =>
-      loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, {
-        stripeAccount: storeStripeAccountId,
-      }),
+    () => getStripe(storeStripeAccountId),
     [storeStripeAccountId]
   )
+  const { clientSecret } = React.use(paymentIntent)
 
-  React.useEffect(() => {
-    let error
-    void paymentIntent.then((data) => {
-      if (!data || !data.clientSecret) {
-        error = true
-        return
-      }
-      setClientSecret(data.clientSecret)
-    })
-    if (error) throw new Error("Payment intent not found")
-  }, [paymentIntent])
-
-  // if (!clientSecret) return null
+  if (!clientSecret) return null
 
   const options: StripeElementsOptions = {
     appearance: {
