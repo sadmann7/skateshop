@@ -1,5 +1,4 @@
 import { headers } from "next/headers"
-import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
 import { env } from "@/env.mjs"
@@ -25,7 +24,7 @@ export async function POST(req: Request) {
       env.STRIPE_WEBHOOK_SECRET
     )
   } catch (err) {
-    return NextResponse.json(
+    return new Response(
       `Webhook Error: ${err instanceof Error ? err.message : "Unknown error."}`,
       { status: 400 }
     )
@@ -33,54 +32,54 @@ export async function POST(req: Request) {
 
   switch (event.type) {
     // Handling subscription events
-    // case "checkout.session.completed": {
-    //   const session = event.data.object as Stripe.Checkout.Session
+    case "checkout.session.completed": {
+      const session = event.data.object as Stripe.Checkout.Session
 
-    //   // If there is a user id in the metadata, then this is a new subscription
-    //   if (session?.metadata?.userId) {
-    //     // Retrieve the subscription details from Stripe
-    //     const subscription = await stripe.subscriptions.retrieve(
-    //       session.subscription as string
-    //     )
+      // If there is a user id in the metadata, then this is a new subscription
+      if (session?.metadata?.userId) {
+        // Retrieve the subscription details from Stripe
+        const subscription = await stripe.subscriptions.retrieve(
+          session.subscription as string
+        )
 
-    //     // Update the user stripe into in our database.
-    //     // Since this is the initial subscription, we need to update
-    //     // the subscription id and customer id.
-    //     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-    //       privateMetadata: {
-    //         stripeSubscriptionId: subscription.id,
-    //         stripeCustomerId: subscription.customer as string,
-    //         stripePriceId: subscription.items.data[0]?.price.id,
-    //         stripeCurrentPeriodEnd: new Date(
-    //           subscription.current_period_end * 1000
-    //         ),
-    //       },
-    //     })
-    //   }
-    //   break
-    // }
-    // case "invoice.payment_succeeded": {
-    //   const session = event.data.object as Stripe.Checkout.Session
+        // Update the user stripe into in our database.
+        // Since this is the initial subscription, we need to update
+        // the subscription id and customer id.
+        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
+          privateMetadata: {
+            stripeSubscriptionId: subscription.id,
+            stripeCustomerId: subscription.customer as string,
+            stripePriceId: subscription.items.data[0]?.price.id,
+            stripeCurrentPeriodEnd: new Date(
+              subscription.current_period_end * 1000
+            ),
+          },
+        })
+      }
+      break
+    }
+    case "invoice.payment_succeeded": {
+      const session = event.data.object as Stripe.Checkout.Session
 
-    //   // If there is a user id in the metadata, then this is a new subscription
-    //   if (session?.metadata?.userId) {
-    //     // Retrieve the subscription details from Stripe
-    //     const subscription = await stripe.subscriptions.retrieve(
-    //       session.subscription as string
-    //     )
+      // If there is a user id in the metadata, then this is a new subscription
+      if (session?.metadata?.userId) {
+        // Retrieve the subscription details from Stripe
+        const subscription = await stripe.subscriptions.retrieve(
+          session.subscription as string
+        )
 
-    //     // Update the price id and set the new period end
-    //     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-    //       privateMetadata: {
-    //         stripePriceId: subscription.items.data[0]?.price.id,
-    //         stripeCurrentPeriodEnd: new Date(
-    //           subscription.current_period_end * 1000
-    //         ),
-    //       },
-    //     })
-    //   }
-    //   break
-    // }
+        // Update the price id and set the new period end
+        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
+          privateMetadata: {
+            stripePriceId: subscription.items.data[0]?.price.id,
+            stripeCurrentPeriodEnd: new Date(
+              subscription.current_period_end * 1000
+            ),
+          },
+        })
+      }
+      break
+    }
 
     // Handling payment events
     case "payment_intent.succeeded": {
@@ -213,5 +212,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json(null, { status: 200 })
+  return new Response(null, { status: 200 })
 }
