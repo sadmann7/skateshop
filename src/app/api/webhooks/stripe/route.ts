@@ -1,5 +1,5 @@
-import type { Readable } from "stream"
 import { headers } from "next/headers"
+import { NextResponse } from "next/server"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
 import { env } from "@/env.mjs"
@@ -12,17 +12,9 @@ import { z } from "zod"
 import { stripe } from "@/lib/stripe"
 import { checkoutItemSchema } from "@/lib/validations/cart"
 
-async function getRawBody(readable: Readable): Promise<Buffer> {
-  const chunks = []
-  for await (const chunk of readable) {
-    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk)
-  }
-  return Buffer.concat(chunks)
-}
-
 export async function POST(req: Request) {
-  const body = await getRawBody(req.body as unknown as Readable)
-  const signature = headers().get("stripe-signature") ?? ""
+  const body = await req.text()
+  const signature = headers().get("Stripe-Signature") ?? ""
 
   let event: Stripe.Event
 
@@ -33,69 +25,66 @@ export async function POST(req: Request) {
       env.STRIPE_WEBHOOK_SECRET
     )
   } catch (err) {
-    return new Response(
+    return NextResponse.json(
       `Webhook Error: ${err instanceof Error ? err.message : "Unknown error."}`,
       { status: 400 }
     )
   }
 
-  let session = null
-  let paymentIntent = null
-
   switch (event.type) {
     // Handling subscription events
-    case "checkout.session.completed": {
-      session = event.data.object as Stripe.Checkout.Session
+    // case "checkout.session.completed": {
+    //   const session = event.data.object as Stripe.Checkout.Session
 
-      // If there is a user id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId) {
-        // Retrieve the subscription details from Stripe
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
-        )
+    //   // If there is a user id in the metadata, then this is a new subscription
+    //   if (session?.metadata?.userId) {
+    //     // Retrieve the subscription details from Stripe
+    //     const subscription = await stripe.subscriptions.retrieve(
+    //       session.subscription as string
+    //     )
 
-        // Update the user stripe into in our database.
-        // Since this is the initial subscription, we need to update
-        // the subscription id and customer id.
-        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-          privateMetadata: {
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer as string,
-            stripePriceId: subscription.items.data[0]?.price.id,
-            stripeCurrentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-          },
-        })
-      }
-      break
-    }
-    case "invoice.payment_succeeded": {
-      session = event.data.object as Stripe.Checkout.Session
+    //     // Update the user stripe into in our database.
+    //     // Since this is the initial subscription, we need to update
+    //     // the subscription id and customer id.
+    //     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
+    //       privateMetadata: {
+    //         stripeSubscriptionId: subscription.id,
+    //         stripeCustomerId: subscription.customer as string,
+    //         stripePriceId: subscription.items.data[0]?.price.id,
+    //         stripeCurrentPeriodEnd: new Date(
+    //           subscription.current_period_end * 1000
+    //         ),
+    //       },
+    //     })
+    //   }
+    //   break
+    // }
+    // case "invoice.payment_succeeded": {
+    //   const session = event.data.object as Stripe.Checkout.Session
 
-      // If there is a user id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId) {
-        // Retrieve the subscription details from Stripe
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
-        )
+    //   // If there is a user id in the metadata, then this is a new subscription
+    //   if (session?.metadata?.userId) {
+    //     // Retrieve the subscription details from Stripe
+    //     const subscription = await stripe.subscriptions.retrieve(
+    //       session.subscription as string
+    //     )
 
-        // Update the price id and set the new period end
-        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-          privateMetadata: {
-            stripePriceId: subscription.items.data[0]?.price.id,
-            stripeCurrentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-          },
-        })
-      }
-      break
-    }
+    //     // Update the price id and set the new period end
+    //     await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
+    //       privateMetadata: {
+    //         stripePriceId: subscription.items.data[0]?.price.id,
+    //         stripeCurrentPeriodEnd: new Date(
+    //           subscription.current_period_end * 1000
+    //         ),
+    //       },
+    //     })
+    //   }
+    //   break
+    // }
 
     // Handling payment events
     case "payment_intent.succeeded": {
-      paymentIntent = event.data.object as Stripe.PaymentIntent
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
 
       const paymentIntentId = paymentIntent?.id
       const orderAmount = paymentIntent?.amount
@@ -197,14 +186,14 @@ export async function POST(req: Request) {
       break
     }
     case "payment_intent.payment_failed": {
-      paymentIntent = event.data.object as Stripe.PaymentIntent
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
       console.log(
         `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
       )
       break
     }
     case "payment_intent.processing": {
-      paymentIntent = event.data.object as Stripe.PaymentIntent
+      const paymentIntent = event.data.object as Stripe.PaymentIntent
       console.log(`⏳ Payment processing: ${paymentIntent.id}`)
       break
     }
@@ -224,5 +213,5 @@ export async function POST(req: Request) {
     }
   }
 
-  return new Response(null, { status: 200 })
+  return NextResponse.json(null, { status: 200 })
 }
