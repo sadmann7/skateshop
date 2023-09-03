@@ -83,13 +83,6 @@ export async function POST(req: Request) {
 
     // Handling payment events
     case "payment_intent.succeeded": {
-      await db
-        .update(carts)
-        .set({
-          items: [],
-        })
-        .where(eq(carts.id, 3821))
-
       const paymentIntent = event.data.object as Stripe.PaymentIntent
 
       const paymentIntentId = paymentIntent?.id
