@@ -13,9 +13,13 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatPrice(
   price: number | string,
-  currency: "USD" | "EUR" | "GBP" | "BDT" = "USD",
-  notation: "compact" | "engineering" | "scientific" | "standard" = "standard"
+  options: {
+    currency?: "USD" | "EUR" | "GBP" | "BDT"
+    notation?: Intl.NumberFormatOptions["notation"]
+  } = {}
 ) {
+  const { currency = "USD", notation = "compact" } = options
+
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
@@ -23,6 +27,23 @@ export function formatPrice(
   }).format(Number(price))
 }
 
+export function formatNumber(
+  number: number | string,
+  options: {
+    decimals?: number
+    style?: Intl.NumberFormatOptions["style"]
+    notation?: Intl.NumberFormatOptions["notation"]
+  } = {}
+) {
+  const { decimals = 0, style = "decimal", notation = "standard" } = options
+
+  return new Intl.NumberFormat("en-US", {
+    style,
+    notation,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }).format(Number(number))
+}
 export function formatDate(date: Date | string | number) {
   return dayjs(date).format("MMMM D, YYYY")
 }

@@ -1,4 +1,5 @@
 import type { Store } from "@/db/schema"
+import type { DeltaType } from "@tremor/react"
 import { type FileWithPath } from "react-dropzone"
 import type Stripe from "stripe"
 import { type z } from "zod"
@@ -102,4 +103,13 @@ export interface UserSubscriptionPlan extends SubscriptionPlan {
   isSubscribed: boolean
   isCanceled: boolean
   isActive: boolean
+}
+
+export interface Kpi {
+  title: string
+  metric: string
+  progress: number
+  target: string
+  delta: string
+  deltaType: DeltaType
 }

@@ -97,7 +97,9 @@ export default async function BillingPage() {
               </CardHeader>
               <CardContent className="grid flex-1 place-items-start gap-6">
                 <div className="text-3xl font-bold">
-                  {formatPrice(plan.price, "USD", "compact")}
+                  {formatPrice(plan.price, {
+                    currency: "USD",
+                  })}
                   <span className="text-sm font-normal text-muted-foreground">
                     /month
                   </span>

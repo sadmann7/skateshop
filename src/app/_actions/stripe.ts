@@ -441,10 +441,14 @@ export async function getPaymentIntentsAction(
       throw new Error("Stripe account not found.")
     }
 
-    const paymentIntents = await stripe.paymentIntents.list({
-      limit: input.limit ?? 10,
-      ...input,
-    })
+    const paymentIntents = await stripe.paymentIntents.list(
+      {
+        limit: input.limit ?? 10,
+      },
+      {
+        stripeAccount: payment.stripeAccountId,
+      }
+    )
 
     return {
       paymentIntents: paymentIntents.data.map((item) => ({

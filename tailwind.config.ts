@@ -69,7 +69,7 @@ module.exports = {
           background: {
             muted: "#f9fafb", // gray-50
             subtle: "#f3f4f6", // gray-100
-            DEFAULT: "#ffffff", // white
+            DEFAULT: "hsl(var(--background))",
             emphasis: "#374151", // gray-700
           },
           border: {
@@ -99,7 +99,7 @@ module.exports = {
           background: {
             muted: "#131A2B", // custom
             subtle: "#1f2937", // gray-800
-            DEFAULT: "#111827", // gray-900
+            DEFAULT: "hsl(var(--background))",
             emphasis: "#d1d5db", // gray-300
           },
           border: {
