@@ -302,7 +302,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           </Button>
           <Button
             variant="destructive"
+            
             onClick={() => {
+              void   form.trigger(["name", "price" ,"inventory" ])
               startTransition(async () => {
                 await deleteProductAction({
                   storeId: product.storeId,
