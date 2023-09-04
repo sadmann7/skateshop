@@ -22,6 +22,7 @@
   "dependencies": {
     "@clerk/nextjs": "^4.23.3",
     "@clerk/themes": "^1.7.5",
+    "@headlessui/tailwindcss": "^0.2.0",
     "@hookform/resolvers": "^3.3.1",
     "@loglib/tracker": "^0.6.2",
     "@planetscale/database": "^1.11.0",
@@ -51,6 +52,7 @@
     "@t3-oss/env-nextjs": "^0.6.1",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.9.3",
+    "@tremor/react": "^3.6.6",
     "@uploadthing/react": "^5.5.0",
     "@vercel/og": "^0.5.13",
     "class-variance-authority": "^0.7.0",

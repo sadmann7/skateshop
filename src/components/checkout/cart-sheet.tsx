@@ -90,7 +90,7 @@ export async function CartSheet() {
                       className: "w-full",
                     })}
                   >
-                    Continue to checkout &rarr;
+                    Continue to checkout
                   </Link>
                 </SheetTrigger>
               </SheetFooter>
