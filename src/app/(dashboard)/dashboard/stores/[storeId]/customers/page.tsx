@@ -3,8 +3,9 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { and, asc, desc, eq, like, sql } from "drizzle-orm"
+import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
+import { DateRangePicker } from "@/components/date-range-picker"
 import { CustomersTableShell } from "@/components/shells/customers-table-shell"
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default async function CustomersPage({
 }: CustomersPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, email } = searchParams ?? {}
+  const { page, per_page, sort, email, from, to } = searchParams ?? {}
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -53,6 +54,9 @@ export default async function CustomersPage({
         : 0
       : 0
 
+  const fromDay = typeof from === "string" ? new Date(from) : undefined
+  const toDay = typeof to === "string" ? new Date(to) : undefined
+
   const { items, count } = await db.transaction(async (tx) => {
     const items = await db
       .select({
@@ -72,6 +76,10 @@ export default async function CustomersPage({
           // Filter by email
           typeof email === "string"
             ? like(orders.email, `%${email}%`)
+            : undefined,
+          // Filter by createdAt
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
             : undefined
         )
       )
@@ -120,6 +128,10 @@ export default async function CustomersPage({
           // Filter by email
           typeof email === "string"
             ? like(orders.email, `%${email}%`)
+            : undefined,
+          // Filter by createdAt
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
             : undefined
         )
       )
@@ -136,10 +148,16 @@ export default async function CustomersPage({
   const pageCount = Math.ceil(count / limit)
 
   return (
-    <CustomersTableShell
-      data={items}
-      pageCount={pageCount}
-      storeId={store.id}
-    />
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">Customers</h2>
+        <DateRangePicker align="end" />
+      </div>
+      <CustomersTableShell
+        data={items}
+        pageCount={pageCount}
+        storeId={store.id}
+      />
+    </div>
   )
 }

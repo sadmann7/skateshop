@@ -3,8 +3,9 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
+import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 
+import { DateRangePicker } from "@/components/date-range-picker"
 import { OrdersTableShell } from "@/components/shells/orders-table-shell"
 
 export const metadata: Metadata = {
@@ -28,7 +29,8 @@ export default async function OrdersPage({
 }: OrdersPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, customer, status } = searchParams ?? {}
+  const { page, per_page, sort, customer, status, from, to } =
+    searchParams ?? {}
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -62,6 +64,9 @@ export default async function OrdersPage({
 
   const statuses = typeof status === "string" ? status.split(".") : []
 
+  const fromDay = typeof from === "string" ? new Date(from) : undefined
+  const toDay = typeof to === "string" ? new Date(to) : undefined
+
   // Transaction is used to ensure both queries are executed in a single transaction
   const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
@@ -88,6 +93,10 @@ export default async function OrdersPage({
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)
+            : undefined,
+          // Filter by createdAt
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
             : undefined
         )
       )
@@ -114,6 +123,10 @@ export default async function OrdersPage({
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)
+            : undefined,
+          // Filter by createdAt
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
             : undefined
         )
       )
@@ -129,6 +142,12 @@ export default async function OrdersPage({
   const pageCount = Math.ceil(count / limit)
 
   return (
-    <OrdersTableShell data={items} pageCount={pageCount} storeId={storeId} />
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
+        <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
+        <DateRangePicker align="end" />
+      </div>
+      <OrdersTableShell data={items} pageCount={pageCount} storeId={storeId} />
+    </div>
   )
 }

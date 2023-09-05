@@ -16,10 +16,14 @@ import {
 } from "@/components/ui/popover"
 
 interface DateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
+  dateRange?: DateRange
+  dayCount?: number
   align?: "center" | "start" | "end"
 }
 
 export function DateRangePicker({
+  dateRange,
+  dayCount,
   align = "start",
   className,
   ...props
@@ -28,10 +32,22 @@ export function DateRangePicker({
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: addDays(new Date(), -30),
-    to: new Date(),
-  })
+  const [from, to] = React.useMemo(() => {
+    let fromDay: Date | undefined
+    let toDay: Date | undefined
+
+    if (dateRange) {
+      fromDay = dateRange.from
+      toDay = dateRange.to
+    } else if (dayCount) {
+      toDay = new Date()
+      fromDay = addDays(toDay, -dayCount)
+    }
+
+    return [fromDay, toDay]
+  }, [dateRange, dayCount])
+
+  const [date, setDate] = React.useState<DateRange | undefined>({ from, to })
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -73,7 +89,7 @@ export function DateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start text-left font-normal xs:w-[300px]",
+              "w-full justify-start truncate text-left font-normal xs:w-[300px]",
               !date && "text-muted-foreground"
             )}
           >

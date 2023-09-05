@@ -103,10 +103,10 @@ export default async function AnalyticsPage({
     .orderBy(desc(sql<number>`sum(${orders.amount})`))
 
   return (
-    <div className="grid w-full gap-6 p-1">
+    <div className="space-y-6 p-1">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Analytics</h2>
-        <DateRangePicker align="end" />
+        <DateRangePicker align="end" dayCount={30} />
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
