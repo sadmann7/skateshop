@@ -13,6 +13,8 @@ interface DataTableLoadingProps {
   rowCount?: number
   isNewRowCreatable?: boolean
   isRowsDeletable?: boolean
+  searchableFieldCount?: number
+  filterableFieldCount?: number
 }
 
 export function DataTableLoading({
@@ -20,13 +22,23 @@ export function DataTableLoading({
   rowCount = 10,
   isNewRowCreatable = false,
   isRowsDeletable = false,
+  searchableFieldCount = 1,
+  filterableFieldCount = 1,
 }: DataTableLoadingProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
       <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
         <div className="flex flex-1 items-center space-x-2">
-          <Skeleton className="h-7 w-[150px] lg:w-[250px]" />
-          <Skeleton className="h-7 w-[70px] border-dashed" />
+          {searchableFieldCount > 0
+            ? Array.from({ length: searchableFieldCount }).map((_, i) => (
+                <Skeleton key={i} className="h-7 w-[150px] lg:w-[250px]" />
+              ))
+            : null}
+          {filterableFieldCount > 0
+            ? Array.from({ length: filterableFieldCount }).map((_, i) => (
+                <Skeleton key={i} className="h-7 w-[70px] border-dashed" />
+              ))
+            : null}
         </div>
         <div className="flex items-center space-x-2">
           {isRowsDeletable ? (
@@ -53,8 +65,8 @@ export function DataTableLoading({
           <TableBody>
             {Array.from({ length: rowCount }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
-                {Array.from({ length: columnCount }).map((_, i) => (
-                  <TableCell key={i}>
+                {Array.from({ length: columnCount }).map((_, j) => (
+                  <TableCell key={j}>
                     <Skeleton className="h-6 w-full" />
                   </TableCell>
                 ))}

@@ -36,7 +36,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
     statuses: typeof statuses === "string" ? statuses : null,
   })
 
-  const pageCount = Math.ceil(storesTransaction.total / limit)
+  const pageCount = Math.ceil(storesTransaction.count / limit)
 
   return (
     <Shell>

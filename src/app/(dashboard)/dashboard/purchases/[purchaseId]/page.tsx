@@ -35,7 +35,7 @@ interface PurchasePageProps {
 }
 
 export default async function PurchasePage({ params }: PurchasePageProps) {
-  // Purchase id is the same as the order id
+  // Using the purchaseId as the orderId in the sql query
   const orderId = Number(params.purchaseId)
 
   const order = await db.query.orders.findFirst({

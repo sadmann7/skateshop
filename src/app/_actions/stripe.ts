@@ -326,6 +326,12 @@ export async function createPaymentIntentAction(
   input: z.infer<typeof createPaymentIntentSchema>
 ): Promise<{ clientSecret: string | null }> {
   try {
+    const user = await currentUser()
+
+    if (!user) {
+      throw new Error("User not found.")
+    }
+
     const { isConnected, payment } = await getStripeAccountAction(input)
 
     if (!isConnected || !payment) {
@@ -347,6 +353,7 @@ export async function createPaymentIntentAction(
     const metadata = {
       cartId: isNaN(cartId) ? "" : cartId,
       // Stripe metadata values must be within 500 characters string
+      userId: JSON.stringify(user.id),
       items: JSON.stringify(checkoutItems),
     }
 

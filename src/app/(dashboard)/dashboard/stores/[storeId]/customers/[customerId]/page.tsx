@@ -1,44 +1,56 @@
-import type { Metadata } from "next"
-import { redirect } from "next/navigation"
+import { type Metadata } from "next"
+import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { currentUser } from "@clerk/nextjs"
-import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
+import { and, asc, desc, eq, inArray, sql } from "drizzle-orm"
 
-import { getUserEmail } from "@/lib/utils"
 import {
-  PageHeader,
-  PageHeaderDescription,
-  PageHeaderHeading,
-} from "@/components/page-header"
-import { PurchasesTableShell } from "@/components/shells/purchases-table-shell"
-import { Shell } from "@/components/shells/shell"
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { OrdersTableShell } from "@/components/shells/orders-table-shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Purchases",
-  description: "Manage your purchases",
+  title: "Orders",
+  description: "View the customer's order details",
 }
 
-interface PurchasesPageProps {
+interface CustomerPageProps {
+  params: {
+    storeId: string
+    customerId: string
+  }
   searchParams: {
     [key: string]: string | string[] | undefined
   }
 }
 
-export default async function PurchasesPage({
+export default async function CustomerPage({
+  params,
   searchParams,
-}: PurchasesPageProps) {
-  const { page, per_page, sort, store, status } = searchParams ?? {}
+}: CustomerPageProps) {
+  const storeId = Number(params.storeId)
+  // Using the customerId as the userId
+  const userId = params.customerId
 
-  const user = await currentUser()
+  const { page, per_page, sort, status } = searchParams ?? {}
 
-  if (!user) {
-    redirect("/signin")
+  const store = await db.query.stores.findFirst({
+    where: eq(stores.id, storeId),
+    columns: {
+      id: true,
+      name: true,
+    },
+  })
+
+  if (!store) {
+    notFound()
   }
-
-  const email = getUserEmail(user)
 
   // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
@@ -65,25 +77,21 @@ export default async function PurchasesPage({
     const items = await tx
       .select({
         id: orders.id,
-        email: orders.email,
+        storeId: orders.storeId,
         items: orders.items,
         amount: orders.amount,
+        paymentIntentId: orders.stripePaymentIntentId,
         status: orders.stripePaymentIntentStatus,
+        customer: orders.email,
         createdAt: orders.createdAt,
-        storeId: orders.storeId,
-        store: stores.name,
       })
       .from(orders)
-      .leftJoin(stores, eq(orders.storeId, stores.id))
       .limit(limit)
       .offset(offset)
       .where(
         and(
-          eq(orders.email, email),
-          // Filter by store
-          typeof store === "string"
-            ? like(stores.name, `%${store}%`)
-            : undefined,
+          eq(orders.storeId, storeId),
+          eq(orders.userId, userId),
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)
@@ -103,20 +111,17 @@ export default async function PurchasesPage({
         count: sql<number>`count(*)`,
       })
       .from(orders)
-      .leftJoin(stores, eq(orders.storeId, stores.id))
       .where(
         and(
-          eq(orders.email, email),
-          // Filter by store
-          typeof store === "string"
-            ? like(stores.name, `%${store}%`)
-            : undefined,
+          eq(orders.storeId, storeId),
+          eq(orders.userId, userId),
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)
             : undefined
         )
       )
+      .execute()
       .then((res) => res[0]?.count ?? 0)
 
     return {
@@ -128,17 +133,21 @@ export default async function PurchasesPage({
   const pageCount = Math.ceil(count / limit)
 
   return (
-    <Shell variant="sidebar">
-      <PageHeader
-        id="dashboard-purchases-header"
-        aria-labelledby="dashboard-purchases-header-heading"
-      >
-        <PageHeaderHeading size="sm">Purchases</PageHeaderHeading>
-        <PageHeaderDescription size="sm">
-          Manage your purchases
-        </PageHeaderDescription>
-      </PageHeader>
-      <PurchasesTableShell data={items} pageCount={pageCount} />
-    </Shell>
+    <Card>
+      <CardHeader className="space-y-1">
+        <CardTitle as="h2" className="text-2xl">
+          Customer orders
+        </CardTitle>
+        <CardDescription>View the {`customer's`} order details</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <OrdersTableShell
+          data={items}
+          pageCount={pageCount}
+          storeId={storeId}
+          isSearchable={false}
+        />
+      </CardContent>
+    </Card>
   )
 }

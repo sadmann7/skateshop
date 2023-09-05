@@ -35,8 +35,8 @@ export async function POST(req: Request) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session
 
-      // If there is a user id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId) {
+      // If there is a user id, and no cart id in the metadata, then this is a new subscription
+      if (session?.metadata?.userId && !session?.metadata?.cartId) {
         // Retrieve the subscription details from Stripe
         const subscription = await stripe.subscriptions.retrieve(
           session.subscription as string
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     case "invoice.payment_succeeded": {
       const session = event.data.object as Stripe.Checkout.Session
 
-      // If there is a user id in the metadata, then this is a new subscription
+      // If there is a user id, and no cart id in the metadata, then this is a new subscription
       if (session?.metadata?.userId) {
         // Retrieve the subscription details from Stripe
         const subscription = await stripe.subscriptions.retrieve(
@@ -130,9 +130,19 @@ export async function POST(req: Request) {
 
           if (!newAddress.insertId) throw new Error("No address created.")
 
+          // Parsing user id from metadata which will be used to identify customer in db
+          const safeParsedUserId = z
+            .string()
+            .safeParse(JSON.parse(paymentIntent?.metadata?.userId ?? ""))
+
+          if (!safeParsedUserId.success) {
+            throw new Error("Could not parse user id.")
+          }
+
           // Create new order in db
           await db.insert(orders).values({
             storeId: payment.storeId,
+            userId: safeParsedUserId.data,
             items: checkoutItems ?? [],
             amount: String(Number(orderAmount) / 100),
             stripePaymentIntentId: paymentIntentId,

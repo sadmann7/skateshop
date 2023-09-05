@@ -66,7 +66,7 @@ export async function getProductsAction(
   const subcategories = input.subcategories?.split(".") ?? []
   const storeIds = input.store_ids?.split(".").map(Number) ?? []
 
-  const { items, total } = await db.transaction(async (tx) => {
+  const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select()
       .from(products)
@@ -94,7 +94,7 @@ export async function getProductsAction(
           : desc(products.createdAt)
       )
 
-    const total = await tx
+    const count = await tx
       .select({
         count: sql<number>`count(*)`,
       })
@@ -112,16 +112,19 @@ export async function getProductsAction(
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
+      .groupBy(products.id)
+      .execute()
+      .then((res) => res[0]?.count ?? 0)
 
     return {
       items,
-      total: Number(total[0]?.count) ?? 0,
+      count,
     }
   })
 
   return {
     items,
-    total,
+    count,
   }
 }
 

@@ -35,12 +35,14 @@ interface OrdersTableShellProps {
   data: CuratedOrder[]
   pageCount: number
   storeId: number
+  isSearchable?: boolean
 }
 
 export function OrdersTableShell({
   data,
   pageCount,
   storeId,
+  isSearchable = true,
 }: OrdersTableShellProps) {
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<CuratedOrder, unknown>[]>(
@@ -164,12 +166,16 @@ export function OrdersTableShell({
       columns={columns}
       data={data}
       pageCount={pageCount}
-      searchableColumns={[
-        {
-          id: "customer",
-          title: "customers",
-        },
-      ]}
+      searchableColumns={
+        isSearchable
+          ? [
+              {
+                id: "customer",
+                title: "customers",
+              },
+            ]
+          : []
+      }
       filterableColumns={[
         {
           id: "status",

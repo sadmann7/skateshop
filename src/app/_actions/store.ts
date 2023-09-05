@@ -19,7 +19,7 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
     ]) ?? []
   const statuses = input.statuses?.split(".") ?? []
 
-  const { items, total } = await db.transaction(async (tx) => {
+  const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select({
         id: stores.id,
@@ -56,22 +56,25 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
           : desc(stores.createdAt)
       )
 
-    const total = await tx
+    const count = await tx
       .select({
         count: sql<number>`count(*)`,
       })
       .from(stores)
       .where(input.userId ? eq(stores.userId, input.userId) : undefined)
+      .groupBy(stores.id)
+      .execute()
+      .then((res) => res[0]?.count ?? 0)
 
     return {
       items,
-      total: Number(total[0]?.count) ?? 0,
+      count,
     }
   })
 
   return {
     items,
-    total,
+    count,
   }
 }
 

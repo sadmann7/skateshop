@@ -67,7 +67,7 @@ export default async function ProductsPage({
       : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { items, total } = await db.transaction(async (tx) => {
+  const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select()
       .from(products)
@@ -94,7 +94,7 @@ export default async function ProductsPage({
           : desc(products.createdAt)
       )
 
-    const total = await tx
+    const count = await tx
       .select({
         count: sql<number>`count(${products.id})`,
       })
@@ -114,11 +114,11 @@ export default async function ProductsPage({
 
     return {
       items,
-      total,
+      count,
     }
   })
 
-  const pageCount = Math.ceil(total / limit)
+  const pageCount = Math.ceil(count / limit)
 
   return (
     <div className="space-y-2.5">

@@ -111,6 +111,7 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
 export const orders = mysqlTable("orders", {
   id: serial("id").primaryKey(),
   storeId: int("storeId").notNull(),
+  userId: varchar("userId", { length: 191 }),
   items: json("items").$type<CheckoutItem[] | null>().default(null),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull().default("0"),
   stripePaymentIntentId: varchar("stripePaymentIntentId", {

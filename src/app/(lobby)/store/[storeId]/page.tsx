@@ -6,9 +6,9 @@ import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 
 import { Separator } from "@/components/ui/separator"
+import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
 
@@ -53,7 +53,7 @@ export default async function StorePage({
     store_ids: String(storeId),
   })
 
-  const pageCount = Math.ceil(productsTransaction.total / limit)
+  const pageCount = Math.ceil(productsTransaction.count / limit)
 
   // Stores transaction
   const storesLimit = 25
@@ -68,7 +68,7 @@ export default async function StorePage({
     sort: "name.asc",
   })
 
-  const storePageCount = Math.ceil(storesTransaction.total / storesLimit)
+  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
 
   return (
     <Shell>

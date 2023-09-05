@@ -47,7 +47,7 @@ export default async function BuildABoardPage({
     price_range: typeof price_range === "string" ? price_range : null,
   })
 
-  const pageCount = Math.ceil(productsTransaction.total / limit)
+  const pageCount = Math.ceil(productsTransaction.count / limit)
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value

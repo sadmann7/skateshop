@@ -63,7 +63,7 @@ export default async function OrdersPage({
   const statuses = typeof status === "string" ? status.split(".") : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { items, total } = await db.transaction(async (tx) => {
+  const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select({
         id: orders.id,
@@ -99,9 +99,9 @@ export default async function OrdersPage({
           : desc(orders.createdAt)
       )
 
-    const total = await tx
+    const count = await tx
       .select({
-        count: sql<number>`count(${orders.id})`,
+        count: sql<number>`count(*)`,
       })
       .from(orders)
       .where(
@@ -122,11 +122,11 @@ export default async function OrdersPage({
 
     return {
       items,
-      total,
+      count,
     }
   })
 
-  const pageCount = Math.ceil(total / limit)
+  const pageCount = Math.ceil(count / limit)
 
   return (
     <OrdersTableShell data={items} pageCount={pageCount} storeId={storeId} />

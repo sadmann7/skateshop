@@ -52,7 +52,7 @@ export default async function SubcategoryPage({
     store_ids: typeof store_ids === "string" ? store_ids : null,
   })
 
-  const pageCount = Math.ceil(productsTransaction.total / limit)
+  const pageCount = Math.ceil(productsTransaction.count / limit)
 
   // Stores transaction
   const storesLimit = 25
@@ -67,7 +67,7 @@ export default async function SubcategoryPage({
     sort: "productCount.desc",
   })
 
-  const storePageCount = Math.ceil(storesTransaction.total / storesLimit)
+  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
 
   return (
     <Shell>
