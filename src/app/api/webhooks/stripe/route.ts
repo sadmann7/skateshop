@@ -31,63 +31,90 @@ export async function POST(req: Request) {
   }
 
   switch (event.type) {
+    case "application_fee.created":
+      const applicationFeeCreated = event.data.object as Stripe.ApplicationFee
+      console.log(`Application fee id: ${applicationFeeCreated.id}`)
+      break
+    case "charge.succeeded":
+      const chargeSucceeded = event.data.object as Stripe.Charge
+      console.log(`Charge id: ${chargeSucceeded.id}`)
+      break
     // Handling subscription events
-    case "checkout.session.completed": {
-      const session = event.data.object as Stripe.Checkout.Session
+    case "checkout.session.completed":
+      const checkoutSessionCompleted = event.data
+        .object as Stripe.Checkout.Session
 
       // If there is a user id, and no cart id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId && !session?.metadata?.cartId) {
+      if (
+        checkoutSessionCompleted?.metadata?.userId &&
+        !checkoutSessionCompleted?.metadata?.cartId
+      ) {
         // Retrieve the subscription details from Stripe
         const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
+          checkoutSessionCompleted.subscription as string
         )
 
         // Update the user stripe into in our database.
         // Since this is the initial subscription, we need to update
         // the subscription id and customer id.
-        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-          privateMetadata: {
-            stripeSubscriptionId: subscription.id,
-            stripeCustomerId: subscription.customer as string,
-            stripePriceId: subscription.items.data[0]?.price.id,
-            stripeCurrentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-          },
-        })
+        await clerkClient.users.updateUserMetadata(
+          checkoutSessionCompleted?.metadata?.userId,
+          {
+            privateMetadata: {
+              stripeSubscriptionId: subscription.id,
+              stripeCustomerId: subscription.customer as string,
+              stripePriceId: subscription.items.data[0]?.price.id,
+              stripeCurrentPeriodEnd: new Date(
+                subscription.current_period_end * 1000
+              ),
+            },
+          }
+        )
       }
       break
-    }
-    case "invoice.payment_succeeded": {
-      const session = event.data.object as Stripe.Checkout.Session
+    case "invoice.payment_succeeded":
+      const invoicePaymentSucceeded = event.data
+        .object as Stripe.Checkout.Session
 
       // If there is a user id, and no cart id in the metadata, then this is a new subscription
-      if (session?.metadata?.userId) {
+      if (invoicePaymentSucceeded?.metadata?.userId) {
         // Retrieve the subscription details from Stripe
         const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string
+          invoicePaymentSucceeded.subscription as string
         )
 
         // Update the price id and set the new period end
-        await clerkClient.users.updateUserMetadata(session?.metadata?.userId, {
-          privateMetadata: {
-            stripePriceId: subscription.items.data[0]?.price.id,
-            stripeCurrentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-          },
-        })
+        await clerkClient.users.updateUserMetadata(
+          invoicePaymentSucceeded?.metadata?.userId,
+          {
+            privateMetadata: {
+              stripePriceId: subscription.items.data[0]?.price.id,
+              stripeCurrentPeriodEnd: new Date(
+                subscription.current_period_end * 1000
+              ),
+            },
+          }
+        )
       }
       break
-    }
-
     // Handling payment events
-    case "payment_intent.succeeded": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
+    case "payment_intent.payment_failed":
+      const paymentIntentPaymentFailed = event.data
+        .object as Stripe.PaymentIntent
+      console.log(
+        `❌ Payment failed: ${paymentIntentPaymentFailed.last_payment_error?.message}`
+      )
+      break
+    case "payment_intent.processing":
+      const paymentIntentProcessing = event.data.object as Stripe.PaymentIntent
+      console.log(`⏳ Payment processing: ${paymentIntentProcessing.id}`)
+      break
+    case "payment_intent.succeeded":
+      const paymentIntentSucceeded = event.data.object as Stripe.PaymentIntent
 
-      const paymentIntentId = paymentIntent?.id
-      const orderAmount = paymentIntent?.amount
-      const checkoutItems = paymentIntent?.metadata
+      const paymentIntentId = paymentIntentSucceeded?.id
+      const orderAmount = paymentIntentSucceeded?.amount
+      const checkoutItems = paymentIntentSucceeded?.metadata
         ?.items as unknown as CheckoutItem[]
 
       // If there are items in metadata, then create order
@@ -99,7 +126,9 @@ export async function POST(req: Request) {
           // Didn't parse before because can pass the unparsed data directly to the order table items json column in the db
           const safeParsedItems = z
             .array(checkoutItemSchema)
-            .safeParse(JSON.parse(paymentIntent?.metadata?.items ?? "[]"))
+            .safeParse(
+              JSON.parse(paymentIntentSucceeded?.metadata?.items ?? "[]")
+            )
 
           if (!safeParsedItems.success) {
             throw new Error("Could not parse items.")
@@ -117,7 +146,7 @@ export async function POST(req: Request) {
           }
 
           // Create new address in DB
-          const stripeAddress = paymentIntent?.shipping?.address
+          const stripeAddress = paymentIntentSucceeded?.shipping?.address
 
           const newAddress = await db.insert(addresses).values({
             line1: stripeAddress?.line1,
@@ -133,7 +162,9 @@ export async function POST(req: Request) {
           // Parsing user id from metadata which will be used to identify customer in db
           const safeParsedUserId = z
             .string()
-            .safeParse(JSON.parse(paymentIntent?.metadata?.userId ?? ""))
+            .safeParse(
+              JSON.parse(paymentIntentSucceeded?.metadata?.userId ?? "")
+            )
 
           if (!safeParsedUserId.success) {
             throw new Error("Could not parse user id.")
@@ -146,9 +177,9 @@ export async function POST(req: Request) {
             items: checkoutItems ?? [],
             amount: String(Number(orderAmount) / 100),
             stripePaymentIntentId: paymentIntentId,
-            stripePaymentIntentStatus: paymentIntent?.status,
-            name: paymentIntent?.shipping?.name,
-            email: paymentIntent?.receipt_email,
+            stripePaymentIntentStatus: paymentIntentSucceeded?.status,
+            name: paymentIntentSucceeded?.shipping?.name,
+            email: paymentIntentSucceeded?.receipt_email,
             addressId: Number(newAddress.insertId),
           })
 
@@ -193,33 +224,8 @@ export async function POST(req: Request) {
         }
       }
       break
-    }
-    case "payment_intent.payment_failed": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(
-        `❌ Payment failed: ${paymentIntent.last_payment_error?.message}`
-      )
-      break
-    }
-    case "payment_intent.processing": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent
-      console.log(`⏳ Payment processing: ${paymentIntent.id}`)
-      break
-    }
-    case "charge.succeeded": {
-      const charge = event.data.object as Stripe.Charge
-      console.log(`Charge id: ${charge.id}`)
-      break
-    }
-    case "application_fee.created": {
-      const applicationFee = event.data.object as Stripe.ApplicationFee
-      console.log(`Application fee id: ${applicationFee.id}`)
-      break
-    }
-    default: {
+    default:
       console.warn(`Unhandled event type: ${event.type}`)
-      break
-    }
   }
 
   return new Response(null, { status: 200 })
