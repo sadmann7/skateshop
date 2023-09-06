@@ -24,26 +24,36 @@ export function CheckoutShell({
   className,
   ...props
 }: CheckoutShellProps) {
+  const [clientSecret, setClientSecret] = React.useState("")
   const stripePromise = React.useMemo(
     () => getStripe(storeStripeAccountId),
     [storeStripeAccountId]
   )
-  const { clientSecret } = React.use(paymentIntent)
 
-  if (!clientSecret) return null
+  React.useEffect(() => {
+    void paymentIntent.then(({ clientSecret }) => {
+      if (!clientSecret) return
+
+      setClientSecret(clientSecret)
+    })
+  }, [paymentIntent])
 
   const options: StripeElementsOptions = {
+    clientSecret,
     appearance: {
       theme: "stripe",
     },
-    clientSecret: clientSecret,
   }
 
   return (
     <section className={cn("h-full w-full", className)} {...props}>
-      <Elements options={options} stripe={stripePromise}>
-        {children}
-      </Elements>
+      {clientSecret ? (
+        <Elements options={options} stripe={stripePromise}>
+          {children}
+        </Elements>
+      ) : (
+        <div className="h-full w-full bg-white" />
+      )}
     </section>
   )
 }

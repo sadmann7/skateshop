@@ -8,6 +8,7 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js"
+import { toast } from "sonner"
 
 import { absoluteUrl, cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -92,6 +93,8 @@ export default function CheckoutForm({
       setMessage("Something went wrong, please try again.")
     }
 
+    toast.error(message)
+
     setIsLoading(false)
   }
 
@@ -133,14 +136,6 @@ export default function CheckoutForm({
         )}
         Pay
       </Button>
-      {message && (
-        <div
-          id={`${id}-checkout-form-message`}
-          className="text-sm font-medium text-muted-foreground"
-        >
-          {message}
-        </div>
-      )}
     </form>
   )
 }
