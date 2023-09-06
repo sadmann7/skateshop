@@ -19,20 +19,22 @@ interface StoreCardProps {
 
 export function StoreCard({ store, href }: StoreCardProps) {
   return (
-    <Link aria-label={store.name} href={href}>
+    <Link aria-label={`Go to ${store.name} store`} href={href}>
       <Card className="h-full overflow-hidden">
         <AspectRatio ratio={21 / 9}>
-          <div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-200/50 to-zinc-950/50" />
           <Badge
             className={cn(
-              "pointer-events-none absolute right-2 top-2 text-white",
-              store.stripeAccountId ? "bg-green-600" : "bg-red-600"
+              "pointer-events-none absolute right-2 top-2 px-2 py-1 font-semibold",
+              store.stripeAccountId
+                ? "border-green-600/20 bg-green-50 text-green-700"
+                : "border-red-600/10 bg-red-50 text-red-700"
             )}
           >
             {store.stripeAccountId ? "Active" : "Inactive"}
           </Badge>
           <div
-            className="h-full rounded-t-md"
+            className="h-full rounded-t-md border-b"
             style={getRandomPatternStyle(String(store.id))}
           />
         </AspectRatio>

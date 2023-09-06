@@ -45,10 +45,7 @@ export function ProductCard({
       className={cn("h-full overflow-hidden rounded-sm", className)}
       {...props}
     >
-      <Link
-        aria-label={`View ${product.name} details`}
-        href={`/product/${product.id}`}
-      >
+      <Link aria-label={product.name} href={`/product/${product.id}`}>
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
             {product?.images?.length ? (
@@ -78,10 +75,7 @@ export function ProductCard({
           </AspectRatio>
         </CardHeader>
       </Link>
-      <Link
-        aria-label={`View ${product.name} details`}
-        href={`/product/${product.id}`}
-      >
+      <Link aria-label={product.name} href={`/product/${product.id}`}>
         <CardContent className="grid gap-2.5 p-4">
           <CardTitle className="line-clamp-1">{product.name}</CardTitle>
           <CardDescription className="line-clamp-2">

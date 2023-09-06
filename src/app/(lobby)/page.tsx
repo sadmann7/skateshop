@@ -128,13 +128,13 @@ export default async function IndexPage() {
             Categories
           </h2>
           <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-            Explore our categories and find the best products for you
+            Find the best skateboarding gears from stores around the world
           </Balancer>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {productCategories.map((category) => (
             <Link
-              aria-label={`Go to ${category.title}`}
+              aria-label={category.title}
               key={category.title}
               href={`/categories/${category.title}`}
             >
@@ -143,7 +143,7 @@ export default async function IndexPage() {
                   <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
                   <Image
                     src={category.image}
-                    alt={category.title}
+                    alt={`${category.title} category`}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     fill
                     className="object-cover transition-transform group-hover:scale-105"
@@ -169,7 +169,7 @@ export default async function IndexPage() {
           <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
             Featured products
           </h2>
-          <Link aria-label="Products" href="/products">
+          <Link aria-label="View all products" href="/products">
             <div
               className={cn(
                 buttonVariants({
@@ -196,7 +196,7 @@ export default async function IndexPage() {
           <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
             Featured stores
           </h2>
-          <Link aria-label="Stores" href="/stores">
+          <Link aria-label="View all stores" href="/stores">
             <div
               className={cn(
                 buttonVariants({

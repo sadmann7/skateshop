@@ -25,7 +25,7 @@ export function MainNav({ items }: MainNavProps) {
   return (
     <div className="hidden gap-6 lg:flex">
       <Link
-        aria-label="Home"
+        aria-label="Home page"
         href="/"
         className="hidden items-center space-x-2 lg:flex"
       >
