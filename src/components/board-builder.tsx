@@ -7,7 +7,7 @@ import type { CartItem } from "@/types"
 import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
-import { cn } from "@/lib/utils"
+import { catchError, cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import {
@@ -86,7 +86,10 @@ export function BoardBuilder({
       router.push(
         `${pathname}?${createQueryString({
           price_range: `${min}-${max}`,
-        })}`
+        })}`,
+        {
+          scroll: false,
+        }
       )
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,15 +99,19 @@ export function BoardBuilder({
   const addToCart = React.useCallback(
     async (product: Product) => {
       try {
-        if (!cartItems.map((item) => item.productId).includes(product.id)) {
-          // Only allow one product per subcategory in cart
-          const productIdWithSameSubcategory = cartItems.find(
-            (item) => item.subcategory === product.subcategory
-          )?.productId
+        const hasProductInCart = cartItems.some(
+          (item) => item.productId === product.id
+        )
 
-          if (productIdWithSameSubcategory) {
+        // Only allow one product per subcategory in cart
+        if (!hasProductInCart) {
+          const productWithSameSubcategory = cartItems.find(
+            (item) => item.subcategory === product.subcategory
+          )
+
+          if (productWithSameSubcategory) {
             await deleteCartItemAction({
-              productId: productIdWithSameSubcategory,
+              productId: productWithSameSubcategory.productId,
             })
           }
 
@@ -122,10 +129,8 @@ export function BoardBuilder({
           productId: product.id,
         })
         toast.success("Removed from cart.")
-      } catch (error) {
-        error instanceof Error
-          ? toast.error(error.message)
-          : toast.error("Something went wrong, please try again.")
+      } catch (err) {
+        catchError(err)
       }
     },
     [subcategory, cartItems]

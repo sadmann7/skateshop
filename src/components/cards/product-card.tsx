@@ -75,7 +75,11 @@ export function ProductCard({
           </AspectRatio>
         </CardHeader>
       </Link>
-      <Link aria-label={product.name} href={`/product/${product.id}`}>
+      <Link
+        aria-label={product.name}
+        href={`/product/${product.id}`}
+        tabIndex={-1}
+      >
         <CardContent className="grid gap-2.5 p-4">
           <CardTitle className="line-clamp-1">{product.name}</CardTitle>
           <CardDescription className="line-clamp-2">

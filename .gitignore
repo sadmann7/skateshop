@@ -35,6 +35,9 @@ yarn-error.log*
 .env
 .env*.local
 
+# web vitals
+.unlighthouse
+
 # vercel
 .vercel
 

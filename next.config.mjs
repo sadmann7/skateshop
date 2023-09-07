@@ -10,7 +10,7 @@ await import("./src/env.mjs")
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["uploadthing.com"],
+    domains: ["uploadthing.com", "utfs.io"],
   },
   experimental: {
     serverActions: true,

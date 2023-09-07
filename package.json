@@ -17,7 +17,8 @@
     "db:studio": "drizzle-kit studio --port 5000 --verbose",
     "shadcn:add": "pnpm dlx shadcn-ui@latest add",
     "email:dev": "email dev --dir src/components/emails -p 3001",
-    "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest"
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",
+    "unlighthouse": "pnpm dlx unlighthouse --site https://skateshop.sadmn.com"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.3",

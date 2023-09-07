@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
@@ -8,9 +7,9 @@ import { Balancer } from "react-wrap-balancer"
 import { productCategories } from "@/config/products"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
+import { CategoryCard } from "@/components/cards/category-card"
 import { ProductCard } from "@/components/cards/product-card"
 import { StoreCard } from "@/components/cards/store-card"
 import { Icons } from "@/components/icons"
@@ -133,30 +132,7 @@ export default async function IndexPage() {
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {productCategories.map((category) => (
-            <Link
-              aria-label={category.title}
-              key={category.title}
-              href={`/categories/${category.title}`}
-            >
-              <div className="group relative overflow-hidden rounded-md">
-                <AspectRatio ratio={4 / 5}>
-                  <div className="absolute inset-0 z-10 bg-black/60 transition-colors group-hover:bg-black/70" />
-                  <Image
-                    src={category.image}
-                    alt={`${category.title} category`}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                    priority
-                  />
-                </AspectRatio>
-                <div className="absolute inset-0 z-20 flex items-center justify-center">
-                  <h3 className="text-3xl font-medium capitalize text-slate-100 md:text-2xl">
-                    {category.title}
-                  </h3>
-                </div>
-              </div>
-            </Link>
+            <CategoryCard key={category.title} category={category} />
           ))}
         </div>
       </section>

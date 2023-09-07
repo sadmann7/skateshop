@@ -67,7 +67,7 @@ export default async function BuildABoardPage({
       <section
         id="build-a-board-categories"
         aria-labelledby="build-a-board-categories-heading"
-        className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/80 pb-4 pt-6 shadow-md sm:backdrop-blur-md"
+        className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/50 pb-4 pt-6 shadow-md sm:backdrop-blur"
       >
         <div className="grid place-items-center overflow-x-auto">
           <div className="inline-flex w-fit items-center rounded border bg-background p-1 text-muted-foreground shadow-2xl">
@@ -76,6 +76,7 @@ export default async function BuildABoardPage({
                 aria-label={subcategory.title}
                 key={subcategory.title}
                 href={`/build-a-board?subcategory=${subcategory.slug}`}
+                scroll={false}
               >
                 <div
                   className={cn(

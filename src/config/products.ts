@@ -1,5 +1,7 @@
-import { type Product } from "@/db/schema"
-import type { Option } from "@/types"
+import type { Category, Option } from "@/types"
+import { Backpack, Footprints, Shirt } from "lucide-react"
+
+import { Icons } from "@/components/icons"
 
 export const sortOptions = [
   { label: "Date: Old to new", value: "createdAt.asc" },
@@ -23,6 +25,7 @@ export const productCategories = [
   {
     title: "skateboards",
     image: "/images/skateboard-one.webp",
+    icon: Icons.logo,
     subcategories: [
       {
         title: "Decks",
@@ -71,6 +74,7 @@ export const productCategories = [
   {
     title: "clothing",
     image: "/images/clothing-one.webp",
+    icon: Shirt,
     subcategories: [
       {
         title: "T-shirts",
@@ -102,6 +106,7 @@ export const productCategories = [
   {
     title: "shoes",
     image: "/images/shoe-one.webp",
+    icon: Footprints,
     subcategories: [
       {
         title: "Low Tops",
@@ -133,6 +138,7 @@ export const productCategories = [
   {
     title: "accessories",
     image: "/images/backpack-one.webp",
+    icon: Backpack,
     subcategories: [
       {
         title: "Skate Tools",
@@ -174,16 +180,7 @@ export const productCategories = [
       },
     ],
   },
-] satisfies {
-  title: Product["category"]
-  image: string
-  subcategories: {
-    title: string
-    description?: string
-    image?: string
-    slug: string
-  }[]
-}[]
+] satisfies Category[]
 
 export const productTags = [
   "new",

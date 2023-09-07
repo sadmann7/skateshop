@@ -1,5 +1,4 @@
-import type { Store } from "@/db/schema"
-import type { DeltaType } from "@tremor/react"
+import type { Product, Store } from "@/db/schema"
 import { type FileWithPath } from "react-dropzone"
 import type Stripe from "stripe"
 import { type z } from "zod"
@@ -71,6 +70,20 @@ export interface DataTableFilterableColumn<TData>
   options: Option[]
 }
 
+export interface Category {
+  title: Product["category"]
+  image: string
+  icon: React.ComponentType<{ className?: string }>
+  subcategories: Subcategory[]
+}
+
+export interface Subcategory {
+  title: string
+  description?: string
+  image?: string
+  slug: string
+}
+
 export interface CuratedStore {
   id: Store["id"]
   name: Store["name"]
@@ -103,13 +116,4 @@ export interface UserSubscriptionPlan extends SubscriptionPlan {
   isSubscribed: boolean
   isCanceled: boolean
   isActive: boolean
-}
-
-export interface Kpi {
-  title: string
-  metric: string
-  progress: number
-  target: string
-  delta: string
-  deltaType: DeltaType
 }
