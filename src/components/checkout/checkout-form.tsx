@@ -20,7 +20,7 @@ interface CheckoutFormProps extends React.ComponentPropsWithoutRef<"form"> {
   storeId: number
 }
 
-export default function CheckoutForm({
+export function CheckoutForm({
   storeId,
   className,
   ...props

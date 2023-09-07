@@ -8,8 +8,7 @@ import { eq, sql } from "drizzle-orm"
 import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
-
-import { buttonVariants } from "../ui/button"
+import { buttonVariants } from "@/components/ui/button"
 
 interface CategoryCardProps {
   category: Category
@@ -37,10 +36,10 @@ export async function CategoryCard({ category }: CategoryCardProps) {
         <Image
           src={category.image}
           alt={`${category.title} category`}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          fill
           className="object-cover transition-transform group-hover:scale-105"
-          priority
+          sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+          fill
+          priority={true}
         />
       </AspectRatio>
       <div className="absolute inset-4 z-20 flex flex-col text-zinc-100">

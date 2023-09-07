@@ -31,14 +31,6 @@ export async function POST(req: Request) {
   }
 
   switch (event.type) {
-    case "application_fee.created":
-      const applicationFeeCreated = event.data.object as Stripe.ApplicationFee
-      console.log(`Application fee id: ${applicationFeeCreated.id}`)
-      break
-    case "charge.succeeded":
-      const chargeSucceeded = event.data.object as Stripe.Charge
-      console.log(`Charge id: ${chargeSucceeded.id}`)
-      break
     // Handling subscription events
     case "checkout.session.completed":
       const checkoutSessionCompleted = event.data
@@ -77,7 +69,10 @@ export async function POST(req: Request) {
         .object as Stripe.Checkout.Session
 
       // If there is a user id, and no cart id in the metadata, then this is a new subscription
-      if (invoicePaymentSucceeded?.metadata?.userId) {
+      if (
+        invoicePaymentSucceeded?.metadata?.userId &&
+        !invoicePaymentSucceeded?.metadata?.cartId
+      ) {
         // Retrieve the subscription details from Stripe
         const subscription = await stripe.subscriptions.retrieve(
           invoicePaymentSucceeded.subscription as string
@@ -97,6 +92,7 @@ export async function POST(req: Request) {
         )
       }
       break
+
     // Handling payment events
     case "payment_intent.payment_failed":
       const paymentIntentPaymentFailed = event.data
@@ -114,6 +110,7 @@ export async function POST(req: Request) {
 
       const paymentIntentId = paymentIntentSucceeded?.id
       const orderAmount = paymentIntentSucceeded?.amount
+      const userId = paymentIntentSucceeded?.metadata?.userId
       const checkoutItems = paymentIntentSucceeded?.metadata
         ?.items as unknown as CheckoutItem[]
 
@@ -159,21 +156,10 @@ export async function POST(req: Request) {
 
           if (!newAddress.insertId) throw new Error("No address created.")
 
-          // Parsing user id from metadata which will be used to identify customer in db
-          const safeParsedUserId = z
-            .string()
-            .safeParse(
-              JSON.parse(paymentIntentSucceeded?.metadata?.userId ?? "")
-            )
-
-          if (!safeParsedUserId.success) {
-            throw new Error("Could not parse user id.")
-          }
-
           // Create new order in db
           await db.insert(orders).values({
             storeId: payment.storeId,
-            userId: safeParsedUserId.data,
+            userId,
             items: checkoutItems ?? [],
             amount: String(Number(orderAmount) / 100),
             stripePaymentIntentId: paymentIntentId,
@@ -223,6 +209,14 @@ export async function POST(req: Request) {
           console.log("Error creating order.", err)
         }
       }
+      break
+    case "application_fee.created":
+      const applicationFeeCreated = event.data.object as Stripe.ApplicationFee
+      console.log(`Application fee id: ${applicationFeeCreated.id}`)
+      break
+    case "charge.succeeded":
+      const chargeSucceeded = event.data.object as Stripe.Charge
+      console.log(`Charge id: ${chargeSucceeded.id}`)
       break
     default:
       console.warn(`Unhandled event type: ${event.type}`)

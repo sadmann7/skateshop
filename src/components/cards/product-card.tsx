@@ -54,10 +54,10 @@ export function ProductCard({
                   product.images[0]?.url ?? "/images/product-placeholder.webp"
                 }
                 alt={product.images[0]?.name ?? product.name}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                fill
                 className="object-cover"
-                loading="lazy"
+                sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+                fill
+                priority={true}
               />
             ) : (
               <div

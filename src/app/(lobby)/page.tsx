@@ -15,8 +15,6 @@ import { StoreCard } from "@/components/cards/store-card"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shells/shell"
 
-export const dynamic = "force-dynamic"
-
 export default async function IndexPage() {
   const someProducts = await db
     .select({

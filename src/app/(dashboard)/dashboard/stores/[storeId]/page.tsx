@@ -124,7 +124,7 @@ export default async function UpdateStorePage({
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-5 sm:grid-cols-2">
-            <fieldset className="grid gap-2.5">
+            <div className="grid gap-2.5">
               <Label htmlFor="stripe-account-email">Email</Label>
               <Input
                 id="stripe-account-email"
@@ -132,8 +132,8 @@ export default async function UpdateStorePage({
                 readOnly
                 defaultValue={stripeAccount.email ?? "N/A"}
               />
-            </fieldset>
-            <fieldset className="grid gap-2.5">
+            </div>
+            <div className="grid gap-2.5">
               <Label htmlFor="stripe-account-country">Country</Label>
               <Input
                 id="stripe-account-country"
@@ -141,8 +141,8 @@ export default async function UpdateStorePage({
                 readOnly
                 defaultValue={stripeAccount.country}
               />
-            </fieldset>
-            <fieldset className="grid gap-2.5">
+            </div>
+            <div className="grid gap-2.5">
               <Label htmlFor="stripe-account-currency">Currency</Label>
               <Input
                 id="stripe-account-currency"
@@ -151,8 +151,8 @@ export default async function UpdateStorePage({
                 readOnly
                 defaultValue={stripeAccount.default_currency}
               />
-            </fieldset>
-            <fieldset className="grid gap-2.5">
+            </div>
+            <div className="grid gap-2.5">
               <Label htmlFor="stripe-account-created">Created</Label>
               <Input
                 id="stripe-account-created"
@@ -164,7 +164,7 @@ export default async function UpdateStorePage({
                     : "N/A"
                 }
               />
-            </fieldset>
+            </div>
           </CardContent>
           <CardFooter>
             <Link
@@ -218,7 +218,7 @@ export default async function UpdateStorePage({
             action={updateStore}
             className="grid w-full max-w-xl gap-5"
           >
-            <fieldset className="grid gap-2.5">
+            <div className="grid gap-2.5">
               <Label htmlFor="update-store-name">Name</Label>
               <Input
                 id="update-store-name"
@@ -230,8 +230,8 @@ export default async function UpdateStorePage({
                 placeholder="Type store name here."
                 defaultValue={store.name}
               />
-            </fieldset>
-            <fieldset className="grid gap-2.5">
+            </div>
+            <div className="grid gap-2.5">
               <Label htmlFor="update-store-description">Description</Label>
               <Textarea
                 id="update-store-description"
@@ -242,7 +242,7 @@ export default async function UpdateStorePage({
                 placeholder="Type store description here."
                 defaultValue={store.description ?? ""}
               />
-            </fieldset>
+            </div>
             <div className="flex flex-col gap-2 xs:flex-row">
               <LoadingButton>
                 Update store
