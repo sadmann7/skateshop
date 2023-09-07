@@ -83,11 +83,15 @@ export default async function IndexPage() {
       >
         {githubStars ? (
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
-            <Badge className="rounded-md px-3.5 py-1.5" variant="secondary">
-              <Icons.gitHub className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+            <Badge
+              aria-hidden="true"
+              className="rounded-md px-3.5 py-1.5"
+              variant="secondary"
+            >
+              <Icons.gitHub className="mr-2 h-3.5 w-3.5" />
               {githubStars} stars on GitHub
-              <span className="sr-only">GitHub</span>
             </Badge>
+            <span className="sr-only">GitHub</span>
           </Link>
         ) : null}
         <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
@@ -143,16 +147,16 @@ export default async function IndexPage() {
           <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
             Featured products
           </h2>
-          <Link aria-label="View all products" href="/products">
-            <div
-              className={cn(
-                buttonVariants({
-                  size: "sm",
-                })
-              )}
-            >
-              View all
-            </div>
+          <Link
+            href="/products"
+            className={cn(
+              buttonVariants({
+                size: "sm",
+              })
+            )}
+          >
+            View all
+            <span className="sr-only">View all products</span>
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -170,16 +174,17 @@ export default async function IndexPage() {
           <h2 className="flex-1 text-2xl font-medium sm:text-3xl">
             Featured stores
           </h2>
-          <Link aria-label="View all stores" href="/stores">
-            <div
-              className={cn(
-                buttonVariants({
-                  size: "sm",
-                })
-              )}
-            >
-              View all
-            </div>
+          <Link
+            aria-label="View all stores"
+            href="/stores"
+            className={cn(
+              buttonVariants({
+                size: "sm",
+              })
+            )}
+          >
+            View all
+            <span className="sr-only">View all stores</span>
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

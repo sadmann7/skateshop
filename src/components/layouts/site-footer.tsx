@@ -21,13 +21,10 @@ export function SiteFooter() {
             id="footer-branding"
             aria-labelledby="footer-branding-heading"
           >
-            <Link
-              aria-label="Home page"
-              href="/"
-              className="flex w-fit items-center space-x-2"
-            >
+            <Link href="/" className="flex w-fit items-center space-x-2">
               <Icons.logo className="h-6 w-6" aria-hidden="true" />
               <span className="font-bold">{siteConfig.name}</span>
+              <span className="sr-only">Home</span>
             </Link>
           </section>
           <section
@@ -42,7 +39,6 @@ export function SiteFooter() {
                   {item.items.map((link) => (
                     <li key={link.title}>
                       <Link
-                        aria-label={link.title}
                         href={link.href}
                         target={link?.external ? "_blank" : undefined}
                         rel={link?.external ? "noreferrer" : undefined}
@@ -75,20 +71,19 @@ export function SiteFooter() {
         >
           <div className="flex-1 text-left text-sm leading-loose text-muted-foreground">
             Built by{" "}
-            <a
-              aria-label="Sadman twitter"
+            <Link
               href="https://twitter.com/sadmann17"
               target="_blank"
               rel="noreferrer"
               className="font-semibold transition-colors hover:text-foreground"
             >
               Sadman
-            </a>
+              <span className="sr-only">Twitter</span>
+            </Link>
             .
           </div>
           <div className="flex items-center space-x-1">
             <Link
-              aria-label="GitHub repo"
               href={siteConfig.links.github}
               target="_blank"
               rel="noreferrer"

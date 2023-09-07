@@ -57,13 +57,13 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
       <SheetContent side="left" className="pl-1 pr-0">
         <div className="px-7">
           <Link
-            aria-label="Home"
             href="/"
             className="flex items-center"
             onClick={() => setIsOpen(false)}
           >
             <Icons.logo className="mr-2 h-4 w-4" aria-hidden="true" />
             <span className="font-bold">{siteConfig.name}</span>
+            <span className="sr-only">Home</span>
           </Link>
         </div>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">

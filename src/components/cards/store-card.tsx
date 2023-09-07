@@ -19,7 +19,7 @@ interface StoreCardProps {
 
 export function StoreCard({ store, href }: StoreCardProps) {
   return (
-    <Link aria-label={`Go to ${store.name} store`} href={href}>
+    <Link href={href}>
       <Card className="h-full overflow-hidden">
         <AspectRatio ratio={21 / 9}>
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/50" />
@@ -47,6 +47,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
           ) : null}
         </CardHeader>
       </Card>
+      <span className="sr-only">{store.name}</span>
     </Link>
   )
 }

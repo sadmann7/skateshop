@@ -26,7 +26,6 @@ export async function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link
-      aria-label={category.title}
       key={category.title}
       href={`/categories/${category.title}`}
       className="group relative overflow-hidden rounded-md border"
@@ -63,6 +62,7 @@ export async function CategoryCard({ category }: CategoryCardProps) {
           {category.title}
         </h3>
       </div>
+      <span className="sr-only">{category.title}</span>
     </Link>
   )
 }
