@@ -44,6 +44,7 @@ export async function CategoryCard({ category }: CategoryCardProps) {
       <div className="absolute inset-4 z-20 flex flex-col text-zinc-100">
         <div className="flex items-start justify-between space-x-4">
           <div
+            aria-hidden="true"
             className={cn(
               buttonVariants({
                 size: "icon",
@@ -52,7 +53,7 @@ export async function CategoryCard({ category }: CategoryCardProps) {
               })
             )}
           >
-            <category.icon className="h-5 w-5" aria-hidden="true" />
+            <category.icon className="h-5 w-5" />
           </div>
           <Badge className="pointer-events-none rounded-sm bg-zinc-50 px-2 py-1 font-semibold text-zinc-950">
             {productCount} items

@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   const stores = storesTransaction.items.map((store) => ({
-    url: absoluteUrl(`/stores/${store.id}`),
+    url: absoluteUrl(`/products?store_ids=${store.id}`),
     lastModified: new Date().toISOString(),
   }))
 
@@ -44,7 +44,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .flat()
 
   const posts = allPosts.map((post) => ({
-    url: absoluteUrl(`/blog/${post.slug}`),
+    url: absoluteUrl(`${post.slug}`),
     lastModified: new Date().toISOString(),
   }))
 

@@ -175,7 +175,6 @@ export default async function IndexPage() {
             Featured stores
           </h2>
           <Link
-            aria-label="View all stores"
             href="/stores"
             className={cn(
               buttonVariants({
