@@ -103,7 +103,7 @@ export function ProductCard({
                 }
               })
             }}
-            disabled={isPending || product.inventory === 0}
+            disabled={isPending}
           >
             {isPending && (
               <Icons.spinner
@@ -123,7 +123,7 @@ export function ProductCard({
                 await onSwitch?.()
               })
             }}
-            disabled={isPending || product.inventory === 0}
+            disabled={isPending}
           >
             {isPending ? (
               <Icons.spinner

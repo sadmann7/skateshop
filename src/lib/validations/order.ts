@@ -1,7 +1,7 @@
 import * as z from "zod"
 
 export const getOrderLineItemsSchema = z.object({
-  storeId: z.number().optional(),
+  storeId: z.number(),
   items: z.string().optional(),
 })
 

@@ -118,7 +118,7 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
   }
 
   if (product.inventory < input.quantity) {
-    throw new Error("Product is out of stock, please try again.")
+    throw new Error("Product is out of stock, please try again later.")
   }
 
   const cookieStore = cookies()

@@ -338,16 +338,15 @@ export async function createPaymentIntentAction(
     )
 
     // Update the cart with the payment intent id and client secret
-    await db
-      .update(carts)
-      .set({
-        paymentIntentId: paymentIntent.id,
-        clientSecret: paymentIntent.client_secret,
-      })
-      .where(eq(carts.id, cartId))
-
-    // payment_intent.succeeded event is not triggered when the payment intent is created in production
-    // So we manually trigger it here
+    if (paymentIntent.status === "requires_payment_method") {
+      await db
+        .update(carts)
+        .set({
+          paymentIntentId: paymentIntent.id,
+          clientSecret: paymentIntent.client_secret,
+        })
+        .where(eq(carts.id, cartId))
+    }
 
     return {
       clientSecret: paymentIntent.client_secret,
