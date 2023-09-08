@@ -11,6 +11,7 @@ import Link from "next/link"
 import { env } from "@/env.mjs"
 
 import { absoluteUrl, cn, formatDate } from "@/lib/utils"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Icons } from "@/components/icons"
@@ -112,7 +113,7 @@ export default async function PostPage({ params }: PostPageProps) {
         <Icons.chevronLeft className="mr-2 h-4 w-4" />
         See all posts
       </Link>
-      <div>
+      <div className="space-y-2">
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           {post.date && (
             <time dateTime={post.date} className="block">
@@ -122,11 +123,11 @@ export default async function PostPage({ params }: PostPageProps) {
           {post.date ? <div>•</div> : null}
           <div>{post.readingTime}min</div>
         </div>
-        <h1 className="mt-2 inline-block text-4xl font-bold leading-tight lg:text-5xl">
+        <h1 className="inline-block text-4xl font-bold leading-tight lg:text-5xl">
           {post.title}
         </h1>
         {authors?.length ? (
-          <div className="mt-4 flex space-x-4">
+          <div className="flex items-center space-x-4 pt-4">
             {authors.map((author) =>
               author ? (
                 <Link
@@ -137,8 +138,8 @@ export default async function PostPage({ params }: PostPageProps) {
                   <Image
                     src={author.avatar}
                     alt={author.title}
-                    width={42}
-                    height={42}
+                    width={40}
+                    height={40}
                     className="rounded-full bg-white"
                   />
                   <div className="flex-1 text-left leading-tight">
@@ -154,25 +155,29 @@ export default async function PostPage({ params }: PostPageProps) {
         ) : null}
       </div>
       {post.image && (
-        <Image
-          src={post.image}
-          alt={post.title}
-          width={720}
-          height={405}
-          className="my-8 rounded-md border bg-muted transition-colors"
-          priority
-        />
+        <AspectRatio ratio={16 / 9}>
+          <Image
+            src={post.image}
+            alt={post.title}
+            fill
+            className="rounded-md border bg-muted"
+            priority
+          />
+        </AspectRatio>
       )}
       <Mdx code={post.body.code} />
-      <Separator className="my-10" />
+      <Separator className="my-4" />
       <MdxPager currentItem={post} allItems={allPosts} />
-      <div className="flex justify-center py-5">
-        <Link href="/blog" className={cn(buttonVariants({ variant: "ghost" }))}>
-          <Icons.chevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
-          See all posts
-          <span className="sr-only">See all posts</span>
-        </Link>
-      </div>
+      <Link
+        href="/blog"
+        className={cn(
+          buttonVariants({ variant: "ghost", className: "mx-auto mt-4 w-fit" })
+        )}
+      >
+        <Icons.chevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+        See all posts
+        <span className="sr-only">See all posts</span>
+      </Link>
     </Shell>
   )
 }

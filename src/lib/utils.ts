@@ -2,7 +2,6 @@ import { env } from "@/env.mjs"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
-import dayjs from "dayjs"
 import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
 import * as z from "zod"
@@ -46,7 +45,11 @@ export function formatNumber(
 }
 
 export function formatDate(date: Date | string | number) {
-  return dayjs(date).format("MMMM D, YYYY")
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date))
 }
 
 export function formatBytes(
