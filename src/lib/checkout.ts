@@ -7,14 +7,10 @@ export function calculateOrderAmount(items: CartLineItem[]) {
   const total = items.reduce((acc, item) => {
     return acc + Number(item.price) * item.quantity
   }, 0)
-  const fee = Math.round(total * 0.1)
-
-  const totalInCents = Math.round(total * 100)
-  const feeInCents = Math.round(fee * 100)
-
+  const fee = total * 0.01
   return {
-    total: totalInCents, // Converts to cents which stripe charges in
-    fee: feeInCents,
+    total: Number((total * 100).toFixed(0)), // converts to cents which stripe charges in
+    fee: Number((fee * 100).toFixed(0)),
   }
 }
 

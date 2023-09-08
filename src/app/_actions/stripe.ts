@@ -296,30 +296,30 @@ export async function createPaymentIntentAction(
     const { total, fee } = calculateOrderAmount(input.items)
 
     // Update the cart with the payment intent id and client secret if it exists
-    if (!isNaN(cartId)) {
-      const cart = await db.query.carts.findFirst({
-        columns: {
-          paymentIntentId: true,
-          clientSecret: true,
-        },
-        where: eq(carts.id, cartId),
-      })
+    // if (!isNaN(cartId)) {
+    //   const cart = await db.query.carts.findFirst({
+    //     columns: {
+    //       paymentIntentId: true,
+    //       clientSecret: true,
+    //     },
+    //     where: eq(carts.id, cartId),
+    //   })
 
-      if (cart?.clientSecret && cart.paymentIntentId) {
-        await stripe.paymentIntents.update(
-          cart.paymentIntentId,
-          {
-            amount: total,
-            application_fee_amount: fee,
-            metadata,
-          },
-          {
-            stripeAccount: payment.stripeAccountId,
-          }
-        )
-        return { clientSecret: cart.clientSecret }
-      }
-    }
+    //   if (cart?.clientSecret && cart.paymentIntentId) {
+    //     await stripe.paymentIntents.update(
+    //       cart.paymentIntentId,
+    //       {
+    //         amount: total,
+    //         application_fee_amount: fee,
+    //         metadata,
+    //       },
+    //       {
+    //         stripeAccount: payment.stripeAccountId,
+    //       }
+    //     )
+    //     return { clientSecret: cart.clientSecret }
+    //   }
+    // }
 
     // Create a payment intent if it doesn't exist
     const paymentIntent = await stripe.paymentIntents.create(
@@ -345,6 +345,9 @@ export async function createPaymentIntentAction(
         clientSecret: paymentIntent.client_secret,
       })
       .where(eq(carts.id, cartId))
+
+    // payment_intent.succeeded event is not triggered when the payment intent is created in production
+    // So we manually trigger it here
 
     return {
       clientSecret: paymentIntent.client_secret,
