@@ -112,7 +112,6 @@ export async function getProductsAction(
           storeIds.length ? inArray(products.storeId, storeIds) : undefined
         )
       )
-      .groupBy(products.id)
       .execute()
       .then((res) => res[0]?.count ?? 0)
 

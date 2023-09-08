@@ -62,7 +62,6 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
       })
       .from(stores)
       .where(input.userId ? eq(stores.userId, input.userId) : undefined)
-      .groupBy(stores.id)
       .execute()
       .then((res) => res[0]?.count ?? 0)
 
