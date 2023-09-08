@@ -40,22 +40,22 @@ export async function CategoryCard({ category }: CategoryCardProps) {
           priority={true}
         />
       </AspectRatio>
-      <div className="absolute inset-4 z-20 flex flex-col text-zinc-100">
+      <div className="absolute inset-4 z-20 flex flex-col">
         <div className="flex items-start justify-between space-x-4">
           <div
             className={cn(
               buttonVariants({
                 size: "icon",
-                className: "pointer-events-none bg-zinc-50 text-zinc-950",
+                className: "pointer-events-none bg-zinc-200 text-zinc-950",
               })
             )}
             aria-hidden="true"
           >
-            <category.icon className="h-5 w-5" />
+            <category.icon className="h-4 w-4" />
           </div>
-          <p className="text-zinc-200">{productCount} items</p>
+          <p className="text-sm text-zinc-200">{productCount} items</p>
         </div>
-        <h3 className="mt-auto text-xl font-medium capitalize">
+        <h3 className="mt-auto text-xl font-medium capitalize text-zinc-200">
           {category.title}
         </h3>
       </div>

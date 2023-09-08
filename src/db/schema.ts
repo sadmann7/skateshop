@@ -64,7 +64,6 @@ export const productsRelations = relations(products, ({ one }) => ({
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const carts = mysqlTable("carts", {
   id: serial("id").primaryKey(),
-  checkoutSessionId: varchar("checkoutSessionId", { length: 191 }),
   paymentIntentId: varchar("paymentIntentId", { length: 191 }),
   clientSecret: varchar("clientSecret", { length: 191 }),
   items: json("items").$type<CartItem[] | null>().default(null),

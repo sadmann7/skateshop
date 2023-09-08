@@ -153,6 +153,20 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
     throw new Error("Cart not found, please try again.")
   }
 
+  // If cart is closed, delete it and create a new one
+  if (cart.closed) {
+    await db.delete(carts).where(eq(carts.id, Number(cartId)))
+
+    const newCart = await db.insert(carts).values({
+      items: [input],
+    })
+
+    cookieStore.set("cartId", String(newCart.insertId))
+
+    revalidatePath("/")
+    return
+  }
+
   const cartItem = cart.items?.find(
     (item) => item.productId === input.productId
   )

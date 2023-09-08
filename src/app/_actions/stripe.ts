@@ -256,70 +256,6 @@ export async function createAccountLinkAction(
   }
 }
 
-// Creating checkout session for a store
-export async function createCheckoutSessionAction(
-  input: z.infer<typeof createPaymentIntentSchema>
-) {
-  const { isConnected, payment } = await getStripeAccountAction(input)
-
-  if (!isConnected || !payment) {
-    throw new Error("Store not connected to Stripe.")
-  }
-
-  if (!payment.stripeAccountId) {
-    throw new Error("Stripe account not found.")
-  }
-
-  const cartId = Number(cookies().get("cartId")?.value)
-
-  const checkoutItems: CheckoutItem[] = input.items.map((item) => ({
-    productId: item.id,
-    price: Number(item.price),
-    quantity: item.quantity,
-  }))
-
-  // Create a checkout session
-  const checkoutSession = await stripe.checkout.sessions.create(
-    {
-      success_url: absoluteUrl(`/checkout/success/?store_id=${input.storeId}`),
-      cancel_url: absoluteUrl("/checkout"),
-      payment_method_types: ["card"],
-      mode: "payment",
-      line_items: input.items.map((item) => ({
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: item.name,
-          },
-          unit_amount: Number(item.price) * 100,
-        },
-        quantity: item.quantity,
-      })),
-      metadata: {
-        cartId,
-        items: JSON.stringify(checkoutItems),
-      },
-    },
-    {
-      stripeAccount: payment.stripeAccountId,
-    }
-  )
-
-  // Update the cart with the checkout session id
-  await db
-    .update(carts)
-    .set({
-      checkoutSessionId: checkoutSession.id,
-      paymentIntentId: String(checkoutSession.payment_intent),
-    })
-    .where(eq(carts.id, cartId))
-
-  return {
-    id: checkoutSession.id,
-    url: checkoutSession.url ?? "/checkout",
-  }
-}
-
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Creating a payment intent for a store
 export async function createPaymentIntentAction(
@@ -359,6 +295,7 @@ export async function createPaymentIntentAction(
 
     const { total, fee } = calculateOrderAmount(input.items)
 
+    // Update the cart with the payment intent id and client secret if it exists
     if (!isNaN(cartId)) {
       const cart = await db.query.carts.findFirst({
         columns: {
@@ -368,39 +305,29 @@ export async function createPaymentIntentAction(
         where: eq(carts.id, cartId),
       })
 
-      if (cart?.paymentIntentId && cart?.clientSecret) {
-        const paymentIntent = await stripe.paymentIntents.retrieve(
+      if (cart?.clientSecret && cart.paymentIntentId) {
+        await stripe.paymentIntents.update(
           cart.paymentIntentId,
+          {
+            amount: total,
+            application_fee_amount: fee,
+            metadata,
+          },
           {
             stripeAccount: payment.stripeAccountId,
           }
         )
-
-        if (paymentIntent.status !== "succeeded") {
-          await stripe.paymentIntents.update(
-            cart.paymentIntentId,
-            {
-              amount: total,
-              application_fee_amount: fee,
-              metadata,
-            },
-            {
-              stripeAccount: payment.stripeAccountId,
-            }
-          )
-          return {
-            clientSecret: cart.clientSecret,
-          }
-        }
+        return { clientSecret: cart.clientSecret }
       }
     }
 
+    // Create a payment intent if it doesn't exist
     const paymentIntent = await stripe.paymentIntents.create(
       {
         amount: total,
         application_fee_amount: fee,
-        metadata,
         currency: "usd",
+        metadata,
         automatic_payment_methods: {
           enabled: true,
         },
@@ -410,6 +337,7 @@ export async function createPaymentIntentAction(
       }
     )
 
+    // Update the cart with the payment intent id and client secret
     await db
       .update(carts)
       .set({
