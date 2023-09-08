@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { env } from "@/env.mjs"
 import { allPosts } from "contentlayer/generated"
-import { compareDesc } from "date-fns"
+import dayjs from "dayjs"
 
 import { formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   const posts = allPosts
     .filter((post) => post.published)
-    .sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
+    .sort((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix())
 
   return (
     <Shell className="md:pb-10">

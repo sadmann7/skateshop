@@ -3,7 +3,7 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { addDays, format } from "date-fns"
+import dayjs from "dayjs"
 import type { DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -40,8 +40,8 @@ export function DateRangePicker({
       fromDay = dateRange.from
       toDay = dateRange.to
     } else if (dayCount) {
-      toDay = new Date()
-      fromDay = addDays(toDay, -dayCount)
+      fromDay = dayjs().toDate()
+      toDay = dayjs().add(dayCount, "day").toDate()
     }
 
     return [fromDay, toDay]
@@ -71,8 +71,8 @@ export function DateRangePicker({
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
-        from: date?.from ? format(date.from, "yyyy-MM-dd") : null,
-        to: date?.to ? format(date.to, "yyyy-MM-dd") : null,
+        from: date?.from ? dayjs(date.from).format("yyyy-MM-DD") : null,
+        to: date?.to ? dayjs(date.to).format("yyyy-MM-DD") : null,
       })}`,
       {
         scroll: false,
@@ -97,11 +97,11 @@ export function DateRangePicker({
             {date?.from ? (
               date.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
+                  {dayjs(date.from).format("MMM DD, YYYY")} -{" "}
+                  {dayjs(date.to).format("MMM DD, YYYY")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                dayjs(date.from).format("MMM DD, YYYY")
               )
             ) : (
               <span>Pick a date</span>

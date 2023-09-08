@@ -2,7 +2,7 @@ import { env } from "@/env.mjs"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
-import { format } from "date-fns"
+import dayjs from "dayjs"
 import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
 import * as z from "zod"
@@ -46,7 +46,7 @@ export function formatNumber(
 }
 
 export function formatDate(date: Date | string | number) {
-  return format(new Date(date), "MMMM dd, yyyy")
+  return dayjs(date).format("MMMM D, YYYY")
 }
 
 export function formatBytes(
