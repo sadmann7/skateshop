@@ -73,7 +73,7 @@ export default async function OrdersPage({
       .select({
         id: orders.id,
         storeId: orders.storeId,
-        items: orders.items,
+        quantity: orders.quantity,
         amount: orders.amount,
         paymentIntentId: orders.stripePaymentIntentId,
         status: orders.stripePaymentIntentStatus,

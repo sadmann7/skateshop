@@ -3,7 +3,7 @@
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
-import type { CartLineItem } from "@/types"
+import type { CartLineItem, CheckoutItem } from "@/types"
 import { desc, eq, inArray } from "drizzle-orm"
 import type Stripe from "stripe"
 import { z } from "zod"
@@ -110,8 +110,11 @@ export async function getOrderLineItemsAction(
       // Create new order in db
       await db.insert(orders).values({
         storeId: payment.storeId,
-        userId: input.paymentIntent?.metadata?.userId,
-        items: safeParsedItems.data,
+        items: input.items as unknown as CheckoutItem[],
+        quantity: safeParsedItems.data.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        ),
         amount: String(Number(input.paymentIntent.amount) / 100),
         stripePaymentIntentId: input.paymentIntent.id,
         stripePaymentIntentStatus: input.paymentIntent.status,

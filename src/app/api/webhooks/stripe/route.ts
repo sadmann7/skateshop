@@ -110,7 +110,6 @@ export async function POST(req: Request) {
 
       const paymentIntentId = paymentIntentSucceeded?.id
       const orderAmount = paymentIntentSucceeded?.amount
-      const userId = paymentIntentSucceeded?.metadata?.userId
       const checkoutItems = paymentIntentSucceeded?.metadata
         ?.items as unknown as CheckoutItem[]
 
@@ -159,8 +158,11 @@ export async function POST(req: Request) {
           // Create new order in db
           await db.insert(orders).values({
             storeId: payment.storeId,
-            userId,
             items: checkoutItems ?? [],
+            quantity: safeParsedItems.data.reduce(
+              (acc, item) => acc + item.quantity,
+              0
+            ),
             amount: String(Number(orderAmount) / 100),
             stripePaymentIntentId: paymentIntentId,
             stripePaymentIntentStatus: paymentIntentSucceeded?.status,

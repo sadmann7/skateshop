@@ -60,9 +60,8 @@ export default async function CustomersPage({
   const { items, count } = await db.transaction(async (tx) => {
     const items = await db
       .select({
-        email: orders.email,
         name: orders.name,
-        userId: orders.userId,
+        email: orders.email,
         orderPlaced: sql<number>`count(*)`,
         totalSpent: sql<number>`sum(${orders.amount})`,
         createdAt: sql<string>`min(${orders.createdAt})`,
@@ -83,7 +82,7 @@ export default async function CustomersPage({
             : undefined
         )
       )
-      .groupBy(orders.email, orders.name, orders.userId)
+      .groupBy(orders.email, orders.name)
       .orderBy(
         sort === "name.asc"
           ? asc(orders.name)

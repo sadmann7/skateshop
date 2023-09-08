@@ -29,8 +29,9 @@ export default async function CustomerPage({
   searchParams,
 }: CustomerPageProps) {
   const storeId = Number(params.storeId)
-  // Using the customerId as the userId
-  const userId = params.customerId
+  // Get email from the customer id
+  const emailParts = params.customerId.split("-")
+  const email = `${emailParts[0]}@${emailParts[2]}.com`
 
   const { page, per_page, sort, status, from, to } = searchParams ?? {}
 
@@ -75,7 +76,7 @@ export default async function CustomerPage({
       .select({
         id: orders.id,
         storeId: orders.storeId,
-        items: orders.items,
+        quantity: orders.quantity,
         amount: orders.amount,
         paymentIntentId: orders.stripePaymentIntentId,
         status: orders.stripePaymentIntentStatus,
@@ -88,7 +89,7 @@ export default async function CustomerPage({
       .where(
         and(
           eq(orders.storeId, storeId),
-          eq(orders.userId, userId),
+          eq(orders.email, email),
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)
@@ -115,7 +116,7 @@ export default async function CustomerPage({
       .where(
         and(
           eq(orders.storeId, storeId),
-          eq(orders.userId, userId),
+          eq(orders.email, email),
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)

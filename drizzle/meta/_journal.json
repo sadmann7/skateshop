@@ -239,6 +239,20 @@
       "when": 1694183516131,
       "tag": "0033_wakeful_franklin_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "5",
+      "when": 1694197835691,
+      "tag": "0034_smiling_switch",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "5",
+      "when": 1694198835262,
+      "tag": "0035_daily_archangel",
+      "breakpoints": true
     }
   ]
 }

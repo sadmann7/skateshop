@@ -6,14 +6,12 @@ import { type Order } from "@/db/schema"
 import type { StripePaymentStatus } from "@/types"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
-import { z } from "zod"
 
 import {
   getStripePaymentStatusColor,
   stripePaymentStatuses,
 } from "@/lib/checkout"
 import { cn, formatDate, formatId, formatPrice } from "@/lib/utils"
-import { checkoutItemSchema } from "@/lib/validations/cart"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -25,7 +23,7 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-type CuratedOrder = Pick<Order, "id" | "items" | "amount" | "createdAt"> & {
+type CuratedOrder = Pick<Order, "id" | "quantity" | "amount" | "createdAt"> & {
   customer: string | null
   status: string
   paymentIntentId: string
@@ -84,28 +82,11 @@ export function OrdersTableShell({
           <DataTableColumnHeader column={column} title="Customer" />
         ),
       },
-
       {
-        accessorKey: "items",
+        accessorKey: "quantity",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Quantity" />
         ),
-        cell: ({ cell }) => {
-          const safeParsedItems = z
-            .array(checkoutItemSchema)
-            .safeParse(JSON.parse(cell.getValue() as string))
-
-          return (
-            <span>
-              {safeParsedItems.success
-                ? safeParsedItems.data.reduce(
-                    (acc, item) => acc + item.quantity,
-                    0
-                  )
-                : 0}
-            </span>
-          )
-        },
       },
       {
         accessorKey: "amount",
@@ -114,7 +95,6 @@ export function OrdersTableShell({
         ),
         cell: ({ cell }) => formatPrice(cell.getValue() as number),
       },
-
       {
         accessorKey: "createdAt",
         header: ({ column }) => (
