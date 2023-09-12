@@ -44,10 +44,10 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 git clone https://github.com/sadmann7/skateshop.git
 ```
 
-2. Install dependencies using pnpm
+2. Install dependencies using bun
 
 ```bash
-pnpm install
+bun install
 ```
 
 3. Copy the `.env.example` to `.env` and update the variables.
@@ -59,19 +59,19 @@ cp .env.example .env
 4. Start the development server
 
 ```bash
-pnpm run dev
+bun run dev
 ```
 
 5. Push the database schema
 
 ```bash
-pnpm run db:push
+bun run db:push
 ```
 
 6. Start the Stripe webhook listener
 
 ```bash
-pnpm run stripe:listen
+bun run stripe:listen
 ```
 
 ## How do I deploy this?
