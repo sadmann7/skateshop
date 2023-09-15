@@ -36,7 +36,7 @@ cd skateshop
 Install the project dependencies:
 
 ```shell
-pnpm install
+bun install
 ```
 
 ### Create a branch
