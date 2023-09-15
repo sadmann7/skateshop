@@ -12,6 +12,7 @@ import useEmblaCarousel, {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
+import MagnifierImage from "./magnifier-image"
 
 interface ProductImageCarouselProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -102,18 +103,19 @@ export function ProductImageCarousel({
           {images.map((image, index) => (
             <div className="relative min-w-0 flex-full pl-4" key={index}>
               <AspectRatio ratio={1}>
-                <Image
-                  aria-label={`Slide ${index + 1} of ${images.length}`}
-                  role="group"
-                  key={index}
-                  aria-roledescription="slide"
-                  src={image.url}
-                  alt={image.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover"
-                  priority={index === 0}
-                />
+                <MagnifierImage
+                aria-label={`Slide ${index + 1} of ${images.length}`}
+                role="group"
+                zoom={2}
+                size={200}
+                aria-roledescription="slide"
+                key={index}
+                src={image.url}
+                alt={image.name}
+                width={500}
+                height={500}
+                className=" w-full object-cover"
+              />
               </AspectRatio>
             </div>
           ))}
