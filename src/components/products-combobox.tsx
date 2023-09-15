@@ -3,7 +3,9 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { type Product } from "@/db/schema"
+import { CircleIcon } from "@radix-ui/react-icons"
 
+import { productCategories } from "@/config/products"
 import { cn, isMacOs } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -19,28 +21,39 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 import { filterProductsAction } from "@/app/_actions/product"
 
-export function Combobox() {
+interface ProductGroup {
+  category: Product["category"]
+  products: Pick<Product, "id" | "name" | "category">[]
+}
+
+export function ProductsCombobox() {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
   const debouncedQuery = useDebounce(query, 300)
-  const [data, setData] = React.useState<
-    | {
-        category: Product["category"]
-        products: Pick<Product, "id" | "name" | "category">[]
-      }[]
-    | null
-  >(null)
+  const [data, setData] = React.useState<ProductGroup[] | null>(null)
   const [isPending, startTransition] = React.useTransition()
 
   React.useEffect(() => {
-    if (debouncedQuery.length === 0) setData(null)
+    if (debouncedQuery.length <= 0) {
+      setData(null)
+      return
+    }
 
-    if (debouncedQuery.length > 0) {
+    let mounted = true
+    function fetchData() {
       startTransition(async () => {
         const data = await filterProductsAction(debouncedQuery)
-        setData(data)
+        if (mounted) {
+          setData(data)
+        }
       })
+    }
+
+    fetchData()
+
+    return () => {
+      mounted = false
     }
   }, [debouncedQuery])
 
@@ -77,7 +90,10 @@ export function Combobox() {
         <span className="hidden xl:inline-flex">Search products...</span>
         <span className="sr-only">Search products</span>
         <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
-          <abbr title={isMacOs() ? 'Command' : 'Control'}>{isMacOs() ? '⌘' : 'Ctrl+'}</abbr>K
+          <abbr title={isMacOs() ? "Command" : "Control"}>
+            {isMacOs() ? "⌘" : "Ctrl+"}
+          </abbr>
+          K
         </kbd>
       </Button>
       <CommandDialog position="top" open={isOpen} onOpenChange={setIsOpen}>
@@ -105,16 +121,28 @@ export function Combobox() {
                 className="capitalize"
                 heading={group.category}
               >
-                {group.products.map((item) => (
-                  <CommandItem
-                    key={item.id}
-                    onSelect={() =>
-                      handleSelect(() => router.push(`/product/${item.id}`))
-                    }
-                  >
-                    {item.name}
-                  </CommandItem>
-                ))}
+                {group.products.map((item) => {
+                  const CategoryIcon =
+                    productCategories.find(
+                      (category) => category.title === group.category
+                    )?.icon ?? CircleIcon
+
+                  return (
+                    <CommandItem
+                      key={item.id}
+                      value={item.name}
+                      onSelect={() =>
+                        handleSelect(() => router.push(`/product/${item.id}`))
+                      }
+                    >
+                      <CategoryIcon
+                        className="mr-2 h-4 w-4 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                      <span className="truncate">{item.name}</span>
+                    </CommandItem>
+                  )
+                })}
               </CommandGroup>
             ))
           )}

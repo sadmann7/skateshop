@@ -46,7 +46,8 @@ export async function CategoryCard({ category }: CategoryCardProps) {
             className={cn(
               buttonVariants({
                 size: "icon",
-                className: "pointer-events-none bg-zinc-200 text-zinc-950",
+                className:
+                  "pointer-events-none h-8 w-8 bg-zinc-100 text-zinc-950",
               })
             )}
             aria-hidden="true"

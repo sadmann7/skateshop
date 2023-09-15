@@ -25,7 +25,7 @@ export async function CartSheet() {
   )
 
   const cartTotal = cartLineItems.reduce(
-    (total, item) => total + Number(item.quantity) * Number(item.price),
+    (total, item) => total + item.quantity * Number(item.price),
     0
   )
 
@@ -50,37 +50,30 @@ export async function CartSheet() {
         </Button>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
-        <SheetHeader className="px-1">
+        <SheetHeader className="space-y-2.5 pr-6">
           <SheetTitle>Cart {itemCount > 0 && `(${itemCount})`}</SheetTitle>
-        </SheetHeader>
-        <div className="pr-6">
           <Separator />
-        </div>
+        </SheetHeader>
         {itemCount > 0 ? (
           <>
-            <div className="flex flex-1 flex-col gap-5 overflow-hidden">
-              <CartLineItems items={cartLineItems} />
-            </div>
-            <div className="grid gap-1.5 pr-6 text-sm">
-              <Separator className="mb-2" />
-              <div className="flex">
-                <span className="flex-1">Subtotal</span>
-                <span>{formatPrice(cartTotal.toFixed(2))}</span>
+            <CartLineItems items={cartLineItems} className="flex-1" />
+            <div className="space-y-4 pr-6">
+              <Separator />
+              <div className="space-y-1.5 text-sm">
+                <div className="flex">
+                  <span className="flex-1">Shipping</span>
+                  <span>Free</span>
+                </div>
+                <div className="flex">
+                  <span className="flex-1">Taxes</span>
+                  <span>Calculated at checkout</span>
+                </div>
+                <div className="flex">
+                  <span className="flex-1">Total</span>
+                  <span>{formatPrice(cartTotal.toFixed(2))}</span>
+                </div>
               </div>
-              <div className="flex">
-                <span className="flex-1">Shipping</span>
-                <span>Free</span>
-              </div>
-              <div className="flex">
-                <span className="flex-1">Taxes</span>
-                <span>Calculated at checkout</span>
-              </div>
-              <Separator className="mt-2" />
-              <div className="flex">
-                <span className="flex-1">Total</span>
-                <span>{formatPrice(cartTotal.toFixed(2))}</span>
-              </div>
-              <SheetFooter className="mt-1.5">
+              <SheetFooter>
                 <SheetTrigger asChild>
                   <Link
                     aria-label="View your cart"
