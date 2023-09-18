@@ -12,15 +12,6 @@ interface Page {
 }
 
 const config = {
-  debug: true,
-  // show the browser window
-  puppeteerOptions: {
-    headless: false,
-  },
-  // only run a single scan at a time
-  puppeteerClusterOptions: {
-    maxConcurrency: 1,
-  },
   hooks: {
     async authenticate(page: Page) {
       // login to the page
