@@ -17,7 +17,8 @@ const computedFields = {
   readingTime: {
     type: "number",
     resolve: (doc) => {
-      const content = doc.body.raw
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const content = String(doc.body.raw)
       const wordsPerMinute = 200
       const numberOfWords = content.split(/\s/g).length
       const minutes = numberOfWords / wordsPerMinute
@@ -107,20 +108,26 @@ export default makeSource({
   contentDirPath: "./src/content",
   documentTypes: [Post, Author, Page],
   mdx: {
-    remarkPlugins: [remarkGfm],
+    // remarkPlugins: [remarkGfm],
     rehypePlugins: [
       rehypeSlug,
       () => (tree) => {
         visit(tree, (node) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (node?.type === "element" && node?.tagName === "pre") {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             const [codeEl] = node.children
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (codeEl.tagName !== "code") return
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             node.raw = codeEl.children?.[0].value
           }
         })
       },
       [
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore weird types in rehype-pretty-code
         rehypePrettyCode,
         {
           theme: { dark: "one-dark-pro", light: "github-light" },
@@ -151,11 +158,16 @@ export default makeSource({
       ],
       () => (tree) => {
         visit(tree, (node) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (node?.type === "element" && node?.tagName === "div") {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (!("data-rehype-pretty-code-fragment" in node.properties)) return
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             for (const child of node.children) {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
               if (child.tagName === "pre") {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                 child.properties["raw"] = node.raw
               }
             }
