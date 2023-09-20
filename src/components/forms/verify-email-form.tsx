@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import type { z } from "zod"
 
 import { catchClerkError } from "@/lib/utils"
-import { verfifyEmailSchema } from "@/lib/validations/auth"
+import { verifyEmailSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 
-type Inputs = z.infer<typeof verfifyEmailSchema>
+type Inputs = z.infer<typeof verifyEmailSchema>
 
 export function VerifyEmailForm() {
   const router = useRouter()
@@ -30,7 +30,7 @@ export function VerifyEmailForm() {
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(verfifyEmailSchema),
+    resolver: zodResolver(verifyEmailSchema),
     defaultValues: {
       code: "",
     },
