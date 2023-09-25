@@ -15,12 +15,12 @@ import { StoreTabs } from "@/components/pagers/store-tabs"
 import { Shell } from "@/components/shells/shell"
 import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
-interface StoreLayoutProps {
-  children: React.ReactNode
+type StoreLayoutProps =  React.PropsWithChildren & {
   params: {
     storeId: string
   }
 }
+
 
 export default async function StoreLayout({
   children,
