@@ -7,9 +7,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-interface DialogShellProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode
-}
+type DialogShellProps = React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>;
 
 export function DialogShell({
   children,

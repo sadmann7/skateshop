@@ -1,6 +1,5 @@
-interface ProductsLayoutProps {
-  children: React.ReactNode
-  modal: React.ReactNode
+type ProductsLayoutProps = React.PropsWithChildren & {
+  modal : React.PropsWithChildren
 }
 
 export default function ProductsLayout({

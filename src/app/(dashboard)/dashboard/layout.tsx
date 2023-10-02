@@ -7,13 +7,10 @@ import { SidebarNav } from "@/components/layouts/sidebar-nav"
 import { SiteFooter } from "@/components/layouts/site-footer"
 import { SiteHeader } from "@/components/layouts/site-header"
 
-interface DashboardLayoutProps {
-  children: React.ReactNode
-}
 
 export default async function DashboardLayout({
   children,
-}: DashboardLayoutProps) {
+}: React.PropsWithChildren) {
   const user = await currentUser()
 
   if (!user) {

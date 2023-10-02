@@ -4,10 +4,9 @@
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-interface CalloutProps {
+type CalloutProps = React.PropsWithChildren & {
   icon?: string
   title?: string
-  children?: React.ReactNode
 }
 
 export function Callout({ title, children, icon, ...props }: CalloutProps) {

@@ -61,11 +61,8 @@ export const metadata: Metadata = {
   },
 }
 
-interface RootLayoutProps {
-  children: React.ReactNode
-}
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <>
       <ClerkProvider>

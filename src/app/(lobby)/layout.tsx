@@ -3,11 +3,8 @@ import { currentUser } from "@clerk/nextjs"
 import { SiteFooter } from "@/components/layouts/site-footer"
 import { SiteHeader } from "@/components/layouts/site-header"
 
-interface LobbyLayoutProps {
-  children: React.ReactNode
-}
 
-export default async function LobbyLayout({ children }: LobbyLayoutProps) {
+export default async function LobbyLayout({ children }: React.PropsWithChildren ) {
   const user = await currentUser()
 
   return (

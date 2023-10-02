@@ -9,9 +9,7 @@ export const inter = Inter({
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
+}: React.PropsWithChildren ) {
   return (
     <html lang="en">
       <body className="bg-black text-slate-12 font-sans">
