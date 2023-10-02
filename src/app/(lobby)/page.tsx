@@ -75,11 +75,11 @@ export default async function IndexPage() {
   const githubStars = await getGithubStars()
 
   return (
-    <Shell className="gap-12">
+    <Shell className="gap-12 pt-0 md:pt-0">
       <section
         id="hero"
         aria-labelledby="hero-heading"
-        className="mx-auto flex w-full max-w-[64rem] flex-col items-center justify-center gap-4 pb-8 pt-6 text-center md:pb-12 md:pt-10 lg:py-28"
+        className="mx-auto flex h-[calc(100dvh-4rem)] w-full max-w-[64rem] flex-col items-center justify-center gap-4 text-center"
       >
         {githubStars ? (
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
@@ -94,12 +94,15 @@ export default async function IndexPage() {
             <span className="sr-only">GitHub</span>
           </Link>
         ) : null}
-        <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
+        <Balancer
+          as="h1"
+          className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl"
+        >
           An e-commerce skateshop built with everything new in Next.js 13
-        </h1>
-        <Balancer className="max-w-[46rem] text-lg text-muted-foreground sm:text-xl">
-          Buy and sell skateboarding products from independent brands and stores
-          around the world
+        </Balancer>
+        <Balancer className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+          Buy and sell skateboarding gears from independent brands and stores
+          around the world with ease
         </Balancer>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link href="/products" className={cn(buttonVariants())}>

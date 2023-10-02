@@ -12,25 +12,20 @@ import { MdxCard } from "@/components/mdx/mdx-card"
  * @link https://github.com/shadcn/ui/blob/main/apps/www/components/mdx-components.tsx
  */
 
-// These types are required to make the related components work with `useMDXComponent`
-// They used to work without these types, but now they don't for some reason
-type ImageProps = React.ComponentProps<typeof Image>
-type AlertProps = React.ComponentProps<typeof Alert>
-type AlertTitleProps = React.ComponentProps<typeof AlertTitle>
-type AlertDescriptionProps = React.ComponentProps<typeof AlertDescription>
-type AspectRatioProps = React.ComponentProps<typeof AspectRatio>
-
 const components = {
   h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1
-      className={cn("mt-2 scroll-m-20 text-4xl font-bold", className)}
+      className={cn(
+        "mt-2 scroll-m-20 font-heading text-4xl font-bold",
+        className
+      )}
       {...props}
     />
   ),
   h2: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h2
       className={cn(
-        "mt-10 scroll-m-20 border-b pb-2 text-2xl font-semibold tracking-tight first:mt-0",
+        "mt-12 scroll-m-20 border-b pb-2 font-heading text-2xl font-semibold tracking-tight first:mt-0",
         className
       )}
       {...props}
@@ -39,7 +34,7 @@ const components = {
   h3: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h3
       className={cn(
-        "mt-8 scroll-m-20 text-xl font-semibold tracking-tight",
+        "mt-8 scroll-m-20 font-heading text-xl font-semibold tracking-tight",
         className
       )}
       {...props}
@@ -48,7 +43,7 @@ const components = {
   h4: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h4
       className={cn(
-        "mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
+        "mt-8 scroll-m-20 font-heading text-lg font-semibold tracking-tight",
         className
       )}
       {...props}
@@ -80,10 +75,7 @@ const components = {
   ),
   p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p
-      className={cn(
-        "text-base leading-7 [&:not(:first-child)]:mt-5",
-        className
-      )}
+      className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
       {...props}
     />
   ),
@@ -152,21 +144,11 @@ const components = {
       {...props}
     />
   ),
-  Image: ({ className, alt, ...props }: ImageProps) => (
-    <Image className={cn(className, "mt-4")} alt={alt} {...props} />
-  ),
-  Alert: ({ className, ...props }: AlertProps) => (
-    <Alert className={cn(className)} {...props} />
-  ),
-  AlertTitle: ({ className, ...props }: AlertTitleProps) => (
-    <AlertTitle className={cn(className)} {...props} />
-  ),
-  AlertDescription: ({ className, ...props }: AlertDescriptionProps) => (
-    <AlertDescription className={cn(className)} {...props} />
-  ),
-  AspectRatio: ({ className, ...props }: AspectRatioProps) => (
-    <AspectRatio className={cn(className)} {...props} />
-  ),
+  Image,
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AspectRatio,
   Card: MdxCard,
   Callout,
 }
@@ -179,7 +161,6 @@ export function Mdx({ code }: MdxProps) {
   const Component = useMDXComponent(code)
 
   return (
-    // eslint-disable-next-line tailwindcss/no-custom-classname
     <div className="mdx">
       <Component components={components} />
     </div>

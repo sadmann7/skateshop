@@ -279,10 +279,6 @@ export function BoardBuilder({
           per_page={per_page}
           sort={sort}
           createQueryString={createQueryString}
-          router={router}
-          pathname={pathname}
-          isPending={isPending}
-          startTransition={startTransition}
         />
       ) : null}
     </section>

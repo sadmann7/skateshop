@@ -55,7 +55,7 @@ function PageHeaderHeading({
   )
 }
 
-const descriptionVariants = cva("text-muted-foreground max-w-[750px]", {
+const descriptionVariants = cva("max-w-[750px] text-muted-foreground", {
   variants: {
     size: {
       default: "text-base sm:text-lg",

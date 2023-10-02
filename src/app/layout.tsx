@@ -5,11 +5,11 @@ import { ClerkProvider } from "@clerk/nextjs"
 import "@/styles/globals.css"
 
 import { siteConfig } from "@/config/site"
-import { fontMono, fontSans } from "@/lib/fonts"
+import { fontHeading, fontMono, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
-import { Providers } from "@/components/providers"
+import { ThemeProvider } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
 export const metadata: Metadata = {
@@ -54,13 +54,12 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     images: [`${siteConfig.url}/og.jpg`],
-    creator: "@sadmann7",
+    creator: "@sadmann17",
   },
   icons: {
     icon: "/favicon.ico",
   },
 }
-
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
@@ -72,14 +71,20 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
             className={cn(
               "min-h-screen bg-background font-sans antialiased",
               fontSans.variable,
-              fontMono.variable
+              fontMono.variable,
+              fontHeading.variable
             )}
           >
-            <Providers attribute="class" defaultTheme="system" enableSystem>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
               {children}
               <TailwindIndicator />
               <Analytics />
-            </Providers>
+            </ThemeProvider>
             <Toaster />
           </body>
         </html>

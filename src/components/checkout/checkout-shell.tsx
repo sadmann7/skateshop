@@ -9,12 +9,13 @@ import { cn } from "@/lib/utils"
 
 // Docs: https://stripe.com/docs/payments/quickstart
 
-type CheckoutShellProps = React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> & {
-  storeStripeAccountId: string,
+interface CheckoutShellProps
+  extends React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> {
+  storeStripeAccountId: string
   paymentIntent: Promise<{
     clientSecret: string | null
   }>
-};
+}
 
 export function CheckoutShell({
   children,

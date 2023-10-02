@@ -1,5 +1,5 @@
 import * as React from "react"
-import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context"
+import { usePathname, useRouter } from "next/navigation"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -10,20 +10,12 @@ import {
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
-interface PaginationButtonProps
-  extends React.DetailedHTMLProps<
-    React.HTMLAttributes<HTMLDivElement>,
-    HTMLDivElement
-  > {
+interface PaginationButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   pageCount: number
   page: string
   per_page?: string
   sort: string
   createQueryString: (params: Record<string, string | number | null>) => string
-  router: AppRouterInstance
-  pathname: string
-  isPending: boolean
-  startTransition: React.TransitionStartFunction
   siblingCount?: number
 }
 
@@ -33,14 +25,14 @@ export function PaginationButton({
   per_page,
   sort,
   createQueryString,
-  router,
-  pathname,
-  isPending,
-  startTransition,
   siblingCount = 1,
   className,
   ...props
 }: PaginationButtonProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const [isPending, startTransition] = React.useTransition()
+
   // Memoize pagination range to avoid unnecessary re-renders
   const paginationRange = React.useMemo(() => {
     const delta = siblingCount + 2
