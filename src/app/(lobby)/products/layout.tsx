@@ -1,4 +1,5 @@
-interface ProductsLayoutProps extends React.PropsWithChildren {
+interface ProductsLayoutProps {
+  children: React.ReactNode
   modal: React.PropsWithChildren
 }
 
