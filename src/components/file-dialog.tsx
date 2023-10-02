@@ -19,11 +19,17 @@ import { toast } from "sonner"
 import "cropperjs/dist/cropper.css"
 
 import Image from "next/image"
+import {
+  CropIcon,
+  Cross2Icon,
+  ResetIcon,
+  TrashIcon,
+  UploadIcon,
+} from "@radix-ui/react-icons"
 
 import { cn, formatBytes } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Icons } from "@/components/icons"
 
 // FIXME Your proposed upload exceeds the maximum allowed size, this should trigger toast.error too
 
@@ -132,14 +138,14 @@ export function FileDialog<TFieldValues extends FieldValues>({
           <input {...getInputProps()} />
           {isUploading ? (
             <div className="group grid w-full place-items-center gap-1 sm:px-10">
-              <Icons.upload
+              <UploadIcon
                 className="h-9 w-9 animate-pulse text-muted-foreground"
                 aria-hidden="true"
               />
             </div>
           ) : isDragActive ? (
             <div className="grid place-items-center gap-2 text-muted-foreground sm:px-5">
-              <Icons.upload
+              <UploadIcon
                 className={cn("h-8 w-8", isDragActive && "animate-bounce")}
                 aria-hidden="true"
               />
@@ -147,7 +153,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
             </div>
           ) : (
             <div className="grid place-items-center gap-1 sm:px-5">
-              <Icons.upload
+              <UploadIcon
                 className="h-8 w-8 text-muted-foreground"
                 aria-hidden="true"
               />
@@ -184,7 +190,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
             className="mt-2.5 w-full"
             onClick={() => setFiles(null)}
           >
-            <Icons.trash className="mr-2 h-4 w-4" aria-hidden="true" />
+            <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             Remove All
             <span className="sr-only">Remove all</span>
           </Button>
@@ -275,7 +281,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
                 size="icon"
                 className="h-7 w-7"
               >
-                <Icons.crop className="h-4 w-4 text-white" aria-hidden="true" />
+                <CropIcon className="h-4 w-4 text-white" aria-hidden="true" />
                 <span className="sr-only">Crop image</span>
               </Button>
             </DialogTrigger>
@@ -311,11 +317,8 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
                       setIsOpen(false)
                     }}
                   >
-                    <Icons.crop
-                      className="mr-2 h-3.5 w-3.5"
-                      aria-hidden="true"
-                    />
-                    Crop Image
+                    <CropIcon className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+                    Crop image
                   </Button>
                   <Button
                     aria-label="Reset crop"
@@ -328,11 +331,11 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
                       setCropData(null)
                     }}
                   >
-                    <Icons.reset
+                    <ResetIcon
                       className="mr-2 h-3.5 w-3.5"
                       aria-hidden="true"
                     />
-                    Reset Crop
+                    Reset crop
                   </Button>
                 </div>
               </div>
@@ -349,7 +352,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
             setFiles(files.filter((_, j) => j !== i))
           }}
         >
-          <Icons.close className="h-4 w-4 text-white" aria-hidden="true" />
+          <Cross2Icon className="h-4 w-4 text-white" aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>

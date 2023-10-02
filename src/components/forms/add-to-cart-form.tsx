@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { MinusIcon, PlusIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
@@ -74,7 +75,7 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
             }
             disabled={isPending}
           >
-            <Icons.remove className="h-3 w-3" aria-hidden="true" />
+            <MinusIcon className="h-3 w-3" aria-hidden="true" />
             <span className="sr-only">Remove one item</span>
           </Button>
           <FormField
@@ -113,7 +114,7 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
             }
             disabled={isPending}
           >
-            <Icons.add className="h-3 w-3" aria-hidden="true" />
+            <PlusIcon className="h-3 w-3" aria-hidden="true" />
             <span className="sr-only">Add one item</span>
           </Button>
         </div>

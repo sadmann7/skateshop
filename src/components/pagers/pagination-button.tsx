@@ -11,20 +11,20 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 interface PaginationButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-  createQueryString: (params: Record<string, string | number | null>) => string
   pageCount: number
   page?: string
   per_page?: string
   sort?: string
+  createQueryString: (params: Record<string, string | number | null>) => string
   siblingCount?: number
 }
 
 export function PaginationButton({
-  createQueryString,
   pageCount,
   page,
   per_page,
   sort,
+  createQueryString,
   siblingCount = 1,
   className,
   ...props

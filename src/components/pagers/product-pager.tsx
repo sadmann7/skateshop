@@ -3,10 +3,10 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { type Product } from "@/db/schema"
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
 import {
   getNextProductIdAction,
   getPreviousProductIdAction,
@@ -44,7 +44,7 @@ export function ProductPager({ product }: ProductPagerProps) {
         }}
         disabled={isPending}
       >
-        <Icons.chevronLeft className="h-4 w-4" aria-hidden="true" />
+        <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
         <span className="sr-only">Previous product</span>
       </Button>
       <Button
@@ -69,7 +69,7 @@ export function ProductPager({ product }: ProductPagerProps) {
         }}
         disabled={isPending}
       >
-        <Icons.chevronRight className="h-4 w-4" aria-hidden="true" />
+        <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
         <span className="sr-only">Next product</span>
       </Button>
     </div>

@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import type { Option } from "@/types"
+import { Cross2Icon } from "@radix-ui/react-icons"
 import { Command as CommandPrimitive } from "cmdk"
-import { X } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -106,7 +106,7 @@ export function MultiSelect({
                   }}
                   onClick={() => handleRemove(option)}
                 >
-                  <X className="h-3 w-3" aria-hidden="true" />
+                  <Cross2Icon className="h-3 w-3" aria-hidden="true" />
                 </Button>
               </Badge>
             )

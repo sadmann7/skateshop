@@ -3,7 +3,7 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { CuratedStore } from "@/types"
-import { Cross2Icon } from "@radix-ui/react-icons"
+import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons"
 
 import { storeSortOptions, storeStatusOptions } from "@/config/stores"
 import { cn } from "@/lib/utils"
@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { StoreCard } from "@/components/cards/store-card"
-import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 
 import { FacetedFilter } from "./faceted-filter"
@@ -83,7 +82,7 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
           <DropdownMenuTrigger asChild>
             <Button aria-label="Sort stores" size="sm" disabled={isPending}>
               Sort
-              <Icons.chevronDown className="ml-2 h-4 w-4" aria-hidden="true" />
+              <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">

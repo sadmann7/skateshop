@@ -64,7 +64,6 @@
     "dayjs": "^1.11.10",
     "drizzle-orm": "^0.28.6",
     "embla-carousel-react": "8.0.0-rc14",
-    "lucide-react": "^0.279.0",
     "mysql2": "^3.6.1",
     "next": "^13.5.3",
     "next-contentlayer": "^0.3.4",

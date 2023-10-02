@@ -1,5 +1,11 @@
 import Link from "next/link"
 import type { User } from "@clerk/nextjs/server"
+import {
+  AvatarIcon,
+  DashboardIcon,
+  ExitIcon,
+  GearIcon,
+} from "@radix-ui/react-icons"
 
 import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
@@ -17,7 +23,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CartSheet } from "@/components/checkout/cart-sheet"
-import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
 import { ProductsCombobox } from "@/components/products-combobox"
@@ -75,7 +80,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/account">
-                        <Icons.user
+                        <AvatarIcon
                           className="mr-2 h-4 w-4"
                           aria-hidden="true"
                         />
@@ -85,7 +90,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/stores">
-                        <Icons.terminal
+                        <DashboardIcon
                           className="mr-2 h-4 w-4"
                           aria-hidden="true"
                         />
@@ -95,10 +100,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild disabled>
                       <Link href="/dashboard/settings">
-                        <Icons.settings
-                          className="mr-2 h-4 w-4"
-                          aria-hidden="true"
-                        />
+                        <GearIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                         Settings
                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                       </Link>
@@ -107,10 +109,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/signout">
-                      <Icons.logout
-                        className="mr-2 h-4 w-4"
-                        aria-hidden="true"
-                      />
+                      <ExitIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                       Log out
                       <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                     </Link>

@@ -1,5 +1,6 @@
 import * as React from "react"
 import Link from "next/link"
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -12,10 +13,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ClientButton } from "@/components/client-button"
-import { Icons } from "@/components/icons"
 
 interface ErrorCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
-  icon?: keyof typeof Icons
+  icon?: React.ComponentType<{ className?: string }>
   title: string
   description: string
   retryLink?: string
@@ -24,7 +24,7 @@ interface ErrorCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
 }
 
 export function ErrorCard({
-  icon,
+  icon: Icon = ExclamationTriangleIcon,
   title,
   description,
   retryLink,
@@ -33,8 +33,6 @@ export function ErrorCard({
   className,
   ...props
 }: ErrorCardProps) {
-  const Icon = Icons[icon ?? "warning"]
-
   return (
     <Card
       as="section"

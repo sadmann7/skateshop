@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { PaperPlaneIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
@@ -102,7 +103,7 @@ export function SubscribeToNewsletterForm() {
                     aria-hidden="true"
                   />
                 ) : (
-                  <Icons.send className="h-3 w-3" aria-hidden="true" />
+                  <PaperPlaneIcon className="h-3 w-3" aria-hidden="true" />
                 )}
                 <span className="sr-only">Join newsletter</span>
               </Button>

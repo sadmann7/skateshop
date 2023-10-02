@@ -9,12 +9,12 @@ import { type Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { env } from "@/env.mjs"
+import { ChevronLeftIcon } from "@radix-ui/react-icons"
 
 import { absoluteUrl, cn, formatDate } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Icons } from "@/components/icons"
 import { MdxPager } from "@/components/pagers/mdx-pager"
 import { Shell } from "@/components/shells/shell"
 
@@ -110,7 +110,7 @@ export default async function PostPage({ params }: PostPageProps) {
           "absolute left-[-200px] top-14 hidden xl:inline-flex"
         )}
       >
-        <Icons.chevronLeft className="mr-2 h-4 w-4" />
+        <ChevronLeftIcon className="mr-2 h-4 w-4" aria-hidden="true" />
         See all posts
       </Link>
       <div className="space-y-2">
@@ -174,7 +174,7 @@ export default async function PostPage({ params }: PostPageProps) {
           buttonVariants({ variant: "ghost", className: "mx-auto mt-4 w-fit" })
         )}
       >
-        <Icons.chevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+        <ChevronLeftIcon className="mr-2 h-4 w-4" aria-hidden="true" />
         See all posts
         <span className="sr-only">See all posts</span>
       </Link>

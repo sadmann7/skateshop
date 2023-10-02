@@ -1,8 +1,8 @@
 import Link from "next/link"
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 
 import { cn, truncate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
 
 interface MdxPagerItem {
   title: string
@@ -37,7 +37,7 @@ export function MdxPager({
           href={pager.prev.slug}
           className={cn(buttonVariants({ variant: "ghost" }))}
         >
-          <Icons.chevronLeft className="mr-2 h-4 w-4" aria-hidden="true" />
+          <ChevronLeftIcon className="mr-2 h-4 w-4" aria-hidden="true" />
           {truncate(pager.prev.title, 20)}
         </Link>
       ) : null}
@@ -48,7 +48,7 @@ export function MdxPager({
           className={cn(buttonVariants({ variant: "ghost" }), "ml-auto")}
         >
           {truncate(pager.next.title, 20)}
-          <Icons.chevronRight className="ml-2 h-4 w-4" aria-hidden="true" />
+          <ChevronRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
         </Link>
       ) : null}
     </div>

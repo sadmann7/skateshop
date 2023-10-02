@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
 
 import { Button, type ButtonProps } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
 
 export function CopyButton({ value, ...props }: ButtonProps) {
   const [isCopied, setIsCopied] = React.useState(false)
@@ -22,9 +22,9 @@ export function CopyButton({ value, ...props }: ButtonProps) {
       {...props}
     >
       {isCopied ? (
-        <Icons.check className="h-3 w-3" aria-hidden="true" />
+        <CheckIcon className="h-3 w-3" aria-hidden="true" />
       ) : (
-        <Icons.copy className="h-3 w-3" aria-hidden="true" />
+        <CopyIcon className="h-3 w-3" aria-hidden="true" />
       )}
       <span className="sr-only">
         {isCopied ? "Copied" : "Copy to clipboard"}

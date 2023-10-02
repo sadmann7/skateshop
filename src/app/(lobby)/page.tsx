@@ -79,7 +79,7 @@ export default async function IndexPage() {
       <section
         id="hero"
         aria-labelledby="hero-heading"
-        className="mx-auto flex h-[calc(100dvh-4rem)] w-full max-w-[64rem] flex-col items-center justify-center gap-4 text-center"
+        className="mx-auto flex w-full max-w-[64rem] flex-col items-center justify-center gap-4 py-12 text-center md:pt-32"
       >
         {githubStars ? (
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">

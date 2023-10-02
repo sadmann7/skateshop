@@ -4,6 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { type Product } from "@/db/schema"
+import { CheckIcon, PlusIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { catchError, cn, formatPrice } from "@/lib/utils"
@@ -131,9 +132,9 @@ export function ProductCard({
                 aria-hidden="true"
               />
             ) : isAddedToCart ? (
-              <Icons.check className="mr-2 h-4 w-4" aria-hidden="true" />
+              <CheckIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             ) : (
-              <Icons.add className="mr-2 h-4 w-4" aria-hidden="true" />
+              <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
             )}
             {isAddedToCart ? "Added" : "Add to cart"}
           </Button>

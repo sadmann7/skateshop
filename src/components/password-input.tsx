@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
+import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input, type InputProps } from "@/components/ui/input"
-import { Icons } from "@/components/icons"
 
 const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, ...props }, ref) => {
@@ -28,9 +28,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
           disabled={props.value === "" || props.disabled}
         >
           {showPassword ? (
-            <Icons.hide className="h-4 w-4" aria-hidden="true" />
+            <EyeNoneIcon className="h-4 w-4" aria-hidden="true" />
           ) : (
-            <Icons.view className="h-4 w-4" aria-hidden="true" />
+            <EyeOpenIcon className="h-4 w-4" aria-hidden="true" />
           )}
           <span className="sr-only">
             {showPassword ? "Hide password" : "Show password"}

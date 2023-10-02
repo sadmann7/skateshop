@@ -9,7 +9,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "Account",
       href: "/dashboard/account",
-      icon: "user",
+      icon: "avatar",
       items: [],
     },
     {
@@ -21,7 +21,7 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "Billing",
       href: "/dashboard/billing",
-      icon: "billing",
+      icon: "credit",
       items: [],
     },
     {

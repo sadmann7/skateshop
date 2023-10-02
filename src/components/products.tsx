@@ -4,6 +4,11 @@ import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product, type Store } from "@/db/schema"
 import type { Option } from "@/types"
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@radix-ui/react-icons"
 
 import { getSubcategories, sortOptions } from "@/config/products"
 import { cn, toTitleCase, truncate } from "@/lib/utils"
@@ -32,7 +37,6 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { ProductCard } from "@/components/cards/product-card"
-import { Icons } from "@/components/icons"
 import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 
@@ -274,7 +278,7 @@ export function Products({
                         }}
                         disabled={Number(store_page) === 1 || isPending}
                       >
-                        <Icons.chevronLeft
+                        <ChevronLeftIcon
                           className="h-4 w-4"
                           aria-hidden="true"
                         />
@@ -296,7 +300,7 @@ export function Products({
                           Number(store_page) === storePageCount || isPending
                         }
                       >
-                        <Icons.chevronRight
+                        <ChevronRightIcon
                           className="h-4 w-4"
                           aria-hidden="true"
                         />
@@ -374,7 +378,7 @@ export function Products({
           <DropdownMenuTrigger asChild>
             <Button aria-label="Sort products" size="sm" disabled={isPending}>
               Sort
-              <Icons.chevronDown className="ml-2 h-4 w-4" aria-hidden="true" />
+              <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">

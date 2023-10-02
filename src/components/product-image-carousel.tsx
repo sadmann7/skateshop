@@ -3,6 +3,7 @@
 import * as React from "react"
 import Image from "next/image"
 import { type StoredFile } from "@/types"
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 import useEmblaCarousel, {
   type EmblaCarouselType,
   type EmblaOptionsType,
@@ -128,7 +129,7 @@ export function ProductImageCarousel({
             disabled={prevBtnDisabled}
             onClick={scrollPrev}
           >
-            <Icons.chevronLeft
+            <ChevronLeftIcon
               className="h-3 w-3 sm:h-4 sm:w-4"
               aria-hidden="true"
             />
@@ -165,7 +166,7 @@ export function ProductImageCarousel({
             disabled={nextBtnDisabled}
             onClick={scrollNext}
           >
-            <Icons.chevronRight
+            <ChevronRightIcon
               className="h-3 w-3 sm:h-4 sm:w-4"
               aria-hidden="true"
             />

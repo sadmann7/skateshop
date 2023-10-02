@@ -18,7 +18,7 @@ export function GET(req: Request) {
     return new ImageResponse(
       (
         <div
-          tw="h-full w-full flex items-center justify-center flex-col"
+          tw="flex h-full w-full flex-col items-center justify-center"
           style={{
             color: paint,
             background:
@@ -27,7 +27,7 @@ export function GET(req: Request) {
                 : "white",
           }}
         >
-          <div tw="flex items-center text-3xl justify-center flex-col">
+          <div tw="flex flex-col items-center justify-center text-3xl">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="124"
@@ -41,21 +41,21 @@ export function GET(req: Request) {
             </svg>
           </div>
           <div
-            tw="flex max-w-4xl items-center justify-center flex-col mt-10"
+            tw="mt-10 flex max-w-4xl flex-col items-center justify-center"
             style={{
               whiteSpace: "pre-wrap",
             }}
           >
             {type ? (
-              <div tw="text-xl uppercase font-medium tracking-tight leading-tight dark:text-zinc-50 px-8">
+              <div tw="px-8 text-xl font-medium uppercase leading-tight tracking-tight dark:text-zinc-50">
                 {type}
               </div>
             ) : null}
-            <div tw="text-5xl font-bold tracking-tight leading-tight dark:text-zinc-50 px-8">
+            <div tw="px-8 text-5xl font-bold leading-tight tracking-tight dark:text-zinc-50">
               {title}
             </div>
             {description ? (
-              <div tw="mt-5 text-3xl text-zinc-400 text-center font-normal tracking-tight leading-tight px-20">
+              <div tw="mt-5 px-20 text-center text-3xl font-normal leading-tight tracking-tight text-zinc-400">
                 {description}
               </div>
             ) : null}

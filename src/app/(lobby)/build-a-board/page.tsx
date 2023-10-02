@@ -2,11 +2,11 @@ import { type Metadata } from "next"
 import { cookies } from "next/headers"
 import Link from "next/link"
 import { env } from "@/env.mjs"
+import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
 import { BoardBuilder } from "@/components/board-builder"
-import { Icons } from "@/components/icons"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -88,9 +88,9 @@ export default async function BuildABoardPage({
                   {cartItems
                     ?.map((item) => item.subcategory)
                     ?.includes(subcategory.slug) ? (
-                    <Icons.check className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <CheckIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   ) : (
-                    <Icons.circle className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <CircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                   )}
                   {subcategory.title}
                 </div>

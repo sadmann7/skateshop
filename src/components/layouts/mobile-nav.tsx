@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { useSelectedLayoutSegment } from "next/navigation"
 import type { MainNavItem, SidebarNavItem } from "@/types"
+import { ViewVerticalIcon } from "@radix-ui/react-icons"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -50,7 +51,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
           variant="ghost"
           className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
         >
-          <Icons.menu className="h-6 w-6" />
+          <ViewVerticalIcon className="h-6 w-6" aria-hidden="true" />
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>

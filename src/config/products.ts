@@ -1,5 +1,5 @@
 import type { Category, Option } from "@/types"
-import { Backpack, Footprints, Shirt } from "lucide-react"
+import { BackpackIcon } from "@radix-ui/react-icons"
 
 import { Icons } from "@/components/icons"
 
@@ -74,7 +74,7 @@ export const productCategories = [
   {
     title: "clothing",
     image: "/images/clothing-one.webp",
-    icon: Shirt,
+    icon: Icons.shirt,
     subcategories: [
       {
         title: "T-shirts",
@@ -106,7 +106,7 @@ export const productCategories = [
   {
     title: "shoes",
     image: "/images/shoe-one.webp",
-    icon: Footprints,
+    icon: Icons.footprints,
     subcategories: [
       {
         title: "Low Tops",
@@ -138,7 +138,7 @@ export const productCategories = [
   {
     title: "accessories",
     image: "/images/backpack-one.webp",
-    icon: Backpack,
+    icon: BackpackIcon,
     subcategories: [
       {
         title: "Skate Tools",

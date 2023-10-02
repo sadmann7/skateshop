@@ -1,118 +1,9 @@
-import {
-  AlarmClock,
-  AlertTriangle,
-  ArrowDown,
-  ArrowUp,
-  BarChart3,
-  CalendarDays,
-  Check,
-  ChevronDown,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-  ChevronsUpDown,
-  ChevronUp,
-  Circle,
-  Copy,
-  CreditCard,
-  Crop,
-  DollarSign,
-  Download,
-  Edit,
-  Eye,
-  EyeOff,
-  FileTerminal,
-  Filter,
-  Image,
-  Loader2,
-  LogOut,
-  Menu,
-  MessageSquare,
-  Minus,
-  MoreHorizontal,
-  MoreVertical,
-  Package,
-  Plus,
-  PlusCircle,
-  RefreshCw,
-  Search,
-  Send,
-  Settings,
-  ShoppingBag,
-  ShoppingCart,
-  Sliders,
-  SlidersHorizontal,
-  Star,
-  Trash,
-  Twitter,
-  UploadCloud,
-  User,
-  Volume2,
-  VolumeX,
-  Wallet,
-  X,
-  type LucideIcon,
-  type LucideProps,
-} from "lucide-react"
+import { AvatarIcon, ImageIcon } from "@radix-ui/react-icons"
 
-export type Icon = LucideIcon
+type IconProps = React.HTMLAttributes<SVGElement>
 
 export const Icons = {
-  star: Star,
-  twitter: Twitter,
-  close: X,
-  spinner: Loader2,
-  chevronLeft: ChevronLeft,
-  chevronRight: ChevronRight,
-  chevronsLeft: ChevronsLeft,
-  chevronsRight: ChevronsRight,
-  chevronUp: ChevronUp,
-  chevronDown: ChevronDown,
-  chevronUpDown: ChevronsUpDown,
-  arrowUp: ArrowUp,
-  arrowDown: ArrowDown,
-  menu: Menu,
-  verticalThreeDots: MoreVertical,
-  horizontalThreeDots: MoreHorizontal,
-  verticalSliders: Sliders,
-  horizontalSliders: SlidersHorizontal,
-  circle: Circle,
-  check: Check,
-  add: Plus,
-  addCircle: PlusCircle,
-  remove: Minus,
-  view: Eye,
-  hide: EyeOff,
-  trash: Trash,
-  edit: Edit,
-  crop: Crop,
-  reset: RefreshCw,
-  send: Send,
-  copy: Copy,
-  downlaod: Download,
-  warning: AlertTriangle,
-  search: Search,
-  filter: Filter,
-  alarm: AlarmClock,
-  calendar: CalendarDays,
-  user: User,
-  terminal: FileTerminal,
-  settings: Settings,
-  logout: LogOut,
-  volumne: Volume2,
-  volumneMute: VolumeX,
-  message: MessageSquare,
-  billing: CreditCard,
-  wallet: Wallet,
-  dollarSign: DollarSign,
-  cart: ShoppingCart,
-  product: Package,
-  store: ShoppingBag,
-  chart: BarChart3,
-  upload: UploadCloud,
-  placeholder: Image,
-  logo: (props: LucideProps) => (
+  logo: (props: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
@@ -129,7 +20,7 @@ export const Icons = {
       <path d="M3 9a2 1 0 0 0 2 1h14a2 1 0 0 0 2 -1" />
     </svg>
   ),
-  nextjs: (props: LucideProps) => (
+  nextjs: (props: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
       <path
         fill="currentColor"
@@ -137,7 +28,7 @@ export const Icons = {
       />
     </svg>
   ),
-  gitHub: (props: LucideProps) => (
+  gitHub: (props: IconProps) => (
     <svg viewBox="0 0 438.549 438.549" {...props}>
       <path
         fill="currentColor"
@@ -145,24 +36,20 @@ export const Icons = {
       ></path>
     </svg>
   ),
-  google: ({ ...props }: LucideProps) => (
-    <svg
-      aria-hidden="true"
-      focusable="false"
-      data-prefix="fab"
-      data-icon="discord"
-      role="img"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 488 512"
-      {...props}
-    >
+  google: ({ ...props }: IconProps) => (
+    <svg role="img" viewBox="0 0 24 24" {...props}>
       <path
         fill="currentColor"
-        d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-      ></path>
+        d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
+      />
     </svg>
   ),
-  facebook: ({ ...props }: LucideProps) => (
+  twitter: (props: IconProps) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...props}>
+      <path d="M21.543 7.104c.015.211.015.423.015.636 0 6.507-4.954 14.01-14.01 14.01v-.003A13.94 13.94 0 0 1 0 19.539a9.88 9.88 0 0 0 7.287-2.041 4.93 4.93 0 0 1-4.6-3.42 4.916 4.916 0 0 0 2.223-.084A4.926 4.926 0 0 1 .96 9.167v-.062a4.887 4.887 0 0 0 2.235.616A4.928 4.928 0 0 1 1.67 3.148a13.98 13.98 0 0 0 10.15 5.144 4.929 4.929 0 0 1 8.39-4.49 9.868 9.868 0 0 0 3.128-1.196 4.941 4.941 0 0 1-2.165 2.724A9.828 9.828 0 0 0 24 4.555a10.019 10.019 0 0 1-2.457 2.549z" />
+    </svg>
+  ),
+  facebook: ({ ...props }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" {...props}>
       <path
         fill="currentColor"
@@ -170,7 +57,7 @@ export const Icons = {
       />
     </svg>
   ),
-  discord: ({ ...props }: LucideProps) => (
+  discord: ({ ...props }: IconProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" {...props}>
       <path
         fill="currentColor"
@@ -178,4 +65,150 @@ export const Icons = {
       />
     </svg>
   ),
+  spinner: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+  ),
+  cart: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <circle cx="8" cy="21" r="1" />
+      <circle cx="19" cy="21" r="1" />
+      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+    </svg>
+  ),
+  product: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+      <path d="M3 6h18" />
+      <path d="M16 10a4 4 0 0 1-8 0" />
+    </svg>
+  ),
+  store: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+      <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+      <path d="M2 7h20" />
+      <path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7" />
+    </svg>
+  ),
+  credit: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <rect width="20" height="14" x="2" y="5" rx="2" />
+      <line x1="2" x2="22" y1="10" y2="10" />
+    </svg>
+  ),
+  dollarSign: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <line x1="12" x2="12" y1="2" y2="22" />
+      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    </svg>
+  ),
+  bot: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 8V4H8" />
+      <rect width="16" height="12" x="4" y="8" rx="2" />
+      <path d="M2 14h2" />
+      <path d="M20 14h2" />
+      <path d="M15 13v2" />
+      <path d="M9 13v2" />
+    </svg>
+  ),
+  shirt: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" />
+    </svg>
+  ),
+  footprints: (props: IconProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M4 16v-2.38C4 11.5 2.97 10.5 3 8c.03-2.72 1.49-6 4.5-6C9.37 2 10 3.8 10 5.5c0 3.11-2 5.66-2 8.68V16a2 2 0 1 1-4 0Z" />
+      <path d="M20 20v-2.38c0-2.12 1.03-3.12 1-5.62-.03-2.72-1.49-6-4.5-6C14.63 6 14 7.8 14 9.5c0 3.11 2 5.66 2 8.68V20a2 2 0 1 0 4 0Z" />
+      <path d="M16 17h4" />
+      <path d="M4 13h4" />
+    </svg>
+  ),
+  avatar: AvatarIcon,
+  placeholder: ImageIcon,
 }

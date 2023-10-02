@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import type { CartLineItem } from "@/types"
+import { MinusIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons"
 
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons"
 import { deleteCartItemAction, updateCartItemAction } from "@/app/_actions/cart"
 
 interface UpdateCartProps {
@@ -39,7 +39,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           }}
           disabled={isPending}
         >
-          <Icons.remove className="h-3 w-3" aria-hidden="true" />
+          <MinusIcon className="h-3 w-3" aria-hidden="true" />
           <span className="sr-only">Remove one item</span>
         </Button>
         <Input
@@ -81,7 +81,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           }}
           disabled={isPending}
         >
-          <Icons.add className="h-3 w-3" aria-hidden="true" />
+          <PlusIcon className="h-3 w-3" aria-hidden="true" />
           <span className="sr-only">Add one item</span>
         </Button>
       </div>
@@ -103,7 +103,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         }}
         disabled={isPending}
       >
-        <Icons.trash className="h-3 w-3" aria-hidden="true" />
+        <TrashIcon className="h-3 w-3" aria-hidden="true" />
         <span className="sr-only">Delete item</span>
       </Button>
     </div>

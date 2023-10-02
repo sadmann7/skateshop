@@ -4,6 +4,7 @@ import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
 import type { CartItem } from "@/types"
+import { ChevronDownIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
@@ -30,7 +31,6 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { ProductCard } from "@/components/cards/product-card"
-import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
@@ -225,7 +225,7 @@ export function BoardBuilder({
           <DropdownMenuTrigger asChild>
             <Button aria-label="Sort products" size="sm" disabled={isPending}>
               Sort
-              <Icons.chevronDown className="ml-2 h-4 w-4" aria-hidden="true" />
+              <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">

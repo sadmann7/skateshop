@@ -3,6 +3,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
+import { CheckIcon } from "@radix-ui/react-icons"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
@@ -16,7 +17,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ManageSubscriptionForm } from "@/components/forms/manage-subscription-form"
-import { Icons } from "@/components/icons"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -107,7 +107,7 @@ export default async function BillingPage() {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-center gap-2">
-                      <Icons.check className="h-4 w-4" aria-hidden="true" />
+                      <CheckIcon className="h-4 w-4" aria-hidden="true" />
                       <span>{feature}</span>
                     </div>
                   ))}
