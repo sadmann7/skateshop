@@ -11,20 +11,20 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 interface PaginationButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-  pageCount: number
-  page: string
-  per_page?: string
-  sort: string
   createQueryString: (params: Record<string, string | number | null>) => string
+  pageCount: number
+  page?: string
+  per_page?: string
+  sort?: string
   siblingCount?: number
 }
 
 export function PaginationButton({
+  createQueryString,
   pageCount,
   page,
   per_page,
   sort,
-  createQueryString,
   siblingCount = 1,
   className,
   ...props
@@ -80,7 +80,7 @@ export function PaginationButton({
               `${pathname}?${createQueryString({
                 page: 1,
                 per_page: per_page ?? null,
-                sort,
+                sort: sort ?? null,
               })}`
             )
           })
@@ -100,7 +100,7 @@ export function PaginationButton({
               `${pathname}?${createQueryString({
                 page: Number(page) - 1,
                 per_page: per_page ?? null,
-                sort,
+                sort: sort ?? null,
               })}`
             )
           })
@@ -134,7 +134,7 @@ export function PaginationButton({
                   `${pathname}?${createQueryString({
                     page: pageNumber,
                     per_page: per_page ?? null,
-                    sort,
+                    sort: sort ?? null,
                   })}`
                 )
               })
@@ -156,7 +156,7 @@ export function PaginationButton({
               `${pathname}?${createQueryString({
                 page: Number(page) + 1,
                 per_page: per_page ?? null,
-                sort,
+                sort: sort ?? null,
               })}`
             )
           })
@@ -175,7 +175,7 @@ export function PaginationButton({
             `${pathname}?${createQueryString({
               page: pageCount ?? 10,
               per_page: per_page ?? null,
-              sort,
+              sort: sort ?? null,
             })}`
           )
         }}
