@@ -1,5 +1,5 @@
-type ProductsLayoutProps = React.PropsWithChildren & {
-  modal : React.PropsWithChildren
+interface ProductsLayoutProps extends React.PropsWithChildren {
+  modal: React.PropsWithChildren
 }
 
 export default function ProductsLayout({
