@@ -113,7 +113,7 @@ export function MobileNav({ mainNavItems, sidebarNavItems }: MobileNavProps) {
   )
 }
 
-type MobileLinkProps = React.PropsWithChildren & {
+interface MobileLinkProps extends React.PropsWithChildren {
   href: string
   disabled?: boolean
   segment: string
