@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { products, type Product } from "@/db/schema"
 import type { FileWithPreview } from "@/types"
@@ -262,12 +261,10 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
             <div className="flex items-center gap-2">
               {files.map((file, i) => (
                 <Zoom key={i}>
-                  <Image
+                  <img
                     src={file.preview}
                     alt={file.name}
                     className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
-                    width={80}
-                    height={80}
                   />
                 </Zoom>
               ))}
