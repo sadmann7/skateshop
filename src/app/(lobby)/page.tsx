@@ -208,7 +208,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
                 })
               )}
             >
-              View all products
+              View all {category}
               <span className="sr-only">View all stores</span>
             </Link>
           </div>
