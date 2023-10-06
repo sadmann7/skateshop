@@ -25,7 +25,7 @@ interface IndexPageProps {
 }
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
-  const { category } = searchParams ?? {}
+  const category = searchParams?.category ?? "skateboards"
 
   const someProducts = await db
     .select({
