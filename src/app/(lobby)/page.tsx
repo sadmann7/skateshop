@@ -260,7 +260,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
         ]?.subcategories.map((subcategory) => (
           <Link
             key={subcategory.slug}
-            href={`/categories/${String(productCategories[0]?.title)}/${
+            href={`/categories/${String(subcategory.title)}/${
               subcategory.slug
             }`}
           >
