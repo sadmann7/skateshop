@@ -19,6 +19,7 @@ export const siteConfig = {
     "An open source e-commerce skateshop build with everything new in Next.js 13.",
   url: "https://skateshop.sadmn.com",
   ogImage: "https://skateshop.sadmn.com/opengraph-image.png",
+  links,
   mainNav: [
     {
       title: "Lobby",
@@ -61,7 +62,6 @@ export const siteConfig = {
       ],
     })),
   ] satisfies MainNavItem[],
-  links,
   footerNav: [
     {
       title: "Credits",

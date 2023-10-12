@@ -40,11 +40,11 @@ export function StoreCard({ store, href }: StoreCardProps) {
         </AspectRatio>
         <CardHeader>
           <CardTitle className="line-clamp-1 text-lg">{store.name}</CardTitle>
-          {store.description ? (
-            <CardDescription className="line-clamp-2">
-              {store.description}
-            </CardDescription>
-          ) : null}
+          <CardDescription className="line-clamp-2">
+            {store.description?.length
+              ? store.description
+              : `Explore ${store.name} products`}
+          </CardDescription>
         </CardHeader>
       </Card>
       <span className="sr-only">{store.name}</span>

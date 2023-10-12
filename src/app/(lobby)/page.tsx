@@ -141,7 +141,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       <section
         id="categories"
         aria-labelledby="categories-heading"
-        className="space-y-6 py-8 md:pt-10 lg:pt-24"
+        className="mx-auto w-full max-w-6xl space-y-6 py-8 md:pt-10 lg:pt-24"
       >
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
           <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
@@ -160,7 +160,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       <section
         id="featured-products"
         aria-labelledby="featured-products-heading"
-        className="space-y-6 overflow-hidden py-8 md:pt-12 lg:pt-24"
+        className="mx-auto w-full max-w-6xl space-y-6 overflow-hidden py-8 md:pt-12 lg:pt-24"
       >
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 overflow-visible text-center">
           <h2 className="font-heading text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
@@ -178,7 +178,6 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
           >
             <ProudctTabs />
           </ScrollArea>
-
           <div className="flex flex-col space-y-10">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {someProducts.length > 0 ? (
@@ -217,7 +216,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       <section
         id="featured-stores"
         aria-labelledby="featured-stores-heading"
-        className="flex flex-col space-y-6 py-8 md:pt-12 lg:pt-24"
+        className="mx-auto flex w-full max-w-6xl flex-col space-y-6 py-8 md:pt-12 lg:pt-24"
       >
         <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
           <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
@@ -253,7 +252,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       <section
         id="random-subcategories"
         aria-labelledby="random-subcategories-heading"
-        className="flex flex-wrap items-center justify-center gap-4 py-6"
+        className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-center gap-4 py-6"
       >
         {productCategories[
           Math.floor(Math.random() * productCategories.length)
