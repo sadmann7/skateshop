@@ -30,6 +30,7 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId)
 
+  // Parse search params using zod schema
   const { page, per_page, sort, name, category, from, to } =
     searchParamsSchema.parse(searchParams)
 
@@ -54,7 +55,6 @@ export default async function ProductsPage({
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
-  // Column and order to sort by
   // Column and order to sort by
   const [column, order] = (sort?.split(".") as [
     keyof Product | undefined,
