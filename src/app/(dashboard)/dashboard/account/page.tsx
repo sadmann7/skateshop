@@ -18,7 +18,11 @@ export const metadata: Metadata = {
 export default function AccountPage() {
   return (
     <Shell variant="sidebar">
-      <PageHeader id="account-header" aria-labelledby="account-header-heading">
+      <PageHeader
+        id="account-header"
+        aria-labelledby="account-header-heading"
+        separated
+      >
         <PageHeaderHeading size="sm">Account</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your account settings

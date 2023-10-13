@@ -9,7 +9,7 @@ import { Shell } from "@/components/shells/shell"
 export default function AccountLoading() {
   return (
     <Shell variant="sidebar">
-      <PageHeader>
+      <PageHeader separated>
         <PageHeaderHeading size="sm">Account</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your account settings

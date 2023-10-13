@@ -7,6 +7,7 @@ import { currentUser } from "@clerk/nextjs"
 import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
 import { getUserEmail } from "@/lib/utils"
+import { searchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -30,7 +31,8 @@ interface PurchasesPageProps {
 export default async function PurchasesPage({
   searchParams,
 }: PurchasesPageProps) {
-  const { page, per_page, sort, store, status } = searchParams ?? {}
+  const { page, per_page, sort, store, status } =
+    searchParamsSchema.parse(searchParams)
 
   const user = await currentUser()
 
@@ -40,23 +42,21 @@ export default async function PurchasesPage({
 
   const email = getUserEmail(user)
 
+  // Fallback page for invalid page numbers
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const perPageAsNumber = Number(per_page)
+  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
+  const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
+
   // Column and order to sort by
-  const [column, order] =
-    typeof sort === "string"
-      ? (sort.split(".") as [
-          keyof Order | undefined,
-          "asc" | "desc" | undefined,
-        ])
-      : []
+  const [column, order] = (sort?.split(".") as [
+    keyof Order | undefined,
+    "asc" | "desc" | undefined,
+  ]) ?? ["createdAt", "desc"]
 
   const statuses = typeof status === "string" ? status.split(".") : []
 
@@ -132,6 +132,7 @@ export default async function PurchasesPage({
       <PageHeader
         id="dashboard-purchases-header"
         aria-labelledby="dashboard-purchases-header-heading"
+        separated
       >
         <PageHeaderHeading size="sm">Purchases</PageHeaderHeading>
         <PageHeaderDescription size="sm">

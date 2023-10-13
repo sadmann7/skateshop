@@ -11,7 +11,7 @@ import { Shell } from "@/components/shells/shell"
 export default function BillingLoading() {
   return (
     <Shell variant="sidebar" as="div">
-      <PageHeader>
+      <PageHeader separated>
         <PageHeaderHeading size="sm">Billing</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your billing and subscription

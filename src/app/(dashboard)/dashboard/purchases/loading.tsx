@@ -9,7 +9,7 @@ import { Shell } from "@/components/shells/shell"
 export default function PurchasesLoading() {
   return (
     <Shell variant="sidebar">
-      <PageHeader>
+      <PageHeader separated>
         <PageHeaderHeading size="sm">Purchases</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your purchases

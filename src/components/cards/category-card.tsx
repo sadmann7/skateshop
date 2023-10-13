@@ -30,7 +30,11 @@ export async function CategoryCard({ category }: CategoryCardProps) {
     .then((res) => res[0]?.count ?? 0)
 
   return (
-    <Link key={category.title} href={`/categories/${category.title}`}>
+    <Link
+      aria-label={category.title}
+      key={category.title}
+      href={`/categories/${category.title}`}
+    >
       <Card className="group relative overflow-hidden rounded-md bg-transparent">
         <div className="absolute inset-0 z-10 bg-zinc-950/75" />
         <Image
@@ -62,7 +66,6 @@ export async function CategoryCard({ category }: CategoryCardProps) {
           <CardDescription>{productCount} products</CardDescription>
         </CardContent>
       </Card>
-      <span className="sr-only">{category.title}</span>
     </Link>
   )
 }

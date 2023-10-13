@@ -4,20 +4,24 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Balancer } from "react-wrap-balancer"
 
 import { cn } from "@/lib/utils"
+import { Separator } from "@/components/ui/separator"
 
 interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType
+  separated?: boolean
 }
 
 function PageHeader({
   className,
   children,
   as: Comp = "section",
+  separated = false,
   ...props
 }: PageHeaderProps) {
   return (
     <Comp className={cn("grid gap-1", className)} {...props}>
       {children}
+      {separated ? <Separator className="mt-2.5" /> : null}
     </Comp>
   )
 }

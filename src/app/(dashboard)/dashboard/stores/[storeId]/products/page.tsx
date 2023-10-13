@@ -5,6 +5,7 @@ import { products, stores, type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 
+import { searchParamsSchema } from "@/lib/validations/params"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
@@ -29,7 +30,8 @@ export default async function ProductsPage({
 }: ProductsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, name, category, from, to } = searchParams ?? {}
+  const { page, per_page, sort, name, category, from, to } =
+    searchParamsSchema.parse(searchParams)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -43,31 +45,26 @@ export default async function ProductsPage({
     notFound()
   }
 
+  // Fallback page for invalid page numbers
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const perPageAsNumber = Number(per_page)
+  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
+  const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
   // Column and order to sort by
-  const [column, order] =
-    typeof sort === "string"
-      ? (sort.split(".") as [
-          keyof Product | undefined,
-          "asc" | "desc" | undefined,
-        ])
-      : []
+  // Column and order to sort by
+  const [column, order] = (sort?.split(".") as [
+    keyof Product | undefined,
+    "asc" | "desc" | undefined,
+  ]) ?? ["createdAt", "desc"]
 
-  const categories =
-    typeof category === "string"
-      ? (category.split(".") as Product["category"][])
-      : []
+  const categories = (category?.split(".") as Product["category"][]) ?? []
 
-  const fromDay = typeof from === "string" ? new Date(from) : undefined
-  const toDay = typeof to === "string" ? new Date(to) : undefined
+  const fromDay = from ? new Date(from) : undefined
+  const toDay = to ? new Date(to) : undefined
 
   // Transaction is used to ensure both queries are executed in a single transaction
   const { items, count } = await db.transaction(async (tx) => {

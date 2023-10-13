@@ -46,7 +46,7 @@ export function ProductCard({
       className={cn("h-full overflow-hidden rounded-sm", className)}
       {...props}
     >
-      <Link href={`/product/${product.id}`}>
+      <Link aria-label={product.name} href={`/product/${product.id}`}>
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
             {product?.images?.length ? (

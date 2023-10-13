@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useFormStatus } from "react-dom"
 
 import { cn } from "@/lib/utils"
 import { useMounted } from "@/hooks/use-mounted"
@@ -15,7 +14,8 @@ import { Icons } from "@/components/icons"
 
 const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
-    const { pending } = useFormStatus()
+    // const { pending } = useFormStatus()
+    const pending = false
     const mounted = useMounted()
 
     if (!mounted)

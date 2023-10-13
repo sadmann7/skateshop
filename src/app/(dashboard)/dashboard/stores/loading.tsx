@@ -11,7 +11,7 @@ import { Shell } from "@/components/shells/shell"
 export default function StoresLoading() {
   return (
     <Shell variant="sidebar">
-      <PageHeader>
+      <PageHeader separated>
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
             Stores

@@ -42,7 +42,11 @@ export default async function BillingPage() {
 
   return (
     <Shell variant="sidebar" as="div">
-      <PageHeader id="billing-header" aria-labelledby="billing-header-heading">
+      <PageHeader
+        id="billing-header"
+        aria-labelledby="billing-header-heading"
+        separated
+      >
         <PageHeaderHeading size="sm">Billing</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your billing and subscription
