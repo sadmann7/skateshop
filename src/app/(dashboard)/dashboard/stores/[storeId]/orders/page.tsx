@@ -5,6 +5,7 @@ import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 
+import { ordersSearchParamsSchema } from "@/lib/validations/params"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { OrdersTableShell } from "@/components/shells/orders-table-shell"
 
@@ -30,7 +31,7 @@ export default async function OrdersPage({
   const storeId = Number(params.storeId)
 
   const { page, per_page, sort, customer, status, from, to } =
-    searchParams ?? {}
+    ordersSearchParamsSchema.parse(searchParams)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -44,28 +45,25 @@ export default async function OrdersPage({
     notFound()
   }
 
+  // Fallback page for invalid page numbers
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const perPageAsNumber = Number(per_page)
+  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
+  const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
   // Column and order to sort by
-  const [column, order] =
-    typeof sort === "string"
-      ? (sort.split(".") as [
-          keyof Order | undefined,
-          "asc" | "desc" | undefined,
-        ])
-      : []
+  const [column, order] = (sort.split(".") as [
+    keyof Order | undefined,
+    "asc" | "desc" | undefined,
+  ]) ?? ["createdAt", "desc"]
 
-  const statuses = typeof status === "string" ? status.split(".") : []
+  const statuses = status ? status.split(".") : []
 
-  const fromDay = typeof from === "string" ? new Date(from) : undefined
-  const toDay = typeof to === "string" ? new Date(to) : undefined
+  const fromDay = from ? new Date(from) : undefined
+  const toDay = to ? new Date(to) : undefined
 
   // Transaction is used to ensure both queries are executed in a single transaction
   const { items, count } = await db.transaction(async (tx) => {
@@ -87,9 +85,7 @@ export default async function OrdersPage({
         and(
           eq(orders.storeId, storeId),
           // Filter by email
-          typeof customer === "string"
-            ? like(orders.email, `%${customer}%`)
-            : undefined,
+          customer ? like(orders.email, `%${customer}%`) : undefined,
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)
@@ -117,9 +113,7 @@ export default async function OrdersPage({
         and(
           eq(orders.storeId, storeId),
           // Filter by email
-          typeof customer === "string"
-            ? like(orders.email, `%${customer}%`)
-            : undefined,
+          customer ? like(orders.email, `%${customer}%`) : undefined,
           // Filter by status
           statuses.length > 0
             ? inArray(orders.stripePaymentIntentStatus, statuses)

@@ -55,11 +55,10 @@ export async function filterProductsAction(query: string) {
 export async function getProductsAction(
   input: z.infer<typeof getProductsSchema>
 ) {
-  const [column, order] =
-    (input.sort?.split(".") as [
-      keyof Product | undefined,
-      "asc" | "desc" | undefined,
-    ]) ?? []
+  const [column, order] = (input.sort?.split(".") as [
+    keyof Product | undefined,
+    "asc" | "desc" | undefined,
+  ]) ?? ["createdAt", "desc"]
   const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
   const categories =
     (input.categories?.split(".") as Product["category"][]) ?? []

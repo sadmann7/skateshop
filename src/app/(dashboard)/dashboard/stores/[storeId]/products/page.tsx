@@ -5,7 +5,7 @@ import { products, stores, type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 
-import { searchParamsSchema } from "@/lib/validations/params"
+import { dashboardProductsSearchParamsSchema } from "@/lib/validations/params"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
@@ -32,7 +32,7 @@ export default async function ProductsPage({
 
   // Parse search params using zod schema
   const { page, per_page, sort, name, category, from, to } =
-    searchParamsSchema.parse(searchParams)
+    dashboardProductsSearchParamsSchema.parse(searchParams)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -77,9 +77,7 @@ export default async function ProductsPage({
         and(
           eq(products.storeId, storeId),
           // Filter by name
-          typeof name === "string"
-            ? like(products.name, `%${name}%`)
-            : undefined,
+          name ? like(products.name, `%${name}%`) : undefined,
           // Filter by category
           categories.length > 0
             ? inArray(products.category, categories)
@@ -110,9 +108,7 @@ export default async function ProductsPage({
         and(
           eq(products.storeId, storeId),
           // Filter by name
-          typeof name === "string"
-            ? like(products.name, `%${name}%`)
-            : undefined,
+          name ? like(products.name, `%${name}%`) : undefined,
           // Filter by category
           categories.length > 0
             ? inArray(products.category, categories)

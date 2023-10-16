@@ -58,7 +58,6 @@ export default async function StoresPage() {
       <PageHeader
         id="dashboard-stores-page-header"
         aria-labelledby="dashboard-stores-page-header-heading"
-        separated
       >
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">

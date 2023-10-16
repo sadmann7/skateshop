@@ -7,7 +7,7 @@ import { currentUser } from "@clerk/nextjs"
 import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
 import { getUserEmail } from "@/lib/utils"
-import { searchParamsSchema } from "@/lib/validations/params"
+import { purchasesSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -32,7 +32,7 @@ export default async function PurchasesPage({
   searchParams,
 }: PurchasesPageProps) {
   const { page, per_page, sort, store, status } =
-    searchParamsSchema.parse(searchParams)
+    purchasesSearchParamsSchema.parse(searchParams)
 
   const user = await currentUser()
 

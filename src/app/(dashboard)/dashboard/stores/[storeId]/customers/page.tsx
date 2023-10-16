@@ -5,6 +5,7 @@ import { orders, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
+import { customersSearchParamsSchema } from "@/lib/validations/params"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { CustomersTableShell } from "@/components/shells/customers-table-shell"
 
@@ -29,7 +30,8 @@ export default async function CustomersPage({
 }: CustomersPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, sort, email, from, to } = searchParams ?? {}
+  const { page, per_page, sort, email, from, to } =
+    customersSearchParamsSchema.parse(searchParams)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -44,18 +46,18 @@ export default async function CustomersPage({
     notFound()
   }
 
+  // Customers transaction
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
+  const perPageAsNumber = Number(per_page)
   // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
+  const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
-  const fromDay = typeof from === "string" ? new Date(from) : undefined
-  const toDay = typeof to === "string" ? new Date(to) : undefined
+  const fromDay = from ? new Date(from) : undefined
+  const toDay = to ? new Date(to) : undefined
 
   const { items, count } = await db.transaction(async (tx) => {
     const items = await db
@@ -73,9 +75,7 @@ export default async function CustomersPage({
         and(
           eq(orders.storeId, storeId),
           // Filter by email
-          typeof email === "string"
-            ? like(orders.email, `%${email}%`)
-            : undefined,
+          email ? like(orders.email, `%${email}%`) : undefined,
           // Filter by createdAt
           fromDay && toDay
             ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
@@ -125,9 +125,7 @@ export default async function CustomersPage({
         and(
           eq(orders.storeId, storeId),
           // Filter by email
-          typeof email === "string"
-            ? like(orders.email, `%${email}%`)
-            : undefined,
+          email ? like(orders.email, `%${email}%`) : undefined,
           // Filter by createdAt
           fromDay && toDay
             ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))

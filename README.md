@@ -40,39 +40,39 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 
 1. Clone the repository
 
-```bash
-git clone https://github.com/sadmann7/skateshop.git
-```
+   ```bash
+   git clone https://github.com/sadmann7/skateshop.git
+   ```
 
 2. Install dependencies using pnpm
 
-```bash
-pnpm install
-```
+   ```bash
+   pnpm install
+   ```
 
 3. Copy the `.env.example` to `.env` and update the variables.
 
-```bash
-cp .env.example .env
-```
+   ```bash
+   cp .env.example .env
+   ```
 
 4. Start the development server
 
-```bash
-pnpm run dev
-```
+   ```bash
+   pnpm run dev
+   ```
 
 5. Push the database schema
 
-```bash
-pnpm run db:push
-```
+   ```bash
+   pnpm run db:push
+   ```
 
 6. Start the Stripe webhook listener
 
-```bash
-pnpm run stripe:listen
-```
+   ```bash
+   pnpm run stripe:listen
+   ```
 
 ## How do I deploy this?
 

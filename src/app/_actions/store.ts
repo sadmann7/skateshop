@@ -19,6 +19,8 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
     ]) ?? []
   const statuses = input.statuses?.split(".") ?? []
 
+  console.log({ column, order })
+
   const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select({

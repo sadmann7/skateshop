@@ -176,7 +176,7 @@ export default async function IndexPage() {
             )}
           </div>
           <Link
-            href="/stores"
+            href="/products"
             className={cn(
               buttonVariants({
                 className: "mx-auto",
