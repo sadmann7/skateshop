@@ -25,9 +25,9 @@ interface ProductGroup {
   products: Pick<Product, "id" | "name" | "category">[]
 }
 
-export function ProductsCombobox() {
+export function ProductsCommandMenu() {
   const router = useRouter()
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
   const debouncedQuery = useDebounce(query, 300)
   const [data, setData] = React.useState<ProductGroup[] | null>(null)
@@ -39,28 +39,21 @@ export function ProductsCombobox() {
       return
     }
 
-    let mounted = true
-    function fetchData() {
-      startTransition(async () => {
-        const data = await filterProductsAction(debouncedQuery)
-        if (mounted) {
-          setData(data)
-        }
-      })
+    async function fetchData() {
+      const data = await filterProductsAction(debouncedQuery)
+      setData(data)
     }
 
-    fetchData()
+    startTransition(fetchData)
 
-    return () => {
-      mounted = false
-    }
+    return () => setData(null)
   }, [debouncedQuery])
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
-        setIsOpen((isOpen) => !isOpen)
+        setOpen((open) => !open)
       }
     }
     window.addEventListener("keydown", handleKeyDown)
@@ -68,34 +61,37 @@ export function ProductsCombobox() {
   }, [])
 
   const handleSelect = React.useCallback((callback: () => unknown) => {
-    setIsOpen(false)
+    setOpen(false)
     callback()
   }, [])
 
   React.useEffect(() => {
-    if (!isOpen) {
+    if (!open) {
       setQuery("")
     }
-  }, [isOpen])
+  }, [open])
 
   return (
     <>
       <Button
         variant="outline"
         className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setOpen(true)}
       >
         <MagnifyingGlassIcon className="h-4 w-4 xl:mr-2" aria-hidden="true" />
         <span className="hidden xl:inline-flex">Search products...</span>
         <span className="sr-only">Search products</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
-          <abbr title={isMacOs() ? "Command" : "Control"}>
-            {isMacOs() ? "⌘" : "Ctrl+"}
+        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 xl:flex">
+          <abbr
+            title={isMacOs() ? "Command" : "Control"}
+            className="no-underline"
+          >
+            {isMacOs() ? "⌘" : "Ctrl"}
           </abbr>
           K
         </kbd>
       </Button>
-      <CommandDialog position="top" open={isOpen} onOpenChange={setIsOpen}>
+      <CommandDialog position="top" open={open} onOpenChange={setOpen}>
         <CommandInput
           placeholder="Search products..."
           value={query}

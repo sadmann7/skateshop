@@ -25,7 +25,7 @@ import {
 import { CartSheet } from "@/components/checkout/cart-sheet"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
-import { ProductsCombobox } from "@/components/products-combobox"
+import { ProductsCommandMenu } from "@/components/products-command-menu"
 
 interface SiteHeaderProps {
   user: User | null
@@ -47,7 +47,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         />
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
-            <ProductsCombobox />
+            <ProductsCommandMenu />
             <CartSheet />
             {user ? (
               <DropdownMenu>
