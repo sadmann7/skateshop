@@ -18,12 +18,12 @@ import {
   not,
   sql,
 } from "drizzle-orm"
-import { type z } from "zod"
+import type { z } from "zod"
 
-import type {
+import {
   getProductSchema,
   getProductsSchema,
-  productSchema,
+  type productSchema,
 } from "@/lib/validations/product"
 
 export async function filterProductsAction(query: string) {
@@ -53,8 +53,10 @@ export async function filterProductsAction(query: string) {
 }
 
 export async function getProductsAction(
-  input: z.infer<typeof getProductsSchema>
+  rawInput: z.infer<typeof getProductsSchema>
 ) {
+  const input = getProductsSchema.parse(rawInput)
+
   const [column, order] = (input.sort?.split(".") as [
     keyof Product | undefined,
     "asc" | "desc" | undefined,
@@ -185,8 +187,10 @@ export async function updateProductAction(
 }
 
 export async function deleteProductAction(
-  input: z.infer<typeof getProductSchema>
+  rawInput: z.infer<typeof getProductSchema>
 ) {
+  const input = getProductSchema.parse(rawInput)
+
   const product = await db.query.products.findFirst({
     columns: {
       id: true,
@@ -204,8 +208,10 @@ export async function deleteProductAction(
 }
 
 export async function getNextProductIdAction(
-  input: z.infer<typeof getProductSchema>
+  rawInput: z.infer<typeof getProductSchema>
 ) {
+  const input = getProductSchema.parse(rawInput)
+
   const product = await db.query.products.findFirst({
     columns: {
       id: true,
@@ -222,8 +228,10 @@ export async function getNextProductIdAction(
 }
 
 export async function getPreviousProductIdAction(
-  input: z.infer<typeof getProductSchema>
+  rawInput: z.infer<typeof getProductSchema>
 ) {
+  const input = getProductSchema.parse(rawInput)
+
   const product = await db.query.products.findFirst({
     columns: {
       id: true,

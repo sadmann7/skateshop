@@ -9,15 +9,17 @@ import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
 import { resend } from "@/lib/resend"
-import type { updateEmailPreferencesSchema } from "@/lib/validations/email"
+import { updateEmailPreferencesSchema } from "@/lib/validations/email"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
 // Email can not be sent through a server action in production, because it is returning an email component maybe?
 // So we are using the route handler /api/newsletter/subscribe instead
 
 export async function updateEmailPreferencesAction(
-  input: z.infer<typeof updateEmailPreferencesSchema>
+  rawInput: z.infer<typeof updateEmailPreferencesSchema>
 ) {
+  const input = updateEmailPreferencesSchema.parse(rawInput)
+
   const emailPreference = await db.query.emailPreferences.findFirst({
     where: eq(emailPreferences.token, input.token),
   })

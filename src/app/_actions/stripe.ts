@@ -14,7 +14,7 @@ import { calculateOrderAmount } from "@/lib/checkout"
 import { stripe } from "@/lib/stripe"
 import { absoluteUrl, getUserEmail } from "@/lib/utils"
 import { userPrivateMetadataSchema } from "@/lib/validations/auth"
-import type {
+import {
   createPaymentIntentSchema,
   getPaymentIntentSchema,
   getPaymentIntentsSchema,
@@ -79,8 +79,10 @@ export async function getSubscriptionPlanAction(
 
 // Managing stripe subscriptions for a user
 export async function manageSubscriptionAction(
-  input: z.infer<typeof manageSubscriptionSchema>
+  rawInput: z.infer<typeof manageSubscriptionSchema>
 ) {
+  const input = manageSubscriptionSchema.parse(rawInput)
+
   const billingUrl = absoluteUrl("/dashboard/billing")
 
   const user = await currentUser()
@@ -129,8 +131,10 @@ export async function manageSubscriptionAction(
 
 // Getting the Stripe account for a store
 export async function getStripeAccountAction(
-  input: z.infer<typeof getStripeAccountSchema>
+  rawInput: z.infer<typeof getStripeAccountSchema>
 ) {
+  const input = getStripeAccountSchema.parse(rawInput)
+
   const retrieveAccount = input.retrieveAccount ?? true
 
   const falsyReturn = {
@@ -204,8 +208,10 @@ export async function getStripeAccountAction(
 
 // Connecting a Stripe account to a store
 export async function createAccountLinkAction(
-  input: z.infer<typeof getStripeAccountSchema>
+  rawInput: z.infer<typeof getStripeAccountSchema>
 ) {
+  const input = getStripeAccountSchema.parse(rawInput)
+
   const { isConnected, payment, account } = await getStripeAccountAction(input)
 
   if (isConnected) {
@@ -259,9 +265,11 @@ export async function createAccountLinkAction(
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Creating a payment intent for a store
 export async function createPaymentIntentAction(
-  input: z.infer<typeof createPaymentIntentSchema>
+  rawInput: z.infer<typeof createPaymentIntentSchema>
 ): Promise<{ clientSecret: string | null }> {
   try {
+    const input = createPaymentIntentSchema.parse(rawInput)
+
     const { isConnected, payment } = await getStripeAccountAction(input)
 
     if (!isConnected || !payment) {
@@ -355,9 +363,11 @@ export async function createPaymentIntentAction(
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Getting payment intents for a store
 export async function getPaymentIntentsAction(
-  input: z.infer<typeof getPaymentIntentsSchema>
+  rawInput: z.infer<typeof getPaymentIntentsSchema>
 ) {
   try {
+    const input = getPaymentIntentsSchema.parse(rawInput)
+
     const { isConnected, payment } = await getStripeAccountAction({
       storeId: input.storeId,
       retrieveAccount: false,
@@ -401,9 +411,11 @@ export async function getPaymentIntentsAction(
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Getting a payment intent for a store
 export async function getPaymentIntentAction(
-  input: z.infer<typeof getPaymentIntentSchema>
+  rawInput: z.infer<typeof getPaymentIntentSchema>
 ) {
   try {
+    const input = getPaymentIntentSchema.parse(rawInput)
+
     const cartId = cookies().get("cartId")?.value
 
     const { isConnected, payment } = await getStripeAccountAction({

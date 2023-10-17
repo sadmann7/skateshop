@@ -8,7 +8,7 @@ import type { CartLineItem } from "@/types"
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm"
 import { type z } from "zod"
 
-import type {
+import {
   cartItemSchema,
   deleteCartItemSchema,
   deleteCartItemsSchema,
@@ -104,7 +104,11 @@ export async function getCartItemsAction(input: { cartId?: number }) {
   return cart?.items
 }
 
-export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
+export async function addToCartAction(
+  rawInput: z.infer<typeof cartItemSchema>
+) {
+  const input = cartItemSchema.parse(rawInput)
+
   // Checking if product is in stock
   const product = await db.query.products.findFirst({
     columns: {
@@ -188,8 +192,10 @@ export async function addToCartAction(input: z.infer<typeof cartItemSchema>) {
 }
 
 export async function updateCartItemAction(
-  input: z.infer<typeof cartItemSchema>
+  rawInput: z.infer<typeof cartItemSchema>
 ) {
+  const input = cartItemSchema.parse(rawInput)
+
   const cartId = cookies().get("cartId")?.value
 
   if (!cartId) {
@@ -248,8 +254,10 @@ export async function deleteCartAction() {
 }
 
 export async function deleteCartItemAction(
-  input: z.infer<typeof deleteCartItemSchema>
+  rawInput: z.infer<typeof deleteCartItemSchema>
 ) {
+  const input = deleteCartItemSchema.parse(rawInput)
+
   const cartId = cookies().get("cartId")?.value
 
   if (!cartId) {
@@ -280,8 +288,10 @@ export async function deleteCartItemAction(
 }
 
 export async function deleteCartItemsAction(
-  input: z.infer<typeof deleteCartItemsSchema>
+  rawInput: z.infer<typeof deleteCartItemsSchema>
 ) {
+  const input = deleteCartItemsSchema.parse(rawInput)
+
   const cartId = cookies().get("cartId")?.value
 
   if (!cartId) {

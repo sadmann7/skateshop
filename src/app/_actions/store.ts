@@ -4,12 +4,16 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import { and, asc, desc, eq, isNull, not, sql } from "drizzle-orm"
-import { type z } from "zod"
+import { z } from "zod"
 
 import { slugify } from "@/lib/utils"
-import type { getStoresSchema, storeSchema } from "@/lib/validations/store"
+import { getStoresSchema, storeSchema } from "@/lib/validations/store"
 
-export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
+export async function getStoresAction(
+  rawInput: z.infer<typeof getStoresSchema>
+) {
+  const input = getStoresSchema.parse(rawInput)
+
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0
   const [column, order] =
@@ -79,9 +83,15 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
   }
 }
 
+const extendedStoreSchema = storeSchema.extend({
+  userId: z.string().uuid(),
+})
+
 export async function addStoreAction(
-  input: z.infer<typeof storeSchema> & { userId: string }
+  rawInput: z.infer<typeof extendedStoreSchema>
 ) {
+  const input = extendedStoreSchema.parse(rawInput)
+
   const storeWithSameName = await db.query.stores.findFirst({
     where: eq(stores.name, input.name),
   })
