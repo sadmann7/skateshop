@@ -7,13 +7,9 @@ import { and, asc, desc, eq, isNull, not, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import { slugify } from "@/lib/utils"
-import { getStoresSchema, storeSchema } from "@/lib/validations/store"
+import { storeSchema, type getStoresSchema } from "@/lib/validations/store"
 
-export async function getStoresAction(
-  rawInput: z.infer<typeof getStoresSchema>
-) {
-  const input = getStoresSchema.parse(rawInput)
-
+export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
   const limit = input.limit ?? 10
   const offset = input.offset ?? 0
   const [column, order] =

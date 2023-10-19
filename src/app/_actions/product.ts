@@ -22,7 +22,7 @@ import type { z } from "zod"
 
 import {
   getProductSchema,
-  getProductsSchema,
+  type getProductsSchema,
   type productSchema,
 } from "@/lib/validations/product"
 
@@ -53,10 +53,8 @@ export async function filterProductsAction(query: string) {
 }
 
 export async function getProductsAction(
-  rawInput: z.infer<typeof getProductsSchema>
+  input: z.infer<typeof getProductsSchema>
 ) {
-  const input = getProductsSchema.parse(rawInput)
-
   const [column, order] = (input.sort?.split(".") as [
     keyof Product | undefined,
     "asc" | "desc" | undefined,
