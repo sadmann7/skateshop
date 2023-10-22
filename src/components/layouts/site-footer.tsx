@@ -11,7 +11,7 @@ import { Shell } from "@/components/shells/shell"
 export function SiteFooter() {
   return (
     <footer className="w-full border-t bg-background">
-      <Shell as="div">
+      <Shell>
         <section
           id="footer-content"
           aria-labelledby="footer-content-heading"
@@ -35,7 +35,7 @@ export function SiteFooter() {
             {siteConfig.footerNav.map((item) => (
               <div key={item.title} className="space-y-3">
                 <h4 className="text-base font-medium">{item.title}</h4>
-                <ul className="space-y-3">
+                <ul className="space-y-2.5">
                   {item.items.map((link) => (
                     <li key={link.title}>
                       <Link
