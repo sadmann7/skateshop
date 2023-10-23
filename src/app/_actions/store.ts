@@ -19,8 +19,6 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
     ]) ?? []
   const statuses = input.statuses?.split(".") ?? []
 
-  console.log({ column, order })
-
   const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select({
@@ -28,6 +26,7 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
         name: stores.name,
         description: stores.description,
         stripeAccountId: stores.stripeAccountId,
+        productCount: sql<number>`count(*)`,
       })
       .from(stores)
       .limit(limit)
@@ -46,8 +45,11 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
       )
       .groupBy(stores.id)
       .orderBy(
-        desc(stores.stripeAccountId),
-        input.sort === "productCount.asc"
+        input.sort === "stripeAccountId.asc"
+          ? asc(stores.stripeAccountId)
+          : input.sort === "stripeAccountId.desc"
+          ? desc(stores.stripeAccountId)
+          : input.sort === "productCount.asc"
           ? asc(sql<number>`count(*)`)
           : input.sort === "productCount.desc"
           ? desc(sql<number>`count(*)`)
@@ -63,7 +65,17 @@ export async function getStoresAction(input: z.infer<typeof getStoresSchema>) {
         count: sql<number>`count(*)`,
       })
       .from(stores)
-      .where(input.userId ? eq(stores.userId, input.userId) : undefined)
+      .where(
+        and(
+          input.userId ? eq(stores.userId, input.userId) : undefined,
+          statuses.includes("active") && !statuses.includes("inactive")
+            ? not(isNull(stores.stripeAccountId))
+            : undefined,
+          statuses.includes("inactive") && !statuses.includes("active")
+            ? isNull(stores.stripeAccountId)
+            : undefined
+        )
+      )
       .execute()
       .then((res) => res[0]?.count ?? 0)
 

@@ -65,7 +65,7 @@ export default async function ProductsPage({
   const storesPageAsNumber = Number(store_page)
   const fallbackStoresPage =
     isNaN(storesPageAsNumber) || storesPageAsNumber < 1 ? 1 : storesPageAsNumber
-  const storesLimit = 25
+  const storesLimit = 40
   const storesOffset =
     fallbackStoresPage > 0 ? (fallbackStoresPage - 1) * storesLimit : 0
 

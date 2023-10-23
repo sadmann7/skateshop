@@ -45,7 +45,10 @@ interface ProductsProps extends React.HTMLAttributes<HTMLDivElement> {
   pageCount: number
   category?: Product["category"]
   categories?: Product["category"][]
-  stores?: Pick<Store, "id" | "name">[]
+  stores?: Pick<
+    Store & { productCount: number },
+    "id" | "name" | "productCount"
+  >[]
   storePageCount?: number
 }
 
@@ -58,6 +61,7 @@ export function Products({
   storePageCount,
   ...props
 }: ProductsProps) {
+  const id = React.useId()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -270,7 +274,7 @@ export function Products({
                 </div>
               ) : null}
               {stores?.length ? (
-                <div className="space-y-3">
+                <div className="space-y-3 overflow-hidden">
                   <div className="flex gap-2">
                     <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
                       Stores
@@ -320,7 +324,7 @@ export function Products({
                       </Button>
                     </div>
                   </div>
-                  <ScrollArea className="h-[calc(100%-10rem)]">
+                  <ScrollArea className="h-full">
                     <div className="space-y-4">
                       {stores.map((store) => (
                         <div
@@ -328,7 +332,7 @@ export function Products({
                           className="flex items-center space-x-2"
                         >
                           <Checkbox
-                            id={`store-${store.id}`}
+                            id={`${id}-store-${store.id}`}
                             checked={storeIds?.includes(store.id) ?? false}
                             onCheckedChange={(value) => {
                               if (value) {
@@ -342,10 +346,12 @@ export function Products({
                             }}
                           />
                           <Label
-                            htmlFor={`store-${store.id}`}
+                            htmlFor={`${id}-store-${store.id}`}
                             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
-                            {truncate(store.name, 20)}
+                            {`${truncate(store.name, 20)} (${
+                              store.productCount
+                            })`}
                           </Label>
                         </div>
                       ))}

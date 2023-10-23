@@ -58,19 +58,18 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
 
   // Store status filter
   const [filterValues, setFilterValues] = React.useState<string[]>(
-    statuses?.split(".") ?? []
+    statuses ? statuses?.split(".") : []
   )
 
   React.useEffect(() => {
     startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          statuses: filterValues?.length ? filterValues.join(".") : null,
-        })}`,
-        {
-          scroll: false,
-        }
-      )
+      const newQueryString = createQueryString({
+        statuses: filterValues?.length ? filterValues.join(".") : null,
+      })
+
+      router.push(`${pathname}?${newQueryString}`, {
+        scroll: false,
+      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterValues])
