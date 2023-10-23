@@ -69,6 +69,8 @@ export function Products({
   const sort = searchParams?.get("sort") ?? "createdAt.desc"
   const store_ids = searchParams?.get("store_ids")
   const store_page = searchParams?.get("store_page") ?? "1"
+  const categoriesParam = searchParams?.get("categories")
+  const subcategoriesParam = searchParams?.get("subcategories")
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -95,14 +97,13 @@ export function Products({
   React.useEffect(() => {
     const [min, max] = debouncedPrice
     startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          price_range: `${min}-${max}`,
-        })}`,
-        {
-          scroll: false,
-        }
-      )
+      const newQueryString = createQueryString({
+        price_range: `${min}-${max}`,
+      })
+
+      router.push(`${pathname}?${newQueryString}`, {
+        scroll: false,
+      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
@@ -110,21 +111,27 @@ export function Products({
   // Category filter
   const [selectedCategories, setSelectedCategories] = React.useState<
     Option[] | null
-  >(null)
+  >(
+    categoriesParam
+      ? categoriesParam.split(".").map((c) => ({
+          label: toTitleCase(c),
+          value: c,
+        }))
+      : null
+  )
 
   React.useEffect(() => {
     startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          categories: selectedCategories?.length
-            ? // Join categories with a dot to make search params prettier
-              selectedCategories.map((c) => c.value).join(".")
-            : null,
-        })}`,
-        {
-          scroll: false,
-        }
-      )
+      const newQueryString = createQueryString({
+        categories: selectedCategories?.length
+          ? // Join categories with a dot to make search params prettier
+            selectedCategories.map((c) => c.value).join(".")
+          : null,
+      })
+
+      router.push(`${pathname}?${newQueryString}`, {
+        scroll: false,
+      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories])
@@ -132,40 +139,45 @@ export function Products({
   // Subcategory filter
   const [selectedSubcategories, setSelectedSubcategories] = React.useState<
     Option[] | null
-  >(null)
+  >(
+    subcategoriesParam
+      ? subcategoriesParam.split(".").map((c) => ({
+          label: toTitleCase(c),
+          value: c,
+        }))
+      : null
+  )
   const subcategories = getSubcategories(category)
 
   React.useEffect(() => {
     startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          subcategories: selectedSubcategories?.length
-            ? selectedSubcategories.map((s) => s.value).join(".")
-            : null,
-        })}`,
-        {
-          scroll: false,
-        }
-      )
+      const newQueryString = createQueryString({
+        subcategories: selectedSubcategories?.length
+          ? selectedSubcategories.map((s) => s.value).join(".")
+          : null,
+      })
+
+      router.push(`${pathname}?${newQueryString}`, {
+        scroll: false,
+      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedSubcategories])
 
   // Store filter
   const [storeIds, setStoreIds] = React.useState<number[] | null>(
-    store_ids?.split(".").map(Number) ?? null
+    store_ids ? store_ids?.split(".").map(Number) : null
   )
 
   React.useEffect(() => {
     startTransition(() => {
-      router.push(
-        `${pathname}?${createQueryString({
-          store_ids: storeIds?.length ? storeIds.join(".") : null,
-        })}`,
-        {
-          scroll: false,
-        }
-      )
+      const newQueryString = createQueryString({
+        store_ids: storeIds?.length ? storeIds.join(".") : null,
+      })
+
+      router.push(`${pathname}?${newQueryString}`, {
+        scroll: false,
+      })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeIds])

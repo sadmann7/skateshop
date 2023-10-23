@@ -57,7 +57,13 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   const form = useForm<Inputs>({
     resolver: zodResolver(productSchema),
     defaultValues: {
+      name: "",
+      description: "",
+      price: "",
+      inventory: NaN,
       category: "skateboards",
+      subcategory: "",
+      images: [],
     },
   })
 
@@ -70,24 +76,39 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           name: data.name,
         })
 
-        const images = isArrayOfFile(data.images)
-          ? await startUpload(data.images).then((res) => {
-              const formattedImages = res?.map((image) => ({
-                id: image.key,
-                name: image.key.split("_")[1] ?? image.key,
-                url: image.url,
-              }))
-              return formattedImages ?? null
-            })
-          : null
+        if (isArrayOfFile(data.images)) {
+          toast.promise(
+            startUpload(data.images)
+              .then((res) => {
+                const formattedImages = res?.map((image) => ({
+                  id: image.key,
+                  name: image.key.split("_")[1] ?? image.key,
+                  url: image.url,
+                }))
+                return formattedImages ?? null
+              })
+              .then((images) => {
+                return addProductAction({
+                  ...data,
+                  storeId,
+                  images,
+                })
+              }),
+            {
+              loading: "Uploading images...",
+              success: "Product added successfully.",
+              error: "Error uploading images.",
+            }
+          )
+        } else {
+          await addProductAction({
+            ...data,
+            storeId,
+            images: null,
+          })
 
-        await addProductAction({
-          ...data,
-          storeId,
-          images,
-        })
-
-        toast.success("Product added successfully.")
+          toast.success("Product added successfully.")
+        }
 
         form.reset()
         setFiles(null)
@@ -101,33 +122,37 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
     <Form {...form}>
       <form
         className="grid w-full max-w-2xl gap-5"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+        onSubmit={form.handleSubmit(onSubmit)}
       >
-        <FormItem>
-          <FormLabel>Name</FormLabel>
-          <FormControl>
-            <Input
-              aria-invalid={!!form.formState.errors.name}
-              placeholder="Type product name here."
-              {...form.register("name")}
-            />
-          </FormControl>
-          <UncontrolledFormMessage
-            message={form.formState.errors.name?.message}
-          />
-        </FormItem>
-        <FormItem>
-          <FormLabel>Description</FormLabel>
-          <FormControl>
-            <Textarea
-              placeholder="Type product description here."
-              {...form.register("description")}
-            />
-          </FormControl>
-          <UncontrolledFormMessage
-            message={form.formState.errors.description?.message}
-          />
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Type product name here." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Type product description here."
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex flex-col items-start gap-6 sm:flex-row">
           <FormField
             control={form.control}
@@ -135,33 +160,33 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Category</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value}
-                    onValueChange={(value: typeof field.value) =>
-                      field.onChange(value)
-                    }
-                  >
+                <Select
+                  value={field.value}
+                  onValueChange={(value: typeof field.value) =>
+                    field.onChange(value)
+                  }
+                >
+                  <FormControl>
                     <SelectTrigger className="capitalize">
                       <SelectValue placeholder={field.value} />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {Object.values(products.category.enumValues).map(
-                          (option) => (
-                            <SelectItem
-                              key={option}
-                              value={option}
-                              className="capitalize"
-                            >
-                              {option}
-                            </SelectItem>
-                          )
-                        )}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {Object.values(products.category.enumValues).map(
+                        (option) => (
+                          <SelectItem
+                            key={option}
+                            value={option}
+                            className="capitalize"
+                          >
+                            {option}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -172,59 +197,67 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Subcategory</FormLabel>
-                <FormControl>
-                  <Select
-                    value={field.value?.toString()}
-                    onValueChange={field.onChange}
-                  >
+                <Select
+                  value={field.value?.toString()}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a subcategory" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {subcategories.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {subcategories.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
         <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <FormItem className="w-full">
-            <FormLabel>Price</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Type product price here."
-                {...form.register("price")}
-              />
-            </FormControl>
-            <UncontrolledFormMessage
-              message={form.formState.errors.price?.message}
-            />
-          </FormItem>
-          <FormItem className="w-full">
-            <FormLabel>Inventory</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                inputMode="numeric"
-                placeholder="Type product inventory here."
-                {...form.register("inventory", {
-                  valueAsNumber: true,
-                })}
-              />
-            </FormControl>
-            <UncontrolledFormMessage
-              message={form.formState.errors.inventory?.message}
-            />
-          </FormItem>
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Type product price here."
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="inventory"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Inventory</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    placeholder="Type product inventory here."
+                    value={Number.isNaN(field.value) ? "" : field.value}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <FormItem className="flex w-full flex-col gap-1.5">
           <FormLabel>Images</FormLabel>

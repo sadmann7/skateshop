@@ -25,7 +25,7 @@ export function MultiSelect({
   options,
 }: MultiSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
 
   // Register as input field to be used in react-hook-form
@@ -117,13 +117,13 @@ export function MultiSelect({
             className="flex-1 bg-transparent px-1 py-0.5 outline-none placeholder:text-muted-foreground"
             value={query}
             onValueChange={setQuery}
-            onBlur={() => setIsOpen(false)}
-            onFocus={() => setIsOpen(true)}
+            onBlur={() => setOpen(false)}
+            onFocus={() => setOpen(true)}
           />
         </div>
       </div>
       <div className="relative z-50 mt-2">
-        {isOpen && filteredOptions.length > 0 ? (
+        {open && filteredOptions.length > 0 ? (
           <div className="absolute top-0 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
             <CommandGroup className="h-full overflow-auto">
               {filteredOptions.map((option) => {

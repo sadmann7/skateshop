@@ -33,8 +33,7 @@ export async function POST(req: Request) {
   switch (event.type) {
     // Handling subscription events
     case "checkout.session.completed":
-      const checkoutSessionCompleted = event.data
-        .object as Stripe.Checkout.Session
+      const checkoutSessionCompleted = event.data.object
 
       // If there is a user id, and no cart id in the metadata, then this is a new subscription
       if (
@@ -65,8 +64,7 @@ export async function POST(req: Request) {
       }
       break
     case "invoice.payment_succeeded":
-      const invoicePaymentSucceeded = event.data
-        .object as Stripe.Checkout.Session
+      const invoicePaymentSucceeded = event.data.object
 
       // If there is a user id, and no cart id in the metadata, then this is a new subscription
       if (
@@ -95,18 +93,17 @@ export async function POST(req: Request) {
 
     // Handling payment events
     case "payment_intent.payment_failed":
-      const paymentIntentPaymentFailed = event.data
-        .object as Stripe.PaymentIntent
+      const paymentIntentPaymentFailed = event.data.object
       console.log(
         `❌ Payment failed: ${paymentIntentPaymentFailed.last_payment_error?.message}`
       )
       break
     case "payment_intent.processing":
-      const paymentIntentProcessing = event.data.object as Stripe.PaymentIntent
+      const paymentIntentProcessing = event.data.object
       console.log(`⏳ Payment processing: ${paymentIntentProcessing.id}`)
       break
     case "payment_intent.succeeded":
-      const paymentIntentSucceeded = event.data.object as Stripe.PaymentIntent
+      const paymentIntentSucceeded = event.data.object
 
       const paymentIntentId = paymentIntentSucceeded?.id
       const orderAmount = paymentIntentSucceeded?.amount
@@ -213,11 +210,11 @@ export async function POST(req: Request) {
       }
       break
     case "application_fee.created":
-      const applicationFeeCreated = event.data.object as Stripe.ApplicationFee
+      const applicationFeeCreated = event.data.object
       console.log(`Application fee id: ${applicationFeeCreated.id}`)
       break
     case "charge.succeeded":
-      const chargeSucceeded = event.data.object as Stripe.Charge
+      const chargeSucceeded = event.data.object
       console.log(`Charge id: ${chargeSucceeded.id}`)
       break
     default:

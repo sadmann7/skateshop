@@ -50,7 +50,6 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
         form.reset()
         toast.success("Store added successfully.")
         router.push("/dashboard/stores")
-        router.refresh() // Workaround for the inconsistency of cache revalidation
       } catch (err) {
         catchError(err)
       }
@@ -61,7 +60,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
     <Form {...form}>
       <form
         className="grid w-full max-w-xl gap-5"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
           control={form.control}
