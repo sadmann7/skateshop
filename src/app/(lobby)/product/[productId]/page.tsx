@@ -1,7 +1,9 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
+import { env } from "@/env.mjs"
 import { and, desc, eq, not } from "drizzle-orm"
 
 import { formatPrice, toTitleCase } from "@/lib/utils"
@@ -24,7 +26,9 @@ interface ProductPageProps {
   }
 }
 
-export async function generateMetadata({ params }: ProductPageProps) {
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
   const productId = Number(params.productId)
 
   const product = await db.query.products.findFirst({
@@ -40,8 +44,9 @@ export async function generateMetadata({ params }: ProductPageProps) {
   }
 
   return {
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
     title: toTitleCase(product.name),
-    description: product.description ?? undefined,
+    description: product.description,
   }
 }
 

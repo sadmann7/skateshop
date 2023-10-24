@@ -1,4 +1,6 @@
+import type { Metadata } from "next"
 import { type Product } from "@/db/schema"
+import { env } from "@/env.mjs"
 
 import { toTitleCase } from "@/lib/utils"
 import {
@@ -20,8 +22,9 @@ interface CategoryPageProps {
   }
 }
 
-export function generateMetadata({ params }: CategoryPageProps) {
+export function generateMetadata({ params }: CategoryPageProps): Metadata {
   return {
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
     title: toTitleCase(params.category),
     description: `Buy products from the ${params.category} category`,
   }

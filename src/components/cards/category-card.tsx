@@ -22,7 +22,7 @@ interface CategoryCardProps {
 export async function CategoryCard({ category }: CategoryCardProps) {
   const productCount = await db
     .select({
-      count: sql<number>`count(*)`,
+      count: sql<number>`count(*)`.mapWith(Number),
     })
     .from(products)
     .where(eq(products.category, category.title))
@@ -35,15 +35,15 @@ export async function CategoryCard({ category }: CategoryCardProps) {
       key={category.title}
       href={`/categories/${category.title}`}
     >
-      <Card className="group relative overflow-hidden rounded-md bg-transparent">
+      <Card className="group relative h-full w-full overflow-hidden rounded-md bg-transparent">
         <div className="absolute inset-0 z-10 bg-zinc-950/75" />
         <Image
           src={category.image}
           alt={`${category.title} category`}
           className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
-          sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, (min-width: 475px) 50vw, 100vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           fill
-          loading="lazy"
+          priority
         />
         <CardHeader className="relative z-20">
           <div

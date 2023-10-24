@@ -1,4 +1,6 @@
+import type { Metadata } from "next"
 import { type Product } from "@/db/schema"
+import { env } from "@/env.mjs"
 
 import { toTitleCase, unslugify } from "@/lib/utils"
 import {
@@ -21,10 +23,11 @@ interface SubcategoryPageProps {
   }
 }
 
-export function generateMetadata({ params }: SubcategoryPageProps) {
+export function generateMetadata({ params }: SubcategoryPageProps): Metadata {
   const subcategory = unslugify(params.subcategory)
 
   return {
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
     title: toTitleCase(subcategory),
     description: `Buy the best ${subcategory}`,
   }

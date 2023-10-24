@@ -12,12 +12,6 @@ import { Shell } from "@/components/shells/shell"
 import { getProductsAction } from "@/app/_actions/product"
 import { getStoresAction } from "@/app/_actions/store"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Store",
-  description: "Store description",
-}
-
 interface StorePageProps {
   params: {
     storeId: string
@@ -27,15 +21,35 @@ interface StorePageProps {
   }
 }
 
+async function getStoreFromParams(params: StorePageProps["params"]) {
+  const storeId = Number(params.storeId)
+
+  return await db.query.stores.findFirst({
+    where: eq(stores.id, storeId),
+  })
+}
+
+export async function generateMetadata({
+  params,
+}: StorePageProps): Promise<Metadata> {
+  const store = await getStoreFromParams(params)
+
+  if (!store) {
+    return {}
+  }
+
+  return {
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+    title: store.name,
+    description: store.description,
+  }
+}
+
 export default async function StorePage({
   params,
   searchParams,
 }: StorePageProps) {
-  const storeId = Number(params.storeId)
-
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, storeId),
-  })
+  const store = await getStoreFromParams(params)
 
   if (!store) {
     notFound()
@@ -50,7 +64,7 @@ export default async function StorePage({
   const productsTransaction = await getProductsAction({
     limit: limit,
     offset: offset,
-    store_ids: String(storeId),
+    store_ids: String(store.id),
   })
 
   const pageCount = Math.ceil(productsTransaction.count / limit)
