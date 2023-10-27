@@ -1,5 +1,5 @@
 import type { Category, Option } from "@/types"
-import { BackpackIcon } from "@radix-ui/react-icons"
+import { MixIcon } from "@radix-ui/react-icons"
 
 import { Icons } from "@/components/icons"
 
@@ -138,7 +138,7 @@ export const productCategories = [
   {
     title: "accessories",
     image: "/images/backpack-one.webp",
-    icon: BackpackIcon,
+    icon: MixIcon,
     subcategories: [
       {
         title: "Skate Tools",
