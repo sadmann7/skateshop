@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { env } from "@/env.mjs"
-
+import {dark} from "@clerk/themes";
 import { UserProfile } from "@/components/auth/user-profile"
 import {
   PageHeader,
@@ -33,7 +33,9 @@ export default function AccountPage() {
         aria-labelledby="user-account-info-heading"
         className="w-full overflow-hidden"
       >
-        <UserProfile />
+        <UserProfile appearance={{
+        baseTheme: dark,
+      }}/>
       </section>
     </Shell>
   )
