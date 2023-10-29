@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { env } from "@/env.mjs"
-import {dark} from "@clerk/themes";
 import { UserProfile } from "@/components/auth/user-profile"
 import {
   PageHeader,
@@ -8,6 +7,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
+import {dark} from "@clerk/themes";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
