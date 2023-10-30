@@ -33,14 +33,10 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "sadmann7",
-      url: "https://github.com/sadmann7",
+      url: "https://www.sadmn.com",
     },
   ],
   creator: "sadmann7",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
   openGraph: {
     type: "website",
     locale: "en_US",
