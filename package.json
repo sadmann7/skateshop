@@ -76,7 +76,6 @@
     "react-email": "^1.9.5",
     "react-hook-form": "^7.47.0",
     "react-medium-image-zoom": "^5.1.8",
-    "react-wrap-balancer": "^1.1.0",
     "resend": "^1.1.0",
     "sonner": "^1.0.3",
     "stripe": "^14.1.0",

@@ -1,7 +1,6 @@
 // Modified from: https://github.com/shadcn-ui/ui/blob/main/apps/www/components/page-header.tsx
 
 import { cva, type VariantProps } from "class-variance-authority"
-import { Balancer } from "react-wrap-balancer"
 
 import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
@@ -73,7 +72,7 @@ const descriptionVariants = cva("max-w-[750px] text-muted-foreground", {
 })
 
 interface PageHeaderDescriptionProps
-  extends React.ComponentProps<typeof Balancer>,
+  extends React.ComponentProps<"p">,
     VariantProps<typeof descriptionVariants> {}
 
 function PageHeaderDescription({
@@ -82,9 +81,8 @@ function PageHeaderDescription({
   ...props
 }: PageHeaderDescriptionProps) {
   return (
-    <Balancer
-      as="p"
-      className={cn(descriptionVariants({ size, className }))}
+    <p
+      className={cn("[text-wrap:balance]", descriptionVariants({ size, className }))}
       {...props}
     />
   )

@@ -2,8 +2,6 @@ import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { desc, eq, sql } from "drizzle-orm"
-import { Balancer } from "react-wrap-balancer"
-
 import { productCategories } from "@/config/products"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -97,16 +95,15 @@ export default async function IndexPage() {
             <span className="sr-only">GitHub</span>
           </Link>
         ) : null}
-        <Balancer
-          as="h1"
-          className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl"
+        <h1
+          className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl [text-wrap:balance]"
         >
           An e-commerce skateshop built with everything new in Next.js 13
-        </Balancer>
-        <Balancer className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+        </h1>
+        <div className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8 [text-wrap:balance]">
           Buy and sell skateboarding gears from independent brands and stores
           around the world with ease
-        </Balancer>
+        </div>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link href="/products" className={cn(buttonVariants())}>
             Buy now
@@ -134,9 +131,9 @@ export default async function IndexPage() {
           <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
             Categories
           </h2>
-          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+          <div className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7 [text-wrap:balance]">
             Find the best skateboarding gears from stores around the world
-          </Balancer>
+          </div>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {productCategories.map((category) => (
@@ -153,9 +150,9 @@ export default async function IndexPage() {
           <h2 className="font-heading text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
             Featured products
           </h2>
-          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+          <div className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7 [text-wrap:balance]">
             Explore products from around the world
-          </Balancer>
+          </div>
         </div>
         <div className="flex flex-col space-y-10">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -200,9 +197,9 @@ export default async function IndexPage() {
           <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
             Featured stores
           </h2>
-          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+          <div className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7 [text-wrap:balance]">
             Explore stores from around the world
-          </Balancer>
+          </div>
         </div>
         <div className="flex flex-col space-y-10">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
