@@ -1,5 +1,9 @@
 import { type MetadataRoute } from "next"
+import { db } from "@/db"
+import { stores } from "@/db/schema"
+import { auth } from "@clerk/nextjs"
 import { allPosts } from "contentlayer/generated"
+import { eq } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { absoluteUrl } from "@/lib/utils"
@@ -13,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sort: "createdAt.desc",
   })
 
-  const stores = storesTransaction.items.map((store) => ({
+  const storesRoutes = storesTransaction.items.map((store) => ({
     url: absoluteUrl(`/products?store_ids=${store.id}`),
     lastModified: new Date().toISOString(),
   }))
@@ -24,17 +28,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     sort: "createdAt.desc",
   })
 
-  const products = productsTransaction.items.map((product) => ({
+  const productsRoutes = productsTransaction.items.map((product) => ({
     url: absoluteUrl(`/product/${product.id}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const categories = productCategories.map((category) => ({
+  const categoriesRoutes = productCategories.map((category) => ({
     url: absoluteUrl(`/categories/${category.title}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const subcategories = productCategories
+  const subcategoriesRoutes = productCategories
     .map((category) =>
       category.subcategories.map((subcategory) => ({
         url: absoluteUrl(`/categories/${category.title}/${subcategory.slug}`),
@@ -43,8 +47,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
     .flat()
 
-  const posts = allPosts.map((post) => ({
+  const postsRoutes = allPosts.map((post) => ({
     url: absoluteUrl(`${post.slug}`),
+    lastModified: new Date().toISOString(),
+  }))
+
+  const { userId } = auth()
+
+  const dashboardStores = userId
+    ? await db
+        .select({
+          id: stores.id,
+        })
+        .from(stores)
+        .groupBy(stores.id)
+        .where(eq(stores.userId, userId))
+    : []
+
+  const dashboardStoresRoutes = dashboardStores.map((store) => ({
+    url: absoluteUrl(`/dashboard/stores/${store.id}`),
     lastModified: new Date().toISOString(),
   }))
 
@@ -55,9 +76,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/build-a-board",
     "/blog",
     "/dashboard/account",
+    "/dashboard/stores",
     "/dashboard/billing",
     "/dashboard/purchases",
-    "/dashboard/stores",
   ].map((route) => ({
     url: absoluteUrl(route),
     lastModified: new Date().toISOString(),
@@ -65,10 +86,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...routes,
-    ...stores,
-    ...products,
-    ...categories,
-    ...subcategories,
-    ...posts,
+    ...storesRoutes,
+    ...productsRoutes,
+    ...categoriesRoutes,
+    ...subcategoriesRoutes,
+    ...postsRoutes,
+    ...dashboardStoresRoutes,
   ]
 }
