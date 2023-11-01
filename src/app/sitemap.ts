@@ -1,9 +1,5 @@
 import { type MetadataRoute } from "next"
-import { db } from "@/db"
-import { stores } from "@/db/schema"
-import { auth } from "@clerk/nextjs"
 import { allPosts } from "contentlayer/generated"
-import { eq } from "drizzle-orm"
 
 import { productCategories } from "@/config/products"
 import { absoluteUrl } from "@/lib/utils"
@@ -12,7 +8,7 @@ import { getStoresAction } from "@/app/_actions/store"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const storesTransaction = await getStoresAction({
-    limit: 10,
+    limit: 50,
     offset: 0,
     sort: "createdAt.desc",
   })
@@ -23,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const productsTransaction = await getProductsAction({
-    limit: 10,
+    limit: 50,
     offset: 0,
     sort: "createdAt.desc",
   })
@@ -52,23 +48,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString(),
   }))
 
-  const { userId } = auth()
-
-  const dashboardStores = userId
-    ? await db
-        .select({
-          id: stores.id,
-        })
-        .from(stores)
-        .groupBy(stores.id)
-        .where(eq(stores.userId, userId))
-    : []
-
-  const dashboardStoresRoutes = dashboardStores.map((store) => ({
-    url: absoluteUrl(`/dashboard/stores/${store.id}`),
-    lastModified: new Date().toISOString(),
-  }))
-
   const routes = [
     "",
     "/products",
@@ -91,6 +70,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoriesRoutes,
     ...subcategoriesRoutes,
     ...postsRoutes,
-    ...dashboardStoresRoutes,
   ]
 }

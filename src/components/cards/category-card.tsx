@@ -27,12 +27,9 @@ export async function CategoryCard({ category }: CategoryCardProps) {
     .then((res) => res[0]?.count ?? 0)
 
   return (
-    <Link
-      aria-label={category.title}
-      key={category.title}
-      href={`/categories/${category.title}`}
-    >
-      <Card className="relative h-full w-full overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted">
+    <Link key={category.title} href={`/categories/${category.title}`}>
+      <span className="sr-only">{category.title}</span>
+      <Card className="relative h-full w-full overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
         <CardHeader>
           <category.icon className="h-6 w-6" aria-hidden="true" />
         </CardHeader>
