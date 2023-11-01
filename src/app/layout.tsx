@@ -20,15 +20,12 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "Server Components",
-    "Server Actions",
-    "Skateshop",
-    "Skateboard",
-    "Skateboarding",
-    "Kickflip",
+    "nextjs",
+    "react",
+    "react server components",
+    "skateshop",
+    "skateboarding",
+    "kickflip",
   ],
   authors: [
     {
