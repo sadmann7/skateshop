@@ -101,7 +101,7 @@ export function ProductImageCarousel({
         >
           {images.map((image, index) => (
             <div
-              className="relative aspect-square min-w-0 flex-full pl-4"
+              className="relative aspect-square min-w-0 flex-[0_0_100%] pl-4"
               key={index}
             >
               <Image

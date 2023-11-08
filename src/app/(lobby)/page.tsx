@@ -1,3 +1,4 @@
+import { unstable_cache as cache } from "next/cache"
 import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
@@ -16,34 +17,53 @@ import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shells/shell"
 
 export default async function IndexPage() {
-  const someProducts = await db
-    .select({
-      id: products.id,
-      name: products.name,
-      images: products.images,
-      category: products.category,
-      price: products.price,
-      inventory: products.inventory,
-      stripeAccountId: stores.stripeAccountId,
-    })
-    .from(products)
-    .limit(8)
-    .leftJoin(stores, eq(products.storeId, stores.id))
-    .groupBy(products.id)
-    .orderBy(desc(stores.stripeAccountId), desc(products.createdAt))
+  // See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
+  const someProducts = await cache(
+    async () => {
+      return db
+        .select({
+          id: products.id,
+          name: products.name,
+          images: products.images,
+          category: products.category,
+          price: products.price,
+          inventory: products.inventory,
+          stripeAccountId: stores.stripeAccountId,
+        })
+        .from(products)
+        .limit(8)
+        .leftJoin(stores, eq(products.storeId, stores.id))
+        .groupBy(products.id)
+        .orderBy(desc(stores.stripeAccountId), desc(products.createdAt))
+    },
+    ["lobby-products"],
+    {
+      revalidate: 86400,
+      tags: ["lobby-products"],
+    }
+  )()
 
-  const someStores = await db
-    .select({
-      id: stores.id,
-      name: stores.name,
-      description: stores.description,
-      stripeAccountId: stores.stripeAccountId,
-    })
-    .from(stores)
-    .limit(4)
-    .leftJoin(products, eq(products.storeId, stores.id))
-    .groupBy(stores.id)
-    .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
+  const someStores = await cache(
+    async () => {
+      return db
+        .select({
+          id: stores.id,
+          name: stores.name,
+          description: stores.description,
+          stripeAccountId: stores.stripeAccountId,
+        })
+        .from(stores)
+        .limit(4)
+        .leftJoin(products, eq(products.storeId, stores.id))
+        .groupBy(stores.id)
+        .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
+    },
+    ["lobby-stores"],
+    {
+      revalidate: 86400,
+      tags: ["lobby-stores"],
+    }
+  )()
 
   async function getGithubStars(): Promise<number | null> {
     try {

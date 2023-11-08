@@ -3,7 +3,6 @@ import { emailPreferences } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
-import { type ErrorResponse } from "resend"
 import { z } from "zod"
 
 import { resend } from "@/lib/resend"
@@ -74,12 +73,6 @@ export async function POST(req: Request) {
 
     if (err instanceof z.ZodError) {
       return new Response(err.message, { status: 422 })
-    }
-
-    const resendError = err as ErrorResponse
-
-    if (resendError?.error?.message) {
-      return new Response(resendError.error.message, { status: 429 })
     }
 
     if (err instanceof Error) {
