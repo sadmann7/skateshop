@@ -1,7 +1,9 @@
+import * as React from "react"
 import { unstable_cache as cache } from "next/cache"
 import Link from "next/link"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
+import { ArrowRightIcon } from "@radix-ui/react-icons"
 import { desc, eq, sql } from "drizzle-orm"
 import { Balancer } from "react-wrap-balancer"
 
@@ -15,6 +17,8 @@ import { ProductCard } from "@/components/cards/product-card"
 import { StoreCard } from "@/components/cards/store-card"
 import { Icons } from "@/components/icons"
 import { Shell } from "@/components/shells/shell"
+import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton"
+import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 
 export default async function IndexPage() {
   // See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
@@ -148,65 +152,63 @@ export default async function IndexPage() {
       <section
         id="categories"
         aria-labelledby="categories-heading"
-        className="space-y-6 py-8 md:pt-10 lg:pt-24"
+        className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
       >
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
-            Categories
-          </h2>
-          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-            Find the best skateboarding gears from stores around the world
-          </Balancer>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {productCategories.map((category) => (
-            <CategoryCard key={category.title} category={category} />
-          ))}
-        </div>
+        {productCategories.map((category) => (
+          <CategoryCard key={category.title} category={category} />
+        ))}
       </section>
       <section
         id="featured-products"
         aria-labelledby="featured-products-heading"
-        className="space-y-6 overflow-hidden py-8 md:pt-12 lg:pt-24"
+        className="space-y-6 pt-8 md:pt-10 lg:pt-12"
       >
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 overflow-visible text-center">
-          <h2 className="font-heading text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
-            Featured products
-          </h2>
-          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-            Explore products from around the world
-          </Balancer>
-        </div>
-        <div className="flex flex-col space-y-10">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {someProducts.length > 0 ? (
-              someProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
-            ) : (
-              <div className="flex h-full flex-col items-center justify-center space-y-1 pt-10">
-                <Icons.product
-                  className="mb-4 h-16 w-16 text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <div className="text-xl font-medium text-muted-foreground">
-                  No products found
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  Please try again later
-                </div>
-              </div>
-            )}
+        <div className="flex items-center gap-4">
+          <div className="max-w-[58rem] flex-1 space-y-1">
+            <h2 className="font-heading text-3xl font-bold leading-[1.1] md:text-4xl">
+              Featured products
+            </h2>
+            <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+              Explore products from around the world
+            </Balancer>
           </div>
           <Link
             href="/products"
             className={cn(
               buttonVariants({
-                className: "mx-auto",
+                variant: "ghost",
+                className: "hidden sm:flex",
               })
             )}
           >
             View all products
+            <ArrowRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
+            <span className="sr-only">View all products</span>
+          </Link>
+        </div>
+        <div className="space-y-8">
+          <div className="grid gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <React.Suspense
+              fallback={Array.from({ length: 8 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            >
+              {someProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </React.Suspense>
+          </div>
+          <Link
+            href="/products"
+            className={cn(
+              buttonVariants({
+                variant: "ghost",
+                className: "mx-auto flex w-fit sm:hidden",
+              })
+            )}
+          >
+            View all products
+            <ArrowRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
             <span className="sr-only">View all products</span>
           </Link>
         </div>
@@ -214,35 +216,58 @@ export default async function IndexPage() {
       <section
         id="featured-stores"
         aria-labelledby="featured-stores-heading"
-        className="flex flex-col space-y-6 py-8 md:pt-12 lg:pt-24"
+        className="space-y-6 pt-8 md:pt-10 lg:pt-12"
       >
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">
-            Featured stores
-          </h2>
-          <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-            Explore stores from around the world
-          </Balancer>
-        </div>
-        <div className="flex flex-col space-y-10">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {someStores.map((store) => (
-              <StoreCard
-                key={store.id}
-                store={store}
-                href={`/products?store_ids=${store.id}`}
-              />
-            ))}
+        <div className="flex items-center gap-4">
+          <div className="max-w-[58rem] flex-1 space-y-1">
+            <h2 className="font-heading text-3xl font-bold leading-[1.1] md:text-4xl">
+              Featured stores
+            </h2>
+            <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+              Explore stores from around the world
+            </Balancer>
           </div>
           <Link
             href="/stores"
             className={cn(
               buttonVariants({
-                className: "mx-auto",
+                variant: "ghost",
+                className: "hidden sm:flex",
               })
             )}
           >
             View all stores
+            <ArrowRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
+            <span className="sr-only">View all stores</span>
+          </Link>
+        </div>
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <React.Suspense
+              fallback={Array.from({ length: 4 }).map((_, i) => (
+                <StoreCardSkeleton key={i} />
+              ))}
+            >
+              {someStores.map((store) => (
+                <StoreCard
+                  key={store.id}
+                  store={store}
+                  href={`/products?store_ids=${store.id}`}
+                />
+              ))}
+            </React.Suspense>
+          </div>
+          <Link
+            href="/stores"
+            className={cn(
+              buttonVariants({
+                variant: "ghost",
+                className: "mx-auto flex w-fit sm:hidden",
+              })
+            )}
+          >
+            View all stores
+            <ArrowRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
             <span className="sr-only">View all stores</span>
           </Link>
         </div>
@@ -250,7 +275,7 @@ export default async function IndexPage() {
       <section
         id="random-subcategories"
         aria-labelledby="random-subcategories-heading"
-        className="flex flex-wrap items-center justify-center gap-4 py-6"
+        className="flex flex-wrap items-center justify-center gap-4 pb-6 pt-8 md:pt-10 lg:pt-12"
       >
         {randomProductCategory?.subcategories.map((subcategory) => (
           <Link

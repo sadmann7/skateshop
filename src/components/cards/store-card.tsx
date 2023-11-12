@@ -20,6 +20,7 @@ interface StoreCardProps {
 export function StoreCard({ store, href }: StoreCardProps) {
   return (
     <Link href={href}>
+      <span className="sr-only">{store.name}</span>
       <Card className="h-full overflow-hidden">
         <AspectRatio ratio={21 / 9}>
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/50" />
@@ -38,16 +39,15 @@ export function StoreCard({ store, href }: StoreCardProps) {
             style={getRandomPatternStyle(String(store.id))}
           />
         </AspectRatio>
-        <CardHeader>
-          <CardTitle className="line-clamp-1 text-lg">{store.name}</CardTitle>
-          <CardDescription className="line-clamp-2">
+        <CardHeader className="space-y-2">
+          <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+          <CardDescription className="line-clamp-1">
             {store.description?.length
               ? store.description
               : `Explore ${store.name} products`}
           </CardDescription>
         </CardHeader>
       </Card>
-      <span className="sr-only">{store.name}</span>
     </Link>
   )
 }

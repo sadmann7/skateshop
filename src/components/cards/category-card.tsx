@@ -1,3 +1,4 @@
+import * as React from "react"
 import Link from "next/link"
 import { db } from "@/db"
 import { products } from "@/db/schema"
@@ -11,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface CategoryCardProps {
   category: Category
@@ -29,15 +31,19 @@ export async function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link key={category.title} href={`/categories/${category.title}`}>
       <span className="sr-only">{category.title}</span>
-      <Card className="relative h-full w-full overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
+      <Card className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
         <CardHeader>
-          <category.icon className="h-6 w-6" aria-hidden="true" />
+          <div className="grid h-12 w-12 place-items-center rounded-full border-2 shadow">
+            <category.icon className="h-5 w-5" aria-hidden="true" />
+          </div>
         </CardHeader>
-        <CardContent className="space-y-1.5">
+        <CardContent className="flex flex-col items-center space-y-1.5">
           <CardTitle className="capitalize text-zinc-200">
             {category.title}
           </CardTitle>
-          <CardDescription>{productCount} products</CardDescription>
+          <React.Suspense fallback={<Skeleton className="h-4 w-20" />}>
+            <CardDescription>{productCount} products</CardDescription>
+          </React.Suspense>
         </CardContent>
       </Card>
     </Link>

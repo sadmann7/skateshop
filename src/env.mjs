@@ -7,19 +7,19 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-    CLERK_SECRET_KEY: z.string(),
-    RESEND_API_KEY: z.string(),
+    DATABASE_URL: z.string().url(),
+    CLERK_SECRET_KEY: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
     EMAIL_FROM_ADDRESS: z.string().email(),
-    UPLOADTHING_SECRET: z.string(),
-    UPLOADTHING_APP_ID: z.string(),
-    STRIPE_API_KEY: z.string(),
-    STRIPE_WEBHOOK_SECRET: z.string(),
-    STRIPE_STD_MONTHLY_PRICE_ID: z.string(),
-    STRIPE_PRO_MONTHLY_PRICE_ID: z.string(),
+    UPLOADTHING_SECRET: z.string().min(1),
+    UPLOADTHING_APP_ID: z.string().min(1),
+    STRIPE_API_KEY: z.string().min(1),
+    STRIPE_WEBHOOK_SECRET: z.string().min(1),
+    STRIPE_STD_MONTHLY_PRICE_ID: z.string().min(1),
+    STRIPE_PRO_MONTHLY_PRICE_ID: z.string().min(1),
   },
 
   /**
@@ -38,9 +38,9 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-    DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
