@@ -16,4 +16,5 @@ const nextConfig = {
     ppr: true,
   },
 }
+
 export default withContentlayer(nextConfig)

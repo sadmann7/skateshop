@@ -242,7 +242,7 @@ export default async function IndexPage() {
           </Link>
         </div>
         <div className="space-y-8">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             <React.Suspense
               fallback={Array.from({ length: 4 }).map((_, i) => (
                 <StoreCardSkeleton key={i} />
