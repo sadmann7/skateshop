@@ -19,6 +19,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "utfs.io",
       },
+      {
+        protocol: "https",
+        hostname: "loremflickr.com",
+      },
     ],
   },
   experimental: {
@@ -26,4 +30,4 @@ const nextConfig = {
   },
 }
 
-module.exports = withContentlayer(nextConfig)
+export default withContentlayer(nextConfig)

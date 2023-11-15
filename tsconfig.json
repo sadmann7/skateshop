@@ -30,15 +30,13 @@
   "include": [
     ".eslintrc.cjs",
     "next-env.d.ts",
-    "next.config.js",
     "**/*.ts",
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
     "./contentlayer.config.js",
-    ".contentlayer/generated",
-    "next.config.js"
+    ".contentlayer/generated"
   ],
   "exclude": ["node_modules"]
 }

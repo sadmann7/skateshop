@@ -1,4 +1,5 @@
 import * as React from "react"
+import { unstable_noStore as noStore } from "next/cache"
 import Link from "next/link"
 import { db } from "@/db"
 import { products } from "@/db/schema"
@@ -19,6 +20,8 @@ interface CategoryCardProps {
 }
 
 export async function CategoryCard({ category }: CategoryCardProps) {
+  noStore()
+
   const productCount = await db
     .select({
       count: sql<number>`count(*)`.mapWith(Number),

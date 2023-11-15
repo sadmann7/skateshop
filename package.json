@@ -14,7 +14,7 @@
     "db:generate": "dotenv drizzle-kit generate:mysql",
     "db:push": "dotenv drizzle-kit push:mysql",
     "db:introspect": "dotenv drizzle-kit introspect:mysql",
-    "db:studio": "dotenv drizzle-kit studio --port 5000 --verbose",
+    "db:studio": "dotenv drizzle-kit studio --verbose",
     "shadcn:add": "pnpm dlx shadcn-ui@latest add",
     "email:dev": "email dev --dir src/components/emails -p 3001",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",

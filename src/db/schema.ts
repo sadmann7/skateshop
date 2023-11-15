@@ -22,6 +22,7 @@ export const stores = mysqlTable("stores", {
   active: boolean("active").notNull().default(false),
   stripeAccountId: varchar("stripeAccountId", { length: 191 }),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type Store = typeof stores.$inferSelect
@@ -52,6 +53,7 @@ export const products = mysqlTable("products", {
   tags: json("tags").$type<string[] | null>().default(null),
   storeId: int("storeId").notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type Product = typeof products.$inferSelect
@@ -69,6 +71,7 @@ export const carts = mysqlTable("carts", {
   items: json("items").$type<CartItem[] | null>().default(null),
   closed: boolean("closed").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type Cart = typeof carts.$inferSelect
@@ -83,6 +86,7 @@ export const emailPreferences = mysqlTable("email_preferences", {
   marketing: boolean("marketing").notNull().default(false),
   transactional: boolean("transactional").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type EmailPreference = typeof emailPreferences.$inferSelect
@@ -97,6 +101,7 @@ export const payments = mysqlTable("payments", {
   stripeAccountExpiresAt: int("stripeAccountExpiresAt"),
   detailsSubmitted: boolean("detailsSubmitted").notNull().default(false),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type Payment = typeof payments.$inferSelect
@@ -123,6 +128,7 @@ export const orders = mysqlTable("orders", {
   email: varchar("email", { length: 191 }),
   addressId: int("addressId"),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type Order = typeof orders.$inferSelect
@@ -138,6 +144,7 @@ export const addresses = mysqlTable("addresses", {
   postalCode: varchar("postalCode", { length: 191 }),
   country: varchar("country", { length: 191 }),
   createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").onUpdateNow(),
 })
 
 export type Address = typeof addresses.$inferSelect

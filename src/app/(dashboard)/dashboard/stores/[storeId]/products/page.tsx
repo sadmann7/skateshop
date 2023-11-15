@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { unstable_noStore as noStore } from "next/cache"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
@@ -7,6 +8,7 @@ import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 
 import { dashboardProductsSearchParamsSchema } from "@/lib/validations/params"
 import { DateRangePicker } from "@/components/date-range-picker"
+import { SeedProducts } from "@/components/seed-products-button"
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
 export const metadata: Metadata = {
@@ -67,6 +69,8 @@ export default async function ProductsPage({
   const toDay = to ? new Date(to) : undefined
 
   // Transaction is used to ensure both queries are executed in a single transaction
+  noStore()
+
   const { items, count } = await db.transaction(async (tx) => {
     const items = await tx
       .select()
@@ -138,6 +142,7 @@ export default async function ProductsPage({
         <h2 className="text-2xl font-bold tracking-tight">Products</h2>
         <DateRangePicker align="end" />
       </div>
+      <SeedProducts storeId={storeId} count={50} />
       <ProductsTableShell
         data={items}
         pageCount={pageCount}
