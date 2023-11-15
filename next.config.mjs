@@ -10,7 +10,16 @@ await import("./src/env.mjs")
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["uploadthing.com", "utfs.io"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "uploadthing.com",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+      },
+    ],
   },
   experimental: {
     ppr: true,
