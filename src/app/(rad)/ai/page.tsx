@@ -1,9 +1,9 @@
-import { Shell } from "@/components/shells/shell"
+import { Chat } from "./_components/chat"
 
-export default function Ai() {
+export default function AIPage() {
   return (
-    <Shell>
-      <div>Ai page</div>
-    </Shell>
+    <div className="flex min-h-[calc(100dvh-4.1rem)] flex-col">
+      <Chat />
+    </div>
   )
 }
