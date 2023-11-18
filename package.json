@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "contentlayer build && next build",
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
@@ -79,7 +79,6 @@
     "stripe": "^14.5.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
-    "unstyled-table": "0.0.6-beta-4",
     "uploadthing": "^6.0.1",
     "vaul": "^0.7.9",
     "zod": "^3.22.4"
@@ -111,10 +110,5 @@
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
     "unist-util-visit": "^5.0.0"
-  },
-  "overrides": {
-    "next-contentlayer": {
-      "next": "$next"
-    }
   }
 }
