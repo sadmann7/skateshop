@@ -142,7 +142,7 @@ export default async function ProductsPage({
         <h2 className="text-2xl font-bold tracking-tight">Products</h2>
         <DateRangePicker align="end" />
       </div>
-      <SeedProducts storeId={storeId} count={50} />
+      <SeedProducts storeId={storeId} count={4} />
       <ProductsTableShell
         data={items}
         pageCount={pageCount}

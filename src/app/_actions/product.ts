@@ -38,12 +38,12 @@ export async function seedProducts({
 
   const data: Product[] = []
 
-  const category =
-    faker.helpers.shuffle(products.category.enumValues)[0] ?? "skateboards"
-
-  const subcategories = getSubcategories(category)
-
   for (let i = 0; i < productCount; i++) {
+    const category =
+      faker.helpers.shuffle(products.category.enumValues)[0] ?? "skateboards"
+
+    const subcategories = getSubcategories(category)
+
     data.push({
       id: new Date().getTime() + new Date().getMilliseconds() + i,
       name: faker.commerce.productName(),
@@ -71,6 +71,8 @@ export async function seedProducts({
       updatedAt: faker.date.past(),
     })
   }
+
+  await db.delete(products).where(eq(products.storeId, storeId))
 
   await db.insert(products).values(data)
 }

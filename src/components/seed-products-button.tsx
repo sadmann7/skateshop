@@ -31,7 +31,7 @@ export function SeedProducts({
             storeId,
             count,
           })
-          toast.success(`${count} products seeded  successfully.`)
+          toast.success("Products seeded successfully.")
         })
       }}
       {...props}
