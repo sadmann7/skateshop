@@ -111,5 +111,10 @@
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
     "unist-util-visit": "^5.0.0"
+  },
+  "overrides": {
+    "next-contentlayer": {
+      "next": "$next"
+    }
   }
 }
