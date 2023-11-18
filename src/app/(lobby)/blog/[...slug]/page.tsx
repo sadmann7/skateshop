@@ -117,9 +117,7 @@ export default async function PostPage({ params }: PostPageProps) {
       <div className="space-y-2">
         <div className="flex items-center space-x-2 text-sm text-muted-foreground">
           {post.date && (
-            <time dateTime={post.date} className="block">
-              Published on {formatDate(post.date)}
-            </time>
+            <time dateTime={post.date}>{formatDate(post.date)}</time>
           )}
           {post.date ? <div>•</div> : null}
           <div>{post.readingTime}min</div>

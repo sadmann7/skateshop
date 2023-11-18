@@ -38,11 +38,12 @@ export default async function IndexPage() {
         .limit(8)
         .leftJoin(stores, eq(products.storeId, stores.id))
         .groupBy(products.id)
-        .orderBy(desc(stores.stripeAccountId), desc(products.createdAt))
+        .where(sql`(${stores.stripeAccountId}) is not null`)
+        .orderBy(desc(products.createdAt))
     },
     ["lobby-products"],
     {
-      revalidate: 86400,
+      revalidate: 3600,
       tags: ["lobby-products"],
     }
   )()
@@ -64,7 +65,7 @@ export default async function IndexPage() {
     },
     ["lobby-stores"],
     {
-      revalidate: 86400,
+      revalidate: 3600,
       tags: ["lobby-stores"],
     }
   )()
