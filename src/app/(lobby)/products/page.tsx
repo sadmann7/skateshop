@@ -37,6 +37,7 @@ export default async function ProductsPage({
     price_range,
     store_ids,
     store_page,
+    active,
   } = productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
@@ -57,6 +58,7 @@ export default async function ProductsPage({
     subcategories,
     price_range,
     store_ids,
+    active,
   })
 
   const pageCount = Math.ceil(productsTransaction.count / limit)

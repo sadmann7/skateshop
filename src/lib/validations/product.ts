@@ -49,4 +49,5 @@ export const getProductsSchema = z.object({
   sort: z.string().optional().nullable(),
   price_range: z.string().optional().nullable(),
   store_ids: z.string().optional().nullable(),
+  active: z.string().optional().nullable(),
 })

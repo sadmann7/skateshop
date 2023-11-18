@@ -8,10 +8,12 @@ export const searchParamsSchema = z.object({
 export const productsSearchParamsSchema = searchParamsSchema.extend({
   sort: z.string().optional().default("createdAt.desc"),
   categories: z.string().optional(),
+  subcategory: z.string().optional(),
   subcategories: z.string().optional(),
   price_range: z.string().optional(),
   store_ids: z.string().optional(),
   store_page: z.string().optional(),
+  active: z.string().optional().default("true"),
 })
 
 export const dashboardProductsSearchParamsSchema = searchParamsSchema.extend({

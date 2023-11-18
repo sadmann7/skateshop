@@ -6,6 +6,7 @@ import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
 import { cn } from "@/lib/utils"
+import { productsSearchParamsSchema } from "@/lib/validations/params"
 import { BoardBuilder } from "@/components/board-builder"
 import {
   PageHeader,
@@ -31,7 +32,8 @@ interface BuildABoadPageProps {
 export default async function BuildABoardPage({
   searchParams,
 }: BuildABoadPageProps) {
-  const { page, per_page, sort, subcategory, price_range } = searchParams
+  const { page, per_page, sort, subcategory, price_range, active } =
+    productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
@@ -45,6 +47,7 @@ export default async function BuildABoardPage({
     sort: typeof sort === "string" ? sort : null,
     subcategories: activeSubcategory,
     price_range: typeof price_range === "string" ? price_range : null,
+    active,
   })
 
   const pageCount = Math.ceil(productsTransaction.count / limit)
@@ -100,8 +103,6 @@ export default async function BuildABoardPage({
         </div>
       </section>
       <BoardBuilder
-        id="build-a-board-products"
-        aria-labelledby="build-a-board-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         subcategory={activeSubcategory}

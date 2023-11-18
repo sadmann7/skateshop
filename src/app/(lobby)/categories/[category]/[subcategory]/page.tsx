@@ -3,6 +3,7 @@ import { type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
 
 import { toTitleCase, unslugify } from "@/lib/utils"
+import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -38,8 +39,8 @@ export default async function SubcategoryPage({
   searchParams,
 }: SubcategoryPageProps) {
   const { category, subcategory } = params
-  const { page, per_page, sort, price_range, store_ids, store_page } =
-    searchParams
+  const { page, per_page, sort, price_range, store_ids, store_page, active } =
+    productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
@@ -53,6 +54,7 @@ export default async function SubcategoryPage({
     subcategories: subcategory,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
+    active,
   })
 
   const pageCount = Math.ceil(productsTransaction.count / limit)
@@ -74,10 +76,7 @@ export default async function SubcategoryPage({
 
   return (
     <Shell>
-      <PageHeader
-        id="subcategory-page-header"
-        aria-labelledby="subcategory-page-header-heading"
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">
           {toTitleCase(unslugify(subcategory))}
         </PageHeaderHeading>
@@ -86,8 +85,6 @@ export default async function SubcategoryPage({
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        id="subcategory-page-products"
-        aria-labelledby="subcategory-page-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         stores={storesTransaction.items}

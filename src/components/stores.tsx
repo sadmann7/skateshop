@@ -21,12 +21,12 @@ import { PaginationButton } from "@/components/pagers/pagination-button"
 
 import { FacetedFilter } from "./faceted-filter"
 
-interface StoresProps extends React.HTMLAttributes<HTMLDivElement> {
+interface StoresProps {
   stores: CuratedStore[]
   pageCount: number
 }
 
-export function Stores({ stores, pageCount, ...props }: StoresProps) {
+export function Stores({ stores, pageCount }: StoresProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -75,7 +75,7 @@ export function Stores({ stores, pageCount, ...props }: StoresProps) {
   }, [filterValues])
 
   return (
-    <section className="flex flex-col space-y-6" {...props}>
+    <section className="flex flex-col space-y-6">
       <div className="flex items-center space-x-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

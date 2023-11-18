@@ -18,6 +18,7 @@ import {
   not,
   sql,
 } from "drizzle-orm"
+import { stores } from "drizzle/schema"
 import { z } from "zod"
 
 import { getSubcategories, productTags } from "@/config/products"
@@ -123,10 +124,26 @@ export async function getProductsAction(
 
     const { items, count } = await db.transaction(async (tx) => {
       const items = await tx
-        .select()
+        .select({
+          id: products.id,
+          name: products.name,
+          description: products.description,
+          images: products.images,
+          category: products.category,
+          subcategory: products.subcategory,
+          price: products.price,
+          inventory: products.inventory,
+          rating: products.rating,
+          tags: products.tags,
+          storeId: products.storeId,
+          createdAt: products.createdAt,
+          updatedAt: products.updatedAt,
+          stripeAccountId: stores.stripeAccountId,
+        })
         .from(products)
         .limit(input.limit)
         .offset(input.offset)
+        .leftJoin(stores, eq(products.storeId, stores.id))
         .where(
           and(
             categories.length
@@ -137,7 +154,10 @@ export async function getProductsAction(
               : undefined,
             minPrice ? gte(products.price, minPrice) : undefined,
             maxPrice ? lte(products.price, maxPrice) : undefined,
-            storeIds.length ? inArray(products.storeId, storeIds) : undefined
+            storeIds.length ? inArray(products.storeId, storeIds) : undefined,
+            input.active === "true"
+              ? sql`(${stores.stripeAccountId}) is not null`
+              : undefined
           )
         )
         .groupBy(products.id)

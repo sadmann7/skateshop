@@ -3,6 +3,7 @@ import { type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
 
 import { toTitleCase } from "@/lib/utils"
+import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -43,7 +44,8 @@ export default async function CategoryPage({
     price_range,
     store_ids,
     store_page,
-  } = searchParams
+    active,
+  } = productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
@@ -57,6 +59,7 @@ export default async function CategoryPage({
     subcategories: typeof subcategories === "string" ? subcategories : null,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
+    active,
   })
 
   const pageCount = Math.ceil(productsTransaction.count / limit)
@@ -78,18 +81,13 @@ export default async function CategoryPage({
 
   return (
     <Shell>
-      <PageHeader
-        id="category-page-header"
-        aria-labelledby="category-page-header-heading"
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">{toTitleCase(category)}</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           {`Buy ${category} from the best stores`}
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        id="category-page-products"
-        aria-labelledby="category-page-products-heading"
         products={productsTransaction.items}
         pageCount={pageCount}
         category={category}

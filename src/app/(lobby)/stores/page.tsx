@@ -46,21 +46,13 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
 
   return (
     <Shell>
-      <PageHeader
-        id="stores-page-header"
-        aria-labelledby="stores-page-header-heading"
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">Stores</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Buy products from our stores
         </PageHeaderDescription>
       </PageHeader>
-      <Stores
-        id="stores-page-stores"
-        aria-labelledby="stores-page-stores-heading"
-        stores={storesTransaction.items}
-        pageCount={pageCount}
-      />
+      <Stores stores={storesTransaction.items} pageCount={pageCount} />
     </Shell>
   )
 }
