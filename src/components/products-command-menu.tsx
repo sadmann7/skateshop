@@ -135,7 +135,7 @@ export function ProductsCommandMenu() {
                       }
                     >
                       <CategoryIcon
-                        className="mr-2 h-4 w-4 text-muted-foreground"
+                        className="mr-2.5 h-3 w-3 text-muted-foreground"
                         aria-hidden="true"
                       />
                       <span className="truncate">{item.name}</span>

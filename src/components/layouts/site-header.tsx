@@ -1,11 +1,6 @@
 import Link from "next/link"
 import type { User } from "@clerk/nextjs/server"
-import {
-  AvatarIcon,
-  DashboardIcon,
-  ExitIcon,
-  GearIcon,
-} from "@radix-ui/react-icons"
+import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons"
 
 import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
@@ -23,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { CartSheet } from "@/components/checkout/cart-sheet"
+import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/layouts/main-nav"
 import { MobileNav } from "@/components/layouts/mobile-nav"
 import { ProductsCommandMenu } from "@/components/products-command-menu"
@@ -79,16 +75,6 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
-                      <Link href="/dashboard/account">
-                        <AvatarIcon
-                          className="mr-2 h-4 w-4"
-                          aria-hidden="true"
-                        />
-                        Account
-                        <DropdownMenuShortcut>⇧⌘A</DropdownMenuShortcut>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
                       <Link href="/dashboard/stores">
                         <DashboardIcon
                           className="mr-2 h-4 w-4"
@@ -98,8 +84,18 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                         <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild disabled>
-                      <Link href="/dashboard/settings">
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/billing">
+                        <Icons.dollarSign
+                          className="mr-2 h-4 w-4"
+                          aria-hidden="true"
+                        />
+                        Billing
+                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard/account">
                         <GearIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                         Settings
                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>

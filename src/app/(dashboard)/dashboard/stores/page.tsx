@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -19,6 +20,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
+import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
@@ -55,10 +57,7 @@ export default async function StoresPage() {
 
   return (
     <Shell variant="sidebar">
-      <PageHeader
-        id="dashboard-stores-page-header"
-        aria-labelledby="dashboard-stores-page-header-heading"
-      >
+      <PageHeader>
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
             Stores
@@ -82,10 +81,7 @@ export default async function StoresPage() {
           Manage your stores
         </PageHeaderDescription>
       </PageHeader>
-      <Alert
-        id="dashboard-stores-page-alert"
-        aria-labelledby="dashboard-stores-page-alert-heading"
-      >
+      <Alert>
         <RocketIcon className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
@@ -97,18 +93,20 @@ export default async function StoresPage() {
           this plan.
         </AlertDescription>
       </Alert>
-      <section
-        id="dashboard-stores-page-stores"
-        aria-labelledby="dashboard-stores-page-stores-heading"
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {allStores.map((store) => (
-          <StoreCard
-            key={store.id}
-            store={store}
-            href={`/dashboard/stores/${store.id}`}
-          />
-        ))}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <React.Suspense
+          fallback={Array.from({ length: 3 }).map((_, i) => (
+            <StoreCardSkeleton key={i} />
+          ))}
+        >
+          {allStores.map((store) => (
+            <StoreCard
+              key={store.id}
+              store={store}
+              href={`/dashboard/stores/${store.id}`}
+            />
+          ))}
+        </React.Suspense>
       </section>
     </Shell>
   )

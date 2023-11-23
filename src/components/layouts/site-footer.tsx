@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
 import { Icons } from "@/components/icons"
-import { ThemeToggle } from "@/components/layouts/theme-toggle"
+import { ModeToggle } from "@/components/layouts/mode-toggle"
 import { Shell } from "@/components/shells/shell"
 
 export function SiteFooter() {
@@ -97,7 +97,7 @@ export function SiteFooter() {
               <Icons.gitHub className="h-4 w-4" aria-hidden="true" />
               <span className="sr-only">GitHub</span>
             </Link>
-            <ThemeToggle />
+            <ModeToggle />
           </div>
         </section>
       </Shell>
