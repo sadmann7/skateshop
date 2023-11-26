@@ -21,8 +21,19 @@
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",
     "unlighthouse": "pnpm dlx unlighthouse --site https://skateshop.sadmn.com"
   },
+  "pnpm": {
+    "overrides": {
+      "@opentelemetry/api": "1.4.1",
+      "@opentelemetry/core": "1.13.0",
+      "@opentelemetry/exporter-trace-otlp-grpc": "0.39.1",
+      "@opentelemetry/resources": "1.13.0",
+      "@opentelemetry/sdk-trace-base": "1.13.0",
+      "@opentelemetry/sdk-trace-node": "1.13.0",
+      "@opentelemetry/semantic-conventions": "1.13.0"
+    }
+  },
   "dependencies": {
-    "@clerk/nextjs": "^4.27.1",
+    "@clerk/nextjs": "^4.27.2",
     "@clerk/themes": "^1.7.9",
     "@hookform/resolvers": "^3.3.2",
     "@loglib/tracker": "^0.8.0",
@@ -48,13 +59,13 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-email/components": "^0.0.11",
     "@react-email/tailwind": "0.0.12",
-    "@stripe/react-stripe-js": "^2.3.2",
-    "@stripe/stripe-js": "^2.1.11",
+    "@stripe/react-stripe-js": "^2.4.0",
+    "@stripe/stripe-js": "^2.2.0",
     "@t3-oss/env-nextjs": "^0.7.1",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.10.7",
-    "@uploadthing/react": "^6.0.0",
-    "ai": "^2.2.24",
+    "@uploadthing/react": "^6.0.2",
+    "ai": "^2.2.25",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
@@ -63,11 +74,11 @@
     "dayjs": "^1.11.10",
     "drizzle-orm": "^0.29.0",
     "embla-carousel-react": "8.0.0-rc14",
-    "mysql2": "^3.6.3",
-    "next": "14.0.4-canary.3",
+    "mysql2": "^3.6.5",
+    "next": "14.0.4-canary.17",
     "next-contentlayer": "^0.3.4",
     "next-themes": "^0.2.1",
-    "openai": "^4.19.0",
+    "openai": "^4.20.0",
     "react": "18.2.0",
     "react-cropper": "^2.3.3",
     "react-day-picker": "^8.9.1",
@@ -82,11 +93,11 @@
     "react-textarea-autosize": "^8.5.3",
     "react-wrap-balancer": "^1.1.0",
     "resend": "^2.0.0",
-    "sonner": "^1.2.0",
+    "sonner": "^1.2.3",
     "stripe": "^14.5.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
-    "uploadthing": "^6.0.1",
+    "uploadthing": "^6.0.3",
     "vaul": "^0.7.9",
     "zod": "^3.22.4"
   },
@@ -96,12 +107,12 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",
     "@tailwindcss/typography": "^0.5.10",
     "@types/eslint": "^8.44.7",
-    "@types/node": "^20.9.1",
-    "@types/react": "^18.2.37",
-    "@types/react-dom": "^18.2.15",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17",
     "@types/react-syntax-highlighter": "^15.5.10",
-    "@typescript-eslint/eslint-plugin": "^6.11.0",
-    "@typescript-eslint/parser": "^6.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.12.0",
+    "@typescript-eslint/parser": "^6.12.0",
     "autoprefixer": "^10.4.16",
     "dotenv-cli": "^7.3.0",
     "drizzle-kit": "^0.20.4",
@@ -117,7 +128,12 @@
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
     "tailwindcss": "^3.3.5",
-    "typescript": "^5.2.2",
+    "typescript": "^5.3.2",
     "unist-util-visit": "^5.0.0"
+  },
+  "overrides": {
+    "next-contentlayer": {
+      "next": "$next"
+    }
   }
 }
