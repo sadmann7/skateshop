@@ -21,17 +21,6 @@
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",
     "unlighthouse": "pnpm dlx unlighthouse --site https://skateshop.sadmn.com"
   },
-  "pnpm": {
-    "overrides": {
-      "@opentelemetry/api": "1.4.1",
-      "@opentelemetry/core": "1.13.0",
-      "@opentelemetry/exporter-trace-otlp-grpc": "0.39.1",
-      "@opentelemetry/resources": "1.13.0",
-      "@opentelemetry/sdk-trace-base": "1.13.0",
-      "@opentelemetry/sdk-trace-node": "1.13.0",
-      "@opentelemetry/semantic-conventions": "1.13.0"
-    }
-  },
   "dependencies": {
     "@clerk/nextjs": "^4.27.2",
     "@clerk/themes": "^1.7.9",
