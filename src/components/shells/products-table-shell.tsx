@@ -23,22 +23,33 @@ import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { deleteProductAction } from "@/app/_actions/product"
 
+type AwaitedProduct = Pick<
+  Product,
+  "id" | "name" | "category" | "price" | "inventory" | "rating" | "createdAt"
+>
+
 interface ProductsTableShellProps {
-  data: Product[]
-  pageCount: number
+  transaction: Promise<{
+    items: AwaitedProduct[]
+    count: number
+  }>
+  limit: number
   storeId: number
 }
 
 export function ProductsTableShell({
-  data,
-  pageCount,
+  transaction,
+  limit,
   storeId,
 }: ProductsTableShellProps) {
+  const { items: data, count } = React.use(transaction)
+  const pageCount = Math.ceil(count / limit)
+
   const [isPending, startTransition] = React.useTransition()
   const [selectedRowIds, setSelectedRowIds] = React.useState<number[]>([])
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
+  const columns = React.useMemo<ColumnDef<AwaitedProduct, unknown>[]>(
     () => [
       {
         id: "select",

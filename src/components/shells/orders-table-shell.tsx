@@ -23,27 +23,34 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-type CuratedOrder = Pick<Order, "id" | "quantity" | "amount" | "createdAt"> & {
+type AwaitedOrder = Pick<Order, "id" | "quantity" | "amount" | "createdAt"> & {
   customer: string | null
   status: string
   paymentIntentId: string
 }
 
 interface OrdersTableShellProps {
-  data: CuratedOrder[]
-  pageCount: number
+  transaction: Promise<{
+    items: AwaitedOrder[]
+    count: number
+  }>
+  limit: number
   storeId: number
   isSearchable?: boolean
 }
 
 export function OrdersTableShell({
-  data,
-  pageCount,
+  transaction,
+  limit,
   storeId,
   isSearchable = true,
 }: OrdersTableShellProps) {
+  const { items: data, count } = React.use(transaction)
+
+  const pageCount = Math.ceil(count / limit)
+
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo<ColumnDef<CuratedOrder, unknown>[]>(
+  const columns = React.useMemo<ColumnDef<AwaitedOrder, unknown>[]>(
     () => [
       {
         accessorKey: "id",

@@ -1,13 +1,15 @@
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
+import * as React from "react"
 
-import { ordersSearchParamsSchema } from "@/lib/validations/params"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { OrdersTableShell } from "@/components/shells/orders-table-shell"
+import { ordersSearchParamsSchema } from "@/lib/validations/params"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -66,7 +68,7 @@ export default async function OrdersPage({
   const toDay = to ? new Date(to) : undefined
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { items, count } = await db.transaction(async (tx) => {
+  const transaction = db.transaction(async (tx) => {
     const items = await tx
       .select({
         id: orders.id,
@@ -133,15 +135,21 @@ export default async function OrdersPage({
     }
   })
 
-  const pageCount = Math.ceil(count / limit)
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
         <DateRangePicker align="end" />
       </div>
-      <OrdersTableShell data={items} pageCount={pageCount} storeId={storeId} />
+      <React.Suspense
+        fallback={<DataTableSkeleton columnCount={6} />}
+      >
+        <OrdersTableShell
+          transaction={transaction}
+          limit={limit}
+          storeId={storeId}
+        />
+      </React.Suspense>
     </div>
   )
 }

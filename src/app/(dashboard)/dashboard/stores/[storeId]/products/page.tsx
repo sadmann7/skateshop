@@ -1,3 +1,4 @@
+import * as React from "react"
 import { type Metadata } from "next"
 import { unstable_noStore as noStore } from "next/cache"
 import { notFound } from "next/navigation"
@@ -7,6 +8,7 @@ import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 
 import { dashboardProductsSearchParamsSchema } from "@/lib/validations/params"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { SeedProducts } from "@/components/seed-products-button"
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
@@ -71,9 +73,17 @@ export default async function ProductsPage({
   // Transaction is used to ensure both queries are executed in a single transaction
   noStore()
 
-  const { items, count } = await db.transaction(async (tx) => {
+  const transaction = db.transaction(async (tx) => {
     const items = await tx
-      .select()
+      .select({
+        id: products.id,
+        name: products.name,
+        category: products.category,
+        price: products.price,
+        inventory: products.inventory,
+        rating: products.rating,
+        createdAt: products.createdAt,
+      })
       .from(products)
       .limit(limit)
       .offset(offset)
@@ -134,8 +144,6 @@ export default async function ProductsPage({
     }
   })
 
-  const pageCount = Math.ceil(count / limit)
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
@@ -143,11 +151,21 @@ export default async function ProductsPage({
         <DateRangePicker align="end" />
       </div>
       <SeedProducts storeId={storeId} count={4} />
-      <ProductsTableShell
-        data={items}
-        pageCount={pageCount}
-        storeId={storeId}
-      />
+      <React.Suspense
+        fallback={
+          <DataTableSkeleton
+            columnCount={6}
+            isNewRowCreatable={true}
+            isRowsDeletable={true}
+          />
+        }
+      >
+        <ProductsTableShell
+          transaction={transaction}
+          limit={limit}
+          storeId={storeId}
+        />
+      </React.Suspense>
     </div>
   )
 }

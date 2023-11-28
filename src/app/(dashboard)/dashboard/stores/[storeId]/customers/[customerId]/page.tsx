@@ -1,3 +1,4 @@
+import * as React from "react"
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
@@ -5,6 +6,8 @@ import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm"
 
+import { customerSearchParamsSchema } from "@/lib/validations/params"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { OrdersTableShell } from "@/components/shells/orders-table-shell"
 
@@ -33,7 +36,8 @@ export default async function CustomerPage({
   const emailParts = params.customerId.split("-")
   const email = `${emailParts[0]}@${emailParts[2]}.com`
 
-  const { page, per_page, sort, status, from, to } = searchParams ?? {}
+  const { page, per_page, sort, status, from, to } =
+    customerSearchParamsSchema.parse(searchParams)
 
   const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
@@ -47,31 +51,27 @@ export default async function CustomerPage({
     notFound()
   }
 
+  // Fallback page for invalid page numbers
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const perPageAsNumber = Number(per_page)
+  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
+  const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
   // Column and order to sort by
-  const [column, order] =
-    typeof sort === "string"
-      ? (sort.split(".") as [
-          keyof Order | undefined,
-          "asc" | "desc" | undefined,
-        ])
-      : []
+  const [column, order] = (sort?.split(".") as [
+    keyof Order | undefined,
+    "asc" | "desc" | undefined,
+  ]) ?? ["createdAt", "desc"]
 
-  const statuses = typeof status === "string" ? status.split(".") : []
-
-  const fromDay = typeof from === "string" ? new Date(from) : undefined
-  const toDay = typeof to === "string" ? new Date(to) : undefined
+  const statuses = status ? status.split(".") : []
+  const fromDay = from ? new Date(from) : undefined
+  const toDay = to ? new Date(to) : undefined
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { items, count } = await db.transaction(async (tx) => {
+  const transaction = db.transaction(async (tx) => {
     const items = await tx
       .select({
         id: orders.id,
@@ -136,8 +136,6 @@ export default async function CustomerPage({
     }
   })
 
-  const pageCount = Math.ceil(count / limit)
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
@@ -146,12 +144,18 @@ export default async function CustomerPage({
         </h2>
         <DateRangePicker align="end" />
       </div>
-      <OrdersTableShell
-        data={items}
-        pageCount={pageCount}
-        storeId={storeId}
-        isSearchable={false}
-      />
+      <React.Suspense
+        fallback={
+          <DataTableSkeleton columnCount={6} searchableFieldCount={0} />
+        }
+      >
+        <OrdersTableShell
+          transaction={transaction}
+          limit={limit}
+          storeId={storeId}
+          isSearchable={false}
+        />
+      </React.Suspense>
     </div>
   )
 }

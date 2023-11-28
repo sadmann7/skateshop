@@ -49,3 +49,10 @@ export const customersSearchParamsSchema = searchParamsSchema.extend({
   from: z.string().optional(),
   to: z.string().optional(),
 })
+
+export const customerSearchParamsSchema = searchParamsSchema.extend({
+  sort: z.string().optional().default("createdAt.desc"),
+  status: z.string().optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
+})

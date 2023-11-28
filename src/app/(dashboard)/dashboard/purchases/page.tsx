@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
@@ -8,6 +9,7 @@ import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
 import { getUserEmail } from "@/lib/utils"
 import { purchasesSearchParamsSchema } from "@/lib/validations/params"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -21,7 +23,6 @@ export const metadata: Metadata = {
   title: "Purchases",
   description: "Manage your purchases",
 }
-
 interface PurchasesPageProps {
   searchParams: {
     [key: string]: string | string[] | undefined
@@ -58,10 +59,10 @@ export default async function PurchasesPage({
     "asc" | "desc" | undefined,
   ]) ?? ["createdAt", "desc"]
 
-  const statuses = typeof status === "string" ? status.split(".") : []
+  const statuses = status ? status.split(".") : []
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { items, count } = await db.transaction(async (tx) => {
+  const transaction = db.transaction(async (tx) => {
     const items = await tx
       .select({
         id: orders.id,
@@ -125,8 +126,6 @@ export default async function PurchasesPage({
     }
   })
 
-  const pageCount = Math.ceil(count / limit)
-
   return (
     <Shell variant="sidebar">
       <PageHeader
@@ -139,7 +138,9 @@ export default async function PurchasesPage({
           Manage your purchases
         </PageHeaderDescription>
       </PageHeader>
-      <PurchasesTableShell data={items} pageCount={pageCount} />
+      <React.Suspense fallback={<DataTableSkeleton columnCount={6} />}>
+        <PurchasesTableShell transaction={transaction} limit={limit} />
+      </React.Suspense>
     </Shell>
   )
 }

@@ -1,3 +1,4 @@
+import * as React from "react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
@@ -6,6 +7,7 @@ import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { customersSearchParamsSchema } from "@/lib/validations/params"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { CustomersTableShell } from "@/components/shells/customers-table-shell"
 
@@ -46,7 +48,7 @@ export default async function CustomersPage({
     notFound()
   }
 
-  // Customers transaction
+  // Transaction is used to ensure both queries are executed in a single transaction
   const pageAsNumber = Number(page)
   const fallbackPage =
     isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
@@ -59,7 +61,7 @@ export default async function CustomersPage({
   const fromDay = from ? new Date(from) : undefined
   const toDay = to ? new Date(to) : undefined
 
-  const { items, count } = await db.transaction(async (tx) => {
+  const transaction = db.transaction(async (tx) => {
     const items = await db
       .select({
         name: orders.name,
@@ -87,24 +89,24 @@ export default async function CustomersPage({
         sort === "name.asc"
           ? asc(orders.name)
           : sort === "name.desc"
-          ? desc(orders.name)
-          : sort === "email.asc"
-          ? asc(orders.email)
-          : sort === "email.desc"
-          ? desc(orders.email)
-          : sort === "totalSpent.asc"
-          ? asc(sql<number>`sum(${orders.amount})`)
-          : sort === "totalSpent.desc"
-          ? desc(sql<number>`sum(${orders.amount})`)
-          : sort === "orderPlaced.asc"
-          ? asc(sql<number>`count(*)`)
-          : sort === "orderPlaced.desc"
-          ? desc(sql<number>`count(*)`)
-          : sort === "createdAt.asc"
-          ? asc(sql<string>`min(${orders.createdAt})`)
-          : sort === "createdAt.desc"
-          ? desc(sql<string>`min(${orders.createdAt})`)
-          : sql<string>`min(${orders.createdAt})`
+            ? desc(orders.name)
+            : sort === "email.asc"
+              ? asc(orders.email)
+              : sort === "email.desc"
+                ? desc(orders.email)
+                : sort === "totalSpent.asc"
+                  ? asc(sql<number>`sum(${orders.amount})`)
+                  : sort === "totalSpent.desc"
+                    ? desc(sql<number>`sum(${orders.amount})`)
+                    : sort === "orderPlaced.asc"
+                      ? asc(sql<number>`count(*)`)
+                      : sort === "orderPlaced.desc"
+                        ? desc(sql<number>`count(*)`)
+                        : sort === "createdAt.asc"
+                          ? asc(sql<string>`min(${orders.createdAt})`)
+                          : sort === "createdAt.desc"
+                            ? desc(sql<string>`min(${orders.createdAt})`)
+                            : sql<string>`min(${orders.createdAt})`
       )
 
     const altCount = await db
@@ -142,19 +144,23 @@ export default async function CustomersPage({
     }
   })
 
-  const pageCount = Math.ceil(count / limit)
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Customers</h2>
         <DateRangePicker align="end" />
       </div>
-      <CustomersTableShell
-        data={items}
-        pageCount={pageCount}
-        storeId={store.id}
-      />
+      <React.Suspense
+        fallback={
+          <DataTableSkeleton columnCount={5} filterableFieldCount={0} />
+        }
+      >
+        <CustomersTableShell
+          transaction={transaction}
+          limit={limit}
+          storeId={store.id}
+        />
+      </React.Suspense>
     </div>
   )
 }
