@@ -12,6 +12,7 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { CategoryCard } from "@/components/cards/category-card"
 import { ProductCard } from "@/components/cards/product-card"
 import { StoreCard } from "@/components/cards/store-card"
@@ -61,7 +62,7 @@ export default async function IndexPage() {
         .limit(4)
         .leftJoin(products, eq(products.storeId, stores.id))
         .groupBy(stores.id)
-        .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
+        .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
     },
     ["lobby-stores"],
     {
@@ -109,7 +110,7 @@ export default async function IndexPage() {
         aria-labelledby="hero-heading"
         className="mx-auto flex w-full max-w-[64rem] flex-col items-center justify-center gap-4 py-12 text-center md:pt-32"
       >
-        {githubStars ? (
+        <React.Suspense fallback={<Skeleton className="h-7 w-44" />}>
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
             <Badge
               aria-hidden="true"
@@ -121,7 +122,7 @@ export default async function IndexPage() {
             </Badge>
             <span className="sr-only">GitHub</span>
           </Link>
-        ) : null}
+        </React.Suspense>
         <Balancer
           as="h1"
           className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl"

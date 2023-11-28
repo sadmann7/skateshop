@@ -357,7 +357,7 @@ export function Products({
                       </Button>
                     </div>
                   </div>
-                  <ScrollArea className="h-full">
+                  <ScrollArea className="h-full pb-12">
                     <div className="space-y-4">
                       {stores.map((store) => (
                         <div
