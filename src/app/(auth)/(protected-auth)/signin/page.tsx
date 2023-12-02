@@ -1,8 +1,6 @@
 import { type Metadata } from "next"
 import Link from "next/link"
-import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
-import { currentUser } from "@clerk/nextjs"
 
 import {
   Card,
@@ -22,10 +20,7 @@ export const metadata: Metadata = {
   description: "Sign in to your account",
 }
 
-export default async function SignInPage() {
-  const user = await currentUser()
-  if (user) redirect("/")
-
+export default function SignInPage() {
   return (
     <Shell className="max-w-lg">
       <Card>

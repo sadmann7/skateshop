@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { unstable_noStore as noStore } from "next/cache"
 import { products } from "@/db/schema"
 import { env } from "@/env.mjs"
 
@@ -50,6 +51,7 @@ export default async function ProductsPage({
   // Number of items to skip
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
+  noStore()
   const productsTransaction = await getProductsAction({
     limit,
     offset,
@@ -71,6 +73,7 @@ export default async function ProductsPage({
   const storesOffset =
     fallbackStoresPage > 0 ? (fallbackStoresPage - 1) * storesLimit : 0
 
+  noStore()
   const storesTransaction = await getStoresAction({
     limit: storesLimit,
     offset: storesOffset,
