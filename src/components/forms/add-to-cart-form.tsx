@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
+import { addToCart } from "@/lib/actions/cart"
 import { catchError } from "@/lib/utils"
 import { updateCartItemSchema } from "@/lib/validations/cart"
 import { Button } from "@/components/ui/button"
@@ -20,7 +21,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
-import { addToCartAction } from "@/app/_actions/cart"
 
 interface AddToCartFormProps {
   productId: number
@@ -43,7 +43,7 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        await addToCartAction({
+        await addToCart({
           productId,
           quantity: data.quantity,
         })

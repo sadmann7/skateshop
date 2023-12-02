@@ -9,6 +9,7 @@ import { currentUser } from "@clerk/nextjs"
 import { RocketIcon } from "@radix-ui/react-icons"
 import { desc, eq, sql } from "drizzle-orm"
 
+import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { getDashboardRedirectPath, getPlanFeatures } from "@/lib/subscription"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -21,7 +22,6 @@ import {
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
-import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -49,7 +49,7 @@ export default async function StoresPage() {
     .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
     .where(eq(stores.userId, user.id))
 
-  const subscriptionPlan = await getSubscriptionPlanAction(user.id)
+  const subscriptionPlan = await getSubscriptionPlan(user.id)
 
   const { maxStoreCount, maxProductCount } = getPlanFeatures(
     subscriptionPlan?.id

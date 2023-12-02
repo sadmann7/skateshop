@@ -5,12 +5,12 @@ import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 
+import { getProducts } from "@/lib/fetchers/product"
+import { getStores } from "@/lib/fetchers/store"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
 
 interface StorePageProps {
   params: {
@@ -61,7 +61,7 @@ export default async function StorePage({
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
-  const productsTransaction = await getProductsAction({
+  const productsTransaction = await getProducts({
     limit: limit,
     offset: offset,
     store_ids: String(store.id),
@@ -76,7 +76,7 @@ export default async function StorePage({
       ? (parseInt(store_page) - 1) * storesLimit
       : 0
 
-  const storesTransaction = await getStoresAction({
+  const storesTransaction = await getStores({
     limit: storesLimit,
     offset: storesOffset,
     sort: "name.asc",

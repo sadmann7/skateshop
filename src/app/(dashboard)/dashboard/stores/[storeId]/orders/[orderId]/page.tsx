@@ -6,6 +6,7 @@ import { orders, products } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, eq } from "drizzle-orm"
 
+import { getOrderLineItems } from "@/lib/fetchers/order"
 import { formatId, formatPrice } from "@/lib/utils"
 import {
   Card,
@@ -14,7 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { getOrderLineItemsAction } from "@/app/_actions/order"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -41,7 +41,7 @@ export default async function OrderPage({ params }: OrderPageProps) {
     notFound()
   }
 
-  const orderLineItems = await getOrderLineItemsAction({
+  const orderLineItems = await getOrderLineItems({
     items: String(order.items),
     storeId: order.storeId,
   })

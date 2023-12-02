@@ -5,6 +5,8 @@ import { env } from "@/env.mjs"
 import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
+import { getCartItems } from "@/lib/fetchers/cart"
+import { getProducts } from "@/lib/fetchers/product"
 import { cn } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import { BoardBuilder } from "@/components/board-builder"
@@ -14,8 +16,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-import { getCartItemsAction } from "@/app/_actions/cart"
-import { getProductsAction } from "@/app/_actions/product"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -41,7 +41,7 @@ export default async function BuildABoardPage({
   const activeSubcategory =
     typeof subcategory === "string" ? subcategory : "decks"
 
-  const productsTransaction = await getProductsAction({
+  const productsTransaction = await getProducts({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
@@ -54,7 +54,7 @@ export default async function BuildABoardPage({
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value
-  const cartItems = await getCartItemsAction({ cartId: Number(cartId) })
+  const cartItems = await getCartItems({ cartId: Number(cartId) })
 
   return (
     <Shell className="gap-4">

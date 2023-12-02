@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { getCart } from "@/lib/fetchers/cart"
 import { cn, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -14,10 +15,9 @@ import {
 } from "@/components/ui/sheet"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
 import { Icons } from "@/components/icons"
-import { getCartAction } from "@/app/_actions/cart"
 
 export async function CartSheet() {
-  const cartLineItems = await getCartAction()
+  const cartLineItems = await getCart()
 
   const itemCount = cartLineItems.reduce(
     (total, item) => total + Number(item.quantity),

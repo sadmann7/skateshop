@@ -8,6 +8,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
+import { addToCart, deleteCartItem } from "@/lib/actions/cart"
 import { catchError, cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -35,7 +36,6 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { ProductCard } from "@/components/cards/product-card"
 import { PaginationButton } from "@/components/pagers/pagination-button"
-import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
 interface BoardBuilderProps {
   products: Product[]
@@ -99,8 +99,8 @@ export function BoardBuilder({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
 
-  // Add to cart
-  const addToCart = React.useCallback(
+  // Add product to cart
+  const addProductToCart = React.useCallback(
     async (product: Product) => {
       try {
         const hasProductInCart = cartItems.some(
@@ -114,12 +114,12 @@ export function BoardBuilder({
           )
 
           if (productWithSameSubcategory) {
-            await deleteCartItemAction({
+            await deleteCartItem({
               productId: productWithSameSubcategory.productId,
             })
           }
 
-          await addToCartAction({
+          await addToCart({
             productId: product.id,
             quantity: 1,
             subcategory: product.subcategory ?? subcategory,
@@ -129,7 +129,7 @@ export function BoardBuilder({
           return
         }
 
-        await deleteCartItemAction({
+        await deleteCartItem({
           productId: product.id,
         })
         toast.success("Removed from cart.")
@@ -303,7 +303,7 @@ export function BoardBuilder({
             isAddedToCart={cartItems
               .map((item) => item.productId)
               .includes(product.id)}
-            onSwitch={() => addToCart(product)}
+            onSwitch={() => addProductToCart(product)}
           />
         ))}
       </div>

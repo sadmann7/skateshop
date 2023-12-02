@@ -7,6 +7,9 @@ import { env } from "@/env.mjs"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { eq } from "drizzle-orm"
 
+import { createPaymentIntent } from "@/lib/actions/stripe"
+import { getCart } from "@/lib/fetchers/cart"
+import { getStripeAccount } from "@/lib/fetchers/stripe"
 import { cn, formatPrice } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
@@ -15,11 +18,6 @@ import { CartLineItems } from "@/components/checkout/cart-line-items"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
 import { Shell } from "@/components/shells/shell"
-import { getCartAction } from "@/app/_actions/cart"
-import {
-  createPaymentIntentAction,
-  getStripeAccountAction,
-} from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -51,13 +49,13 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     notFound()
   }
 
-  const { isConnected } = await getStripeAccountAction({
+  const { isConnected } = await getStripeAccount({
     storeId,
   })
 
-  const cartLineItems = await getCartAction(storeId)
+  const cartLineItems = await getCart({ storeId })
 
-  const paymentIntent = createPaymentIntentAction({
+  const paymentIntent = createPaymentIntent({
     storeId: store.id,
     items: cartLineItems,
   })

@@ -15,7 +15,7 @@ import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email
 // Email can not be sent through a server action in production, because it is returning an email component maybe?
 // So we are using the route handler /api/newsletter/subscribe instead
 
-export async function updateEmailPreferencesAction(
+export async function updateEmailPreferences(
   rawInput: z.infer<typeof updateEmailPreferencesSchema>
 ) {
   const input = updateEmailPreferencesSchema.parse(rawInput)

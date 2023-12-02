@@ -3,6 +3,8 @@ import { unstable_noStore as noStore } from "next/cache"
 import { products } from "@/db/schema"
 import { env } from "@/env.mjs"
 
+import { getProducts } from "@/lib/fetchers/product"
+import { getStores } from "@/lib/fetchers/store"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
@@ -11,8 +13,6 @@ import {
 } from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -52,7 +52,7 @@ export default async function ProductsPage({
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
   noStore()
-  const productsTransaction = await getProductsAction({
+  const productsTransaction = await getProducts({
     limit,
     offset,
     sort,
@@ -63,7 +63,7 @@ export default async function ProductsPage({
     active,
   })
 
-  const pageCount = Math.ceil(productsTransaction.count / limit)
+  const pageCount = Math.ceil(productsTransaction?.count / limit)
 
   // Stores transaction
   const storesPageAsNumber = Number(store_page)
@@ -74,7 +74,7 @@ export default async function ProductsPage({
     fallbackStoresPage > 0 ? (fallbackStoresPage - 1) * storesLimit : 0
 
   noStore()
-  const storesTransaction = await getStoresAction({
+  const storesTransaction = await getStores({
     limit: storesLimit,
     offset: storesOffset,
     sort: "productCount.desc",

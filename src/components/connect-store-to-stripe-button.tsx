@@ -2,10 +2,10 @@
 
 import * as React from "react"
 
+import { createAccountLink } from "@/lib/actions/stripe"
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { createAccountLinkAction } from "@/app/_actions/stripe"
 
 interface ConnectToStripeButtonProps {
   storeId: number
@@ -22,7 +22,7 @@ export function ConnectStoreToStripeButton({
       onClick={() => {
         startTransaction(async () => {
           try {
-            const connection = await createAccountLinkAction({ storeId })
+            const connection = await createAccountLink({ storeId })
             window.location.href = connection.url
           } catch (err) {
             catchError(err)

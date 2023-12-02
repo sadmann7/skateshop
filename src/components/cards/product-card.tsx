@@ -7,6 +7,7 @@ import { type Product } from "@/db/schema"
 import { CheckIcon, PlusIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
+import { addToCart } from "@/lib/actions/cart"
 import { catchError, cn, formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
-import { addToCartAction } from "@/app/_actions/cart"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
@@ -94,7 +94,7 @@ export function ProductCard({
             onClick={() => {
               startTransition(async () => {
                 try {
-                  await addToCartAction({
+                  await addToCart({
                     productId: product.id,
                     quantity: 1,
                   })

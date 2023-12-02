@@ -1,5 +1,3 @@
-"use server"
-
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
@@ -11,7 +9,7 @@ import { z } from "zod"
 import { checkoutItemSchema } from "@/lib/validations/cart"
 import type { getOrderLineItemsSchema } from "@/lib/validations/order"
 
-export async function getOrderLineItemsAction(
+export async function getOrderLineItems(
   input: z.infer<typeof getOrderLineItemsSchema> & {
     paymentIntent?: Stripe.Response<Stripe.PaymentIntent> | null
   }

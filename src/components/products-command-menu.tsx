@@ -6,6 +6,7 @@ import { type Product } from "@/db/schema"
 import { CircleIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
+import { filterProducts } from "@/lib/actions/product"
 import { catchError, cn, isMacOs } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -18,7 +19,6 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Skeleton } from "@/components/ui/skeleton"
-import { filterProductsAction } from "@/app/_actions/product"
 
 interface ProductGroup {
   category: Product["category"]
@@ -41,7 +41,7 @@ export function ProductsCommandMenu() {
 
     async function fetchData() {
       try {
-        const data = await filterProductsAction(debouncedQuery)
+        const data = await filterProducts(debouncedQuery)
         setData(data)
       } catch (err) {
         catchError(err)

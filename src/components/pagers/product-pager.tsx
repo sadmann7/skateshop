@@ -6,11 +6,8 @@ import { type Product } from "@/db/schema"
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
+import { getNextProductId, getPreviousProductId } from "@/lib/fetchers/product"
 import { Button } from "@/components/ui/button"
-import {
-  getNextProductIdAction,
-  getPreviousProductIdAction,
-} from "@/app/_actions/product"
 
 interface ProductPagerProps {
   product: Product
@@ -28,7 +25,7 @@ export function ProductPager({ product }: ProductPagerProps) {
         onClick={() => {
           startTransition(async () => {
             try {
-              const prevProductId = await getPreviousProductIdAction({
+              const prevProductId = await getPreviousProductId({
                 id: product.id,
                 storeId: product.storeId,
               })
@@ -53,7 +50,7 @@ export function ProductPager({ product }: ProductPagerProps) {
         onClick={() => {
           startTransition(async () => {
             try {
-              const nextProductId = await getNextProductIdAction({
+              const nextProductId = await getNextProductId({
                 id: product.id,
                 storeId: product.storeId,
               })

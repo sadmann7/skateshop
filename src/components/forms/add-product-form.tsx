@@ -11,6 +11,8 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
+import { addProduct } from "@/lib/actions/product"
+import { checkProduct } from "@/lib/fetchers/product"
 import { catchError, isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
@@ -36,7 +38,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { Zoom } from "@/components/zoom-image"
-import { addProductAction, checkProductAction } from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {
@@ -72,7 +73,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        await checkProductAction({
+        await checkProduct({
           name: data.name,
         })
 
@@ -88,7 +89,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                 return formattedImages ?? null
               })
               .then((images) => {
-                return addProductAction({
+                return addProduct({
                   ...data,
                   storeId,
                   images,
@@ -101,7 +102,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             }
           )
         } else {
-          await addProductAction({
+          await addProduct({
             ...data,
             storeId,
             images: null,

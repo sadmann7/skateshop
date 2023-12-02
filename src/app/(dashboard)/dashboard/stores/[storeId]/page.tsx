@@ -7,6 +7,7 @@ import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, eq, not } from "drizzle-orm"
 
+import { getStripeAccount } from "@/lib/fetchers/stripe"
 import { cn, formatDate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -22,7 +23,6 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
 import { LoadingButton } from "@/components/loading-button"
-import { getStripeAccountAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -103,7 +103,7 @@ export default async function UpdateStorePage({
     notFound()
   }
 
-  const { account: stripeAccount } = await getStripeAccountAction({
+  const { account: stripeAccount } = await getStripeAccount({
     storeId,
   })
 

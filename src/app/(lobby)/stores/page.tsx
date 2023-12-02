@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
 import { env } from "@/env.mjs"
 
+import { getStores } from "@/lib/fetchers/store"
 import { storesSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
@@ -9,7 +10,6 @@ import {
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { Stores } from "@/components/stores"
-import { getStoresAction } from "@/app/_actions/store"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -35,7 +35,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
-  const storesTransaction = await getStoresAction({
+  const storesTransaction = await getStores({
     limit,
     offset,
     sort,

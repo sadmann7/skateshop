@@ -5,6 +5,8 @@ import { stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { eq } from "drizzle-orm"
 
+import { getOrderLineItems } from "@/lib/fetchers/order"
+import { getPaymentIntent } from "@/lib/fetchers/stripe"
 import { cn, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
@@ -14,8 +16,6 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { getOrderLineItemsAction } from "@/app/_actions/order"
-import { getPaymentIntentAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -51,7 +51,7 @@ export default async function OrderSuccessPage({
     where: eq(stores.id, storeId),
   })
 
-  const { isVerified, paymentIntent } = await getPaymentIntentAction({
+  const { isVerified, paymentIntent } = await getPaymentIntent({
     storeId,
     paymentIntentId: typeof payment_intent === "string" ? payment_intent : "",
     deliveryPostalCode:
@@ -60,7 +60,7 @@ export default async function OrderSuccessPage({
 
   const lineItems =
     isVerified && paymentIntent
-      ? await getOrderLineItemsAction({
+      ? await getOrderLineItems({
           storeId,
           items: paymentIntent?.metadata?.items,
           paymentIntent,

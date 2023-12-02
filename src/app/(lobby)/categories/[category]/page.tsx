@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
 
+import { getProducts } from "@/lib/fetchers/product"
+import { getStores } from "@/lib/fetchers/store"
 import { toTitleCase } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
@@ -11,8 +13,6 @@ import {
 } from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
 
 interface CategoryPageProps {
   params: {
@@ -51,7 +51,7 @@ export default async function CategoryPage({
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
-  const productsTransaction = await getProductsAction({
+  const productsTransaction = await getProducts({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
@@ -71,7 +71,7 @@ export default async function CategoryPage({
       ? (parseInt(store_page) - 1) * storesLimit
       : 0
 
-  const storesTransaction = await getStoresAction({
+  const storesTransaction = await getStores({
     limit: storesLimit,
     offset: storesOffset,
     sort: "productCount.desc",

@@ -7,6 +7,7 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
+import { deleteProduct } from "@/lib/actions/product"
 import { catchError, formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -21,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { deleteProductAction } from "@/app/_actions/product"
 
 type AwaitedProduct = Pick<
   Product,
@@ -166,7 +166,7 @@ export function ProductsTableShell({
                     row.toggleSelected(false)
 
                     toast.promise(
-                      deleteProductAction({
+                      deleteProduct({
                         id: row.original.id,
                         storeId,
                       }),
@@ -195,7 +195,7 @@ export function ProductsTableShell({
     toast.promise(
       Promise.all(
         selectedRowIds.map((id) =>
-          deleteProductAction({
+          deleteProduct({
             id,
             storeId,
           })

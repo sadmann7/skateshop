@@ -3,11 +3,11 @@
 import * as React from "react"
 import { type z } from "zod"
 
+import { manageSubscription } from "@/lib/actions/stripe"
 import { catchError } from "@/lib/utils"
 import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import { manageSubscriptionAction } from "@/app/_actions/stripe"
 
 type ManageSubscriptionFormProps = z.infer<typeof manageSubscriptionSchema>
 
@@ -25,7 +25,7 @@ export function ManageSubscriptionForm({
 
     startTransition(async () => {
       try {
-        const session = await manageSubscriptionAction({
+        const session = await manageSubscription({
           isSubscribed,
           isCurrentPlan,
           stripeCustomerId,

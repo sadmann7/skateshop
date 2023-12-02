@@ -1,19 +1,14 @@
-"use server"
-
-import { unstable_noStore as noStore, revalidatePath } from "next/cache"
+import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import { and, asc, desc, eq, isNull, not, sql } from "drizzle-orm"
 import { z } from "zod"
 
-import { slugify } from "@/lib/utils"
-import { getStoresSchema, storeSchema } from "@/lib/validations/store"
+import { getStoresSchema } from "@/lib/validations/store"
 
-export async function getStoresAction(
-  rawInput: z.infer<typeof getStoresSchema>
-) {
+export async function getStores(rawInput: z.infer<typeof getStoresSchema>) {
+  noStore()
   try {
-    noStore()
     const input = getStoresSchema.parse(rawInput)
 
     const limit = input.limit ?? 10
@@ -103,31 +98,4 @@ export async function getStoresAction(
         ? err.issues.map((issue) => issue.message).join("\n")
         : new Error("Unknown error.")
   }
-}
-
-const extendedStoreSchema = storeSchema.extend({
-  userId: z.string(),
-})
-
-export async function addStoreAction(
-  rawInput: z.infer<typeof extendedStoreSchema>
-) {
-  const input = extendedStoreSchema.parse(rawInput)
-
-  const storeWithSameName = await db.query.stores.findFirst({
-    where: eq(stores.name, input.name),
-  })
-
-  if (storeWithSameName) {
-    throw new Error("Store name already taken.")
-  }
-
-  await db.insert(stores).values({
-    name: input.name,
-    description: input.description,
-    userId: input.userId,
-    slug: slugify(input.name),
-  })
-
-  revalidatePath("/dashboard/stores")
 }

@@ -6,6 +6,7 @@ import { orders, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, eq } from "drizzle-orm"
 
+import { getOrderLineItems } from "@/lib/fetchers/order"
 import { formatId, formatPrice } from "@/lib/utils"
 import {
   Card,
@@ -20,7 +21,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-import { getOrderLineItemsAction } from "@/app/_actions/order"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -46,7 +46,7 @@ export default async function PurchasePage({ params }: PurchasePageProps) {
     notFound()
   }
 
-  const orderLineItems = await getOrderLineItemsAction({
+  const orderLineItems = await getOrderLineItems({
     items: String(order.items),
     storeId: order.storeId,
   })

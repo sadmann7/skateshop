@@ -12,6 +12,8 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
+import { deleteProduct, updateProduct } from "@/lib/actions/product"
+import { checkProduct } from "@/lib/fetchers/product"
 import { catchError, isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
@@ -37,11 +39,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { Zoom } from "@/components/zoom-image"
-import {
-  checkProductAction,
-  deleteProductAction,
-  updateProductAction,
-} from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface UpdateProductFormProps {
@@ -89,7 +86,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        await checkProductAction({
+        await checkProduct({
           name: data.name,
           id: product.id,
         })
@@ -105,7 +102,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
             })
           : null
 
-        await updateProductAction({
+        await updateProduct({
           ...data,
           storeId: product.storeId,
           id: product.id,
@@ -305,7 +302,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
             onClick={() => {
               startTransition(async () => {
                 void form.trigger(["name", "price", "inventory"])
-                await deleteProductAction({
+                await deleteProduct({
                   storeId: product.storeId,
                   id: product.id,
                 })

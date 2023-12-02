@@ -6,6 +6,7 @@ import { currentUser } from "@clerk/nextjs"
 import { CheckIcon } from "@radix-ui/react-icons"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -23,7 +24,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -38,7 +38,7 @@ export default async function BillingPage() {
     redirect("/signin")
   }
 
-  const subscriptionPlan = await getSubscriptionPlanAction(user.id)
+  const subscriptionPlan = await getSubscriptionPlan(user.id)
 
   return (
     <Shell variant="sidebar" as="div">
@@ -66,8 +66,8 @@ export default async function BillingPage() {
             {!subscriptionPlan?.isSubscribed
               ? "Upgrade to create more stores and products."
               : subscriptionPlan.isCanceled
-              ? "Your plan will be canceled on "
-              : "Your plan renews on "}
+                ? "Your plan will be canceled on "
+                : "Your plan renews on "}
             {subscriptionPlan?.stripeCurrentPeriodEnd
               ? `${formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.`
               : null}
