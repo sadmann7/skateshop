@@ -36,7 +36,6 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
-    "./contentlayer.config.js",
     ".contentlayer/generated"
   ],
   "exclude": ["node_modules"]

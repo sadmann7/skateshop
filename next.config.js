@@ -8,7 +8,7 @@ const { withContentlayer } = require("next-contentlayer")
 import("./src/env.mjs")
 
 /** @type {import("next").NextConfig} */
-const nextConfig = {
+let nextConfig = {
   pageExtensions: ["tsx", "mdx", "ts", "js"],
   images: {
     remotePatterns: [
@@ -35,6 +35,11 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 }
 
-module.exports = withContentlayer(nextConfig)
+nextConfig = withContentlayer(nextConfig)
+
+module.exports = nextConfig

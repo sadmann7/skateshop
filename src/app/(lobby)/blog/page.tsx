@@ -2,7 +2,6 @@ import * as React from "react"
 import { type Metadata } from "next"
 import { env } from "@/env.mjs"
 import { allPosts } from "contentlayer/generated"
-import { compareDesc } from "date-fns"
 
 import { Separator } from "@/components/ui/separator"
 import {
@@ -24,7 +23,7 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   const posts = allPosts
     .filter((post) => post.published)
-    .sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
+    .sort((a, b) => b.date.localeCompare(a.date))
 
   return (
     <Shell className="md:pb-10">
