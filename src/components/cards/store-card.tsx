@@ -28,7 +28,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
             className={cn(
               "pointer-events-none absolute right-2 top-2 rounded-sm px-2 py-1 font-semibold",
               store.stripeAccountId
-                ? "border-green-600/20 bg-green-50 text-green-700"
+                ? "border-green-600/20 bg-green-100 text-green-700"
                 : "border-red-600/10 bg-red-50 text-red-700"
             )}
           >
