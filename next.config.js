@@ -27,7 +27,6 @@ const nextConfig = {
     ],
   },
   experimental: {
-    ppr: true,
     esmExternals: "loose",
   },
   // Already doing linting and type checking as separate tasks in CI
