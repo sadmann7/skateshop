@@ -21,7 +21,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
   return (
     <Link href={href}>
       <span className="sr-only">{store.name}</span>
-      <Card className="h-full overflow-hidden">
+      <Card className="h-full overflow-hidden transition-colors hover:bg-muted/50">
         <AspectRatio ratio={21 / 9}>
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/50" />
           <Badge
