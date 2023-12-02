@@ -442,7 +442,7 @@ export function Products({
             {sortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.label}
-                className={cn(option.value === sort && "font-bold")}
+                className={cn(option.value === sort && "bg-accent font-bold")}
                 onClick={() => {
                   startTransition(() => {
                     router.push(

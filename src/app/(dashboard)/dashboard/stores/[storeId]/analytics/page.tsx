@@ -6,6 +6,7 @@ import { env } from "@/env.mjs"
 import { and, desc, eq, gte, lte, sql } from "drizzle-orm"
 
 import { formatNumber, formatPrice } from "@/lib/utils"
+import { searchParamsSchema } from "@/lib/validations/params"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Card,
@@ -37,10 +38,12 @@ export default async function AnalyticsPage({
 }: AnalyticsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { from, to } = searchParams ?? {}
+  const { from, to } = searchParamsSchema
+    .pick({ from: true, to: true })
+    .parse(searchParams)
 
-  const fromDay = typeof from === "string" ? new Date(from) : undefined
-  const toDay = typeof to === "string" ? new Date(to) : undefined
+  const fromDay = from ? new Date(from) : undefined
+  const toDay = to ? new Date(to) : undefined
   const dayCount =
     fromDay && toDay
       ? Math.round(
@@ -106,7 +109,7 @@ export default async function AnalyticsPage({
     <div className="space-y-6 p-1">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Analytics</h2>
-        <DateRangePicker align="end" dayCount={30} />
+        <DateRangePicker align="end" dayCount={360} />
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
