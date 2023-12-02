@@ -39,8 +39,11 @@ export default async function IndexPage() {
         .limit(8)
         .leftJoin(stores, eq(products.storeId, stores.id))
         .groupBy(products.id)
-        .where(sql`(${stores.stripeAccountId}) is not null`)
-        .orderBy(desc(products.createdAt))
+        .orderBy(
+          desc(sql<number>`count(${stores.stripeAccountId})`),
+          desc(sql<number>`count(${products.images})`),
+          desc(products.createdAt)
+        )
     },
     ["lobby-products"],
     {

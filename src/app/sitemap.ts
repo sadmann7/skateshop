@@ -1,30 +1,41 @@
 import { type MetadataRoute } from "next"
+import { db } from "@/db"
 import { allPosts } from "contentlayer/generated"
+import { desc, eq, sql } from "drizzle-orm"
+import { products, stores } from "drizzle/schema"
 
 import { productCategories } from "@/config/products"
 import { absoluteUrl } from "@/lib/utils"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const storesTransaction = await getStoresAction({
-    limit: 50,
-    offset: 0,
-    sort: "createdAt.desc",
-  })
+  const allStores = await db
+    .select({
+      id: stores.id,
+    })
+    .from(stores)
+    .leftJoin(products, eq(products.storeId, stores.id))
+    .groupBy(stores.id)
+    .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
 
-  const storesRoutes = storesTransaction.items.map((store) => ({
+  const storesRoutes = allStores.map((store) => ({
     url: absoluteUrl(`/products?store_ids=${store.id}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const productsTransaction = await getProductsAction({
-    limit: 50,
-    offset: 0,
-    sort: "createdAt.desc",
-  })
+  const allProducts = await db
+    .select({
+      id: products.id,
+    })
+    .from(products)
+    .leftJoin(stores, eq(products.storeId, stores.id))
+    .groupBy(products.id)
+    .orderBy(
+      desc(sql<number>`count(${stores.stripeAccountId})`),
+      desc(sql<number>`count(${products.images})`),
+      desc(products.createdAt)
+    )
 
-  const productsRoutes = productsTransaction.items.map((product) => ({
+  const productsRoutes = allProducts.map((product) => ({
     url: absoluteUrl(`/product/${product.id}`),
     lastModified: new Date().toISOString(),
   }))
