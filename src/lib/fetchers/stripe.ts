@@ -3,7 +3,7 @@ import { db } from "@/db"
 import { payments, stores } from "@/db/schema"
 import type { UserSubscriptionPlan } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
-import dayjs from "dayjs"
+import { addDays } from "date-fns"
 import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
@@ -34,8 +34,11 @@ export async function getSubscriptionPlan(
     // Check if user is subscribed
     const isSubscribed =
       !!userPrivateMetadata.stripePriceId &&
-      dayjs(userPrivateMetadata.stripeCurrentPeriodEnd).valueOf() + 86_400_000 >
-        Date.now()
+      !!userPrivateMetadata.stripeCurrentPeriodEnd &&
+      addDays(
+        new Date(userPrivateMetadata.stripeCurrentPeriodEnd),
+        1
+      ).getTime() > Date.now()
 
     const plan = isSubscribed
       ? storeSubscriptionPlans.find(
