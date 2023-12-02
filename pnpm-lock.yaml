@@ -183,8 +183,8 @@ dependencies:
     specifier: ^1.1.0
     version: 1.1.0(react@18.2.0)
   resend:
-    specifier: ^2.0.0
-    version: 2.0.0
+    specifier: ^2.1.0-canary.1
+    version: 2.1.0-canary.1
   sonner:
     specifier: ^1.2.4
     version: 1.2.4(react-dom@18.2.0)(react@18.2.0)
@@ -10366,8 +10366,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /resend@2.0.0:
-    resolution: {integrity: sha512-jAh0DN84ZjjmzGM2vMjJ1hphPBg1mG98dzopF7kJzmin62v8ESg4og2iCKWdkAboGOT2SeO5exbr/8Xh8gLddw==}
+  /resend@2.1.0-canary.1:
+    resolution: {integrity: sha512-MYB50lpc4x4bxasymfJSzFFdUxMIzJ4pa8N2az5HvpEN731jUFOs5jtOCiTTnEMtFJ4bocs9LX1rGrT48TBFOg==}
     engines: {node: '>=18'}
     dependencies:
       '@react-email/render': 0.0.9

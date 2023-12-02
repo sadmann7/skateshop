@@ -10,7 +10,6 @@ import("./src/env.mjs")
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   pageExtensions: ["tsx", "mdx", "ts", "js"],
-  productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {

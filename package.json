@@ -81,7 +81,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.5.3",
     "react-wrap-balancer": "^1.1.0",
-    "resend": "^2.0.0",
+    "resend": "^2.1.0-canary.1",
     "sonner": "^1.2.4",
     "stripe": "^14.7.0",
     "tailwind-merge": "^2.0.0",
