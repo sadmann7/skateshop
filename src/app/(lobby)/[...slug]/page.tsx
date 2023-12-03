@@ -23,8 +23,7 @@ interface PageProps {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/require-await
-async function getPageFromParams(params: PageProps["params"]) {
+function getPageFromParams(params: PageProps["params"]) {
   const slug = params?.slug?.join("/") ?? ""
   const page = allPages.find((page) => page.slugAsParams === slug)
 
@@ -35,10 +34,8 @@ async function getPageFromParams(params: PageProps["params"]) {
   return page
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
-  const page = await getPageFromParams(params)
+export function generateMetadata({ params }: PageProps): Metadata {
+  const page = getPageFromParams(params)
 
   if (!page) {
     return {}
@@ -84,8 +81,8 @@ export async function generateStaticParams(): Promise<PageProps["params"][]> {
   }))
 }
 
-export default async function PagePage({ params }: PageProps) {
-  const page = await getPageFromParams(params)
+export default function Page({ params }: PageProps) {
+  const page = getPageFromParams(params)
 
   if (!page) {
     notFound()

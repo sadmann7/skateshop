@@ -67,11 +67,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
 
   if (!(isConnected && store.stripeAccountId)) {
     return (
-      <Shell
-        id="checkout-not-connected"
-        aria-labelledby="checkout-not-connected-heading"
-        variant="centered"
-      >
+      <Shell variant="centered">
         <div className="flex flex-col items-center justify-center gap-2 pt-20">
           <div className="text-center text-2xl font-bold">
             Store is not connected to Stripe
