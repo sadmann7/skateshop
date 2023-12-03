@@ -1,15 +1,15 @@
+import * as React from "react"
+import type { Metadata } from "next"
+import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores, type Order } from "@/db/schema"
 import { env } from "@/env.mjs"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
-import type { Metadata } from "next"
-import { notFound } from "next/navigation"
-import * as React from "react"
 
+import { ordersSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { OrdersTableShell } from "@/components/shells/orders-table-shell"
-import { ordersSearchParamsSchema } from "@/lib/validations/params"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -141,9 +141,7 @@ export default async function OrdersPage({
         <h2 className="text-2xl font-bold tracking-tight">Orders</h2>
         <DateRangePicker align="end" />
       </div>
-      <React.Suspense
-        fallback={<DataTableSkeleton columnCount={6} />}
-      >
+      <React.Suspense fallback={<DataTableSkeleton columnCount={6} />}>
         <OrdersTableShell
           transaction={transaction}
           limit={limit}

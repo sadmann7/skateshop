@@ -7,7 +7,6 @@ import { SidebarNav } from "@/components/layouts/sidebar-nav"
 import { SiteFooter } from "@/components/layouts/site-footer"
 import { SiteHeader } from "@/components/layouts/site-header"
 
-
 export default async function DashboardLayout({
   children,
 }: React.PropsWithChildren) {

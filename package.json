@@ -11,7 +11,7 @@
     "typecheck": "contentlayer build && tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
-    "check": "pnpm lint && pnpm typecheck",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check",
     "db:generate": "dotenv drizzle-kit generate:mysql",
     "db:push": "dotenv drizzle-kit push:mysql",
     "db:introspect": "dotenv drizzle-kit introspect:mysql",
