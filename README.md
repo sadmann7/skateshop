@@ -2,7 +2,7 @@
 
 This is an open source e-commerce skateshop build with everything new in Next.js 13. It is bootstrapped with `create-t3-app`.
 
-[![Skateshop](./public/images/screenshot/landing-page-screenshot.png)](https://skateshop.sadmn.com/)
+[![Skateshop](./public/images/screenshot.png)](https://skateshop.sadmn.com/)
 
 > **Warning**
 > This project is still in development and is not ready for production use.

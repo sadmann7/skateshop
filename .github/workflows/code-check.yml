@@ -3,6 +3,8 @@ name: Code check
 on:
   pull_request:
     branches: ["*"]
+  push:
+    branches: ["main"]
 
 jobs:
   lint:
@@ -38,6 +40,8 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
+
+      - run: cp .env.example .env.local
 
       - run: pnpm lint
 
@@ -77,11 +81,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - run: cp .env.example .env.local
+
       - run: pnpm format:check
 
   tsc:
     runs-on: ubuntu-latest
-    name: TypeScript
+    name: Typecheck
     steps:
       - uses: actions/checkout@v3
         with:
@@ -112,5 +118,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
         run: pnpm install
+
+      - run: cp .env.example .env.local
 
       - run: pnpm typecheck
