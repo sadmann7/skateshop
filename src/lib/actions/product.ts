@@ -1,10 +1,10 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { unstable_noStore as noStore, revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { products, type Product } from "@/db/schema"
 import { faker } from "@faker-js/faker"
-import { and, desc, eq, like } from "drizzle-orm"
+import { and, desc, eq, like, not } from "drizzle-orm"
 import { z } from "zod"
 
 import { getSubcategories, productTags } from "@/config/products"
@@ -91,6 +91,27 @@ export async function filterProducts(query: string) {
   )
 
   return productsByCategory
+}
+
+export async function checkProduct(input: { name: string; id?: number }) {
+  noStore()
+  try {
+    const productWithSameName = await db.query.products.findFirst({
+      columns: {
+        id: true,
+      },
+      where: input.id
+        ? and(not(eq(products.id, input.id)), eq(products.name, input.name))
+        : eq(products.name, input.name),
+    })
+
+    if (productWithSameName) {
+      throw new Error("Product name already taken.")
+    }
+  } catch (err) {
+    console.error(err)
+    return null
+  }
 }
 
 export async function addProduct(

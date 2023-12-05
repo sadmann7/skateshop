@@ -12,7 +12,7 @@ import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
 import { addProduct } from "@/lib/actions/product"
-import { checkProduct } from "@/lib/fetchers/product"
+import { checkProduct } from "@/lib/actions/product"
 import { catchError, isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"

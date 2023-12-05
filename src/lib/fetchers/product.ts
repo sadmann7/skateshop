@@ -11,7 +11,6 @@ import {
   inArray,
   lt,
   lte,
-  not,
   sql,
 } from "drizzle-orm"
 import { stores } from "drizzle/schema"
@@ -119,27 +118,6 @@ export async function getProducts(rawInput: z.infer<typeof getProductsSchema>) {
       : err instanceof z.ZodError
         ? err.issues.map((issue) => issue.message).join("\n")
         : new Error("Unknown error.")
-  }
-}
-
-export async function checkProduct(input: { name: string; id?: number }) {
-  noStore()
-  try {
-    const productWithSameName = await db.query.products.findFirst({
-      columns: {
-        id: true,
-      },
-      where: input.id
-        ? and(not(eq(products.id, input.id)), eq(products.name, input.name))
-        : eq(products.name, input.name),
-    })
-
-    if (productWithSameName) {
-      throw new Error("Product name already taken.")
-    }
-  } catch (err) {
-    console.error(err)
-    return null
   }
 }
 
