@@ -10,6 +10,7 @@
   "markdownlint.config": {
     "MD033": {
       "allowed_elements": ["img", "p", "a"]
-    }
+    },
+    "MD045": false
   }
 }

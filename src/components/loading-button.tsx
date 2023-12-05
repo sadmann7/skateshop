@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useFormStatus } from "react-dom"
 
 import { cn } from "@/lib/utils"
 import { useMounted } from "@/hooks/use-mounted"
@@ -13,9 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
 const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
-    // const { pending } = useFormStatus()
-    const pending = false
+  ({ children, className, variant, size, ...props }, ref) => {
+    const { pending } = useFormStatus()
     const mounted = useMounted()
 
     if (!mounted)
@@ -26,7 +26,7 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-muted text-muted-foreground"
           )}
         >
-          {props.children}
+          {children}
         </Skeleton>
       )
 
@@ -42,7 +42,7 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             aria-hidden="true"
           />
         )}
-        {props.children}
+        {children}
       </Button>
     )
   }

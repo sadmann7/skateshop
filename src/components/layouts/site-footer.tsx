@@ -3,7 +3,7 @@ import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { SubscribeToNewsletterForm } from "@/components/forms/subscribe-to-newsletter-form"
+import { JoinNewsletterForm } from "@/components/forms/join-newsletter-form"
 import { Icons } from "@/components/icons"
 import { ModeToggle } from "@/components/layouts/mode-toggle"
 import { Shell } from "@/components/shells/shell"
@@ -61,7 +61,7 @@ export function SiteFooter() {
             <h4 className="text-base font-medium">
               Subscribe to our newsletter
             </h4>
-            <SubscribeToNewsletterForm />
+            <JoinNewsletterForm />
           </section>
         </section>
         <section

@@ -6,11 +6,11 @@ import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { resend } from "@/lib/resend"
-import { subscribeToNewsletterSchema } from "@/lib/validations/email"
+import { joinNewsletterSchema } from "@/lib/validations/email"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
 export async function POST(req: Request) {
-  const input = subscribeToNewsletterSchema.parse(await req.json())
+  const input = joinNewsletterSchema.parse(await req.json())
 
   try {
     const emailPreference = await db.query.emailPreferences.findFirst({

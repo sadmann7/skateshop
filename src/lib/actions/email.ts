@@ -9,11 +9,69 @@ import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
 import { resend } from "@/lib/resend"
-import { updateEmailPreferencesSchema } from "@/lib/validations/email"
+import {
+  joinNewsletterSchema,
+  updateEmailPreferencesSchema,
+} from "@/lib/validations/email"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
-// Email can not be sent through a server action in production, because it is returning an email component maybe?
-// So we are using the route handler /api/newsletter/subscribe instead
+export async function joinNewsletter(
+  rawInput: z.infer<typeof joinNewsletterSchema>
+) {
+  const input = joinNewsletterSchema.parse(rawInput)
+
+  const emailPreference = await db.query.emailPreferences.findFirst({
+    where: eq(emailPreferences.email, input.email),
+  })
+
+  if (emailPreference?.newsletter) {
+    throw new Error("You are already subscribed to the newsletter.")
+  }
+
+  const user = await currentUser()
+
+  const subject = input.subject ?? "Welcome to our newsletter"
+
+  // If email preference exists, update it and send the email
+  if (emailPreference) {
+    await db
+      .update(emailPreferences)
+      .set({
+        newsletter: true,
+      })
+      .where(eq(emailPreferences.email, input.email))
+
+    await resend.emails.send({
+      from: env.EMAIL_FROM_ADDRESS,
+      to: input.email,
+      subject,
+      react: NewsletterWelcomeEmail({
+        firstName: user?.firstName ?? undefined,
+        fromEmail: env.EMAIL_FROM_ADDRESS,
+        token: emailPreference.token,
+      }),
+    })
+  } else {
+    // If email preference does not exist, create it and send the email
+    await resend.emails.send({
+      from: env.EMAIL_FROM_ADDRESS,
+      to: input.email,
+      subject,
+      react: NewsletterWelcomeEmail({
+        firstName: user?.firstName ?? undefined,
+        fromEmail: env.EMAIL_FROM_ADDRESS,
+        token: input.token,
+      }),
+    })
+
+    await db.insert(emailPreferences).values({
+      email: input.email,
+      token: input.token,
+      userId: user?.id,
+      newsletter: true,
+    })
+  }
+}
 
 export async function updateEmailPreferences(
   rawInput: z.infer<typeof updateEmailPreferencesSchema>

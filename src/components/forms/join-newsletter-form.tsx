@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
+import { joinNewsletter } from "@/lib/actions/email"
+import { catchError } from "@/lib/utils"
 import { emailSchema } from "@/lib/validations/email"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,7 +24,7 @@ import { Icons } from "@/components/icons"
 
 type Inputs = z.infer<typeof emailSchema>
 
-export function SubscribeToNewsletterForm() {
+export function JoinNewsletterForm() {
   const [isPending, startTransition] = React.useTransition()
 
   // react-hook-form
@@ -37,38 +39,18 @@ export function SubscribeToNewsletterForm() {
     console.log(data)
 
     startTransition(async () => {
-      const response = await fetch("/api/email/newsletter", {
-        method: "POST",
-        body: JSON.stringify({
+      try {
+        await joinNewsletter({
           email: data.email,
-          // This token is used as a search param in the email preferences page to identify the subscriber.
           token: crypto.randomUUID(),
-          subject: "Welcome to Skateshop13",
-        }),
-      })
+          subject: "Welcome to Skateshop",
+        })
 
-      if (!response.ok) {
-        switch (response.status) {
-          case 409:
-            toast.error("You are already subscribed to our newsletter.")
-            break
-          case 422:
-            toast.error("Invalid input.")
-            break
-          case 429:
-            toast.error("The daily email limit has been reached.")
-            break
-          case 500:
-            toast.error("Something went wrong. Please try again later.")
-            break
-          default:
-            toast.error("Something went wrong. Please try again later.")
-        }
-        return
+        toast.success("You have been subscribed to our newsletter.")
+        form.reset()
+      } catch (err) {
+        catchError(err)
       }
-
-      toast.success("You have been subscribed to our newsletter.")
-      form.reset()
     })
   }
 

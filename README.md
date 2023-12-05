@@ -7,7 +7,7 @@ This is an open source e-commerce skateshop build with everything new in Next.js
 > **Warning**
 > This project is still in development and is not ready for production use.
 >
-> It uses new technologies (server actions, drizzle ORM) which are subject to change and may break your application.
+> It uses new technologies (drizzle ORM) which are subject to change and may break your application.
 
 ## Tech Stack
 
