@@ -7,8 +7,6 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
-import { joinNewsletter } from "@/lib/actions/email"
-import { catchError } from "@/lib/utils"
 import { emailSchema } from "@/lib/validations/email"
 import { Button } from "@/components/ui/button"
 import {
@@ -36,21 +34,39 @@ export function JoinNewsletterForm() {
   })
 
   function onSubmit(data: Inputs) {
-    console.log(data)
-
     startTransition(async () => {
-      try {
-        await joinNewsletter({
+      const response = await fetch("/api/email/newsletter", {
+        method: "POST",
+        body: JSON.stringify({
           email: data.email,
+          // This token is used as a search param in the email preferences page to identify the subscriber.
           token: crypto.randomUUID(),
-          subject: "Welcome to Skateshop",
-        })
+          subject: "Welcome to Skateshop13",
+        }),
+      })
 
-        toast.success("You have been subscribed to our newsletter.")
-        form.reset()
-      } catch (err) {
-        catchError(err)
+      if (!response.ok) {
+        switch (response.status) {
+          case 409:
+            toast.error("You are already subscribed to our newsletter.")
+            break
+          case 422:
+            toast.error("Invalid input.")
+            break
+          case 429:
+            toast.error("The daily email limit has been reached.")
+            break
+          case 500:
+            toast.error("Something went wrong. Please try again later.")
+            break
+          default:
+            toast.error("Something went wrong. Please try again later.")
+        }
+        return
       }
+
+      toast.success("You have been subscribed to our newsletter.")
+      form.reset()
     })
   }
 
@@ -58,7 +74,8 @@ export function JoinNewsletterForm() {
     <Form {...form}>
       <form
         className="grid w-full"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+        onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="off"
       >
         <FormField
           control={form.control}
