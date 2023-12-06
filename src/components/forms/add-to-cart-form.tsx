@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
@@ -30,7 +31,9 @@ type Inputs = z.infer<typeof updateCartItemSchema>
 
 export function AddToCartForm({ productId }: AddToCartFormProps) {
   const id = React.useId()
-  const [isPending, startTransition] = React.useTransition()
+  const router = useRouter()
+  const [isAddingToCart, startAddingToCart] = React.useTransition()
+  const [isBuyingNow, startBuyingNow] = React.useTransition()
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -41,7 +44,7 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
   })
 
   function onSubmit(data: Inputs) {
-    startTransition(async () => {
+    startAddingToCart(async () => {
       try {
         await addToCart({
           productId,
@@ -57,7 +60,7 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
   return (
     <Form {...form}>
       <form
-        className="flex items-center space-x-2"
+        className="max-w-xs space-y-4"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
         <div className="flex items-center">
@@ -66,14 +69,14 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
             type="button"
             variant="outline"
             size="icon"
-            className="h-8 w-8 rounded-r-none"
+            className="h-8 w-8 shrink-0 rounded-r-none"
             onClick={() =>
               form.setValue(
                 "quantity",
                 Math.max(0, form.getValues("quantity") - 1)
               )
             }
-            disabled={isPending}
+            disabled={isAddingToCart}
           >
             <MinusIcon className="h-3 w-3" aria-hidden="true" />
             <span className="sr-only">Remove one item</span>
@@ -89,7 +92,7 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
                     type="number"
                     inputMode="numeric"
                     min={0}
-                    className="h-8 w-14 rounded-none border-x-0"
+                    className="h-8 w-16 rounded-none border-x-0"
                     {...field}
                     onChange={(e) => {
                       const value = e.target.value
@@ -108,26 +111,62 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
             type="button"
             variant="outline"
             size="icon"
-            className="h-8 w-8 rounded-l-none"
+            className="h-8 w-8 shrink-0 rounded-l-none"
             onClick={() =>
               form.setValue("quantity", form.getValues("quantity") + 1)
             }
-            disabled={isPending}
+            disabled={isAddingToCart}
           >
             <PlusIcon className="h-3 w-3" aria-hidden="true" />
             <span className="sr-only">Add one item</span>
           </Button>
         </div>
-        <Button type="submit" size="sm" disabled={isPending}>
-          {isPending && (
-            <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
-          )}
-          Add to cart
-          <span className="sr-only">Add to cart</span>
-        </Button>
+        <div className="flex items-center space-x-2.5">
+          <Button
+            type="button"
+            aria-label="Buy now"
+            size="sm"
+            className="w-full"
+            onClick={() => {
+              startBuyingNow(async () => {
+                try {
+                  await addToCart({
+                    productId,
+                    quantity: form.getValues("quantity"),
+                  })
+                  router.push("/cart")
+                } catch (err) {
+                  catchError(err)
+                }
+              })
+            }}
+            disabled={isBuyingNow}
+          >
+            {isBuyingNow && (
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Buy now
+          </Button>
+          <Button
+            aria-label="Add to cart"
+            type="submit"
+            variant="outline"
+            size="sm"
+            className="w-full"
+            disabled={isAddingToCart}
+          >
+            {isAddingToCart && (
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Add to cart
+          </Button>
+        </div>
       </form>
     </Form>
   )

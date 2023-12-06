@@ -4,19 +4,13 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { type Product } from "@/db/schema"
-import {
-  CheckIcon,
-  EyeOpenIcon,
-  HeartIcon,
-  PlusIcon,
-} from "@radix-ui/react-icons"
+import { CheckIcon, EyeOpenIcon, PlusIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { addToCart } from "@/lib/actions/cart"
-import { updateProductRating } from "@/lib/actions/product"
 import { catchError, cn, formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -28,6 +22,7 @@ import {
 import { Icons } from "@/components/icons"
 
 import { Rating } from "../rating"
+import { UpdateProductRatingButton } from "../update-product-rating-button"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
@@ -48,11 +43,10 @@ export function ProductCard({
   ...props
 }: ProductCardProps) {
   const [isAddingToCart, startAddingToCart] = React.useTransition()
-  const [isFavoriting, startFavoriting] = React.useTransition()
 
   return (
     <Card
-      className={cn("h-full overflow-hidden rounded-sm", className)}
+      className={cn("h-full w-full overflow-hidden rounded-sm", className)}
       {...props}
     >
       <Link aria-label={product.name} href={`/product/${product.id}`}>
@@ -92,7 +86,7 @@ export function ProductCard({
           <CardDescription className="line-clamp-1">
             {formatPrice(product.price)}
           </CardDescription>
-          <Rating rating={Math.round(product.rating / 10)} />
+          <Rating rating={Math.round(product.rating / 5)} />
         </CardContent>
       </Link>
       <CardFooter className="p-4 pt-2.5">
@@ -125,46 +119,24 @@ export function ProductCard({
               )}
               Add to cart
             </Button>
-            <Button
-              title="Favorite"
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 shrink-0"
-              onClick={() => {
-                startFavoriting(async () => {
-                  try {
-                    await updateProductRating({
-                      id: product.id,
-                      rating: product.rating + 1,
-                    })
-                    toast.success("Favorited product.")
-                  } catch (err) {
-                    catchError(err)
-                  }
-                })
-              }}
-              disabled={isFavoriting}
-            >
-              {isFavoriting ? (
-                <Icons.spinner
-                  className="h-4 w-4 animate-spin"
-                  aria-hidden="true"
-                />
-              ) : (
-                <HeartIcon className="h-4 w-4" aria-hidden="true" />
-              )}
-              <span className="sr-only">Favorite</span>
-            </Button>
-            <Button
+            <UpdateProductRatingButton
+              productId={product.id}
+              rating={product.rating}
+            />
+            <Link
+              href={`/product-preview/${product.id}`}
               title="Preview"
-              variant="secondary"
-              size="icon"
-              className="h-8 w-8 shrink-0"
-              disabled={isFavoriting}
+              className={cn(
+                buttonVariants({
+                  variant: "secondary",
+                  size: "icon",
+                  className: "h-8 w-8 shrink-0",
+                })
+              )}
             >
               <EyeOpenIcon className="h-4 w-4" aria-hidden="true" />
               <span className="sr-only">Preview</span>
-            </Button>
+            </Link>
           </div>
         ) : (
           <Button

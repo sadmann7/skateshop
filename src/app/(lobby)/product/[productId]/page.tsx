@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { and, desc, eq, not, sql } from "drizzle-orm"
+import { and, desc, eq, not } from "drizzle-orm"
 
 import { formatPrice, toTitleCase } from "@/lib/utils"
 import {
@@ -13,12 +13,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ProductCard } from "@/components/cards/product-card"
 import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
+import { Rating } from "@/components/rating"
 import { Shell } from "@/components/shells/shell"
+import { UpdateProductRatingButton } from "@/components/update-product-rating-button"
 
 interface ProductPageProps {
   params: {
@@ -61,6 +64,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       price: true,
       images: true,
       category: true,
+      inventory: true,
+      rating: true,
       storeId: true,
     },
     where: eq(products.id, productId),
@@ -143,9 +148,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
             ) : null}
           </div>
           <Separator className="my-1.5" />
+          <p className="text-base text-muted-foreground">
+            {product.inventory} in stock
+          </p>
+          <div className="flex items-center justify-between">
+            <Rating rating={Math.round(product.rating / 5)} />
+            <UpdateProductRatingButton
+              productId={product.id}
+              rating={product.rating}
+            />
+          </div>
           <AddToCartForm productId={productId} />
           <Separator className="mt-5" />
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full"
+            defaultValue="description"
+          >
             <AccordionItem value="description">
               <AccordionTrigger>Description</AccordionTrigger>
               <AccordionContent>
@@ -161,8 +181,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <h2 className="line-clamp-1 flex-1 text-2xl font-bold">
             More products from {store.name}
           </h2>
-          <div className="overflow-x-auto pb-2 pt-6">
-            <div className="flex w-fit gap-4">
+          <ScrollArea orientation="horizontal" className="pb-3.5 pt-6">
+            <div className="flex gap-4">
               {otherProducts.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -171,7 +191,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 />
               ))}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       ) : null}
     </Shell>
