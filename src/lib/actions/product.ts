@@ -8,7 +8,11 @@ import { and, desc, eq, like, not } from "drizzle-orm"
 import { z } from "zod"
 
 import { getSubcategories, productTags } from "@/config/products"
-import { getProductSchema, productSchema } from "@/lib/validations/product"
+import {
+  getProductSchema,
+  productSchema,
+  updateProductRatingSchema,
+} from "@/lib/validations/product"
 
 export async function seedProducts({
   storeId,
@@ -157,6 +161,31 @@ export async function updateProduct(
   await db.update(products).set(input).where(eq(products.id, input.id))
 
   revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`)
+}
+
+export async function updateProductRating(
+  rawInput: z.infer<typeof updateProductRatingSchema>
+) {
+  const input = updateProductRatingSchema.parse(rawInput)
+
+  const product = await db.query.products.findFirst({
+    columns: {
+      id: true,
+      rating: true,
+    },
+    where: eq(products.id, input.id),
+  })
+
+  if (!product) {
+    throw new Error("Product not found.")
+  }
+
+  await db
+    .update(products)
+    .set({ rating: input.rating })
+    .where(eq(products.id, input.id))
+
+  revalidatePath("/")
 }
 
 export async function deleteProduct(

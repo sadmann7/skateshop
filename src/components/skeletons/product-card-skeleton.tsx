@@ -11,11 +11,11 @@ export function ProductCardSkeleton() {
           <PlaceholderImage asChild className="rounded-none" />
         </AspectRatio>
       </CardHeader>
-      <CardContent className="grid gap-2.5 p-4">
+      <CardContent className="space-y-1.5 p-4">
         <Skeleton className="h-4 w-1/2" />
         <Skeleton className="h-4 w-1/4" />
       </CardContent>
-      <CardFooter className="p-4">
+      <CardFooter className="p-4 pt-2.5">
         <Skeleton className="h-8 w-full" />
       </CardFooter>
     </Card>

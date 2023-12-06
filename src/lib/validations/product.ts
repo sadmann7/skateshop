@@ -51,3 +51,8 @@ export const getProductsSchema = z.object({
   store_ids: z.string().optional().nullable(),
   active: z.string().optional().nullable(),
 })
+
+export const updateProductRatingSchema = z.object({
+  id: z.number(),
+  rating: z.number(),
+})
