@@ -103,9 +103,6 @@ export default async function IndexPage() {
 
   const githubStars = await getGithubStars()
 
-  const randomProductCategory =
-    productCategories[Math.floor(Math.random() * productCategories.length)]
-
   return (
     <Shell className="max-w-6xl pt-0 md:pt-0">
       <section
@@ -221,7 +218,7 @@ export default async function IndexPage() {
       <section
         id="featured-stores"
         aria-labelledby="featured-stores-heading"
-        className="space-y-6 pt-8 md:pt-10 lg:pt-12"
+        className="space-y-6 py-8 md:py-10 lg:py-12"
       >
         <div className="flex items-center gap-4">
           <div className="max-w-[58rem] flex-1 space-y-1">
@@ -276,25 +273,6 @@ export default async function IndexPage() {
             <span className="sr-only">View all stores</span>
           </Link>
         </div>
-      </section>
-      <section
-        id="random-subcategories"
-        aria-labelledby="random-subcategories-heading"
-        className="flex flex-wrap items-center justify-center gap-4 pb-6 pt-8 md:pt-10 lg:pt-12"
-      >
-        {randomProductCategory?.subcategories.map((subcategory) => (
-          <Link
-            key={subcategory.slug}
-            href={`/categories/${randomProductCategory?.title}/${String(
-              subcategory.slug
-            )}`}
-          >
-            <Badge variant="secondary" className="rounded px-3 py-1">
-              {subcategory.title}
-            </Badge>
-            <span className="sr-only">{subcategory.title}</span>
-          </Link>
-        ))}
       </section>
     </Shell>
   )

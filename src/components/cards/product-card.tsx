@@ -43,10 +43,7 @@ export function ProductCard({
 
   return (
     <Card
-      className={cn(
-        "h-full overflow-hidden rounded-sm transition-colors hover:bg-muted/50",
-        className
-      )}
+      className={cn("h-full overflow-hidden rounded-sm", className)}
       {...props}
     >
       <Link aria-label={product.name} href={`/product/${product.id}`}>
