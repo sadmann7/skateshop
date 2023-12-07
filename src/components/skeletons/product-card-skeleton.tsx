@@ -1,11 +1,21 @@
+import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PlaceholderImage } from "@/components/placeholder-image"
 
-export function ProductCardSkeleton() {
+interface ProductCardSkeletonProps
+  extends React.ComponentPropsWithoutRef<typeof Card> {}
+
+export function ProductCardSkeleton({
+  className,
+  ...props
+}: ProductCardSkeletonProps) {
   return (
-    <Card className="h-full overflow-hidden rounded-sm">
+    <Card
+      className={cn("h-full overflow-hidden rounded-sm", className)}
+      {...props}
+    >
       <CardHeader className="border-b p-0">
         <AspectRatio ratio={4 / 3}>
           <PlaceholderImage asChild className="rounded-none" />
