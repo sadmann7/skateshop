@@ -60,8 +60,8 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
   return (
     <Form {...form}>
       <form
-        className="max-w-xs space-y-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+        className="max-w-[260px] space-y-4"
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex items-center">
           <Button

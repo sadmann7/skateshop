@@ -52,21 +52,21 @@ export default function CheckoutLoading() {
         <ScrollArea className="h-full">
           <div className="container grid max-w-xl gap-5 lg:ml-0 lg:mr-auto">
             {Array.from({ length: 4 }).map((_, j) => (
-              <fieldset key={j} className="space-y-2">
+              <div key={j} className="space-y-2">
                 <Skeleton className="h-4 w-8 bg-muted/10" />
                 <div className="flex h-11 items-center rounded border border-muted/10 bg-transparent px-3 py-1">
                   <Skeleton className="h-3.5 w-14 bg-muted/10" />
                 </div>
-              </fieldset>
+              </div>
             ))}
             <div className="flex flex-col items-center gap-2 xxs:flex-row">
               {Array.from({ length: 2 }).map((_, k) => (
-                <fieldset key={k} className="w-full space-y-2">
+                <div key={k} className="w-full space-y-2">
                   <Skeleton className="h-4 w-8 bg-muted/10" />
                   <div className="flex h-11 items-center rounded border border-muted/10 bg-transparent px-3 py-1">
                     <Skeleton className="h-3.5 w-14 bg-muted/10" />
                   </div>
-                </fieldset>
+                </div>
               ))}
             </div>
             <Skeleton className="h-8 w-full bg-muted/10" />

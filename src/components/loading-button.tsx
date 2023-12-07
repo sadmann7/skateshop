@@ -33,8 +33,9 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Button
         className={cn(buttonVariants({ variant, size, className }))}
-        {...props}
         ref={ref}
+        disabled={pending}
+        {...props}
       >
         {pending && (
           <Icons.spinner

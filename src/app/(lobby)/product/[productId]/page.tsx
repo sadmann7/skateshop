@@ -106,7 +106,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     : []
 
   return (
-    <Shell>
+    <Shell className="pb-12 md:pb-14">
       <Breadcrumbs
         segments={[
           {
@@ -166,7 +166,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             className="w-full"
             defaultValue="description"
           >
-            <AccordionItem value="description">
+            <AccordionItem value="description" className="border-none">
               <AccordionTrigger>Description</AccordionTrigger>
               <AccordionContent>
                 {product.description ??
@@ -174,14 +174,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          <Separator className="md:hidden" />
         </div>
       </div>
       {store && otherProducts.length > 0 ? (
-        <div className="overflow-hidden md:pt-6">
+        <div className="space-y-6 overflow-hidden">
           <h2 className="line-clamp-1 flex-1 text-2xl font-bold">
             More products from {store.name}
           </h2>
-          <ScrollArea orientation="horizontal" className="pb-3.5 pt-6">
+          <ScrollArea orientation="horizontal" className="pb-3.5">
             <div className="flex gap-4">
               {otherProducts.map((product) => (
                 <ProductCard
