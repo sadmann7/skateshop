@@ -8,7 +8,7 @@ export default function ProductModalLoading() {
     <DialogShell className="flex flex-col gap-2 overflow-visible sm:flex-row">
       <Skeleton className="absolute right-10 top-4 h-4 w-4" />
       <PlaceholderImage ratio={16 / 9} className="rounded-none" />
-      <div className="w-full space-y-6 p-6 sm:p-10">
+      <div className="w-full space-y-8 p-6 sm:p-10">
         <div className="space-y-2.5">
           <Skeleton className="h-7 w-1/2" />
           <Skeleton className="h-4 w-10" />
