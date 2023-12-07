@@ -9,7 +9,7 @@ import { toast } from "sonner"
 import type { z } from "zod"
 
 import { addToCart } from "@/lib/actions/cart"
-import { catchError } from "@/lib/utils"
+import { catchError, cn } from "@/lib/utils"
 import { updateCartItemSchema } from "@/lib/validations/cart"
 import { Button } from "@/components/ui/button"
 import {
@@ -25,11 +25,12 @@ import { Icons } from "@/components/icons"
 
 interface AddToCartFormProps {
   productId: number
+  showBuyNow?: boolean
 }
 
 type Inputs = z.infer<typeof updateCartItemSchema>
 
-export function AddToCartForm({ productId }: AddToCartFormProps) {
+export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
   const id = React.useId()
   const router = useRouter()
   const [isAddingToCart, startAddingToCart] = React.useTransition()
@@ -60,7 +61,10 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
   return (
     <Form {...form}>
       <form
-        className="max-w-[260px] space-y-4"
+        className={cn(
+          "flex max-w-[260px] gap-4",
+          showBuyNow ? "flex-col" : "flex-row"
+        )}
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex items-center">
@@ -122,38 +126,40 @@ export function AddToCartForm({ productId }: AddToCartFormProps) {
           </Button>
         </div>
         <div className="flex items-center space-x-2.5">
-          <Button
-            type="button"
-            aria-label="Buy now"
-            size="sm"
-            className="w-full"
-            onClick={() => {
-              startBuyingNow(async () => {
-                try {
-                  await addToCart({
-                    productId,
-                    quantity: form.getValues("quantity"),
-                  })
-                  router.push("/cart")
-                } catch (err) {
-                  catchError(err)
-                }
-              })
-            }}
-            disabled={isBuyingNow}
-          >
-            {isBuyingNow && (
-              <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
-                aria-hidden="true"
-              />
-            )}
-            Buy now
-          </Button>
+          {showBuyNow ? (
+            <Button
+              type="button"
+              aria-label="Buy now"
+              size="sm"
+              className="w-full"
+              onClick={() => {
+                startBuyingNow(async () => {
+                  try {
+                    await addToCart({
+                      productId,
+                      quantity: form.getValues("quantity"),
+                    })
+                    router.push("/cart")
+                  } catch (err) {
+                    catchError(err)
+                  }
+                })
+              }}
+              disabled={isBuyingNow}
+            >
+              {isBuyingNow && (
+                <Icons.spinner
+                  className="mr-2 h-4 w-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
+              Buy now
+            </Button>
+          ) : null}
           <Button
             aria-label="Add to cart"
             type="submit"
-            variant="outline"
+            variant={showBuyNow ? "outline" : "default"}
             size="sm"
             className="w-full"
             disabled={isAddingToCart}

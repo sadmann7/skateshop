@@ -20,9 +20,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
-
-import { Rating } from "../rating"
-import { UpdateProductRatingButton } from "../update-product-rating-button"
+import { PlaceholderImage } from "@/components/placeholder-image"
+import { Rating } from "@/components/rating"
+import { UpdateProductRatingButton } from "@/components/update-product-rating-button"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
@@ -52,7 +52,7 @@ export function ProductCard({
       <Link aria-label={product.name} href={`/product/${product.id}`}>
         <CardHeader className="border-b p-0">
           <AspectRatio ratio={4 / 3}>
-            {product?.images?.length ? (
+            {product.images?.length ? (
               <Image
                 src={
                   product.images[0]?.url ?? "/images/product-placeholder.webp"
@@ -64,17 +64,7 @@ export function ProductCard({
                 loading="lazy"
               />
             ) : (
-              <div
-                aria-label="Placeholder"
-                role="img"
-                aria-roledescription="placeholder"
-                className="flex h-full w-full items-center justify-center bg-secondary"
-              >
-                <Icons.placeholder
-                  className="h-9 w-9 text-muted-foreground"
-                  aria-hidden="true"
-                />
-              </div>
+              <PlaceholderImage className="rounded-none" asChild />
             )}
           </AspectRatio>
         </CardHeader>
@@ -124,7 +114,7 @@ export function ProductCard({
               rating={product.rating}
             />
             <Link
-              href={`/product-preview/${product.id}`}
+              href={`/preview/product/${product.id}`}
               title="Preview"
               className={cn(
                 buttonVariants({

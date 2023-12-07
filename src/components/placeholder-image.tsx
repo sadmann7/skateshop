@@ -17,12 +17,16 @@ export function PlaceholderImage({
   const Comp = asChild ? Slot : AspectRatio
 
   return (
-    <Comp ratio={16 / 9} {...props} className={cn(className)}>
+    <Comp
+      ratio={16 / 9}
+      {...props}
+      className={cn("overflow-hidden rounded-lg", className)}
+    >
       <div
         aria-label="Placeholder"
         role="img"
         aria-roledescription="placeholder"
-        className="flex h-full w-full items-center justify-center rounded-lg bg-secondary"
+        className="flex h-full w-full items-center justify-center bg-secondary"
       >
         <Icons.placeholder
           className="h-9 w-9 text-muted-foreground"

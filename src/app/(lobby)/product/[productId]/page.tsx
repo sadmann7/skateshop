@@ -158,7 +158,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
               rating={product.rating}
             />
           </div>
-          <AddToCartForm productId={productId} />
+          <AddToCartForm productId={productId} showBuyNow={true} />
           <Separator className="mt-5" />
           <Accordion
             type="single"
