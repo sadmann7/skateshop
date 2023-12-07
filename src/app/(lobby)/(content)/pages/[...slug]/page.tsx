@@ -87,6 +87,17 @@ export default function Page({ params }: PageProps) {
     notFound()
   }
 
+  // Remove the /pages prefix from the slug
+  const formattedPage = {
+    ...page,
+    slug: page.slug.replace(/^\/pages/, ""),
+  }
+
+  const formattedPages = allPages.map((page) => ({
+    ...page,
+    slug: page.slug.replace(/^\/pages/, ""),
+  }))
+
   return (
     <Shell as="article" variant="markdown">
       <PageHeader>
@@ -95,7 +106,11 @@ export default function Page({ params }: PageProps) {
       </PageHeader>
       <Separator className="my-4" />
       <Mdx code={page.body.code} />
-      <MdxPager currentItem={page} allItems={allPages} className="my-4" />
+      <MdxPager
+        currentItem={formattedPage}
+        allItems={formattedPages}
+        className="my-4"
+      />
     </Shell>
   )
 }
