@@ -1,7 +1,7 @@
 import { ErrorCard } from "@/components/cards/error-card"
 import { Shell } from "@/components/shells/shell"
 
-export default function ProductNotFound() {
+export default function ProductModalNotFound() {
   return (
     <Shell variant="centered" className="max-w-md">
       <ErrorCard

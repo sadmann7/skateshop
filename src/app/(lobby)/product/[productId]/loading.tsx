@@ -43,9 +43,9 @@ export default function ProductLoading() {
         <Separator className="mt-4 md:hidden" />
         <div className="flex w-full flex-col gap-4 md:w-1/2">
           <div className="space-y-2">
-            <Skeleton className="h-9 w-16" />
-            <Skeleton className="h-6 w-10" />
-            <Skeleton className="h-6 w-14" />
+            <Skeleton className="h-7 w-1/2" />
+            <Skeleton className="h-4 w-10" />
+            <Skeleton className="h-4 w-14" />
           </div>
           <Separator className="my-4" />
           <Skeleton className="h-4 w-20" />
@@ -64,10 +64,10 @@ export default function ProductLoading() {
               <Skeleton className="h-4 w-4" />
             </div>
             <div className="space-y-2">
-              {Array.from({ length: 3 }).map((_, i) => (
+              {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className={cn("h-4 w-full", i === 2 && "w-1/2")}
+                  className={cn("h-4 w-full", i === 3 && "w-1/2")}
                 />
               ))}
             </div>

@@ -11,7 +11,6 @@ import { cn, formatPrice } from "@/lib/utils"
 import { AlertDialogAction } from "@/components/ui/alert-dialog"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
-import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { PlaceholderImage } from "@/components/placeholder-image"
 import { Rating } from "@/components/rating"
 import { DialogShell } from "@/components/shells/dialog-shell"
@@ -78,7 +77,7 @@ export default async function ProductModalPage({
           <PlaceholderImage className="rounded-none" asChild />
         )}
       </AspectRatio>
-      <div className="w-full space-y-8 p-6 sm:p-10">
+      <div className="w-full space-y-6 p-6 sm:p-10">
         <div className="space-y-2">
           <h1 className="line-clamp-2 text-2xl font-bold">{product.name}</h1>
           <p className="text-base text-muted-foreground">
@@ -89,9 +88,7 @@ export default async function ProductModalPage({
             {product.inventory} in stock
           </p>
         </div>
-        <AddToCartForm productId={product.id} />
-
-        <p className="line-clamp-2 text-base text-muted-foreground">
+        <p className="line-clamp-4 text-base text-muted-foreground">
           {product.description}
         </p>
       </div>
