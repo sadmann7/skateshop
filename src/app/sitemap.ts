@@ -1,6 +1,6 @@
 import { type MetadataRoute } from "next"
 import { db } from "@/db"
-import { allPosts } from "contentlayer/generated"
+import { allPages, allPosts } from "contentlayer/generated"
 import { desc, eq, sql } from "drizzle-orm"
 import { products, stores } from "drizzle/schema"
 
@@ -54,6 +54,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
     .flat()
 
+  const pagesRoutes = allPages.map((page) => ({
+    url: absoluteUrl(`${page.slug}`),
+    lastModified: new Date().toISOString(),
+  }))
+
   const postsRoutes = allPosts.map((post) => ({
     url: absoluteUrl(`${post.slug}`),
     lastModified: new Date().toISOString(),
@@ -80,6 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...productsRoutes,
     ...categoriesRoutes,
     ...subcategoriesRoutes,
+    ...pagesRoutes,
     ...postsRoutes,
   ]
 }

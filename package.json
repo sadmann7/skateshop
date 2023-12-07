@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "clean": "rm -rf node_modules && rm -rf .next && rm -rf .contentlayer",
     "build": "contentlayer build && next build",
     "dev": "next dev",
     "start": "next start",

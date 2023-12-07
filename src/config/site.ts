@@ -103,17 +103,17 @@ export const siteConfig = {
         },
         {
           title: "Contact",
-          href: "/contact",
+          href: "/legal/Contact",
           external: false,
         },
         {
           title: "Terms",
-          href: "/terms",
+          href: "/legal/terms",
           external: false,
         },
         {
           title: "Privacy",
-          href: "/privacy",
+          href: "/legal/privacy",
           external: false,
         },
       ],
