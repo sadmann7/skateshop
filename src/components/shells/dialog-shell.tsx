@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Cross2Icon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
+import { useClickOutside } from "@/hooks/use-click-outside"
 import { Button } from "@/components/ui/button"
 
 interface DialogShellProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -15,7 +16,9 @@ export function DialogShell({
   ...props
 }: DialogShellProps) {
   const router = useRouter()
+  const shellRef = React.useRef<HTMLDivElement>(null)
 
+  // Close the dialog when the user presses the escape key
   React.useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -28,8 +31,14 @@ export function DialogShell({
     }
   }, [router])
 
+  // Close the dialog when the user clicks outside of it
+  useClickOutside({
+    ref: shellRef,
+    handler: () => router.back(),
+  })
+
   return (
-    <div className={cn(className)} {...props}>
+    <div ref={shellRef} className={cn(className)} {...props}>
       <Button
         variant="ghost"
         size="icon"
