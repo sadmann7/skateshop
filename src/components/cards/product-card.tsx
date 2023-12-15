@@ -21,13 +21,11 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 import { PlaceholderImage } from "@/components/placeholder-image"
-import { Rating } from "@/components/rating"
-import { UpdateProductRatingButton } from "@/components/update-product-rating-button"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: Pick<
     Product,
-    "id" | "name" | "price" | "images" | "category" | "inventory" | "rating"
+    "id" | "name" | "price" | "images" | "category" | "inventory"
   >
   variant?: "default" | "switchable"
   isAddedToCart?: boolean
@@ -76,10 +74,9 @@ export function ProductCard({
           <CardDescription className="line-clamp-1">
             {formatPrice(product.price)}
           </CardDescription>
-          <Rating rating={Math.round(product.rating / 5)} />
         </CardContent>
       </Link>
-      <CardFooter className="p-4 pt-2.5">
+      <CardFooter className="p-4 pt-1">
         {variant === "default" ? (
           <div className="flex w-full items-center space-x-2">
             <Button
@@ -109,10 +106,6 @@ export function ProductCard({
               )}
               Add to cart
             </Button>
-            <UpdateProductRatingButton
-              productId={product.id}
-              rating={product.rating}
-            />
             <Link
               href={`/preview/product/${product.id}`}
               title="Preview"

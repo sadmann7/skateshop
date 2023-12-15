@@ -33,7 +33,6 @@ export default async function IndexPage() {
           category: products.category,
           price: products.price,
           inventory: products.inventory,
-          rating: products.rating,
           stripeAccountId: stores.stripeAccountId,
         })
         .from(products)
