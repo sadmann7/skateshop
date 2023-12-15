@@ -23,10 +23,10 @@ export function CartLineItems({
   className,
   ...props
 }: CartLineItemsProps) {
-  const Wrapper = isScrollable ? ScrollArea : Slot
+  const Comp = isScrollable ? ScrollArea : Slot
 
   return (
-    <Wrapper className="h-full">
+    <Comp className="h-full">
       <div
         className={cn(
           "flex w-full flex-col gap-5",
@@ -112,6 +112,6 @@ export function CartLineItems({
           </div>
         ))}
       </div>
-    </Wrapper>
+    </Comp>
   )
 }

@@ -7,10 +7,12 @@ import { Icons } from "@/components/icons"
 
 interface PlaceholderImageProps
   extends React.ComponentPropsWithoutRef<typeof AspectRatio> {
+  isSkeleton?: boolean
   asChild?: boolean
 }
 
 export function PlaceholderImage({
+  isSkeleton = false,
   asChild = false,
   className,
   ...props
@@ -27,7 +29,10 @@ export function PlaceholderImage({
         aria-label="Placeholder"
         role="img"
         aria-roledescription="placeholder"
-        className="flex h-full w-full items-center justify-center"
+        className={cn(
+          "flex h-full w-full items-center justify-center",
+          isSkeleton ? "animate-pulse" : "animate-none"
+        )}
       >
         <Icons.placeholder
           className="h-9 w-9 text-muted-foreground"

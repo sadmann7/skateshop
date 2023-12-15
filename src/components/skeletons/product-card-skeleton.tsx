@@ -18,15 +18,16 @@ export function ProductCardSkeleton({
     >
       <CardHeader className="border-b p-0">
         <AspectRatio ratio={4 / 3}>
-          <PlaceholderImage asChild className="rounded-none" />
+          <PlaceholderImage className="rounded-none" isSkeleton asChild />
         </AspectRatio>
       </CardHeader>
-      <CardContent className="space-y-1.5 p-4">
+      <CardContent className="space-y-2.5 p-4">
         <Skeleton className="h-4 w-1/2" />
         <Skeleton className="h-4 w-1/6" />
       </CardContent>
-      <CardFooter className="p-4 pt-1">
+      <CardFooter className="space-x-2 p-4 pt-1.5">
         <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-8 shrink-0" />
       </CardFooter>
     </Card>
   )
