@@ -56,6 +56,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const router = useRouter()
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
   const [isPending, startTransition] = React.useTransition()
+  const [isPendingDelete, startTransitionDelete] = React.useTransition()
+  // const [deleteLoading , setDeleteLoai]
 
   React.useEffect(() => {
     if (product.images && product.images.length > 0) {
@@ -290,7 +292,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           />
         </FormItem>
         <div className="flex space-x-2">
-          <Button disabled={isPending}>
+          <Button disabled={isPendingDelete || isPending}>
             {isPending && (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
@@ -303,7 +305,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           <Button
             variant="destructive"
             onClick={() => {
-              startTransition(async () => {
+              startTransitionDelete(async () => {
                 void form.trigger(["name", "price", "inventory"])
                 await deleteProduct({
                   storeId: product.storeId,
@@ -312,9 +314,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                 router.push(`/dashboard/stores/${product.storeId}/products`)
               })
             }}
-            disabled={isPending}
+            disabled={isPendingDelete}
           >
-            {isPending && (
+            {isPendingDelete && (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
                 aria-hidden="true"

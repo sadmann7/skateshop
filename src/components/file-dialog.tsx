@@ -281,7 +281,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
                 size="icon"
                 className="h-7 w-7"
               >
-                <CropIcon className="h-4 w-4 text-white" aria-hidden="true" />
+                <CropIcon className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">Crop image</span>
               </Button>
             </DialogTrigger>
@@ -352,7 +352,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
             setFiles(files.filter((_, j) => j !== i))
           }}
         >
-          <Cross2Icon className="h-4 w-4 text-white" aria-hidden="true" />
+          <Cross2Icon className="h-4 w-4" aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>
