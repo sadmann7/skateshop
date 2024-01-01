@@ -1,12 +1,46 @@
 "use server"
 
-import { unstable_noStore as noStore } from "next/cache"
+import {
+  unstable_cache as cache,
+  unstable_noStore as noStore,
+} from "next/cache"
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import { and, asc, desc, eq, isNull, not, sql } from "drizzle-orm"
 import { z } from "zod"
 
 import { getStoresSchema } from "@/lib/validations/store"
+
+export async function getFeaturedStores() {
+  try {
+    return await cache(
+      async () => {
+        return db
+          .select({
+            id: stores.id,
+            name: stores.name,
+            description: stores.description,
+            stripeAccountId: stores.stripeAccountId,
+          })
+          .from(stores)
+          .limit(4)
+          .leftJoin(products, eq(products.storeId, stores.id))
+          .groupBy(stores.id)
+          .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
+      },
+      ["lobby-stores"],
+      {
+        revalidate: 3600,
+        tags: ["lobby-stores"],
+      }
+    )()
+  } catch (err) {
+    console.error(err)
+    return []
+  }
+}
+
+export type FeaturedStoresPromise = ReturnType<typeof getFeaturedStores>
 
 export async function getStores(rawInput: z.infer<typeof getStoresSchema>) {
   noStore()

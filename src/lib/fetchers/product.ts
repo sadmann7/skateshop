@@ -1,6 +1,9 @@
 "use server"
 
-import { unstable_noStore as noStore } from "next/cache"
+import {
+  unstable_cache as cache,
+  unstable_noStore as noStore,
+} from "next/cache"
 import { db } from "@/db"
 import { products, type Product } from "@/db/schema"
 import { and, asc, desc, eq, gt, gte, inArray, lt, lte, sql } from "drizzle-orm"
@@ -9,6 +12,46 @@ import { z } from "zod"
 
 import { getProductSchema, getProductsSchema } from "@/lib/validations/product"
 
+// See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
+export async function getFeaturedProducts() {
+  try {
+    return await cache(
+      async () => {
+        return db
+          .select({
+            id: products.id,
+            name: products.name,
+            images: products.images,
+            category: products.category,
+            price: products.price,
+            inventory: products.inventory,
+            stripeAccountId: stores.stripeAccountId,
+          })
+          .from(products)
+          .limit(8)
+          .leftJoin(stores, eq(products.storeId, stores.id))
+          .groupBy(products.id)
+          .orderBy(
+            desc(sql<number>`count(${stores.stripeAccountId})`),
+            desc(sql<number>`count(${products.images})`),
+            desc(products.createdAt)
+          )
+      },
+      ["featured-products"],
+      {
+        revalidate: 3600,
+        tags: ["featured-products"],
+      }
+    )()
+  } catch (err) {
+    console.error(err)
+    return []
+  }
+}
+
+export type FeaturedProductsPromise = ReturnType<typeof getFeaturedProducts>
+
+// See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
 export async function getProducts(rawInput: z.infer<typeof getProductsSchema>) {
   noStore()
   try {
