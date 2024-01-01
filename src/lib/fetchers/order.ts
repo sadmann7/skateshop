@@ -1,3 +1,5 @@
+"use server"
+
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"

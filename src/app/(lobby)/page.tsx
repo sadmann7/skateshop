@@ -108,7 +108,7 @@ export default async function IndexPage() {
       <section
         id="hero"
         aria-labelledby="hero-heading"
-        className="mx-auto flex w-full max-w-[64rem] flex-col items-center justify-center gap-4 py-12 text-center md:pt-32"
+        className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center gap-4 py-12 text-center md:pt-32"
       >
         <React.Suspense fallback={<Skeleton className="h-7 w-44" />}>
           <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">

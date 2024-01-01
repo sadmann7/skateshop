@@ -69,12 +69,6 @@ export function ProductsCommandMenu() {
     callback()
   }, [])
 
-  React.useEffect(() => {
-    if (!open) {
-      setQuery("")
-    }
-  }, [open])
-
   return (
     <>
       <Button
@@ -95,7 +89,16 @@ export function ProductsCommandMenu() {
           K
         </kbd>
       </Button>
-      <CommandDialog position="top" open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        position="top"
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open)
+          if (!open) {
+            setQuery("")
+          }
+        }}
+      >
         <CommandInput
           placeholder="Search products..."
           value={query}

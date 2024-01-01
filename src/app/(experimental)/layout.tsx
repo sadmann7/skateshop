@@ -2,7 +2,9 @@ import { currentUser } from "@clerk/nextjs"
 
 import { SiteHeader } from "@/components/layouts/site-header"
 
-export default async function RadLayout({ children }: React.PropsWithChildren) {
+export default async function ExperimentalLayout({
+  children,
+}: React.PropsWithChildren) {
   const user = await currentUser()
 
   return (

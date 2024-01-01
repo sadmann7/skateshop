@@ -10,7 +10,6 @@ import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 import { dashboardProductsSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
-import { SeedProducts } from "@/components/seed-products-button"
 import { ProductsTableShell } from "@/components/shells/products-table-shell"
 
 export const metadata: Metadata = {
@@ -150,7 +149,6 @@ export default async function ProductsPage({
         <h2 className="text-2xl font-bold tracking-tight">Products</h2>
         <DateRangePicker align="end" />
       </div>
-      <SeedProducts storeId={storeId} count={4} />
       <React.Suspense
         fallback={
           <DataTableSkeleton

@@ -55,9 +55,8 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const router = useRouter()
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-  const [isPending, startTransition] = React.useTransition()
-  const [isPendingDelete, startTransitionDelete] = React.useTransition()
-  // const [deleteLoading , setDeleteLoai]
+  const [isUpdating, startUpdateTransition] = React.useTransition()
+  const [isDeleting, startDeleteTransition] = React.useTransition()
 
   React.useEffect(() => {
     if (product.images && product.images.length > 0) {
@@ -89,7 +88,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const subcategories = getSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
-    startTransition(async () => {
+    startUpdateTransition(async () => {
       try {
         await checkProduct({
           name: data.name,
@@ -284,7 +283,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
               files={files}
               setFiles={setFiles}
               isUploading={isUploading}
-              disabled={isPending}
+              disabled={isUpdating}
             />
           </FormControl>
           <UncontrolledFormMessage
@@ -292,8 +291,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           />
         </FormItem>
         <div className="flex space-x-2">
-          <Button disabled={isPendingDelete || isPending}>
-            {isPending && (
+          <Button disabled={isDeleting || isUpdating}>
+            {isUpdating && (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
                 aria-hidden="true"
@@ -305,7 +304,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           <Button
             variant="destructive"
             onClick={() => {
-              startTransitionDelete(async () => {
+              startDeleteTransition(async () => {
                 void form.trigger(["name", "price", "inventory"])
                 await deleteProduct({
                   storeId: product.storeId,
@@ -314,9 +313,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                 router.push(`/dashboard/stores/${product.storeId}/products`)
               })
             }}
-            disabled={isPendingDelete}
+            disabled={isDeleting}
           >
-            {isPendingDelete && (
+            {isDeleting && (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
                 aria-hidden="true"
