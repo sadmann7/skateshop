@@ -6,6 +6,7 @@ import {
 } from "next/cache"
 import { db } from "@/db"
 import { products, type Product } from "@/db/schema"
+import type { Category } from "@/types"
 import { and, asc, desc, eq, gt, gte, inArray, lt, lte, sql } from "drizzle-orm"
 import { stores } from "drizzle/schema"
 import { z } from "zod"
@@ -154,6 +155,25 @@ export async function getProducts(rawInput: z.infer<typeof getProductsSchema>) {
         : new Error("Unknown error.")
   }
 }
+
+export async function getProductCount({ category }: { category: Category }) {
+  noStore()
+  try {
+    return await db
+      .select({
+        count: sql<number>`count(*)`.mapWith(Number),
+      })
+      .from(products)
+      .where(eq(products.category, category.title))
+      .execute()
+      .then((res) => res[0]?.count ?? 0)
+  } catch (err) {
+    console.error(err)
+    return null
+  }
+}
+
+export type ProductCountPromise = ReturnType<typeof getProductCount>
 
 export async function getNextProductId(
   rawInput: z.infer<typeof getProductSchema>

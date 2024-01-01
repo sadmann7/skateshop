@@ -1,11 +1,11 @@
 import * as React from "react"
-import { unstable_noStore as noStore } from "next/cache"
 import Link from "next/link"
-import { db } from "@/db"
-import { products } from "@/db/schema"
 import type { Category } from "@/types"
-import { eq, sql } from "drizzle-orm"
 
+import {
+  getProductCount,
+  type ProductCountPromise,
+} from "@/lib/fetchers/product"
 import {
   Card,
   CardContent,
@@ -19,21 +19,11 @@ interface CategoryCardProps {
   category: Category
 }
 
-export async function CategoryCard({ category }: CategoryCardProps) {
-  noStore()
-
-  const productCount = await db
-    .select({
-      count: sql<number>`count(*)`.mapWith(Number),
-    })
-    .from(products)
-    .where(eq(products.category, category.title))
-    .execute()
-    .then((res) => res[0]?.count ?? 0)
-    .catch(() => 0)
+export function CategoryCard({ category }: CategoryCardProps) {
+  const productCountPromise = getProductCount({ category })
 
   return (
-    <Link key={category.title} href={`/categories/${category.title}`}>
+    <Link href={`/categories/${category.title}`}>
       <span className="sr-only">{category.title}</span>
       <Card className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
         <CardHeader>
@@ -44,10 +34,20 @@ export async function CategoryCard({ category }: CategoryCardProps) {
         <CardContent className="flex flex-col items-center space-y-1.5">
           <CardTitle className="capitalize">{category.title}</CardTitle>
           <React.Suspense fallback={<Skeleton className="h-4 w-20" />}>
-            <CardDescription>{productCount} products</CardDescription>
+            <ProductCount productCountPromise={productCountPromise} />
           </React.Suspense>
         </CardContent>
       </Card>
     </Link>
   )
+}
+
+interface ProductCountProps {
+  productCountPromise: ProductCountPromise
+}
+
+async function ProductCount({ productCountPromise }: ProductCountProps) {
+  const productCount = await productCountPromise
+
+  return <CardDescription>{productCount} products</CardDescription>
 }
