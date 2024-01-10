@@ -30,24 +30,20 @@ type AwaitedOrder = Pick<Order, "id" | "quantity" | "amount" | "createdAt"> & {
 }
 
 interface OrdersTableShellProps {
-  transaction: Promise<{
-    items: AwaitedOrder[]
-    count: number
+  promise: Promise<{
+    data: AwaitedOrder[]
+    pageCount: number
   }>
-  limit: number
   storeId: number
   isSearchable?: boolean
 }
 
 export function OrdersTableShell({
-  transaction,
-  limit,
+  promise,
   storeId,
   isSearchable = true,
 }: OrdersTableShellProps) {
-  const { items: data, count } = React.use(transaction)
-
-  const pageCount = Math.ceil(count / limit)
+  const { data, pageCount } = React.use(promise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<AwaitedOrder, unknown>[]>(

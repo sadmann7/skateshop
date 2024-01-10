@@ -1,5 +1,6 @@
 import { type Metadata } from "next"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 
 import { getStores } from "@/lib/fetchers/store"
 import { storesSearchParamsSchema } from "@/lib/validations/params"
@@ -18,9 +19,7 @@ export const metadata: Metadata = {
 }
 
 interface StoresPageProps {
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function StoresPage({ searchParams }: StoresPageProps) {
@@ -35,14 +34,12 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
-  const storesTransaction = await getStores({
+  const { data, pageCount } = await getStores({
     limit,
     offset,
     sort,
     statuses,
   })
-
-  const pageCount = Math.ceil(storesTransaction.count / limit)
 
   return (
     <Shell>
@@ -52,7 +49,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
           Buy products from our stores
         </PageHeaderDescription>
       </PageHeader>
-      <Stores stores={storesTransaction.items} pageCount={pageCount} />
+      <Stores stores={data} pageCount={pageCount} />
     </Shell>
   )
 }

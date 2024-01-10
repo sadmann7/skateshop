@@ -57,8 +57,6 @@ export default async function SubcategoryPage({
     active,
   })
 
-  const pageCount = Math.ceil(productsTransaction.count / limit)
-
   // Stores transaction
   const storesLimit = 25
   const storesOffset =
@@ -72,8 +70,6 @@ export default async function SubcategoryPage({
     sort: "productCount.desc",
   })
 
-  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
-
   return (
     <Shell>
       <PageHeader>
@@ -85,10 +81,10 @@ export default async function SubcategoryPage({
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        products={productsTransaction.items}
-        pageCount={pageCount}
-        stores={storesTransaction.items}
-        storePageCount={storePageCount}
+        products={productsTransaction.data}
+        pageCount={productsTransaction.pageCount}
+        stores={storesTransaction.data}
+        storePageCount={storesTransaction.pageCount}
       />
     </Shell>
   )

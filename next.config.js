@@ -28,8 +28,7 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    // TODO: Enable after fixing "Static Bail Out Caught" errors in production
-    // ppr: true,
+    ppr: true,
     esmExternals: "loose",
   },
   // Already doing linting and typechecking as separate tasks in CI

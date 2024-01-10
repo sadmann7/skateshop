@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 
 import { getProducts } from "@/lib/fetchers/product"
 import { getStores } from "@/lib/fetchers/store"
@@ -18,9 +19,7 @@ interface CategoryPageProps {
   params: {
     category: Product["category"]
   }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export function generateMetadata({ params }: CategoryPageProps): Metadata {
@@ -62,8 +61,6 @@ export default async function CategoryPage({
     active,
   })
 
-  const pageCount = Math.ceil(productsTransaction.count / limit)
-
   // Stores transaction
   const storesLimit = 25
   const storesOffset =
@@ -77,8 +74,6 @@ export default async function CategoryPage({
     sort: "productCount.desc",
   })
 
-  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
-
   return (
     <Shell>
       <PageHeader>
@@ -88,11 +83,11 @@ export default async function CategoryPage({
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        products={productsTransaction.items}
-        pageCount={pageCount}
+        products={productsTransaction.data}
+        pageCount={productsTransaction.pageCount}
         category={category}
-        stores={storesTransaction.items}
-        storePageCount={storePageCount}
+        stores={storesTransaction.data}
+        storePageCount={storesTransaction.pageCount}
       />
     </Shell>
   )

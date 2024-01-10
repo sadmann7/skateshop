@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 import { eq } from "drizzle-orm"
 
 import { getProducts } from "@/lib/fetchers/product"
@@ -16,9 +17,7 @@ interface StorePageProps {
   params: {
     storeId: string
   }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 async function getStoreFromParams(params: StorePageProps["params"]) {
@@ -67,8 +66,6 @@ export default async function StorePage({
     store_ids: String(store.id),
   })
 
-  const pageCount = Math.ceil(productsTransaction.count / limit)
-
   // Stores transaction
   const storesLimit = 25
   const storesOffset =
@@ -81,8 +78,6 @@ export default async function StorePage({
     offset: storesOffset,
     sort: "name.asc",
   })
-
-  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
 
   return (
     <Shell>
@@ -108,11 +103,11 @@ export default async function StorePage({
           </div>
           <Separator className="my-1.5" />
           <Products
-            products={productsTransaction.items}
-            pageCount={pageCount}
+            products={productsTransaction.data}
+            pageCount={productsTransaction.pageCount}
             categories={Object.values(products.category.enumValues)}
-            stores={storesTransaction.items}
-            storePageCount={storePageCount}
+            stores={storesTransaction.data}
+            storePageCount={storesTransaction.pageCount}
           />
         </div>
       </div>

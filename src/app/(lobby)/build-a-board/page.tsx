@@ -41,7 +41,7 @@ export default async function BuildABoardPage({
   const activeSubcategory =
     typeof subcategory === "string" ? subcategory : "decks"
 
-  const productsTransaction = await getProducts({
+  const { data, pageCount } = await getProducts({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
@@ -49,8 +49,6 @@ export default async function BuildABoardPage({
     price_range: typeof price_range === "string" ? price_range : null,
     active,
   })
-
-  const pageCount = Math.ceil(productsTransaction.count / limit)
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value
@@ -103,7 +101,7 @@ export default async function BuildABoardPage({
         </div>
       </section>
       <BoardBuilder
-        products={productsTransaction.items}
+        products={data}
         pageCount={pageCount}
         subcategory={activeSubcategory}
         cartItems={cartItems ?? []}

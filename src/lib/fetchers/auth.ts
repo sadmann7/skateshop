@@ -1,7 +1,7 @@
 import "server-only"
 
 import { unstable_cache as cache } from "next/cache"
-import { currentUser } from "@clerk/nextjs/dist/types/server-helpers.server"
+import { currentUser } from "@clerk/nextjs"
 
 export async function getCacheduser() {
   try {
@@ -17,6 +17,6 @@ export async function getCacheduser() {
     )()
   } catch (err) {
     console.error(err)
-    return []
+    return null
   }
 }

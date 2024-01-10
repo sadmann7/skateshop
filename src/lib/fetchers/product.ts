@@ -1,4 +1,4 @@
-import "server-only"
+"use server"
 
 import {
   unstable_cache as cache,
@@ -11,7 +11,10 @@ import { and, asc, desc, eq, gt, gte, inArray, lt, lte, sql } from "drizzle-orm"
 import { stores } from "drizzle/schema"
 import { z } from "zod"
 
-import { getProductSchema, getProductsSchema } from "@/lib/validations/product"
+import {
+  getProductSchema,
+  type getProductsSchema,
+} from "@/lib/validations/product"
 
 // See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
 export async function getFeaturedProducts() {
@@ -53,11 +56,9 @@ export async function getFeaturedProducts() {
 export type FeaturedProductsPromise = ReturnType<typeof getFeaturedProducts>
 
 // See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
-export async function getProducts(rawInput: z.infer<typeof getProductsSchema>) {
+export async function getProducts(input: z.infer<typeof getProductsSchema>) {
   noStore()
   try {
-    const input = getProductsSchema.parse(rawInput)
-
     const [column, order] = (input.sort?.split(".") as [
       keyof Product | undefined,
       "asc" | "desc" | undefined,
@@ -68,8 +69,8 @@ export async function getProducts(rawInput: z.infer<typeof getProductsSchema>) {
     const subcategories = input.subcategories?.split(".") ?? []
     const storeIds = input.store_ids?.split(".").map(Number) ?? []
 
-    const { items, count } = await db.transaction(async (tx) => {
-      const items = await tx
+    const transaction = await db.transaction(async (tx) => {
+      const data = await tx
         .select({
           id: products.id,
           name: products.name,
@@ -136,23 +137,21 @@ export async function getProducts(rawInput: z.infer<typeof getProductsSchema>) {
         .execute()
         .then((res) => res[0]?.count ?? 0)
 
+      const pageCount = Math.ceil(count / input.limit)
+
       return {
-        items,
-        count,
+        data,
+        pageCount,
       }
     })
 
-    return {
-      items,
-      count,
-    }
+    return transaction
   } catch (err) {
     console.error(err)
-    throw err instanceof Error
-      ? err.message
-      : err instanceof z.ZodError
-        ? err.issues.map((issue) => issue.message).join("\n")
-        : new Error("Unknown error.")
+    return {
+      data: [],
+      pageCount: 0,
+    }
   }
 }
 
@@ -211,6 +210,7 @@ export async function getNextProductId(
 export async function getPreviousProductId(
   rawInput: z.infer<typeof getProductSchema>
 ) {
+  noStore()
   try {
     const input = getProductSchema.parse(rawInput)
 

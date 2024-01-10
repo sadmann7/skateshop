@@ -1,4 +1,4 @@
-import "server-only"
+"use server"
 
 import {
   unstable_cache as cache,
@@ -7,7 +7,7 @@ import {
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import { and, asc, desc, eq, isNull, not, sql } from "drizzle-orm"
-import { z } from "zod"
+import type { z } from "zod"
 
 import { getStoresSchema } from "@/lib/validations/store"
 
@@ -28,10 +28,10 @@ export async function getFeaturedStores() {
           .groupBy(stores.id)
           .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
       },
-      ["lobby-stores"],
+      ["featured-stores"],
       {
         revalidate: 3600,
-        tags: ["lobby-stores"],
+        tags: ["featured-stores"],
       }
     )()
   } catch (err) {
@@ -41,6 +41,35 @@ export async function getFeaturedStores() {
 }
 
 export type FeaturedStoresPromise = ReturnType<typeof getFeaturedStores>
+
+export async function getUserStores(input: { userId: string }) {
+  try {
+    return await cache(
+      async () => {
+        return db
+          .select({
+            id: stores.id,
+            name: stores.name,
+            description: stores.description,
+            stripeAccountId: stores.stripeAccountId,
+          })
+          .from(stores)
+          .leftJoin(products, eq(products.storeId, stores.id))
+          .groupBy(stores.id)
+          .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
+          .where(eq(stores.userId, input.userId))
+      },
+      ["user-stores"],
+      {
+        revalidate: 3600,
+        tags: ["user-stores"],
+      }
+    )()
+  } catch (err) {
+    console.error(err)
+    return []
+  }
+}
 
 export async function getStores(rawInput: z.infer<typeof getStoresSchema>) {
   noStore()
@@ -56,8 +85,8 @@ export async function getStores(rawInput: z.infer<typeof getStoresSchema>) {
       ]) ?? []
     const statuses = input.statuses?.split(".") ?? []
 
-    const { items, count } = await db.transaction(async (tx) => {
-      const items = await tx
+    const { data, count } = await db.transaction(async (tx) => {
+      const data = await tx
         .select({
           id: stores.id,
           name: stores.name,
@@ -117,21 +146,22 @@ export async function getStores(rawInput: z.infer<typeof getStoresSchema>) {
         .then((res) => res[0]?.count ?? 0)
 
       return {
-        items,
+        data,
         count,
       }
     })
 
+    const pageCount = Math.ceil(count / limit)
+
     return {
-      items,
-      count,
+      data,
+      pageCount,
     }
   } catch (err) {
     console.error(err)
-    throw err instanceof Error
-      ? err.message
-      : err instanceof z.ZodError
-        ? err.issues.map((issue) => issue.message).join("\n")
-        : new Error("Unknown error.")
+    return {
+      data: [],
+      pageCount: 0,
+    }
   }
 }

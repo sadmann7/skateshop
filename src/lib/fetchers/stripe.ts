@@ -1,5 +1,6 @@
-import "server-only"
+"use server"
 
+import { unstable_cache as cache } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { payments, stores } from "@/db/schema"
@@ -19,57 +20,66 @@ import {
 } from "@/lib/validations/stripe"
 
 // Getting the subscription plan for a user
-export async function getSubscriptionPlan(
+export async function getSubscriptionPlan(input: {
   userId: string
-): Promise<UserSubscriptionPlan | null> {
+}): Promise<UserSubscriptionPlan | null> {
   try {
-    const user = await clerkClient.users.getUser(userId)
+    return await cache(
+      async () => {
+        const user = await clerkClient.users.getUser(input.userId)
 
-    if (!user) {
-      throw new Error("User not found.")
-    }
+        if (!user) {
+          throw new Error("User not found.")
+        }
 
-    const userPrivateMetadata = userPrivateMetadataSchema.parse(
-      user.privateMetadata
-    )
-
-    // Check if user is subscribed
-    const isSubscribed =
-      !!userPrivateMetadata.stripePriceId &&
-      !!userPrivateMetadata.stripeCurrentPeriodEnd &&
-      addDays(
-        new Date(userPrivateMetadata.stripeCurrentPeriodEnd),
-        1
-      ).getTime() > Date.now()
-
-    const plan = isSubscribed
-      ? storeSubscriptionPlans.find(
-          (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
+        const userPrivateMetadata = userPrivateMetadataSchema.parse(
+          user.privateMetadata
         )
-      : storeSubscriptionPlans[0]
 
-    if (!plan) {
-      throw new Error("Plan not found.")
-    }
+        // Check if user is subscribed
+        const isSubscribed =
+          !!userPrivateMetadata.stripePriceId &&
+          !!userPrivateMetadata.stripeCurrentPeriodEnd &&
+          addDays(
+            new Date(userPrivateMetadata.stripeCurrentPeriodEnd),
+            1
+          ).getTime() > Date.now()
 
-    // Check if user has canceled subscription
-    let isCanceled = false
-    if (isSubscribed && !!userPrivateMetadata.stripeSubscriptionId) {
-      const stripePlan = await stripe.subscriptions.retrieve(
-        userPrivateMetadata.stripeSubscriptionId
-      )
-      isCanceled = stripePlan.cancel_at_period_end
-    }
+        const plan = isSubscribed
+          ? storeSubscriptionPlans.find(
+              (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
+            )
+          : storeSubscriptionPlans[0]
 
-    return {
-      ...plan,
-      stripeSubscriptionId: userPrivateMetadata.stripeSubscriptionId,
-      stripeCurrentPeriodEnd: userPrivateMetadata.stripeCurrentPeriodEnd,
-      stripeCustomerId: userPrivateMetadata.stripeCustomerId,
-      isSubscribed,
-      isCanceled,
-      isActive: isSubscribed && !isCanceled,
-    }
+        if (!plan) {
+          throw new Error("Plan not found.")
+        }
+
+        // Check if user has canceled subscription
+        let isCanceled = false
+        if (isSubscribed && !!userPrivateMetadata.stripeSubscriptionId) {
+          const stripePlan = await stripe.subscriptions.retrieve(
+            userPrivateMetadata.stripeSubscriptionId
+          )
+          isCanceled = stripePlan.cancel_at_period_end
+        }
+
+        return {
+          ...plan,
+          stripeSubscriptionId: userPrivateMetadata.stripeSubscriptionId,
+          stripeCurrentPeriodEnd: userPrivateMetadata.stripeCurrentPeriodEnd,
+          stripeCustomerId: userPrivateMetadata.stripeCustomerId,
+          isSubscribed,
+          isCanceled,
+          isActive: isSubscribed && !isCanceled,
+        }
+      },
+      ["user-subscription"],
+      {
+        revalidate: 900,
+        tags: ["user-subscription"],
+      }
+    )()
   } catch (err) {
     console.error(err)
     return null

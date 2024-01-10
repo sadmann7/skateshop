@@ -2,13 +2,11 @@ import * as React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { db } from "@/db"
-import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { currentUser } from "@clerk/nextjs"
 import { RocketIcon } from "@radix-ui/react-icons"
-import { desc, eq, sql } from "drizzle-orm"
 
+import { getCacheduser } from "@/lib/fetchers/auth"
+import { getUserStores } from "@/lib/fetchers/store"
 import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { getDashboardRedirectPath, getPlanFeatures } from "@/lib/subscription"
 import { cn } from "@/lib/utils"
@@ -30,26 +28,20 @@ export const metadata: Metadata = {
 }
 
 export default async function StoresPage() {
-  const user = await currentUser()
+  const user = await getCacheduser()
 
   if (!user) {
     redirect("/signin")
   }
 
-  const allStores = await db
-    .select({
-      id: stores.id,
-      name: stores.name,
-      description: stores.description,
-      stripeAccountId: stores.stripeAccountId,
-    })
-    .from(stores)
-    .leftJoin(products, eq(products.storeId, stores.id))
-    .groupBy(stores.id)
-    .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
-    .where(eq(stores.userId, user.id))
+  const userStoresPromise = getUserStores({ userId: user.id })
 
-  const subscriptionPlan = await getSubscriptionPlan(user.id)
+  const subscriptionPlanPromise = getSubscriptionPlan({ userId: user.id })
+
+  const [allStores, subscriptionPlan] = await Promise.all([
+    userStoresPromise,
+    subscriptionPlanPromise,
+  ])
 
   const { maxStoreCount, maxProductCount } = getPlanFeatures(
     subscriptionPlan?.id

@@ -25,22 +25,18 @@ interface AwaitedCustomer {
 }
 
 interface CustomersTableShellProps {
-  transaction: Promise<{
-    items: AwaitedCustomer[]
-    count: number
+  promise: Promise<{
+    data: AwaitedCustomer[]
+    pageCount: number
   }>
-  limit: number
   storeId: number
 }
 
 export function CustomersTableShell({
-  transaction,
-  limit,
+  promise,
   storeId,
 }: CustomersTableShellProps) {
-  const { items: data, count } = React.use(transaction)
-
-  const pageCount = Math.ceil(count / limit)
+  const { data, pageCount } = React.use(promise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<AwaitedCustomer, unknown>[]>(

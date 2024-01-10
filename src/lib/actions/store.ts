@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
@@ -33,7 +33,7 @@ export async function addStore(rawInput: z.infer<typeof extendedStoreSchema>) {
     slug: slugify(input.name),
   })
 
-  revalidatePath("/dashboard/stores")
+  revalidateTag("user-stores")
 }
 
 export async function updateStore(storeId: number, fd: FormData) {
@@ -61,6 +61,7 @@ export async function updateStore(storeId: number, fd: FormData) {
     })
     .where(eq(stores.id, storeId))
 
+  revalidateTag("user-stores")
   revalidatePath(`/dashboard/stores/${storeId}`)
 }
 

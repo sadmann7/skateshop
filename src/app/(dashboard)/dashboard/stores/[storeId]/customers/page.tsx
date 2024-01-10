@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { customersSearchParamsSchema } from "@/lib/validations/params"
@@ -21,9 +22,7 @@ interface CustomersPageProps {
   params: {
     storeId: string
   }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function CustomersPage({
@@ -49,20 +48,17 @@ export default async function CustomersPage({
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const pageAsNumber = Number(page)
-  const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
-  const perPageAsNumber = Number(per_page)
+  const fallbackPage = isNaN(page) || page < 1 ? 1 : page
   // Number of items per page
-  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
+  const limit = isNaN(per_page) ? 10 : per_page
   // Number of items to skip
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
   const fromDay = from ? new Date(from) : undefined
   const toDay = to ? new Date(to) : undefined
 
-  const transaction = db.transaction(async (tx) => {
-    const items = await db
+  const ordersPromise = db.transaction(async (tx) => {
+    const data = await db
       .select({
         name: orders.name,
         email: orders.email,
@@ -139,8 +135,8 @@ export default async function CustomersPage({
       .then((res) => res[0]?.count ?? 0)
 
     return {
-      items,
-      count: altCount - count,
+      data,
+      pageCount: Math.ceil((altCount - count) / limit),
     }
   })
 
@@ -155,11 +151,7 @@ export default async function CustomersPage({
           <DataTableSkeleton columnCount={5} filterableFieldCount={0} />
         }
       >
-        <CustomersTableShell
-          transaction={transaction}
-          limit={limit}
-          storeId={store.id}
-        />
+        <CustomersTableShell promise={ordersPromise} storeId={store.id} />
       </React.Suspense>
     </div>
   )

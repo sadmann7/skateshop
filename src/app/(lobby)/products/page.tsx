@@ -1,7 +1,7 @@
 import { type Metadata } from "next"
-import { unstable_noStore as noStore } from "next/cache"
 import { products } from "@/db/schema"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 
 import { getProducts } from "@/lib/fetchers/product"
 import { getStores } from "@/lib/fetchers/store"
@@ -21,9 +21,7 @@ export const metadata: Metadata = {
 }
 
 interface ProductsPageProps {
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function ProductsPage({
@@ -51,7 +49,6 @@ export default async function ProductsPage({
   // Number of items to skip
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
-  noStore()
   const productsTransaction = await getProducts({
     limit,
     offset,
@@ -63,24 +60,18 @@ export default async function ProductsPage({
     active,
   })
 
-  const pageCount = Math.ceil(productsTransaction?.count / limit)
-
   // Stores transaction
-  const storesPageAsNumber = Number(store_page)
   const fallbackStoresPage =
-    isNaN(storesPageAsNumber) || storesPageAsNumber < 1 ? 1 : storesPageAsNumber
+    isNaN(store_page) || store_page < 1 ? 1 : store_page
   const storesLimit = 40
   const storesOffset =
     fallbackStoresPage > 0 ? (fallbackStoresPage - 1) * storesLimit : 0
 
-  noStore()
   const storesTransaction = await getStores({
     limit: storesLimit,
     offset: storesOffset,
     sort: "productCount.desc",
   })
-
-  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
 
   return (
     <Shell>
@@ -91,11 +82,11 @@ export default async function ProductsPage({
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        products={productsTransaction.items}
-        pageCount={pageCount}
+        products={productsTransaction.data}
+        pageCount={productsTransaction.pageCount}
         categories={Object.values(products.category.enumValues)}
-        stores={storesTransaction.items}
-        storePageCount={storePageCount}
+        stores={storesTransaction.data}
+        storePageCount={storesTransaction.pageCount}
       />
     </Shell>
   )
