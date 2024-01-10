@@ -28,7 +28,7 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    ppr: true,
+    // ppr: true,
     esmExternals: "loose",
   },
   // Already doing linting and typechecking as separate tasks in CI
