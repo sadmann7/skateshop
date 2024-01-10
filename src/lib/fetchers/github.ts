@@ -1,26 +1,37 @@
-"use server"
+import "server-only"
+
+import { unstable_cache as cache } from "next/cache"
 
 export async function getGithubStars(): Promise<number | null> {
   try {
-    const response = await fetch(
-      "https://api.github.com/repos/sadmann7/skateshop",
+    return await cache(
+      async () => {
+        const response = await fetch(
+          "https://api.github.com/repos/sadmann7/skateshop",
+          {
+            headers: {
+              Accept: "application/vnd.github+json",
+            },
+            next: {
+              revalidate: 60,
+            },
+          }
+        )
+
+        if (!response.ok) {
+          return null
+        }
+
+        const data = (await response.json()) as { stargazers_count: number }
+
+        return data.stargazers_count
+      },
+      ["github-stars"],
       {
-        headers: {
-          Accept: "application/vnd.github+json",
-        },
-        next: {
-          revalidate: 60,
-        },
+        revalidate: 900,
+        tags: ["github-stars"],
       }
-    )
-
-    if (!response.ok) {
-      return null
-    }
-
-    const data = (await response.json()) as { stargazers_count: number }
-
-    return data.stargazers_count
+    )()
   } catch (err) {
     console.error(err)
     return null

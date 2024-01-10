@@ -5,18 +5,21 @@ import Image from "next/image"
 import { type StoredFile } from "@/types"
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
 import useEmblaCarousel, {
-  type EmblaCarouselType,
-  type EmblaOptionsType,
+  type UseEmblaCarouselType,
 } from "embla-carousel-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
+type CarouselApi = UseEmblaCarouselType["1"]
+type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
+type CarouselOptions = UseCarouselParameters["0"]
+
 interface ProductImageCarouselProps
   extends React.HTMLAttributes<HTMLDivElement> {
   images: StoredFile[]
-  options?: EmblaOptionsType
+  options?: CarouselOptions
 }
 
 export function ProductImageCarousel({
@@ -56,7 +59,9 @@ export function ProductImageCarousel({
     [scrollNext, scrollPrev]
   )
 
-  const onSelect = React.useCallback((emblaApi: EmblaCarouselType) => {
+  const onSelect = React.useCallback((emblaApi: CarouselApi) => {
+    if (!emblaApi) return
+
     setSelectedIndex(emblaApi.selectedScrollSnap())
     setPrevBtnDisabled(!emblaApi.canScrollPrev())
     setNextBtnDisabled(!emblaApi.canScrollNext())
