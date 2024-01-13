@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter, useSelectedLayoutSegment } from "next/navigation"
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
@@ -65,7 +66,7 @@ export function StoreTabs({ storeId }: StoreTabsProps) {
                 tab.isActive && "text-foreground"
               )}
             >
-              {tab.title}
+              <Link href={tab.href}>{tab.title}</Link>
             </TabsTrigger>
           </div>
         ))}
