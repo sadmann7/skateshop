@@ -264,7 +264,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
         />
         <div className="flex flex-col">
           <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
-            {file.name.slice(0 , 45)}
+            {file.name.slice(0, 45)}
           </p>
           <p className="text-xs text-slate-500">
             {(file.size / 1024 / 1024).toFixed(2)}MB
