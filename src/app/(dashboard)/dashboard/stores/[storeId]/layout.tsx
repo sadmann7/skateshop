@@ -69,10 +69,8 @@ export default async function StoreLayout({
           />
         ) : null}
       </div>
-      <div className="space-y-8 overflow-auto">
-        <StoreTabs storeId={storeId} />
-        {children}
-      </div>
+      <StoreTabs storeId={storeId} />
+      <div className="overflow-hidden">{children}</div>
     </Shell>
   )
 }

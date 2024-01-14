@@ -37,52 +37,68 @@ export async function addStore(rawInput: z.infer<typeof extendedStoreSchema>) {
 }
 
 export async function updateStore(storeId: number, fd: FormData) {
-  const input = updateStoreSchema.parse({
-    name: fd.get("name"),
-    description: fd.get("description"),
-  })
-
-  const storeWithSameName = await db.query.stores.findFirst({
-    where: and(eq(stores.name, input.name), not(eq(stores.id, storeId))),
-    columns: {
-      id: true,
-    },
-  })
-
-  if (storeWithSameName) {
-    throw new Error("Store name already taken")
-  }
-
-  await db
-    .update(stores)
-    .set({
-      name: input.name,
-      description: input.description,
+  try {
+    const input = updateStoreSchema.parse({
+      name: fd.get("name"),
+      description: fd.get("description"),
     })
-    .where(eq(stores.id, storeId))
 
-  revalidateTag("user-stores")
-  revalidatePath(`/dashboard/stores/${storeId}`)
+    const storeWithSameName = await db.query.stores.findFirst({
+      where: and(eq(stores.name, input.name), not(eq(stores.id, storeId))),
+      columns: {
+        id: true,
+      },
+    })
+
+    if (storeWithSameName) {
+      throw new Error("Store name already taken")
+    }
+
+    await db
+      .update(stores)
+      .set({
+        name: input.name,
+        description: input.description,
+      })
+      .where(eq(stores.id, storeId))
+
+    revalidateTag("user-stores")
+    revalidatePath(`/dashboard/stores/${storeId}`)
+
+    return {
+      message: "Store updated successfully.",
+    }
+  } catch (err) {
+    throw err instanceof Error
+      ? err
+      : new Error("Something went wrong, please try again.")
+  }
 }
 
 export async function deleteStore(storeId: number) {
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, storeId),
-    columns: {
-      id: true,
-    },
-  })
+  try {
+    const store = await db.query.stores.findFirst({
+      where: eq(stores.id, storeId),
+      columns: {
+        id: true,
+      },
+    })
 
-  if (!store) {
-    throw new Error("Store not found")
+    if (!store) {
+      throw new Error("Store not found")
+    }
+
+    await db.delete(stores).where(eq(stores.id, storeId))
+
+    // Delete all products of this store
+    await db.delete(products).where(eq(products.storeId, storeId))
+
+    const path = "/dashboard/stores"
+    revalidatePath(path)
+    redirect(path)
+  } catch (err) {
+    throw err instanceof Error
+      ? err
+      : new Error("Something went wrong, please try again.")
   }
-
-  await db.delete(stores).where(eq(stores.id, storeId))
-
-  // Delete all products of this store
-  await db.delete(products).where(eq(products.storeId, storeId))
-
-  const path = "/dashboard/stores"
-  revalidatePath(path)
-  redirect(path)
 }

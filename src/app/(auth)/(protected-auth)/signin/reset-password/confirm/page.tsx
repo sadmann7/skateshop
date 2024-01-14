@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { ResetPasswordStep2Form } from "@/components/forms/reset-password-form-step2"
+import { ResetPasswordConfirmForm } from "@/components/forms/reset-password-confirm-form"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Enter your email to reset your password",
 }
 
-export default function ResetPasswordStep2Page() {
+export default function ResetPasswordConfirmPage() {
   return (
     <Shell className="max-w-lg">
       <Card>
@@ -28,7 +28,7 @@ export default function ResetPasswordStep2Page() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ResetPasswordStep2Form />
+          <ResetPasswordConfirmForm />
         </CardContent>
       </Card>
     </Shell>

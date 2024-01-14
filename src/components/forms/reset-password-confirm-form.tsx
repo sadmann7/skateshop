@@ -25,7 +25,7 @@ import { PasswordInput } from "@/components/password-input"
 
 type Inputs = z.infer<typeof resetPasswordSchema>
 
-export function ResetPasswordStep2Form() {
+export function ResetPasswordConfirmForm() {
   const router = useRouter()
   const { isLoaded, signIn, setActive } = useSignIn()
   const [isPending, startTransition] = React.useTransition()
