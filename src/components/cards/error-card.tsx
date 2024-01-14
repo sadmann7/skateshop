@@ -6,14 +6,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { ClientButton } from "@/components/client-button"
 
 interface ErrorCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
@@ -41,41 +34,41 @@ export function ErrorCard({
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
-      className={cn("grid w-full place-items-center", className)}
+      className={cn(
+        "flex w-full min-w-0 flex-col items-center justify-center overflow-hidden p-10",
+        className
+      )}
       {...props}
     >
-      <CardHeader>
-        <div className="grid h-20 w-20 place-items-center rounded-full bg-muted">
-          <Icon className="h-10 w-10" aria-hidden="true" />
-        </div>
-      </CardHeader>
-      <CardContent className="flex min-h-[176px] flex-col items-center justify-center space-y-2.5 text-center">
+      <div className="grid place-items-center rounded-full border border-dashed border-muted-foreground/75 p-6">
+        <Icon
+          className="h-10 w-10 text-muted-foreground/75"
+          aria-hidden="true"
+        />
+      </div>
+      <div className="flex flex-col items-center justify-center space-y-1.5 py-14 text-center">
         <CardTitle className="text-2xl">{title}</CardTitle>
         <CardDescription className="line-clamp-4">
           {description}
         </CardDescription>
-      </CardContent>
+      </div>
       {retryLink ? (
-        <CardFooter>
-          <Link
-            href={retryLink}
-            className={cn(
-              buttonVariants({
-                variant: "ghost",
-              })
-            )}
-          >
-            {retryLinkText}
-            <span className="sr-only">{retryLinkText}</span>
-          </Link>
-        </CardFooter>
+        <Link
+          href={retryLink}
+          className={cn(
+            buttonVariants({
+              variant: "ghost",
+            })
+          )}
+        >
+          {retryLinkText}
+          <span className="sr-only">{retryLinkText}</span>
+        </Link>
       ) : null}
       {reset ? (
-        <CardFooter>
-          <ClientButton aria-label="Retry" variant="ghost" onClick={reset}>
-            Retry
-          </ClientButton>
-        </CardFooter>
+        <ClientButton aria-label="Retry" variant="ghost" onClick={reset}>
+          Retry
+        </ClientButton>
       ) : null}
     </Card>
   )

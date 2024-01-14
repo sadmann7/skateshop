@@ -285,3 +285,71 @@ export async function getStoreOrders(input: {
     }
   }
 }
+
+export async function getSalesCount(input: {
+  storeId: number
+  fromDay?: Date
+  toDay?: Date
+}) {
+  noStore()
+  try {
+    const { storeId, fromDay, toDay } = input
+
+    const storeOrders = await db
+      .select({
+        amount: orders.amount,
+      })
+      .from(orders)
+      .where(
+        and(
+          eq(orders.storeId, storeId),
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
+            : undefined
+        )
+      )
+
+    const sales = storeOrders.reduce(
+      (acc, order) => acc + Number(order.amount),
+      0
+    )
+
+    return sales
+  } catch (err) {
+    console.error(err)
+    return 0
+  }
+}
+
+export async function getCustomers(input: {
+  storeId: number
+  fromDay?: Date
+  toDay?: Date
+}) {
+  noStore()
+  try {
+    const { storeId, fromDay, toDay } = input
+
+    return await db
+      .selectDistinct({
+        name: orders.name,
+        email: orders.email,
+        totalSpent: sql<number>`sum(${orders.amount})`,
+      })
+      .from(orders)
+      .where(
+        and(
+          eq(orders.storeId, storeId),
+          // Filter by createdAt
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
+            : undefined
+        )
+      )
+      .groupBy(orders.email, orders.name)
+      .orderBy(desc(sql<number>`sum(${orders.amount})`))
+  } catch (err) {
+    console.error(err)
+    return []
+  }
+}
