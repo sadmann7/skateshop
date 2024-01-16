@@ -117,3 +117,46 @@ export interface UserSubscriptionPlan extends SubscriptionPlan {
   isCanceled: boolean
   isActive: boolean
 }
+
+export interface EasyPostAddress {
+  company?: string
+  street1: string
+  street2?: string | null
+  city: string
+  state: string
+  zip: string
+  country: string
+  phone?: string
+}
+
+export interface StripeAddress {
+  company?: string
+  line1: string
+  line2?: string | null
+  city: string
+  state: string
+  postal_code: string
+  country: string
+  phone?: string
+}
+
+export interface Dimensions {
+  length: number
+  width: number
+  height: number
+  weight: number
+}
+
+export interface RateResponse {
+  rate: number
+  ok: boolean
+  status: number
+  error?: string
+}
+
+// export type GetRateProps = z.infer<typeof ratesSchema>
+export interface GetRateProps {
+  toAddress: EasyPostAddress
+  storeId: number
+  dimensions: Dimensions
+}
