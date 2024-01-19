@@ -4,10 +4,10 @@ import * as React from "react"
 import type { CartLineItem } from "@/types"
 import { MinusIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons"
 
+import { deleteCartItem, updateCartItem } from "@/lib/actions/cart"
 import { catchError } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { deleteCartItemAction, updateCartItemAction } from "@/app/_actions/cart"
 
 interface UpdateCartProps {
   cartLineItem: CartLineItem
@@ -28,7 +28,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           onClick={() => {
             startTransition(async () => {
               try {
-                await updateCartItemAction({
+                await updateCartItem({
                   productId: cartLineItem.id,
                   quantity: Number(cartLineItem.quantity) - 1,
                 })
@@ -51,7 +51,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           onChange={(e) => {
             startTransition(async () => {
               try {
-                await updateCartItemAction({
+                await updateCartItem({
                   productId: cartLineItem.id,
                   quantity: Number(e.target.value),
                 })
@@ -70,7 +70,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           onClick={() => {
             startTransition(async () => {
               try {
-                await updateCartItemAction({
+                await updateCartItem({
                   productId: cartLineItem.id,
                   quantity: Number(cartLineItem.quantity) + 1,
                 })
@@ -93,7 +93,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         onClick={() => {
           startTransition(async () => {
             try {
-              await deleteCartItemAction({
+              await deleteCartItem({
                 productId: cartLineItem.id,
               })
             } catch (err) {

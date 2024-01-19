@@ -18,3 +18,8 @@ export const getStoresSchema = z.object({
   statuses: z.string().optional().nullable(),
   userId: z.string().optional(),
 })
+
+export const updateStoreSchema = z.object({
+  name: z.string().min(3).max(50),
+  description: z.string().optional(),
+})

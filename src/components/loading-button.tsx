@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
+import { useFormStatus } from "react-dom"
 
 import { cn } from "@/lib/utils"
 import { useMounted } from "@/hooks/use-mounted"
@@ -12,10 +14,15 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
-const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
-    // const { pending } = useFormStatus()
-    const pending = false
+type ButtonActionProps = ButtonProps & {
+  action: string
+}
+
+const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonActionProps>(
+  ({ children, className, variant, size, action, ...props }, ref) => {
+    const { pending } = useFormStatus()
+    const [del, setDel] = useState(false)
+    const [update, setUpdate] = useState(false)
     const mounted = useMounted()
 
     if (!mounted)
@@ -26,23 +33,37 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-muted text-muted-foreground"
           )}
         >
-          {props.children}
+          {children}
         </Skeleton>
       )
 
     return (
       <Button
         className={cn(buttonVariants({ variant, size, className }))}
-        {...props}
         ref={ref}
+        disabled={pending}
+        {...props}
+        onClick={() => {
+          if (action === "update") {
+            setUpdate(true)
+          } else {
+            setDel(true)
+          }
+        }}
       >
-        {pending && (
+        {del && pending && (
           <Icons.spinner
             className="mr-2 h-4 w-4 animate-spin"
             aria-hidden="true"
           />
         )}
-        {props.children}
+        {update && pending && (
+          <Icons.spinner
+            className="mr-2 h-4 w-4 animate-spin"
+            aria-hidden="true"
+          />
+        )}
+        {children}
       </Button>
     )
   }

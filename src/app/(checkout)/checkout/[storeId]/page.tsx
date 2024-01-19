@@ -7,19 +7,18 @@ import { env } from "@/env.mjs"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { eq } from "drizzle-orm"
 
+import { createPaymentIntent } from "@/lib/actions/stripe"
+import { getCart } from "@/lib/fetchers/cart"
+import { getStripeAccount } from "@/lib/fetchers/stripe"
 import { cn, formatPrice } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
 import { Shell } from "@/components/shells/shell"
-import { getCartAction } from "@/app/_actions/cart"
-import {
-  createPaymentIntentAction,
-  getStripeAccountAction,
-} from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -51,13 +50,13 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     notFound()
   }
 
-  const { isConnected } = await getStripeAccountAction({
+  const { isConnected } = await getStripeAccount({
     storeId,
   })
 
-  const cartLineItems = await getCartAction(storeId)
+  const cartLineItems = await getCart({ storeId })
 
-  const paymentIntent = createPaymentIntentAction({
+  const paymentIntentPromise = createPaymentIntent({
     storeId: store.id,
     items: cartLineItems,
   })
@@ -69,11 +68,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
 
   if (!(isConnected && store.stripeAccountId)) {
     return (
-      <Shell
-        id="checkout-not-connected"
-        aria-labelledby="checkout-not-connected-heading"
-        variant="centered"
-      >
+      <Shell variant="centered">
         <div className="flex flex-col items-center justify-center gap-2 pt-20">
           <div className="text-center text-2xl font-bold">
             Store is not connected to Stripe
@@ -125,23 +120,26 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                   Details
                 </Button>
               </DrawerTrigger>
-              <DrawerContent className="flex h-[80%] flex-col space-y-5 bg-zinc-50 py-8 text-zinc-950">
+              <DrawerContent className="mx-auto flex h-[82%] w-full max-w-4xl flex-col space-y-6 border pb-6 pt-8">
                 <CartLineItems
                   items={cartLineItems}
                   variant="minimal"
                   isEditable={false}
-                  className="container max-w-6xl"
+                  className="container h-full flex-1 pr-8"
                 />
-                <div className="container flex max-w-6xl pr-6 font-medium">
-                  <div className="flex-1">
-                    Total (
-                    {cartLineItems.reduce(
-                      (acc, item) => acc + item.quantity,
-                      0
-                    )}
-                    )
+                <div className="container space-y-4 pr-8">
+                  <Separator />
+                  <div className="flex font-medium">
+                    <div className="flex-1">
+                      Total (
+                      {cartLineItems.reduce(
+                        (acc, item) => acc + item.quantity,
+                        0
+                      )}
+                      )
+                    </div>
+                    <div>{formatPrice(total)}</div>
                   </div>
-                  <div>{formatPrice(total)}</div>
                 </div>
               </DrawerContent>
             </Drawer>
@@ -160,7 +158,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
         />
       </div>
       <CheckoutShell
-        paymentIntent={paymentIntent}
+        paymentIntentPromise={paymentIntentPromise}
         storeStripeAccountId={store.stripeAccountId}
         className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
       >

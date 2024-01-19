@@ -15,16 +15,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-interface DateRangePickerProps extends React.HTMLAttributes<HTMLDivElement> {
+interface DateRangePickerProps
+  extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
   dateRange?: DateRange
   dayCount?: number
-  align?: "center" | "start" | "end"
 }
 
 export function DateRangePicker({
   dateRange,
   dayCount,
-  align = "start",
   className,
   ...props
 }: DateRangePickerProps) {
@@ -82,7 +81,7 @@ export function DateRangePicker({
   }, [date?.from, date?.to])
 
   return (
-    <div className={cn("grid gap-2", className)} {...props}>
+    <div className="grid gap-2">
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -108,7 +107,7 @@ export function DateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align={align}>
+        <PopoverContent className={cn("w-auto p-0", className)} {...props}>
           <Calendar
             initialFocus
             mode="range"

@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { getCart } from "@/lib/fetchers/cart"
 import { cn, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -11,14 +12,13 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
-import { getCartAction } from "@/app/_actions/cart"
 
 interface CheckoutCardProps {
   storeId: number
 }
 
 export async function CheckoutCard({ storeId }: CheckoutCardProps) {
-  const cartLineItems = await getCartAction(storeId)
+  const cartLineItems = await getCart({ storeId })
 
   return (
     <Card

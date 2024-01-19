@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 interface CheckoutShellProps
   extends React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> {
   storeStripeAccountId: string
-  paymentIntent: Promise<{
+  paymentIntentPromise: Promise<{
     clientSecret: string | null
   }>
 }
@@ -20,7 +20,7 @@ interface CheckoutShellProps
 export function CheckoutShell({
   children,
   storeStripeAccountId,
-  paymentIntent,
+  paymentIntentPromise,
   className,
   ...props
 }: CheckoutShellProps) {
@@ -30,7 +30,7 @@ export function CheckoutShell({
   )
 
   // Calling createPaymentIntentAction at the client component to avoid stripe authentication error in server action
-  const { clientSecret } = React.use(paymentIntent)
+  const { clientSecret } = React.use(paymentIntentPromise)
 
   if (!clientSecret) {
     return (

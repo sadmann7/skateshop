@@ -37,7 +37,7 @@ const CardTitle = React.forwardRef<
 >(({ className, as: Comp = "h3", ...props }, ref) => (
   <Comp
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight", className)}
+    className={cn("font-semibold leading-tight tracking-tight", className)}
     {...props}
   />
 ))
@@ -75,4 +75,4 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }

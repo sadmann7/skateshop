@@ -1,49 +1,53 @@
 import * as z from "zod"
 
 export const searchParamsSchema = z.object({
-  page: z.string().default("1"),
-  per_page: z.string().default("10"),
+  page: z.coerce.number().default(1),
+  per_page: z.coerce.number().default(10),
+  from: z.string().optional(),
+  to: z.string().optional(),
+  sort: z.string().optional().default("createdAt.desc"),
 })
 
-export const productsSearchParamsSchema = searchParamsSchema.extend({
-  sort: z.string().optional().default("createdAt.desc"),
-  categories: z.string().optional(),
-  subcategories: z.string().optional(),
-  price_range: z.string().optional(),
-  store_ids: z.string().optional(),
-  store_page: z.string().optional(),
-})
+export const productsSearchParamsSchema = searchParamsSchema
+  .omit({ from: true, to: true })
+  .extend({
+    categories: z.string().optional(),
+    subcategory: z.string().optional(),
+    subcategories: z.string().optional(),
+    price_range: z.string().optional(),
+    store_ids: z.string().optional(),
+    store_page: z.coerce.number().default(1),
+    active: z.string().optional().default("true"),
+  })
 
-export const dashboardProductsSearchParamsSchema = searchParamsSchema.extend({
-  sort: z.string().optional().default("createdAt.desc"),
+export const storesProductsSearchParamsSchema = searchParamsSchema.extend({
   name: z.string().optional(),
   category: z.string().optional(),
-  from: z.string().optional(),
-  to: z.string().optional(),
 })
 
-export const storesSearchParamsSchema = searchParamsSchema.extend({
-  sort: z.string().optional().default("productCount.desc"),
-  statuses: z.string().optional(),
-})
+export const storesSearchParamsSchema = searchParamsSchema
+  .omit({ sort: true, from: true, to: true })
+  .extend({
+    sort: z.string().optional().default("productCount.desc"),
+    statuses: z.string().optional(),
+  })
 
-export const purchasesSearchParamsSchema = searchParamsSchema.extend({
-  sort: z.string().optional().default("createdAt.desc"),
-  store: z.string().optional(),
-  status: z.string().optional(),
-})
+export const purchasesSearchParamsSchema = searchParamsSchema
+  .omit({ from: true, to: true })
+  .extend({
+    store: z.string().optional(),
+    status: z.string().optional(),
+  })
 
 export const ordersSearchParamsSchema = searchParamsSchema.extend({
-  sort: z.string().optional().default("createdAt.desc"),
   customer: z.string().optional(),
   status: z.string().optional(),
-  from: z.string().optional(),
-  to: z.string().optional(),
 })
 
 export const customersSearchParamsSchema = searchParamsSchema.extend({
-  sort: z.string().optional().default("createdAt.desc"),
   email: z.string().optional(),
-  from: z.string().optional(),
-  to: z.string().optional(),
+})
+
+export const customerSearchParamsSchema = searchParamsSchema.extend({
+  status: z.string().optional(),
 })

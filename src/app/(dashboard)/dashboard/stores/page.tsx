@@ -1,13 +1,13 @@
+import * as React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { db } from "@/db"
-import { products, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { currentUser } from "@clerk/nextjs"
 import { RocketIcon } from "@radix-ui/react-icons"
-import { desc, eq, sql } from "drizzle-orm"
 
+import { getCacheduser } from "@/lib/fetchers/auth"
+import { getUserStores } from "@/lib/fetchers/store"
+import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { getDashboardRedirectPath, getPlanFeatures } from "@/lib/subscription"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -19,7 +19,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
+import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -28,26 +28,20 @@ export const metadata: Metadata = {
 }
 
 export default async function StoresPage() {
-  const user = await currentUser()
+  const user = await getCacheduser()
 
   if (!user) {
     redirect("/signin")
   }
 
-  const allStores = await db
-    .select({
-      id: stores.id,
-      name: stores.name,
-      description: stores.description,
-      stripeAccountId: stores.stripeAccountId,
-    })
-    .from(stores)
-    .leftJoin(products, eq(products.storeId, stores.id))
-    .groupBy(stores.id)
-    .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
-    .where(eq(stores.userId, user.id))
+  const userStoresPromise = getUserStores({ userId: user.id })
 
-  const subscriptionPlan = await getSubscriptionPlanAction(user.id)
+  const subscriptionPlanPromise = getSubscriptionPlan({ userId: user.id })
+
+  const [allStores, subscriptionPlan] = await Promise.all([
+    userStoresPromise,
+    subscriptionPlanPromise,
+  ])
 
   const { maxStoreCount, maxProductCount } = getPlanFeatures(
     subscriptionPlan?.id
@@ -55,10 +49,7 @@ export default async function StoresPage() {
 
   return (
     <Shell variant="sidebar">
-      <PageHeader
-        id="dashboard-stores-page-header"
-        aria-labelledby="dashboard-stores-page-header-heading"
-      >
+      <PageHeader>
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
             Stores
@@ -82,10 +73,7 @@ export default async function StoresPage() {
           Manage your stores
         </PageHeaderDescription>
       </PageHeader>
-      <Alert
-        id="dashboard-stores-page-alert"
-        aria-labelledby="dashboard-stores-page-alert-heading"
-      >
+      <Alert>
         <RocketIcon className="h-4 w-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
@@ -97,18 +85,20 @@ export default async function StoresPage() {
           this plan.
         </AlertDescription>
       </Alert>
-      <section
-        id="dashboard-stores-page-stores"
-        aria-labelledby="dashboard-stores-page-stores-heading"
-        className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        {allStores.map((store) => (
-          <StoreCard
-            key={store.id}
-            store={store}
-            href={`/dashboard/stores/${store.id}`}
-          />
-        ))}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <React.Suspense
+          fallback={Array.from({ length: 3 }).map((_, i) => (
+            <StoreCardSkeleton key={i} />
+          ))}
+        >
+          {allStores.map((store) => (
+            <StoreCard
+              key={store.id}
+              store={store}
+              href={`/dashboard/stores/${store.id}`}
+            />
+          ))}
+        </React.Suspense>
       </section>
     </Shell>
   )

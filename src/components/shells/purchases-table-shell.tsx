@@ -25,25 +25,26 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-export type CuratedOrder = Pick<
+export type AwaitedOrder = Pick<
   Order,
   "id" | "email" | "items" | "amount" | "createdAt" | "storeId"
 > & {
+  status: Order["stripePaymentIntentStatus"]
   store: string | null
-  status: string
 }
 
 interface PurchasesTableShellProps {
-  data: CuratedOrder[]
-  pageCount: number
+  promise: Promise<{
+    data: AwaitedOrder[]
+    pageCount: number
+  }>
 }
 
-export function PurchasesTableShell({
-  data,
-  pageCount,
-}: PurchasesTableShellProps) {
+export function PurchasesTableShell({ promise }: PurchasesTableShellProps) {
+  const { data, pageCount } = React.use(promise)
+
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo<ColumnDef<CuratedOrder, unknown>[]>(
+  const columns = React.useMemo<ColumnDef<AwaitedOrder, unknown>[]>(
     () => [
       {
         accessorKey: "id",

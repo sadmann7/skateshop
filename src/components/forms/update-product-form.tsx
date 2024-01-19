@@ -12,6 +12,11 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { getSubcategories } from "@/config/products"
+import {
+  checkProduct,
+  deleteProduct,
+  updateProduct,
+} from "@/lib/actions/product"
 import { catchError, isArrayOfFile } from "@/lib/utils"
 import { productSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
@@ -37,11 +42,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { FileDialog } from "@/components/file-dialog"
 import { Icons } from "@/components/icons"
 import { Zoom } from "@/components/zoom-image"
-import {
-  checkProductAction,
-  deleteProductAction,
-  updateProductAction,
-} from "@/app/_actions/product"
 import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface UpdateProductFormProps {
@@ -55,7 +55,8 @@ const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const router = useRouter()
   const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-  const [isPending, startTransition] = React.useTransition()
+  const [isUpdating, startUpdateTransition] = React.useTransition()
+  const [isDeleting, startDeleteTransition] = React.useTransition()
 
   React.useEffect(() => {
     if (product.images && product.images.length > 0) {
@@ -87,9 +88,9 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
   const subcategories = getSubcategories(form.watch("category"))
 
   function onSubmit(data: Inputs) {
-    startTransition(async () => {
+    startUpdateTransition(async () => {
       try {
-        await checkProductAction({
+        await checkProduct({
           name: data.name,
           id: product.id,
         })
@@ -105,7 +106,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
             })
           : null
 
-        await updateProductAction({
+        await updateProduct({
           ...data,
           storeId: product.storeId,
           id: product.id,
@@ -282,7 +283,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
               files={files}
               setFiles={setFiles}
               isUploading={isUploading}
-              disabled={isPending}
+              disabled={isUpdating}
             />
           </FormControl>
           <UncontrolledFormMessage
@@ -290,8 +291,8 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           />
         </FormItem>
         <div className="flex space-x-2">
-          <Button disabled={isPending}>
-            {isPending && (
+          <Button disabled={isDeleting || isUpdating}>
+            {isUpdating && (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
                 aria-hidden="true"
@@ -303,18 +304,18 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           <Button
             variant="destructive"
             onClick={() => {
-              startTransition(async () => {
+              startDeleteTransition(async () => {
                 void form.trigger(["name", "price", "inventory"])
-                await deleteProductAction({
+                await deleteProduct({
                   storeId: product.storeId,
                   id: product.id,
                 })
                 router.push(`/dashboard/stores/${product.storeId}/products`)
               })
             }}
-            disabled={isPending}
+            disabled={isDeleting}
           >
-            {isPending && (
+            {isDeleting && (
               <Icons.spinner
                 className="mr-2 h-4 w-4 animate-spin"
                 aria-hidden="true"

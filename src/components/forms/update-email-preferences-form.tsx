@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
+import { updateEmailPreferences } from "@/lib/actions/email"
 import { catchClerkError } from "@/lib/utils"
 import { updateEmailPreferencesSchema } from "@/lib/validations/email"
 import { Button } from "@/components/ui/button"
@@ -21,7 +22,6 @@ import {
 } from "@/components/ui/form"
 import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
-import { updateEmailPreferencesAction } from "@/app/_actions/email"
 
 interface UpdateEmailPreferencesFormProps {
   emailPreference: EmailPreference
@@ -49,7 +49,7 @@ export function UpdateEmailPreferencesForm({
     console.log(data)
     startTransition(async () => {
       try {
-        await updateEmailPreferencesAction({
+        await updateEmailPreferences({
           token: data.token,
           newsletter: data.newsletter,
           transactional: data.transactional,

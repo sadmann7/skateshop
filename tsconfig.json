@@ -28,6 +28,7 @@
     ]
   },
   "include": [
+    "next.config.js",
     ".eslintrc.cjs",
     "next-env.d.ts",
     "**/*.ts",
@@ -35,7 +36,6 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts",
-    "./contentlayer.config.js",
     ".contentlayer/generated"
   ],
   "exclude": ["node_modules"]

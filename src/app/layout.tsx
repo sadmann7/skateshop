@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { env } from "@/env.mjs"
 import { ClerkProvider } from "@clerk/nextjs"
 
@@ -20,27 +20,20 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "Next.js",
-    "React",
-    "Tailwind CSS",
-    "Server Components",
-    "Server Actions",
-    "Skateshop",
-    "Skateboard",
-    "Skateboarding",
-    "Kickflip",
+    "nextjs",
+    "react",
+    "react server components",
+    "skateshop",
+    "skateboarding",
+    "kickflip",
   ],
   authors: [
     {
       name: "sadmann7",
-      url: "https://github.com/sadmann7",
+      url: "https://www.sadmn.com",
     },
   ],
   creator: "sadmann7",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -57,8 +50,16 @@ export const metadata: Metadata = {
     creator: "@sadmann17",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
   },
+}
+
+export const viewport: Viewport = {
+  colorScheme: "dark light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
 }
 
 export default function RootLayout({ children }: React.PropsWithChildren) {

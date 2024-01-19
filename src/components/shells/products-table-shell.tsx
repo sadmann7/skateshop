@@ -7,6 +7,7 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
+import { deleteProduct } from "@/lib/actions/product"
 import { catchError, formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -21,24 +22,31 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { deleteProductAction } from "@/app/_actions/product"
+
+type AwaitedProduct = Pick<
+  Product,
+  "id" | "name" | "category" | "price" | "inventory" | "rating" | "createdAt"
+>
 
 interface ProductsTableShellProps {
-  data: Product[]
-  pageCount: number
+  promise: Promise<{
+    data: AwaitedProduct[]
+    pageCount: number
+  }>
   storeId: number
 }
 
 export function ProductsTableShell({
-  data,
-  pageCount,
+  promise,
   storeId,
 }: ProductsTableShellProps) {
+  const { data, pageCount } = React.use(promise)
+
   const [isPending, startTransition] = React.useTransition()
   const [selectedRowIds, setSelectedRowIds] = React.useState<number[]>([])
 
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo<ColumnDef<Product, unknown>[]>(
+  const columns = React.useMemo<ColumnDef<AwaitedProduct, unknown>[]>(
     () => [
       {
         id: "select",
@@ -155,7 +163,7 @@ export function ProductsTableShell({
                     row.toggleSelected(false)
 
                     toast.promise(
-                      deleteProductAction({
+                      deleteProduct({
                         id: row.original.id,
                         storeId,
                       }),
@@ -184,7 +192,7 @@ export function ProductsTableShell({
     toast.promise(
       Promise.all(
         selectedRowIds.map((id) =>
-          deleteProductAction({
+          deleteProduct({
             id,
             storeId,
           })

@@ -1,8 +1,12 @@
 import type { Metadata } from "next"
 import { type Product } from "@/db/schema"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 
+import { getProducts } from "@/lib/fetchers/product"
+import { getStores } from "@/lib/fetchers/store"
 import { toTitleCase } from "@/lib/utils"
+import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -10,16 +14,12 @@ import {
 } from "@/components/page-header"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
 
 interface CategoryPageProps {
   params: {
     category: Product["category"]
   }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export function generateMetadata({ params }: CategoryPageProps): Metadata {
@@ -43,13 +43,14 @@ export default async function CategoryPage({
     price_range,
     store_ids,
     store_page,
-  } = searchParams
+    active,
+  } = productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
-  const productsTransaction = await getProductsAction({
+  const productsTransaction = await getProducts({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
@@ -57,9 +58,8 @@ export default async function CategoryPage({
     subcategories: typeof subcategories === "string" ? subcategories : null,
     price_range: typeof price_range === "string" ? price_range : null,
     store_ids: typeof store_ids === "string" ? store_ids : null,
+    active,
   })
-
-  const pageCount = Math.ceil(productsTransaction.count / limit)
 
   // Stores transaction
   const storesLimit = 25
@@ -68,33 +68,26 @@ export default async function CategoryPage({
       ? (parseInt(store_page) - 1) * storesLimit
       : 0
 
-  const storesTransaction = await getStoresAction({
+  const storesTransaction = await getStores({
     limit: storesLimit,
     offset: storesOffset,
     sort: "productCount.desc",
   })
 
-  const storePageCount = Math.ceil(storesTransaction.count / storesLimit)
-
   return (
     <Shell>
-      <PageHeader
-        id="category-page-header"
-        aria-labelledby="category-page-header-heading"
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">{toTitleCase(category)}</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           {`Buy ${category} from the best stores`}
         </PageHeaderDescription>
       </PageHeader>
       <Products
-        id="category-page-products"
-        aria-labelledby="category-page-products-heading"
-        products={productsTransaction.items}
-        pageCount={pageCount}
+        products={productsTransaction.data}
+        pageCount={productsTransaction.pageCount}
         category={category}
-        stores={storesTransaction.items}
-        storePageCount={storePageCount}
+        stores={storesTransaction.data}
+        storePageCount={storesTransaction.pageCount}
       />
     </Shell>
   )

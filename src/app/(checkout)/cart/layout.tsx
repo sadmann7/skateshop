@@ -3,8 +3,9 @@ import { currentUser } from "@clerk/nextjs"
 
 import { SiteHeader } from "@/components/layouts/site-header"
 
-
-export default async function CartLayout({ children }: React.PropsWithChildren) {
+export default async function CartLayout({
+  children,
+}: React.PropsWithChildren) {
   const user = await currentUser()
 
   if (!user) {

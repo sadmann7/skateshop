@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { useMDXComponent } from "next-contentlayer/hooks"
 
 import { cn } from "@/lib/utils"
@@ -7,6 +6,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Callout } from "@/components/mdx/callout"
 import { CodeBlock } from "@/components/mdx/code-block"
 import { MdxCard } from "@/components/mdx/mdx-card"
+import { MdxImage } from "@/components/mdx/mdx-image"
 
 /** Originally from `shadcn/ui-docs`
  * @link https://github.com/shadcn/ui/blob/main/apps/www/components/mdx-components.tsx
@@ -144,7 +144,7 @@ const components = {
       {...props}
     />
   ),
-  Image,
+  Image: MdxImage,
   Alert,
   AlertTitle,
   AlertDescription,

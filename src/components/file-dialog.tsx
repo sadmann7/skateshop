@@ -252,7 +252,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
   }, [onCrop])
 
   return (
-    <div className="relative flex items-center justify-between gap-2.5">
+    <div className="relative flex items-center justify-between gap-10">
       <div className="flex items-center gap-2">
         <Image
           src={cropData ? cropData : file.preview}
@@ -264,7 +264,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
         />
         <div className="flex flex-col">
           <p className="line-clamp-1 text-sm font-medium text-muted-foreground">
-            {file.name}
+            {file.name.slice(0, 45)}
           </p>
           <p className="text-xs text-slate-500">
             {(file.size / 1024 / 1024).toFixed(2)}MB
@@ -281,7 +281,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
                 size="icon"
                 className="h-7 w-7"
               >
-                <CropIcon className="h-4 w-4 text-white" aria-hidden="true" />
+                <CropIcon className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">Crop image</span>
               </Button>
             </DialogTrigger>
@@ -352,7 +352,7 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
             setFiles(files.filter((_, j) => j !== i))
           }}
         >
-          <Cross2Icon className="h-4 w-4 text-white" aria-hidden="true" />
+          <Cross2Icon className="h-4 w-4 " aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>

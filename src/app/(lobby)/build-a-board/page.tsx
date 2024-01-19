@@ -5,7 +5,10 @@ import { env } from "@/env.mjs"
 import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
+import { getCartItems } from "@/lib/fetchers/cart"
+import { getProducts } from "@/lib/fetchers/product"
 import { cn } from "@/lib/utils"
+import { productsSearchParamsSchema } from "@/lib/validations/params"
 import { BoardBuilder } from "@/components/board-builder"
 import {
   PageHeader,
@@ -13,8 +16,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-import { getCartItemsAction } from "@/app/_actions/cart"
-import { getProductsAction } from "@/app/_actions/product"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -31,7 +32,8 @@ interface BuildABoadPageProps {
 export default async function BuildABoardPage({
   searchParams,
 }: BuildABoadPageProps) {
-  const { page, per_page, sort, subcategory, price_range } = searchParams
+  const { page, per_page, sort, subcategory, price_range, active } =
+    productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
@@ -39,19 +41,18 @@ export default async function BuildABoardPage({
   const activeSubcategory =
     typeof subcategory === "string" ? subcategory : "decks"
 
-  const productsTransaction = await getProductsAction({
+  const { data, pageCount } = await getProducts({
     limit,
     offset,
     sort: typeof sort === "string" ? sort : null,
     subcategories: activeSubcategory,
     price_range: typeof price_range === "string" ? price_range : null,
+    active,
   })
-
-  const pageCount = Math.ceil(productsTransaction.count / limit)
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value
-  const cartItems = await getCartItemsAction({ cartId: Number(cartId) })
+  const cartItems = await getCartItems({ cartId: Number(cartId) })
 
   return (
     <Shell className="gap-4">
@@ -100,9 +101,7 @@ export default async function BuildABoardPage({
         </div>
       </section>
       <BoardBuilder
-        id="build-a-board-products"
-        aria-labelledby="build-a-board-products-heading"
-        products={productsTransaction.items}
+        products={data}
         pageCount={pageCount}
         subcategory={activeSubcategory}
         cartItems={cartItems ?? []}

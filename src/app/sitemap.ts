@@ -1,40 +1,51 @@
 import { type MetadataRoute } from "next"
-import { allPosts } from "contentlayer/generated"
+import { db } from "@/db"
+import { allPages, allPosts } from "contentlayer/generated"
+import { desc, eq, sql } from "drizzle-orm"
+import { products, stores } from "drizzle/schema"
 
 import { productCategories } from "@/config/products"
 import { absoluteUrl } from "@/lib/utils"
-import { getProductsAction } from "@/app/_actions/product"
-import { getStoresAction } from "@/app/_actions/store"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const storesTransaction = await getStoresAction({
-    limit: 10,
-    offset: 0,
-    sort: "createdAt.desc",
-  })
+  const allStores = await db
+    .select({
+      id: stores.id,
+    })
+    .from(stores)
+    .leftJoin(products, eq(products.storeId, stores.id))
+    .groupBy(stores.id)
+    .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
 
-  const stores = storesTransaction.items.map((store) => ({
+  const storesRoutes = allStores.map((store) => ({
     url: absoluteUrl(`/products?store_ids=${store.id}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const productsTransaction = await getProductsAction({
-    limit: 10,
-    offset: 0,
-    sort: "createdAt.desc",
-  })
+  const allProducts = await db
+    .select({
+      id: products.id,
+    })
+    .from(products)
+    .leftJoin(stores, eq(products.storeId, stores.id))
+    .groupBy(products.id)
+    .orderBy(
+      desc(sql<number>`count(${stores.stripeAccountId})`),
+      desc(sql<number>`count(${products.images})`),
+      desc(products.createdAt)
+    )
 
-  const products = productsTransaction.items.map((product) => ({
+  const productsRoutes = allProducts.map((product) => ({
     url: absoluteUrl(`/product/${product.id}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const categories = productCategories.map((category) => ({
+  const categoriesRoutes = productCategories.map((category) => ({
     url: absoluteUrl(`/categories/${category.title}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const subcategories = productCategories
+  const subcategoriesRoutes = productCategories
     .map((category) =>
       category.subcategories.map((subcategory) => ({
         url: absoluteUrl(`/categories/${category.title}/${subcategory.slug}`),
@@ -43,7 +54,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
     .flat()
 
-  const posts = allPosts.map((post) => ({
+  const pagesRoutes = allPages.map((page) => ({
+    url: absoluteUrl(`${page.slug}`),
+    lastModified: new Date().toISOString(),
+  }))
+
+  const postsRoutes = allPosts.map((post) => ({
     url: absoluteUrl(`${post.slug}`),
     lastModified: new Date().toISOString(),
   }))
@@ -55,9 +71,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/build-a-board",
     "/blog",
     "/dashboard/account",
+    "/dashboard/stores",
     "/dashboard/billing",
     "/dashboard/purchases",
-    "/dashboard/stores",
   ].map((route) => ({
     url: absoluteUrl(route),
     lastModified: new Date().toISOString(),
@@ -65,10 +81,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...routes,
-    ...stores,
-    ...products,
-    ...categories,
-    ...subcategories,
-    ...posts,
+    ...storesRoutes,
+    ...productsRoutes,
+    ...categoriesRoutes,
+    ...subcategoriesRoutes,
+    ...pagesRoutes,
+    ...postsRoutes,
   ]
 }

@@ -8,9 +8,11 @@ import { ChevronDownIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { sortOptions } from "@/config/products"
+import { addToCart, deleteCartItem } from "@/lib/actions/cart"
 import { catchError, cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
+import { Card, CardDescription } from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import {
   Sheet,
@@ -30,11 +33,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
 import { ProductCard } from "@/components/cards/product-card"
 import { PaginationButton } from "@/components/pagers/pagination-button"
-import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
 
-interface BoardBuilderProps extends React.HTMLAttributes<HTMLDivElement> {
+interface BoardBuilderProps {
   products: Product[]
   pageCount: number
   subcategory: string | null
@@ -46,8 +49,8 @@ export function BoardBuilder({
   pageCount,
   subcategory,
   cartItems,
-  ...props
 }: BoardBuilderProps) {
+  const id = React.useId()
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -57,6 +60,7 @@ export function BoardBuilder({
   const page = searchParams?.get("page") ?? "1"
   const per_page = searchParams?.get("per_page") ?? "8"
   const sort = searchParams?.get("sort") ?? "createdAt.desc"
+  const active = searchParams?.get("active") ?? "true"
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -95,8 +99,8 @@ export function BoardBuilder({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedPrice])
 
-  // Add to cart
-  const addToCart = React.useCallback(
+  // Add product to cart
+  const addProductToCart = React.useCallback(
     async (product: Product) => {
       try {
         const hasProductInCart = cartItems.some(
@@ -110,12 +114,12 @@ export function BoardBuilder({
           )
 
           if (productWithSameSubcategory) {
-            await deleteCartItemAction({
+            await deleteCartItem({
               productId: productWithSameSubcategory.productId,
             })
           }
 
-          await addToCartAction({
+          await addToCart({
             productId: product.id,
             quantity: 1,
             subcategory: product.subcategory ?? subcategory,
@@ -125,7 +129,7 @@ export function BoardBuilder({
           return
         }
 
-        await deleteCartItemAction({
+        await deleteCartItem({
           productId: product.id,
         })
         toast.success("Removed from cart.")
@@ -137,7 +141,7 @@ export function BoardBuilder({
   )
 
   return (
-    <section className="flex flex-col space-y-6" {...props}>
+    <section className="flex flex-col space-y-6">
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
@@ -150,8 +154,33 @@ export function BoardBuilder({
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <Separator />
-            <div className="flex flex-1 flex-col gap-5 overflow-hidden px-1">
-              <div className="space-y-4">
+            <div className="flex flex-1 flex-col gap-5 overflow-hidden p-1">
+              <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <Label htmlFor={`active-${id}`}>Active stores</Label>
+                  <CardDescription>
+                    Only show products from stores that are connected to Stripe
+                  </CardDescription>
+                </div>
+                <Switch
+                  id={`active-${id}`}
+                  checked={active === "true"}
+                  onCheckedChange={(value) =>
+                    startTransition(() => {
+                      router.push(
+                        `${pathname}?${createQueryString({
+                          active: value ? "true" : "false",
+                        })}`
+                      ),
+                        {
+                          scroll: false,
+                        }
+                    })
+                  }
+                  disabled={isPending}
+                />
+              </div>
+              <Card className="space-y-4 rounded-lg p-3">
                 <h3 className="text-sm font-medium tracking-wide text-foreground">
                   Price range ($)
                 </h3>
@@ -193,7 +222,7 @@ export function BoardBuilder({
                     }}
                   />
                 </div>
-              </div>
+              </Card>
             </div>
             <div>
               <Separator className="my-4" />
@@ -207,9 +236,12 @@ export function BoardBuilder({
                       router.push(
                         `${pathname}?${createQueryString({
                           price_range: 0 - 100,
-                        })}`
+                          active: "true",
+                        })}`,
+                        {
+                          scroll: false,
+                        }
                       )
-
                       setPriceRange([0, 100])
                     })
                   }}
@@ -240,7 +272,10 @@ export function BoardBuilder({
                     router.push(
                       `${pathname}?${createQueryString({
                         sort: option.value,
-                      })}`
+                      })}`,
+                      {
+                        scroll: false,
+                      }
                     )
                   })
                 }}
@@ -268,7 +303,7 @@ export function BoardBuilder({
             isAddedToCart={cartItems
               .map((item) => item.productId)
               .includes(product.id)}
-            onSwitch={() => addToCart(product)}
+            onSwitch={() => addProductToCart(product)}
           />
         ))}
       </div>

@@ -20,15 +20,16 @@ interface StoreCardProps {
 export function StoreCard({ store, href }: StoreCardProps) {
   return (
     <Link href={href}>
-      <Card className="h-full overflow-hidden">
+      <span className="sr-only">{store.name}</span>
+      <Card className="h-full overflow-hidden transition-colors hover:bg-muted/50">
         <AspectRatio ratio={21 / 9}>
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/50" />
           <Badge
             className={cn(
-              "pointer-events-none absolute right-2 top-2 rounded-sm px-2 py-1 font-semibold",
+              "pointer-events-none absolute right-2 top-2 rounded-sm px-2 py-0.5 font-semibold",
               store.stripeAccountId
-                ? "border-green-600/20 bg-green-50 text-green-700"
-                : "border-red-600/10 bg-red-50 text-red-700"
+                ? "border-green-600/20 bg-green-100 text-green-700"
+                : "border-red-600/10 bg-red-100 text-red-700"
             )}
           >
             {store.stripeAccountId ? "Active" : "Inactive"}
@@ -38,16 +39,15 @@ export function StoreCard({ store, href }: StoreCardProps) {
             style={getRandomPatternStyle(String(store.id))}
           />
         </AspectRatio>
-        <CardHeader>
-          <CardTitle className="line-clamp-1 text-lg">{store.name}</CardTitle>
-          <CardDescription className="line-clamp-2">
+        <CardHeader className="space-y-2">
+          <CardTitle className="line-clamp-1">{store.name}</CardTitle>
+          <CardDescription className="line-clamp-1">
             {store.description?.length
               ? store.description
               : `Explore ${store.name} products`}
           </CardDescription>
         </CardHeader>
       </Card>
-      <span className="sr-only">{store.name}</span>
     </Link>
   )
 }

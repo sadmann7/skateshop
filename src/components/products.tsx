@@ -14,6 +14,7 @@ import { getSubcategories, sortOptions } from "@/config/products"
 import { cn, toTitleCase, truncate } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
+import { Card, CardDescription } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -36,11 +37,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
+import { Switch } from "@/components/ui/switch"
 import { ProductCard } from "@/components/cards/product-card"
 import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagers/pagination-button"
 
-interface ProductsProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ProductsProps {
   products: Product[]
   pageCount: number
   category?: Product["category"]
@@ -59,7 +61,6 @@ export function Products({
   categories,
   stores,
   storePageCount,
-  ...props
 }: ProductsProps) {
   const id = React.useId()
   const router = useRouter()
@@ -75,6 +76,7 @@ export function Products({
   const store_page = searchParams?.get("store_page") ?? "1"
   const categoriesParam = searchParams?.get("categories")
   const subcategoriesParam = searchParams?.get("subcategories")
+  const active = searchParams?.get("active") ?? "true"
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -187,7 +189,7 @@ export function Products({
   }, [storeIds])
 
   return (
-    <section className="flex flex-col space-y-6" {...props}>
+    <section className="flex flex-col space-y-6">
       <div className="flex items-center space-x-2">
         <Sheet>
           <SheetTrigger asChild>
@@ -200,8 +202,33 @@ export function Products({
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <Separator />
-            <div className="flex flex-1 flex-col gap-5 overflow-hidden px-1">
-              <div className="space-y-4">
+            <div className="flex flex-1 flex-col gap-5 overflow-hidden p-1">
+              <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <Label htmlFor={`active-${id}`}>Active stores</Label>
+                  <CardDescription>
+                    Only show products from stores that are connected to Stripe
+                  </CardDescription>
+                </div>
+                <Switch
+                  id={`active-${id}`}
+                  checked={active === "true"}
+                  onCheckedChange={(value) =>
+                    startTransition(() => {
+                      router.push(
+                        `${pathname}?${createQueryString({
+                          active: value ? "true" : "false",
+                        })}`,
+                        {
+                          scroll: false,
+                        }
+                      )
+                    })
+                  }
+                  disabled={isPending}
+                />
+              </div>
+              <Card className="space-y-4 rounded-lg p-3">
                 <h3 className="text-sm font-medium tracking-wide text-foreground">
                   Price range ($)
                 </h3>
@@ -222,7 +249,6 @@ export function Products({
                     inputMode="numeric"
                     min={0}
                     max={priceRange[1]}
-                    className="h-9"
                     value={priceRange[0]}
                     onChange={(e) => {
                       const value = Number(e.target.value)
@@ -235,7 +261,6 @@ export function Products({
                     inputMode="numeric"
                     min={priceRange[0]}
                     max={500}
-                    className="h-9"
                     value={priceRange[1]}
                     onChange={(e) => {
                       const value = Number(e.target.value)
@@ -243,9 +268,9 @@ export function Products({
                     }}
                   />
                 </div>
-              </div>
+              </Card>
               {categories?.length ? (
-                <div className="space-y-4">
+                <Card className="space-y-4 rounded-lg p-3">
                   <h3 className="text-sm font-medium tracking-wide text-foreground">
                     Categories
                   </h3>
@@ -258,10 +283,10 @@ export function Products({
                       value: c,
                     }))}
                   />
-                </div>
+                </Card>
               ) : null}
               {category ? (
-                <div className="space-y-4">
+                <Card className="space-y-4 rounded-lg p-3">
                   <h3 className="text-sm font-medium tracking-wide text-foreground">
                     Subcategories
                   </h3>
@@ -271,11 +296,11 @@ export function Products({
                     setSelected={setSelectedSubcategories}
                     options={subcategories}
                   />
-                </div>
+                </Card>
               ) : null}
               {stores?.length ? (
-                <div className="space-y-3 overflow-hidden">
-                  <div className="flex gap-2">
+                <Card className="space-y-4 overflow-hidden rounded-lg py-3 pl-3">
+                  <div className="flex gap-2 pr-3">
                     <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
                       Stores
                     </h3>
@@ -283,12 +308,16 @@ export function Products({
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8"
                         onClick={() => {
                           startTransition(() => {
                             router.push(
                               `${pathname}?${createQueryString({
                                 store_page: Number(store_page) - 1,
-                              })}`
+                              })}`,
+                              {
+                                scroll: false,
+                              }
                             )
                           })
                         }}
@@ -303,12 +332,16 @@ export function Products({
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8"
                         onClick={() => {
                           startTransition(() => {
                             router.push(
                               `${pathname}?${createQueryString({
                                 store_page: Number(store_page) + 1,
-                              })}`
+                              })}`,
+                              {
+                                scroll: false,
+                              }
                             )
                           })
                         }}
@@ -324,7 +357,7 @@ export function Products({
                       </Button>
                     </div>
                   </div>
-                  <ScrollArea className="h-full">
+                  <ScrollArea className="h-full pb-12">
                     <div className="space-y-4">
                       {stores.map((store) => (
                         <div
@@ -357,7 +390,7 @@ export function Products({
                       ))}
                     </div>
                   </ScrollArea>
-                </div>
+                </Card>
               ) : null}
             </div>
             <div>
@@ -375,7 +408,11 @@ export function Products({
                           store_ids: null,
                           categories: null,
                           subcategories: null,
-                        })}`
+                          active: "true",
+                        })}`,
+                        {
+                          scroll: false,
+                        }
                       )
 
                       setPriceRange([0, 100])
@@ -405,7 +442,7 @@ export function Products({
             {sortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.label}
-                className={cn(option.value === sort && "font-bold")}
+                className={cn(option.value === sort && "bg-accent font-bold")}
                 onClick={() => {
                   startTransition(() => {
                     router.push(

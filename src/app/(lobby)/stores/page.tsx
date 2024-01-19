@@ -1,6 +1,8 @@
 import { type Metadata } from "next"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 
+import { getStores } from "@/lib/fetchers/store"
 import { storesSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
@@ -9,7 +11,6 @@ import {
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
 import { Stores } from "@/components/stores"
-import { getStoresAction } from "@/app/_actions/store"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -18,9 +19,7 @@ export const metadata: Metadata = {
 }
 
 interface StoresPageProps {
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function StoresPage({ searchParams }: StoresPageProps) {
@@ -35,32 +34,22 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
-  const storesTransaction = await getStoresAction({
+  const { data, pageCount } = await getStores({
     limit,
     offset,
     sort,
     statuses,
   })
 
-  const pageCount = Math.ceil(storesTransaction.count / limit)
-
   return (
     <Shell>
-      <PageHeader
-        id="stores-page-header"
-        aria-labelledby="stores-page-header-heading"
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">Stores</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Buy products from our stores
         </PageHeaderDescription>
       </PageHeader>
-      <Stores
-        id="stores-page-stores"
-        aria-labelledby="stores-page-stores-heading"
-        stores={storesTransaction.items}
-        pageCount={pageCount}
-      />
+      <Stores stores={data} pageCount={pageCount} />
     </Shell>
   )
 }

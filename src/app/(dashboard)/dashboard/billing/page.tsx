@@ -2,10 +2,11 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
-import { currentUser } from "@clerk/nextjs"
 import { CheckIcon } from "@radix-ui/react-icons"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { getCacheduser } from "@/lib/fetchers/auth"
+import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -23,7 +24,6 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
-import { getSubscriptionPlanAction } from "@/app/_actions/stripe"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -32,31 +32,23 @@ export const metadata: Metadata = {
 }
 
 export default async function BillingPage() {
-  const user = await currentUser()
+  const user = await getCacheduser()
 
   if (!user) {
     redirect("/signin")
   }
 
-  const subscriptionPlan = await getSubscriptionPlanAction(user.id)
+  const subscriptionPlan = await getSubscriptionPlan({ userId: user.id })
 
   return (
     <Shell variant="sidebar" as="div">
-      <PageHeader
-        id="billing-header"
-        aria-labelledby="billing-header-heading"
-        separated
-      >
+      <PageHeader separated>
         <PageHeaderHeading size="sm">Billing</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your billing and subscription
         </PageHeaderDescription>
       </PageHeader>
-      <section
-        id="billing-info"
-        aria-labelledby="billing-info-heading"
-        className="space-y-5"
-      >
+      <section className="space-y-5">
         <h2 className="text-xl font-semibold sm:text-2xl">Billing info</h2>
         <Card className="grid gap-4 p-6">
           <h3 className="text-lg font-semibold sm:text-xl">
@@ -66,19 +58,15 @@ export default async function BillingPage() {
             {!subscriptionPlan?.isSubscribed
               ? "Upgrade to create more stores and products."
               : subscriptionPlan.isCanceled
-              ? "Your plan will be canceled on "
-              : "Your plan renews on "}
+                ? "Your plan will be canceled on "
+                : "Your plan renews on "}
             {subscriptionPlan?.stripeCurrentPeriodEnd
               ? `${formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.`
               : null}
           </p>
         </Card>
       </section>
-      <section
-        id="subscription-plans"
-        aria-labelledby="subscription-plans-heading"
-        className="space-y-5 pb-2.5"
-      >
+      <section className="space-y-5 pb-2.5">
         <h2 className="text-xl font-semibold sm:text-2xl">
           Subscription plans
         </h2>

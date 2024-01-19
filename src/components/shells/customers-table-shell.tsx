@@ -16,7 +16,7 @@ import {
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-interface Customer {
+interface AwaitedCustomer {
   email: string | null
   name: string | null
   orderPlaced: number
@@ -25,18 +25,21 @@ interface Customer {
 }
 
 interface CustomersTableShellProps {
-  data: Customer[]
-  pageCount: number
+  promise: Promise<{
+    data: AwaitedCustomer[]
+    pageCount: number
+  }>
   storeId: number
 }
 
 export function CustomersTableShell({
-  data,
-  pageCount,
+  promise,
   storeId,
 }: CustomersTableShellProps) {
+  const { data, pageCount } = React.use(promise)
+
   // Memoize the columns so they don't re-render on every render
-  const columns = React.useMemo<ColumnDef<Customer, unknown>[]>(
+  const columns = React.useMemo<ColumnDef<AwaitedCustomer, unknown>[]>(
     () => [
       {
         accessorKey: "name",

@@ -16,7 +16,7 @@ const links = {
 export const siteConfig = {
   name: "Skateshop",
   description:
-    "An open source e-commerce skateshop build with everything new in Next.js 13.",
+    "An open source e-commerce skateshop build with everything new in Next.js.",
   url: "https://skateshop.sadmn.com",
   ogImage: "https://skateshop.sadmn.com/opengraph-image.png",
   links,
@@ -98,22 +98,22 @@ export const siteConfig = {
       items: [
         {
           title: "About",
-          href: "/about",
+          href: "/pages/about",
           external: false,
         },
         {
           title: "Contact",
-          href: "/contact",
+          href: "/pages/Contact",
           external: false,
         },
         {
           title: "Terms",
-          href: "/terms",
+          href: "/pages/terms",
           external: false,
         },
         {
           title: "Privacy",
-          href: "/privacy",
+          href: "/pages/privacy",
           external: false,
         },
       ],

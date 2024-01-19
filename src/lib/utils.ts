@@ -44,11 +44,16 @@ export function formatNumber(
   }).format(Number(number))
 }
 
-export function formatDate(date: Date | string | number) {
-  return new Intl.DateTimeFormat("en-US", {
+export function formatDate(
+  date: Date | string | number,
+  options: Intl.DateTimeFormatOptions = {
     month: "long",
     day: "numeric",
     year: "numeric",
+  }
+) {
+  return new Intl.DateTimeFormat("en-US", {
+    ...options,
   }).format(new Date(date))
 }
 

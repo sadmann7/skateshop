@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
+import { addStore } from "@/lib/actions/store"
 import { catchError } from "@/lib/utils"
 import { storeSchema } from "@/lib/validations/store"
 import { Button } from "@/components/ui/button"
@@ -21,7 +22,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
-import { addStoreAction } from "@/app/_actions/store"
 
 interface AddStoreFormProps {
   userId: string
@@ -45,7 +45,7 @@ export function AddStoreForm({ userId }: AddStoreFormProps) {
   function onSubmit(data: Inputs) {
     startTransition(async () => {
       try {
-        await addStoreAction({ ...data, userId })
+        await addStore({ ...data, userId })
 
         form.reset()
         toast.success("Store added successfully.")

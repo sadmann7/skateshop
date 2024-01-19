@@ -6,6 +6,7 @@ import { type Product } from "@/db/schema"
 import { CircleIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
+import { filterProducts } from "@/lib/actions/product"
 import { catchError, cn, isMacOs } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -18,7 +19,6 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Skeleton } from "@/components/ui/skeleton"
-import { filterProductsAction } from "@/app/_actions/product"
 
 interface ProductGroup {
   category: Product["category"]
@@ -41,7 +41,7 @@ export function ProductsCommandMenu() {
 
     async function fetchData() {
       try {
-        const data = await filterProductsAction(debouncedQuery)
+        const data = await filterProducts(debouncedQuery)
         setData(data)
       } catch (err) {
         catchError(err)
@@ -69,12 +69,6 @@ export function ProductsCommandMenu() {
     callback()
   }, [])
 
-  React.useEffect(() => {
-    if (!open) {
-      setQuery("")
-    }
-  }, [open])
-
   return (
     <>
       <Button
@@ -95,7 +89,16 @@ export function ProductsCommandMenu() {
           K
         </kbd>
       </Button>
-      <CommandDialog position="top" open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        position="top"
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open)
+          if (!open) {
+            setQuery("")
+          }
+        }}
+      >
         <CommandInput
           placeholder="Search products..."
           value={query}
@@ -135,7 +138,7 @@ export function ProductsCommandMenu() {
                       }
                     >
                       <CategoryIcon
-                        className="mr-2 h-4 w-4 text-muted-foreground"
+                        className="mr-2.5 h-3 w-3 text-muted-foreground"
                         aria-hidden="true"
                       />
                       <span className="truncate">{item.name}</span>

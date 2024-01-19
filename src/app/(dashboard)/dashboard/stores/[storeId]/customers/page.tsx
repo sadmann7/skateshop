@@ -1,11 +1,14 @@
+import * as React from "react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores } from "@/db/schema"
 import { env } from "@/env.mjs"
+import type { SearchParams } from "@/types"
 import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 
 import { customersSearchParamsSchema } from "@/lib/validations/params"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { CustomersTableShell } from "@/components/shells/customers-table-shell"
 
@@ -19,9 +22,7 @@ interface CustomersPageProps {
   params: {
     storeId: string
   }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function CustomersPage({
@@ -46,21 +47,18 @@ export default async function CustomersPage({
     notFound()
   }
 
-  // Customers transaction
-  const pageAsNumber = Number(page)
-  const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
-  const perPageAsNumber = Number(per_page)
+  // Transaction is used to ensure both queries are executed in a single transaction
+  const fallbackPage = isNaN(page) || page < 1 ? 1 : page
   // Number of items per page
-  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
+  const limit = isNaN(per_page) ? 10 : per_page
   // Number of items to skip
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
   const fromDay = from ? new Date(from) : undefined
   const toDay = to ? new Date(to) : undefined
 
-  const { items, count } = await db.transaction(async (tx) => {
-    const items = await db
+  const ordersPromise = db.transaction(async (tx) => {
+    const data = await db
       .select({
         name: orders.name,
         email: orders.email,
@@ -87,24 +85,24 @@ export default async function CustomersPage({
         sort === "name.asc"
           ? asc(orders.name)
           : sort === "name.desc"
-          ? desc(orders.name)
-          : sort === "email.asc"
-          ? asc(orders.email)
-          : sort === "email.desc"
-          ? desc(orders.email)
-          : sort === "totalSpent.asc"
-          ? asc(sql<number>`sum(${orders.amount})`)
-          : sort === "totalSpent.desc"
-          ? desc(sql<number>`sum(${orders.amount})`)
-          : sort === "orderPlaced.asc"
-          ? asc(sql<number>`count(*)`)
-          : sort === "orderPlaced.desc"
-          ? desc(sql<number>`count(*)`)
-          : sort === "createdAt.asc"
-          ? asc(sql<string>`min(${orders.createdAt})`)
-          : sort === "createdAt.desc"
-          ? desc(sql<string>`min(${orders.createdAt})`)
-          : sql<string>`min(${orders.createdAt})`
+            ? desc(orders.name)
+            : sort === "email.asc"
+              ? asc(orders.email)
+              : sort === "email.desc"
+                ? desc(orders.email)
+                : sort === "totalSpent.asc"
+                  ? asc(sql<number>`sum(${orders.amount})`)
+                  : sort === "totalSpent.desc"
+                    ? desc(sql<number>`sum(${orders.amount})`)
+                    : sort === "orderPlaced.asc"
+                      ? asc(sql<number>`count(*)`)
+                      : sort === "orderPlaced.desc"
+                        ? desc(sql<number>`count(*)`)
+                        : sort === "createdAt.asc"
+                          ? asc(sql<string>`min(${orders.createdAt})`)
+                          : sort === "createdAt.desc"
+                            ? desc(sql<string>`min(${orders.createdAt})`)
+                            : sql<string>`min(${orders.createdAt})`
       )
 
     const altCount = await db
@@ -137,12 +135,10 @@ export default async function CustomersPage({
       .then((res) => res[0]?.count ?? 0)
 
     return {
-      items,
-      count: altCount - count,
+      data,
+      pageCount: Math.ceil((altCount - count) / limit),
     }
   })
-
-  const pageCount = Math.ceil(count / limit)
 
   return (
     <div className="space-y-6">
@@ -150,11 +146,13 @@ export default async function CustomersPage({
         <h2 className="text-2xl font-bold tracking-tight">Customers</h2>
         <DateRangePicker align="end" />
       </div>
-      <CustomersTableShell
-        data={items}
-        pageCount={pageCount}
-        storeId={store.id}
-      />
+      <React.Suspense
+        fallback={
+          <DataTableSkeleton columnCount={5} filterableFieldCount={0} />
+        }
+      >
+        <CustomersTableShell promise={ordersPromise} storeId={store.id} />
+      </React.Suspense>
     </div>
   )
 }

@@ -13,12 +13,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ProductCard } from "@/components/cards/product-card"
 import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
+import { Rating } from "@/components/rating"
 import { Shell } from "@/components/shells/shell"
+import { UpdateProductRatingButton } from "@/components/update-product-rating-button"
 
 interface ProductPageProps {
   params: {
@@ -61,6 +64,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       price: true,
       images: true,
       category: true,
+      inventory: true,
+      rating: true,
       storeId: true,
     },
     where: eq(products.id, productId),
@@ -87,6 +92,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           images: products.images,
           category: products.category,
           inventory: products.inventory,
+          rating: products.rating,
         })
         .from(products)
         .limit(4)
@@ -100,7 +106,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     : []
 
   return (
-    <Shell>
+    <Shell className="pb-12 md:pb-14">
       <Breadcrumbs
         segments={[
           {
@@ -142,10 +148,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
             ) : null}
           </div>
           <Separator className="my-1.5" />
-          <AddToCartForm productId={productId} />
+          <p className="text-base text-muted-foreground">
+            {product.inventory} in stock
+          </p>
+          <div className="flex items-center justify-between">
+            <Rating rating={Math.round(product.rating / 5)} />
+            <UpdateProductRatingButton
+              productId={product.id}
+              rating={product.rating}
+            />
+          </div>
+          <AddToCartForm productId={productId} showBuyNow={true} />
           <Separator className="mt-5" />
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="description">
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full"
+            defaultValue="description"
+          >
+            <AccordionItem value="description" className="border-none">
               <AccordionTrigger>Description</AccordionTrigger>
               <AccordionContent>
                 {product.description ??
@@ -153,15 +174,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+          <Separator className="md:hidden" />
         </div>
       </div>
       {store && otherProducts.length > 0 ? (
-        <div className="overflow-hidden md:pt-6">
+        <div className="space-y-6 overflow-hidden">
           <h2 className="line-clamp-1 flex-1 text-2xl font-bold">
             More products from {store.name}
           </h2>
-          <div className="overflow-x-auto pb-2 pt-6">
-            <div className="flex w-fit gap-4">
+          <ScrollArea orientation="horizontal" className="pb-3.5">
+            <div className="flex gap-4">
               {otherProducts.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -170,7 +192,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 />
               ))}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       ) : null}
     </Shell>

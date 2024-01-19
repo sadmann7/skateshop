@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation"
 import { currentUser } from "@clerk/nextjs"
 
-
 export default async function CheckoutLayout({
   children,
 }: React.PropsWithChildren) {
