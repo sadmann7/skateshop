@@ -61,7 +61,7 @@ export async function getUserStores(input: { userId: string }) {
       },
       ["user-stores"],
       {
-        revalidate: 3600,
+        revalidate: 900,
         tags: ["user-stores"],
       }
     )()

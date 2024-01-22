@@ -37,5 +37,3 @@ export async function getGithubStars(): Promise<number | null> {
     return null
   }
 }
-
-export type GithubStarsPromise = ReturnType<typeof getGithubStars>

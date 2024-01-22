@@ -14,7 +14,7 @@ import { absoluteUrl, cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-// Docs: https://stripe.com/docs/payments/quickstart
+// See the stripe playemnts docs: https://stripe.com/docs/payments/quickstart
 
 interface CheckoutFormProps extends React.ComponentPropsWithoutRef<"form"> {
   storeId: number

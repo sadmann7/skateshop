@@ -1,7 +1,6 @@
 // Modified from: https://github.com/shadcn-ui/ui/blob/main/apps/www/components/page-header.tsx
 
 import { cva, type VariantProps } from "class-variance-authority"
-import { Balancer } from "react-wrap-balancer"
 
 import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
@@ -19,7 +18,7 @@ function PageHeader({
   ...props
 }: PageHeaderProps) {
   return (
-    <Comp className={cn("grid gap-1", className)} {...props}>
+    <Comp className={cn("flex flex-col gap-1", className)} {...props}>
       {children}
       {separated ? <Separator className="mt-2.5" /> : null}
     </Comp>
@@ -59,21 +58,24 @@ function PageHeaderHeading({
   )
 }
 
-const descriptionVariants = cva("max-w-[750px] text-muted-foreground", {
-  variants: {
-    size: {
-      default: "text-base sm:text-lg",
-      sm: "text-sm sm:text-base",
-      lg: "text-lg sm:text-xl",
+const descriptionVariants = cva(
+  "max-w-[750px] text-balance text-muted-foreground",
+  {
+    variants: {
+      size: {
+        default: "text-base sm:text-lg",
+        sm: "text-sm sm:text-base",
+        lg: "text-lg sm:text-xl",
+      },
     },
-  },
-  defaultVariants: {
-    size: "default",
-  },
-})
+    defaultVariants: {
+      size: "default",
+    },
+  }
+)
 
 interface PageHeaderDescriptionProps
-  extends React.ComponentProps<typeof Balancer>,
+  extends React.HTMLAttributes<HTMLParagraphElement>,
     VariantProps<typeof descriptionVariants> {}
 
 function PageHeaderDescription({
@@ -82,11 +84,7 @@ function PageHeaderDescription({
   ...props
 }: PageHeaderDescriptionProps) {
   return (
-    <Balancer
-      as="p"
-      className={cn(descriptionVariants({ size, className }))}
-      {...props}
-    />
+    <p className={cn(descriptionVariants({ size, className }))} {...props} />
   )
 }
 

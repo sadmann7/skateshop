@@ -1,9 +1,10 @@
+import * as React from "react"
 import Link from "next/link"
 import { ArrowRightIcon } from "@radix-ui/react-icons"
-import Balancer from "react-wrap-balancer"
+import { Slot } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 
 interface ContentSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
@@ -11,6 +12,7 @@ interface ContentSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   href: string
   linkText?: string
   children: React.ReactNode
+  asChild?: boolean
 }
 
 export function ContentSection({
@@ -20,8 +22,11 @@ export function ContentSection({
   linkText = "View all",
   children,
   className,
+  asChild = false,
   ...props
 }: ContentSectionProps) {
+  const ChildrenShell = asChild ? Slot : "div"
+
   return (
     <section className={cn("space-y-6", className)} {...props}>
       <div className="flex items-center justify-between gap-4">
@@ -30,40 +35,39 @@ export function ContentSection({
             {title}
           </h2>
           {description ? (
-            <Balancer className="max-w-[46rem] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
+            <p className="max-w-[46rem] text-balance leading-normal text-muted-foreground sm:text-lg sm:leading-7">
               {description}
-            </Balancer>
+            </p>
           ) : null}
         </div>
-        <Link
-          href={href}
-          className={cn(
-            buttonVariants({
-              variant: "ghost",
-              className: "hidden sm:flex",
-            })
-          )}
-        >
-          {linkText}
-          <ArrowRightIcon className="ml-2 size-4" aria-hidden="true" />
-          <span className="sr-only"> {linkText}</span>
-        </Link>
+        <Button variant="outline" className="hidden sm:flex" asChild>
+          <Link href={href}>
+            {linkText}
+            <ArrowRightIcon className="ml-2 size-4" aria-hidden="true" />
+            <span className="sr-only"> {linkText}</span>
+          </Link>
+        </Button>
       </div>
       <div className="space-y-8">
-        {children}
-        <Link
-          href={href}
+        <ChildrenShell
           className={cn(
-            buttonVariants({
-              variant: "ghost",
-              className: "mx-auto flex w-fit sm:hidden",
-            })
+            !asChild &&
+              "grid gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
           )}
         >
-          {linkText}
-          <ArrowRightIcon className="ml-2 size-4" aria-hidden="true" />
-          <span className="sr-only"> {linkText}</span>
-        </Link>
+          {children}
+        </ChildrenShell>
+        <Button
+          variant="ghost"
+          className="mx-auto flex w-fit sm:hidden"
+          asChild
+        >
+          <Link href={href}>
+            {linkText}
+            <ArrowRightIcon className="ml-2 size-4" aria-hidden="true" />
+            <span className="sr-only"> {linkText}</span>
+          </Link>
+        </Button>
       </div>
     </section>
   )

@@ -6,7 +6,7 @@ import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
 import { getUserEmail } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -113,15 +113,12 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link
-                href="/signin"
-                className={buttonVariants({
-                  size: "sm",
-                })}
-              >
-                Sign In
-                <span className="sr-only">Sign In</span>
-              </Link>
+              <Button size="sm">
+                <Link href="/signin">
+                  Sign In
+                  <span className="sr-only">Sign In</span>
+                </Link>
+              </Button>
             )}
           </nav>
         </div>
