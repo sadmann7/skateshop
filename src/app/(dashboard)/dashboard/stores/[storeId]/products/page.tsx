@@ -66,8 +66,8 @@ export default async function ProductsPage({
   const toDay = to ? new Date(to) : undefined
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  noStore()
   const productsPromise = db.transaction(async (tx) => {
+    noStore()
     try {
       const data = await tx
         .select({

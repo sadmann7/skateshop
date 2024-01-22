@@ -6,7 +6,7 @@ import "@/styles/globals.css"
 
 import { siteConfig } from "@/config/site"
 import { fontHeading, fontMono, fontSans } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
+import { absoluteUrl, cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
 import { ThemeProvider } from "@/components/providers"
@@ -52,6 +52,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon.png",
   },
+  manifest: absoluteUrl("/site.webmanifest"),
 }
 
 export const viewport: Viewport = {

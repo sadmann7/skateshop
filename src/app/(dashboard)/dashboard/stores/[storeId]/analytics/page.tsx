@@ -144,30 +144,28 @@ export default async function AnalyticsPage({
             {dayCount && `in the last ${dayCount} days`}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-8">
-            {customers.map((customer) => (
-              <div key={customer.email} className="flex items-center">
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                  <AvatarFallback>
-                    {customer.name?.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="ml-4 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {customer.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {customer.email}
-                  </p>
-                </div>
-                <div className="ml-auto font-medium">
-                  +${formatNumber(customer.totalSpent)}
-                </div>
+        <CardContent className="space-y-8">
+          {customers.map((customer) => (
+            <div key={customer.email} className="flex items-center">
+              <Avatar className="h-9 w-9">
+                <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                <AvatarFallback>
+                  {customer.name?.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="ml-4 space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {customer.name}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {customer.email}
+                </p>
               </div>
-            ))}
-          </div>
+              <div className="ml-auto font-medium">
+                +${formatNumber(customer.totalSpent)}
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     </div>
