@@ -17,14 +17,14 @@ import { createId } from "@/lib/utils"
 
 export const stores = mysqlTable("stores", {
   id: serial("id").primaryKey(),
-  userId: varchar("userId", { length: 191 }).notNull(),
+  userId: varchar("user_id", { length: 191 }).notNull(),
   name: varchar("name", { length: 191 }).notNull(),
   description: text("description"),
   slug: text("slug"),
   active: boolean("active").notNull().default(false),
-  stripeAccountId: varchar("stripeAccountId", { length: 191 }),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  stripeAccountId: varchar("stripe_account_id", { length: 191 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type Store = typeof stores.$inferSelect
@@ -53,9 +53,9 @@ export const products = mysqlTable("products", {
   inventory: int("inventory").notNull().default(0),
   rating: int("rating").notNull().default(0),
   tags: json("tags").$type<string[] | null>().default(null),
-  storeId: int("storeId").notNull(),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  storeId: int("store_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type Product = typeof products.$inferSelect
@@ -68,12 +68,12 @@ export const productsRelations = relations(products, ({ one }) => ({
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const carts = mysqlTable("carts", {
   id: serial("id").primaryKey(),
-  paymentIntentId: varchar("paymentIntentId", { length: 191 }),
-  clientSecret: varchar("clientSecret", { length: 191 }),
+  paymentIntentId: varchar("payment_intent_id", { length: 191 }),
+  clientSecret: varchar("client_secret", { length: 191 }),
   items: json("items").$type<CartItem[] | null>().default(null),
   closed: boolean("closed").notNull().default(false),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type Cart = typeof carts.$inferSelect
@@ -81,14 +81,14 @@ export type NewCart = typeof carts.$inferInsert
 
 export const emailPreferences = mysqlTable("email_preferences", {
   id: serial("id").primaryKey(),
-  userId: varchar("userId", { length: 191 }),
+  userId: varchar("user_id", { length: 191 }),
   email: varchar("email", { length: 191 }).notNull(),
   token: varchar("token", { length: 191 }).notNull(),
   newsletter: boolean("newsletter").notNull().default(false),
   marketing: boolean("marketing").notNull().default(false),
   transactional: boolean("transactional").notNull().default(false),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type EmailPreference = typeof emailPreferences.$inferSelect
@@ -114,12 +114,12 @@ export type NewSubscription = typeof subscriptions.$inferInsert
 export const payments = mysqlTable("payments", {
   id: serial("id").primaryKey(),
   storeId: int("storeId").notNull(),
-  stripeAccountId: varchar("stripeAccountId", { length: 191 }).notNull(),
-  stripeAccountCreatedAt: int("stripeAccountCreatedAt"),
-  stripeAccountExpiresAt: int("stripeAccountExpiresAt"),
-  detailsSubmitted: boolean("detailsSubmitted").notNull().default(false),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  stripeAccountId: varchar("stripe_account_id", { length: 191 }).notNull(),
+  stripeAccountCreatedAt: int("stripe_account_created_at"),
+  stripeAccountExpiresAt: int("stripe_account_expires_at"),
+  detailsSubmitted: boolean("details_submitted").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type Payment = typeof payments.$inferSelect
@@ -132,21 +132,21 @@ export const paymentsRelations = relations(payments, ({ one }) => ({
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const orders = mysqlTable("orders", {
   id: serial("id").primaryKey(),
-  storeId: int("storeId").notNull(),
+  storeId: int("store_id").notNull(),
   items: json("items").$type<CheckoutItem[] | null>().default(null),
   quantity: int("quantity"),
   amount: decimal("amount", { precision: 10, scale: 2 }).notNull().default("0"),
-  stripePaymentIntentId: varchar("stripePaymentIntentId", {
+  stripePaymentIntentId: varchar("stripe_payment_intent_id", {
     length: 191,
   }).notNull(),
-  stripePaymentIntentStatus: varchar("stripePaymentIntentStatus", {
+  stripePaymentIntentStatus: varchar("stripe_payment_intent_status", {
     length: 191,
   }).notNull(),
   name: varchar("name", { length: 191 }),
   email: varchar("email", { length: 191 }),
-  addressId: int("addressId"),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  addressId: int("address_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type Order = typeof orders.$inferSelect
@@ -159,10 +159,10 @@ export const addresses = mysqlTable("addresses", {
   line2: varchar("line2", { length: 191 }),
   city: varchar("city", { length: 191 }),
   state: varchar("state", { length: 191 }),
-  postalCode: varchar("postalCode", { length: 191 }),
+  postalCode: varchar("postal_code", { length: 191 }),
   country: varchar("country", { length: 191 }),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").onUpdateNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
 })
 
 export type Address = typeof addresses.$inferSelect
