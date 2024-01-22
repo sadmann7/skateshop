@@ -337,6 +337,20 @@
       "when": 1705918046861,
       "tag": "0047_cooing_blob",
       "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "5",
+      "when": 1705918412549,
+      "tag": "0048_skinny_harrier",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "5",
+      "when": 1705918454454,
+      "tag": "0049_square_menace",
+      "breakpoints": true
     }
   ]
 }
