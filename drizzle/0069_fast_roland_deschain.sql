@@ -1,0 +1,1 @@
+ALTER TABLE `stores` ADD `new_id` varchar(128);

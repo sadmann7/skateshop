@@ -1,0 +1,1 @@
+ALTER TABLE `stores` MODIFY COLUMN `id` varchar(128) NOT NULL;
