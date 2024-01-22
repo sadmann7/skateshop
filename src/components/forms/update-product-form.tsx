@@ -266,7 +266,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
                   <Image
                     src={file.preview}
                     alt={file.name}
-                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                    className="size-20 shrink-0 rounded-md object-cover object-center"
                     width={80}
                     height={80}
                   />
@@ -294,7 +294,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           <Button disabled={isDeleting || isUpdating}>
             {isUpdating && (
               <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
+                className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
             )}
@@ -317,7 +317,7 @@ export function UpdateProductForm({ product }: UpdateProductFormProps) {
           >
             {isDeleting && (
               <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
+                className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
             )}

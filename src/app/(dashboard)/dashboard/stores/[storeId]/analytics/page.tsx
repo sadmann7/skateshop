@@ -93,7 +93,7 @@ export default async function AnalyticsPage({
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
             <Icons.dollarSign
-              className="h-4 w-4 text-muted-foreground"
+              className="size-4 text-muted-foreground"
               aria-hidden="true"
             />
           </CardHeader>
@@ -109,7 +109,7 @@ export default async function AnalyticsPage({
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Sales</CardTitle>
             <Icons.credit
-              className="h-4 w-4 text-muted-foreground"
+              className="size-4 text-muted-foreground"
               aria-hidden="true"
             />
           </CardHeader>
@@ -127,7 +127,7 @@ export default async function AnalyticsPage({
               Recent Customers
             </CardTitle>
             <Icons.activity
-              className="h-4 w-4 text-muted-foreground"
+              className="size-4 text-muted-foreground"
               aria-hidden="true"
             />
           </CardHeader>
@@ -147,7 +147,7 @@ export default async function AnalyticsPage({
         <CardContent className="space-y-8">
           {customers.map((customer) => (
             <div key={customer.email} className="flex items-center">
-              <Avatar className="h-9 w-9">
+              <Avatar className="size-9">
                 <AvatarImage src="/avatars/01.png" alt="Avatar" />
                 <AvatarFallback>
                   {customer.name?.slice(0, 2).toUpperCase()}

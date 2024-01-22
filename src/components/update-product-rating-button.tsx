@@ -27,7 +27,7 @@ export function UpdateProductRatingButton({
       title="Favorite"
       variant="secondary"
       size="icon"
-      className={cn("h-8 w-8 shrink-0", className)}
+      className={cn("size-8 shrink-0", className)}
       onClick={() => {
         startFavoriting(async () => {
           try {
@@ -45,9 +45,9 @@ export function UpdateProductRatingButton({
       {...props}
     >
       {isFavoriting ? (
-        <Icons.spinner className="h-4 w-4 animate-spin" aria-hidden="true" />
+        <Icons.spinner className="size-4 animate-spin" aria-hidden="true" />
       ) : (
-        <HeartIcon className="h-4 w-4" aria-hidden="true" />
+        <HeartIcon className="size-4" aria-hidden="true" />
       )}
       <span className="sr-only">Favorite</span>
     </Button>

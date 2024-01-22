@@ -45,7 +45,7 @@ export default async function CartPage() {
           className="flex h-full flex-col items-center justify-center space-y-1 pt-16"
         >
           <Icons.cart
-            className="mb-4 h-16 w-16 text-muted-foreground"
+            className="mb-4 size-16 text-muted-foreground"
             aria-hidden="true"
           />
           <div className="text-xl font-medium text-muted-foreground">

@@ -22,7 +22,7 @@ export function SiteFooter() {
             aria-labelledby="footer-branding-heading"
           >
             <Link href="/" className="flex w-fit items-center space-x-2">
-              <Icons.logo className="h-6 w-6" aria-hidden="true" />
+              <Icons.logo className="size-6" aria-hidden="true" />
               <span className="font-bold">{siteConfig.name}</span>
               <span className="sr-only">Home</span>
             </Link>
@@ -94,7 +94,7 @@ export function SiteFooter() {
                 })
               )}
             >
-              <Icons.gitHub className="h-4 w-4" aria-hidden="true" />
+              <Icons.gitHub className="size-4" aria-hidden="true" />
               <span className="sr-only">GitHub</span>
             </Link>
             <ModeToggle />

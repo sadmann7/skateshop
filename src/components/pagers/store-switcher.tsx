@@ -62,10 +62,10 @@ export function StoreSwitcher({
             )}
             {...props}
           >
-            <CircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+            <CircleIcon className="mr-2 size-4" aria-hidden="true" />
             <span className="line-clamp-1">{currentStore.name}</span>
             <CaretSortIcon
-              className="ml-auto h-4 w-4 shrink-0 opacity-50"
+              className="ml-auto size-4 shrink-0 opacity-50"
               aria-hidden="true"
             />
           </Button>
@@ -90,11 +90,11 @@ export function StoreSwitcher({
                     }}
                     className="text-sm"
                   >
-                    <CircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <CircleIcon className="mr-2 size-4" aria-hidden="true" />
                     <span className="line-clamp-1">{store.name}</span>
                     <CheckIcon
                       className={cn(
-                        "ml-auto h-4 w-4",
+                        "ml-auto size-4",
                         currentStore.id === store.id
                           ? "opacity-100"
                           : "opacity-0"
@@ -117,7 +117,7 @@ export function StoreSwitcher({
                     }}
                   >
                     <PlusCircledIcon
-                      className="mr-2 h-4 w-4"
+                      className="mr-2 size-4"
                       aria-hidden="true"
                     />
                     Create store

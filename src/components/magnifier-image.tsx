@@ -28,7 +28,7 @@ export function MagnifierImage({
 
   return (
     <div
-      className="relative h-full w-full "
+      className="relative size-full"
       onMouseEnter={() => setShowMagnifier(true)}
       onMouseLeave={() => setShowMagnifier(false)}
       onMouseMove={handleMouseHover}
@@ -36,7 +36,7 @@ export function MagnifierImage({
       <Image
         {...props}
         alt="Image"
-        className="h-full w-full  transition-all duration-500"
+        className="size-full transition-all  duration-500"
       />
       {showMagnifier && (
         <div
@@ -60,7 +60,7 @@ export function MagnifierImage({
               scale: zoom,
               zIndex: 999,
             }}
-            className={` h-full w-full object-cover transition-all duration-500`}
+            className={` size-full object-cover transition-all duration-500`}
           />
         </div>
       )}

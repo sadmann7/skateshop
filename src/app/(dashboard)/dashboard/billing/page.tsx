@@ -99,7 +99,7 @@ export default async function BillingPage() {
                 <div className="space-y-2 text-sm text-muted-foreground">
                   {plan.features.map((feature) => (
                     <div key={feature} className="flex items-center gap-2">
-                      <CheckIcon className="h-4 w-4" aria-hidden="true" />
+                      <CheckIcon className="size-4" aria-hidden="true" />
                       <span>{feature}</span>
                     </div>
                   ))}

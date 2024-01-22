@@ -81,10 +81,10 @@ export function ProductImageCarousel({
         aria-label="Product Placeholder"
         role="img"
         aria-roledescription="placeholder"
-        className="flex aspect-square h-full w-full flex-1 items-center justify-center bg-secondary"
+        className="flex aspect-square size-full flex-1 items-center justify-center bg-secondary"
       >
         <Icons.placeholder
-          className="h-9 w-9 text-muted-foreground"
+          className="size-9 text-muted-foreground"
           aria-hidden="true"
         />
       </div>
@@ -130,14 +130,11 @@ export function ProductImageCarousel({
           <Button
             variant="outline"
             size="icon"
-            className="mr-0.5 aspect-square h-7 w-7 rounded-none sm:mr-2 sm:h-8 sm:w-8"
+            className="mr-0.5 aspect-square size-7 rounded-none sm:mr-2 sm:size-8"
             disabled={prevBtnDisabled}
             onClick={scrollPrev}
           >
-            <ChevronLeftIcon
-              className="h-3 w-3 sm:h-4 sm:w-4"
-              aria-hidden="true"
-            />
+            <ChevronLeftIcon className="size-3 sm:size-4" aria-hidden="true" />
             <span className="sr-only">Previous slide</span>
           </Button>
           {images.map((image, i) => (
@@ -146,7 +143,7 @@ export function ProductImageCarousel({
               variant="outline"
               size="icon"
               className={cn(
-                "group relative aspect-square h-full w-full max-w-[100px] rounded-none shadow-sm hover:bg-transparent focus-visible:ring-foreground",
+                "group relative aspect-square size-full max-w-[100px] rounded-none shadow-sm hover:bg-transparent focus-visible:ring-foreground",
                 i === selectedIndex && "ring-1 ring-foreground"
               )}
               onClick={() => scrollTo(i)}
@@ -167,14 +164,11 @@ export function ProductImageCarousel({
           <Button
             variant="outline"
             size="icon"
-            className="ml-0.5 aspect-square h-7 w-7 rounded-none sm:ml-2 sm:h-8 sm:w-8"
+            className="ml-0.5 aspect-square size-7 rounded-none sm:ml-2 sm:size-8"
             disabled={nextBtnDisabled}
             onClick={scrollNext}
           >
-            <ChevronRightIcon
-              className="h-3 w-3 sm:h-4 sm:w-4"
-              aria-hidden="true"
-            />
+            <ChevronRightIcon className="size-3 sm:size-4" aria-hidden="true" />
             <span className="sr-only">Next slide</span>
           </Button>
         </div>

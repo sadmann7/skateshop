@@ -104,7 +104,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
               className="group flex w-28 items-center space-x-2 lg:flex-auto"
             >
               <ArrowLeftIcon
-                className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary"
+                className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
                 aria-hidden="true"
               />
               <div className="block font-medium transition group-hover:hidden">
@@ -160,7 +160,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
       <CheckoutShell
         paymentIntentPromise={paymentIntentPromise}
         storeStripeAccountId={store.stripeAccountId}
-        className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
+        className="size-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
       >
         <ScrollArea className="h-full">
           <CheckoutForm

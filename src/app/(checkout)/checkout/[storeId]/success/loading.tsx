@@ -10,7 +10,7 @@ import {
 
 export default function OrderSuccessLoading() {
   return (
-    <div className="flex h-full max-h-[100dvh] w-full flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
+    <div className="flex size-full max-h-[100dvh] flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
       <div className="grid gap-10 overflow-auto">
         <PageHeader className="container flex max-w-7xl flex-col">
           <PageHeaderHeading>Thank you for your order</PageHeaderHeading>
@@ -25,10 +25,10 @@ export default function OrderSuccessLoading() {
                 <div key={i} className="space-y-3">
                   <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
                     <div className="flex items-center space-x-4">
-                      <div className="relative h-16 w-16 overflow-hidden rounded">
+                      <div className="relative size-16 overflow-hidden rounded">
                         <div className="flex h-full items-center justify-center bg-secondary">
                           <Icons.placeholder
-                            className="h-4 w-4 text-muted-foreground"
+                            className="size-4 text-muted-foreground"
                             aria-hidden="true"
                           />
                         </div>

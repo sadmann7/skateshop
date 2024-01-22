@@ -24,19 +24,19 @@ export default function ProductLoading() {
               className="flex aspect-square h-full flex-1 items-center justify-center bg-secondary"
             >
               <Icons.placeholder
-                className="h-9 w-9 text-muted-foreground"
+                className="size-9 text-muted-foreground"
                 aria-hidden="true"
               />
             </div>
             <div className="flex w-full items-center justify-center gap-2">
-              <Skeleton className="h-7 w-7 rounded-none" />
+              <Skeleton className="size-7 rounded-none" />
               {Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="aspect-square h-full w-full max-w-[100px] rounded-none"
+                  className="aspect-square size-full max-w-[100px] rounded-none"
                 />
               ))}
-              <Skeleton className="h-7 w-7 rounded-none" />
+              <Skeleton className="size-7 rounded-none" />
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function ProductLoading() {
           <Skeleton className="h-4 w-20" />
           <div className="flex items-center justify-between">
             <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-6 w-6" />
+            <Skeleton className="size-6" />
           </div>
           <div className="flex max-w-[260px] items-center space-x-2.5">
             <Skeleton className="h-8 w-full" />
@@ -61,7 +61,7 @@ export default function ProductLoading() {
           <div className="space-y-6">
             <div className="flex items-center justify-between space-x-4">
               <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-4" />
+              <Skeleton className="size-4" />
             </div>
             <div className="space-y-2">
               {Array.from({ length: 4 }).map((_, i) => (

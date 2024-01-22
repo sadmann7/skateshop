@@ -34,8 +34,8 @@ export function CheckoutShell({
 
   if (!clientSecret) {
     return (
-      <section className={cn("h-full w-full", className)} {...props}>
-        <div className="h-full w-full bg-white" />
+      <section className={cn("size-full", className)} {...props}>
+        <div className="size-full bg-white" />
       </section>
     )
   }
@@ -48,7 +48,7 @@ export function CheckoutShell({
   }
 
   return (
-    <section className={cn("h-full w-full", className)} {...props}>
+    <section className={cn("size-full", className)} {...props}>
       <Elements options={options} stripe={stripePromise}>
         {children}
       </Elements>

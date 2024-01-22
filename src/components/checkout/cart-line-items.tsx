@@ -45,7 +45,7 @@ export function CartLineItems({
             >
               <div className="flex items-center space-x-4">
                 {variant === "default" ? (
-                  <div className="relative aspect-square h-16 w-16 min-w-fit overflow-hidden rounded">
+                  <div className="relative aspect-square size-16 min-w-fit overflow-hidden rounded">
                     {item?.images?.length ? (
                       <Image
                         src={
@@ -61,7 +61,7 @@ export function CartLineItems({
                     ) : (
                       <div className="flex h-full items-center justify-center bg-secondary">
                         <Icons.placeholder
-                          className="h-4 w-4 text-muted-foreground"
+                          className="size-4 text-muted-foreground"
                           aria-hidden="true"
                         />
                       </div>

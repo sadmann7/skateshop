@@ -68,7 +68,7 @@ export default async function OrderSuccessPage({
       : []
 
   return (
-    <div className="flex h-full max-h-[100dvh] w-full flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
+    <div className="flex size-full max-h-[100dvh] flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
       {isVerified ? (
         <div className="grid gap-10 overflow-auto">
           <PageHeader

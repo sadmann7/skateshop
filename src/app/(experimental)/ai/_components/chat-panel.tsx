@@ -41,7 +41,7 @@ export function ChatPanel({
               onClick={() => stop()}
               className="bg-background"
             >
-              <StopIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+              <StopIcon className="mr-2 size-4" aria-hidden="true" />
               Stop generating
             </Button>
           ) : (
@@ -51,7 +51,7 @@ export function ChatPanel({
                 onClick={() => void reload()}
                 className="bg-background"
               >
-                <ReloadIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                <ReloadIcon className="mr-2 size-4" aria-hidden="true" />
                 Regenerate response
               </Button>
             )

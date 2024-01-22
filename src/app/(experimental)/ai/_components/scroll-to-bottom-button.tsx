@@ -29,7 +29,7 @@ export function ScrollToBottomButton({ className, ...props }: ButtonProps) {
       onClick={() => scrollToBottom("smooth")}
       {...props}
     >
-      <ArrowDownIcon className="h-4 w-4" aria-hidden="true" />
+      <ArrowDownIcon className="size-4" aria-hidden="true" />
     </Button>
   )
 }

@@ -89,9 +89,9 @@ export default async function BuildABoardPage({
                   {cartItems
                     ?.map((item) => item.subcategory)
                     ?.includes(subcategory.slug) ? (
-                    <CheckIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <CheckIcon className="mr-2 size-4" aria-hidden="true" />
                   ) : (
-                    <CircleIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                    <CircleIcon className="mr-2 size-4" aria-hidden="true" />
                   )}
                   {subcategory.title}
                 </div>

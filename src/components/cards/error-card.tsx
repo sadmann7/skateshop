@@ -41,10 +41,7 @@ export function ErrorCard({
       {...props}
     >
       <div className="grid place-items-center rounded-full border border-dashed border-muted-foreground/75 p-6">
-        <Icon
-          className="h-10 w-10 text-muted-foreground/75"
-          aria-hidden="true"
-        />
+        <Icon className="size-10 text-muted-foreground/75" aria-hidden="true" />
       </div>
       <div className="flex flex-col items-center justify-center space-y-1.5 py-14 text-center">
         <CardTitle className="text-2xl">{title}</CardTitle>

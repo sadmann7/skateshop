@@ -73,7 +73,7 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
             type="button"
             variant="outline"
             size="icon"
-            className="h-8 w-8 shrink-0 rounded-r-none"
+            className="size-8 shrink-0 rounded-r-none"
             onClick={() =>
               form.setValue(
                 "quantity",
@@ -82,7 +82,7 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
             }
             disabled={isAddingToCart}
           >
-            <MinusIcon className="h-3 w-3" aria-hidden="true" />
+            <MinusIcon className="size-3" aria-hidden="true" />
             <span className="sr-only">Remove one item</span>
           </Button>
           <FormField
@@ -115,13 +115,13 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
             type="button"
             variant="outline"
             size="icon"
-            className="h-8 w-8 shrink-0 rounded-l-none"
+            className="size-8 shrink-0 rounded-l-none"
             onClick={() =>
               form.setValue("quantity", form.getValues("quantity") + 1)
             }
             disabled={isAddingToCart}
           >
-            <PlusIcon className="h-3 w-3" aria-hidden="true" />
+            <PlusIcon className="size-3" aria-hidden="true" />
             <span className="sr-only">Add one item</span>
           </Button>
         </div>
@@ -149,7 +149,7 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
             >
               {isBuyingNow && (
                 <Icons.spinner
-                  className="mr-2 h-4 w-4 animate-spin"
+                  className="mr-2 size-4 animate-spin"
                   aria-hidden="true"
                 />
               )}
@@ -166,7 +166,7 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
           >
             {isAddingToCart && (
               <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
+                className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
             )}

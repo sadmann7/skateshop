@@ -45,7 +45,7 @@ export function ContentSection({
           )}
         >
           {linkText}
-          <ArrowRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
+          <ArrowRightIcon className="ml-2 size-4" aria-hidden="true" />
           <span className="sr-only"> {linkText}</span>
         </Link>
       </div>
@@ -61,7 +61,7 @@ export function ContentSection({
           )}
         >
           {linkText}
-          <ArrowRightIcon className="ml-2 h-4 w-4" aria-hidden="true" />
+          <ArrowRightIcon className="ml-2 size-4" aria-hidden="true" />
           <span className="sr-only"> {linkText}</span>
         </Link>
       </div>

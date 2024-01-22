@@ -90,9 +90,9 @@ export function CustomersTableShell({
                 <Button
                   aria-label="Open menu"
                   variant="ghost"
-                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
                 >
-                  <DotsHorizontalIcon className="h-4 w-4" aria-hidden="true" />
+                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[160px]">

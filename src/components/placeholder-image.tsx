@@ -30,12 +30,12 @@ export function PlaceholderImage({
         role="img"
         aria-roledescription="placeholder"
         className={cn(
-          "flex h-full w-full items-center justify-center",
+          "flex size-full items-center justify-center",
           isSkeleton ? "animate-pulse" : "animate-none"
         )}
       >
         <Icons.placeholder
-          className="h-9 w-9 text-muted-foreground"
+          className="size-9 text-muted-foreground"
           aria-hidden="true"
         />
       </Skeleton>

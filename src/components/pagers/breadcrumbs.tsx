@@ -49,7 +49,7 @@ export function Breadcrumbs({
                 : segment.title}
             </Link>
             {!isLastSegment && (
-              <SeparatorIcon className="mx-2 h-4 w-4" aria-hidden="true" />
+              <SeparatorIcon className="mx-2 size-4" aria-hidden="true" />
             )}
           </React.Fragment>
         )

@@ -19,7 +19,7 @@ export async function GithubStars({ githubStarsPromise }: GithubStarsProps) {
         className="rounded-md px-3.5 py-1.5"
         variant="secondary"
       >
-        <Icons.gitHub className="mr-2 h-3.5 w-3.5" aria-hidden="true" />
+        <Icons.gitHub className="mr-2 size-3.5" aria-hidden="true" />
         {githubStars} stars on GitHub
       </Badge>
       <span className="sr-only">GitHub</span>

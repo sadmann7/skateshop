@@ -41,12 +41,12 @@ export async function CartSheet() {
           {itemCount > 0 && (
             <Badge
               variant="secondary"
-              className="absolute -right-2 -top-2 h-6 w-6 justify-center rounded-full p-2.5"
+              className="absolute -right-2 -top-2 size-6 justify-center rounded-full p-2.5"
             >
               {itemCount}
             </Badge>
           )}
-          <Icons.cart className="h-4 w-4" aria-hidden="true" />
+          <Icons.cart className="size-4" aria-hidden="true" />
         </Button>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
@@ -92,7 +92,7 @@ export async function CartSheet() {
         ) : (
           <div className="flex h-full flex-col items-center justify-center space-y-1">
             <Icons.cart
-              className="mb-4 h-16 w-16 text-muted-foreground"
+              className="mb-4 size-16 text-muted-foreground"
               aria-hidden="true"
             />
             <div className="text-xl font-medium text-muted-foreground">

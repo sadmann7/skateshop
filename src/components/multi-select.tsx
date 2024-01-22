@@ -106,7 +106,7 @@ export function MultiSelect({
                   }}
                   onClick={() => handleRemove(option)}
                 >
-                  <Cross2Icon className="h-3 w-3" aria-hidden="true" />
+                  <Cross2Icon className="size-3" aria-hidden="true" />
                 </Button>
               </Badge>
             )

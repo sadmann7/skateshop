@@ -74,7 +74,7 @@ export default async function StoresPage() {
         </PageHeaderDescription>
       </PageHeader>
       <Alert>
-        <RocketIcon className="h-4 w-4" aria-hidden="true" />
+        <RocketIcon className="size-4" aria-hidden="true" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           You are currently on the{" "}

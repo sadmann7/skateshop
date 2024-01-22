@@ -71,11 +71,11 @@ export function PromptForm({
             >
               {isLoading ? (
                 <Icons.spinner
-                  className="h-4 w-4 animate-spin"
+                  className="size-4 animate-spin"
                   aria-hidden="true"
                 />
               ) : (
-                <PaperPlaneIcon className="h-4 w-4" aria-hidden="true" />
+                <PaperPlaneIcon className="size-4" aria-hidden="true" />
               )}
               <span className="sr-only">Send message</span>
             </Button>

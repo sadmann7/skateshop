@@ -47,7 +47,7 @@ export function StoreTabs({ storeId }: StoreTabsProps) {
   return (
     <Tabs
       defaultValue={tabs.find((tab) => tab.isActive)?.href ?? tabs[0]?.href}
-      className="sticky top-0 z-30 h-full w-full overflow-auto bg-background px-1"
+      className="sticky top-0 z-30 size-full overflow-auto bg-background px-1"
       onValueChange={(value) => router.push(value)}
     >
       <ScrollArea

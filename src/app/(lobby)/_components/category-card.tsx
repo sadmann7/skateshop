@@ -25,10 +25,10 @@ export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link href={`/categories/${category.title}`}>
       <span className="sr-only">{category.title}</span>
-      <Card className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
+      <Card className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
         <CardHeader>
-          <div className="grid h-11 w-11 place-items-center rounded-full border-2">
-            <category.icon className="h-5 w-5" aria-hidden="true" />
+          <div className="grid size-11 place-items-center rounded-full border-2">
+            <category.icon className="size-5" aria-hidden="true" />
           </div>
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-1.5">

@@ -25,11 +25,11 @@ export default function IndexPage() {
   const githubStarsPromise = getGithubStars()
 
   return (
-    <Shell className="max-w-6xl pt-0 md:pt-0">
+    <Shell className="max-w-6xl">
       <section
         id="hero"
         aria-labelledby="hero-heading"
-        className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center gap-4 py-12 text-center md:pt-32"
+        className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center gap-4 py-24 text-center md:py-32"
       >
         <React.Suspense fallback={<Skeleton className="h-7 w-44" />}>
           <GithubStars githubStarsPromise={githubStarsPromise} />

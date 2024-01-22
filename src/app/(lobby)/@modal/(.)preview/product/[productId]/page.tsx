@@ -60,7 +60,7 @@ export default async function ProductModalPage({
         asChild
       >
         <Link href={`/product/${product.id}`} replace>
-          <EnterFullScreenIcon className="h-4 w-4" aria-hidden="true" />
+          <EnterFullScreenIcon className="size-4" aria-hidden="true" />
         </Link>
       </AlertDialogAction>
       <AspectRatio ratio={16 / 9} className="w-full">

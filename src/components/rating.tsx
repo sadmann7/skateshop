@@ -13,7 +13,7 @@ export function Rating({ rating }: RatingProps) {
         <StarIcon
           key={i}
           className={cn(
-            "h-4 w-4",
+            "size-4",
             rating >= i + 1 ? "text-yellow-500" : "text-muted-foreground"
           )}
           aria-hidden="true"
