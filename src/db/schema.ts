@@ -13,6 +13,8 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core"
 
+import { createId } from "@/lib/utils"
+
 export const stores = mysqlTable("stores", {
   id: serial("id").primaryKey(),
   userId: varchar("userId", { length: 191 }).notNull(),
@@ -91,6 +93,22 @@ export const emailPreferences = mysqlTable("email_preferences", {
 
 export type EmailPreference = typeof emailPreferences.$inferSelect
 export type NewEmailPreference = typeof emailPreferences.$inferInsert
+
+export const subscriptions = mysqlTable("subscriptions", {
+  id: varchar("id", { length: 128 })
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  userId: varchar("user_id", { length: 191 }).unique().notNull(),
+  stripeSubscriptionId: varchar("stripe_subscription_id", { length: 191 }),
+  stripePriceId: varchar("stripe_price_id", { length: 191 }),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 191 }),
+  stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").onUpdateNow(),
+})
+
+export type Subscription = typeof subscriptions.$inferSelect
+export type NewSubscription = typeof subscriptions.$inferInsert
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = mysqlTable("payments", {

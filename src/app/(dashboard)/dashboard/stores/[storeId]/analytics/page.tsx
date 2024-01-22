@@ -123,9 +123,7 @@ export default async function AnalyticsPage({
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Recent Customers
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Customers</CardTitle>
             <Icons.activity
               className="size-4 text-muted-foreground"
               aria-hidden="true"

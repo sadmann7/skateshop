@@ -49,8 +49,13 @@ export default async function StoreLayout({
 
   const subscriptionPlan = await getSubscriptionPlan({ userId: user.id })
 
+  const redirectPath = getDashboardRedirectPath({
+    subscriptionPlan,
+    storeCount: allStores.length,
+  })
+
   return (
-    <Shell variant="sidebar">
+    <Shell variant="sidebar" className="gap-4">
       <div className="flex flex-col gap-4 pr-1 xxs:flex-row">
         <PageHeader className="flex-1">
           <PageHeaderHeading size="sm">Dashboard</PageHeaderHeading>
@@ -62,10 +67,7 @@ export default async function StoreLayout({
           <StoreSwitcher
             currentStore={store}
             stores={allStores}
-            dashboardRedirectPath={getDashboardRedirectPath({
-              subscriptionPlan,
-              storeCount: allStores.length,
-            })}
+            dashboardRedirectPath={redirectPath}
           />
         ) : null}
       </div>
