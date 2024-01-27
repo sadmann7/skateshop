@@ -6,7 +6,6 @@ import { env } from "@/env.mjs"
 import type { SearchParams } from "@/types"
 import { format } from "date-fns"
 import { eq } from "drizzle-orm"
-import { z } from "zod"
 
 import {
   getCustomers,
@@ -56,11 +55,8 @@ export default async function AnalyticsPage({
 }: AnalyticsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { page, per_page, from, to } = searchParamsSchema
+  const { page, from, to } = searchParamsSchema
     .omit({ per_page: true, sort: true })
-    .extend({
-      per_page: z.coerce.number().default(5),
-    })
     .parse(searchParams)
 
   const fromDay = from ? new Date(from) : undefined
@@ -105,8 +101,8 @@ export default async function AnalyticsPage({
 
   const customersPromise = getCustomers({
     storeId,
-    limit: per_page ?? 5,
-    offset: (page - 1) * per_page,
+    limit: 5,
+    offset: (page - 1) * 5,
     fromDay: fromDay,
     toDay: toDay,
   })
@@ -209,7 +205,7 @@ export default async function AnalyticsPage({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    href={`?page=${page - 1}&per_page=${per_page}&from=${from}&to=${to}`}
+                    href={`?page=${page - 1}&from=${from}&to=${to}`}
                     scroll={false}
                     className={cn(
                       "transition-opacity",
@@ -219,11 +215,11 @@ export default async function AnalyticsPage({
                 </PaginationItem>
                 <PaginationItem>
                   <PaginationNext
-                    href={`?page=${page + 1}&per_page=${per_page}&from=${from}&to=${to}`}
+                    href={`?page=${page + 1}&from=${from}&to=${to}`}
                     scroll={false}
                     className={cn(
                       "transition-opacity",
-                      customers.length < per_page &&
+                      Math.ceil(customerCount / 5) === page &&
                         "pointer-events-none opacity-50"
                     )}
                   />
