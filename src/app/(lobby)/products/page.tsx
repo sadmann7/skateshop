@@ -40,12 +40,9 @@ export default async function ProductsPage({
   } = productsSearchParamsSchema.parse(searchParams)
 
   // Products transaction
-  const pageAsNumber = Number(page)
-  const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
-  const perPageAsNumber = Number(per_page)
+  const fallbackPage = isNaN(page) || page < 1 ? 1 : page
   // Number of items per page
-  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
+  const limit = isNaN(per_page) ? 10 : per_page
   // Number of items to skip
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 

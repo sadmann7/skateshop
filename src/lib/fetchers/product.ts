@@ -53,8 +53,6 @@ export async function getFeaturedProducts() {
   }
 }
 
-export type FeaturedProductsPromise = ReturnType<typeof getFeaturedProducts>
-
 // See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
 export async function getProducts(input: z.infer<typeof getProductsSchema>) {
   noStore()

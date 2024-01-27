@@ -40,8 +40,6 @@ export async function getFeaturedStores() {
   }
 }
 
-export type FeaturedStoresPromise = ReturnType<typeof getFeaturedStores>
-
 export async function getUserStores(input: { userId: string }) {
   try {
     return await cache(

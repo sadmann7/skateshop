@@ -171,7 +171,6 @@ export async function getOrderLineItems(
 
     return lineItems
   } catch (err) {
-    console.error(err)
     return []
   }
 }
@@ -286,7 +285,36 @@ export async function getStoreOrders(input: {
   }
 }
 
-export async function getSalesCount(input: {
+export async function getOrderCount(input: {
+  storeId: number
+  fromDay?: Date
+  toDay?: Date
+}) {
+  noStore()
+  try {
+    const { storeId, fromDay, toDay } = input
+
+    return await db
+      .select({
+        count: sql<number>`count(*)`,
+      })
+      .from(orders)
+      .where(
+        and(
+          eq(orders.storeId, storeId),
+          fromDay && toDay
+            ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
+            : undefined
+        )
+      )
+      .execute()
+      .then((res) => res[0]?.count ?? 0)
+  } catch (err) {
+    return 0
+  }
+}
+
+export async function getSaleCount(input: {
   storeId: number
   fromDay?: Date
   toDay?: Date
@@ -316,12 +344,11 @@ export async function getSalesCount(input: {
 
     return sales
   } catch (err) {
-    console.error(err)
     return 0
   }
 }
 
-export async function getCustomers(input: {
+export async function getSales(input: {
   storeId: number
   fromDay?: Date
   toDay?: Date
@@ -331,25 +358,99 @@ export async function getCustomers(input: {
     const { storeId, fromDay, toDay } = input
 
     return await db
-      .selectDistinct({
-        name: orders.name,
-        email: orders.email,
-        totalSpent: sql<number>`sum(${orders.amount})`,
+      .select({
+        year: sql`EXTRACT(YEAR FROM ${orders.createdAt})`.mapWith(Number),
+        month: sql`EXTRACT(MONTH FROM ${orders.createdAt})`.mapWith(Number),
+        totalSales: sql`SUM(${orders.amount})`.mapWith(Number),
       })
       .from(orders)
       .where(
         and(
           eq(orders.storeId, storeId),
-          // Filter by createdAt
           fromDay && toDay
             ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
             : undefined
         )
       )
-      .groupBy(orders.email, orders.name)
-      .orderBy(desc(sql<number>`sum(${orders.amount})`))
+      .groupBy(
+        sql`EXTRACT(YEAR FROM ${orders.createdAt})`,
+        sql`EXTRACT(MONTH FROM ${orders.createdAt})`
+      )
+      .orderBy(
+        sql`EXTRACT(YEAR FROM ${orders.createdAt})`,
+        sql`EXTRACT(MONTH FROM ${orders.createdAt})`
+      )
+      .execute()
   } catch (err) {
-    console.error(err)
     return []
+  }
+}
+
+export async function getCustomers(input: {
+  storeId: number
+  limit: number
+  offset: number
+  fromDay?: Date
+  toDay?: Date
+}) {
+  noStore()
+  try {
+    const transaction = await db.transaction(async (tx) => {
+      const { storeId, limit, offset, fromDay, toDay } = input
+
+      const customers = await tx
+        .select({
+          email: orders.email,
+          name: orders.name,
+          totalSpent: sql<number>`sum(${orders.amount})`,
+        })
+        .from(orders)
+        .where(
+          and(
+            eq(orders.storeId, storeId),
+            fromDay && toDay
+              ? and(
+                  gte(orders.createdAt, fromDay),
+                  lte(orders.createdAt, toDay)
+                )
+              : undefined
+          )
+        )
+        .groupBy(orders.email, orders.name, orders.createdAt)
+        .orderBy(desc(orders.createdAt))
+        .limit(limit)
+        .offset(offset)
+
+      const customerCount = await tx
+        .select({
+          count: sql<number>`count(distinct ${orders.email})`,
+        })
+        .from(orders)
+        .where(
+          and(
+            eq(orders.storeId, storeId),
+            fromDay && toDay
+              ? and(
+                  gte(orders.createdAt, fromDay),
+                  lte(orders.createdAt, toDay)
+                )
+              : undefined
+          )
+        )
+        .execute()
+        .then((res) => res[0]?.count ?? 0)
+
+      return {
+        customers,
+        customerCount,
+      }
+    })
+
+    return transaction
+  } catch (err) {
+    return {
+      customers: [],
+      customerCount: 0,
+    }
   }
 }
