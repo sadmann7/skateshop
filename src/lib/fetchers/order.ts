@@ -405,6 +405,8 @@ export async function getCustomers(input: {
           totalSpent: sql<number>`sum(${orders.amount})`,
         })
         .from(orders)
+        .limit(limit)
+        .offset(offset)
         .where(
           and(
             eq(orders.storeId, storeId),
@@ -418,8 +420,6 @@ export async function getCustomers(input: {
         )
         .groupBy(orders.email, orders.name, orders.createdAt)
         .orderBy(desc(orders.createdAt))
-        .limit(limit)
-        .offset(offset)
 
       const customerCount = await tx
         .select({
