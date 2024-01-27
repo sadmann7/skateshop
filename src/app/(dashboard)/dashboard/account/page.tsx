@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { env } from "@/env.mjs"
-
 import { UserProfile } from "@/components/auth/user-profile"
 import {
   PageHeader,
@@ -8,6 +7,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
+import {dark} from "@clerk/themes";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -33,7 +33,9 @@ export default function AccountPage() {
         aria-labelledby="user-account-info-heading"
         className="w-full overflow-hidden"
       >
-        <UserProfile />
+        <UserProfile appearance={{
+        baseTheme: dark,
+      }}/>
       </section>
     </Shell>
   )
