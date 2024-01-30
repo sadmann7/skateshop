@@ -9,9 +9,7 @@ import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
-import type {
-  GetShippingRateProps
-} from "@/types/index"
+import type { GetShippingRateProps } from "@/types/index"
 import { getShippingRate } from "@/lib/actions/easypost"
 import { calculateOrderAmount } from "@/lib/checkout"
 import { getStripeAccount } from "@/lib/fetchers/stripe"
@@ -19,9 +17,9 @@ import { stripe } from "@/lib/stripe"
 import { absoluteUrl, getUserEmail } from "@/lib/utils"
 import {
   createPaymentIntentSchema,
-  updatePaymentIntentSchema,
   getStripeAccountSchema,
   manageSubscriptionSchema,
+  updatePaymentIntentSchema,
 } from "@/lib/validations/stripe"
 
 // Managing stripe subscriptions for a user
@@ -138,7 +136,7 @@ export async function createAccountLink(
 // Creating a payment intent for a store
 export async function createPaymentIntent(
   rawInput: z.infer<typeof createPaymentIntentSchema>
-): Promise<{ paymentId: string | null, clientSecret: string | null }> {
+): Promise<{ paymentId: string | null; clientSecret: string | null }> {
   try {
     const input = createPaymentIntentSchema.parse(rawInput)
 
@@ -204,7 +202,7 @@ export async function createPaymentIntent(
         // automatic_payment_methods: {
         //   enabled: true,
         // },
-        payment_method_types: ['card', 'link'],
+        payment_method_types: ["card", "link"],
         // payment_method_options: {
         //   link: {
         //     persistent_token: req.cookies[LINK_PERSISTENT_TOKEN_COOKIE_NAME],
@@ -281,7 +279,7 @@ export async function updatePaymentIntentWithShipping(
     } as GetShippingRateProps)
 
     const shippingCost = rate.rate
-    if (typeof(shippingCost) !== "number" || shippingCost === null) {
+    if (typeof shippingCost !== "number" || shippingCost === null) {
       throw new Error("Shipping cost not found.")
     } else if (shippingCost < 0) {
       throw new Error("Invalid shipping cost calculated.")
@@ -297,7 +295,7 @@ export async function updatePaymentIntentWithShipping(
         // automatic_payment_methods: {
         //   enabled: true,
         // },
-        payment_method_types: ['card', 'link'],
+        payment_method_types: ["card", "link"],
         // payment_method_options: {
         //   link: {
         //     persistent_token: req.cookies[LINK_PERSISTENT_TOKEN_COOKIE_NAME],

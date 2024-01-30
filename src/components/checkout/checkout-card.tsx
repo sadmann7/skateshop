@@ -52,7 +52,10 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
       <Separator className="mb-4" />
       <CardContent className="pb-6 pl-6 pr-0">
         <CartLineItems items={cartLineItems} className="max-h-[280px]" />
-        <ShippingLineItem shipping={"Calculcated at checkout"} className="max-h-[280px]" />
+        <ShippingLineItem
+          shipping={"Calculcated at checkout"}
+          className="max-h-[280px]"
+        />
       </CardContent>
       <Separator className="mb-4" />
       <CardFooter className="space-x-4">

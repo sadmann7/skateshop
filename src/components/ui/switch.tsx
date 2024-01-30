@@ -11,7 +11,8 @@ const switchRootVariants = cva(
   {
     variants: {
       variant: {
-        primary: "data-[state=checked]:bg-border data-[state=unchecked]:bg-accent",
+        primary:
+          "data-[state=checked]:bg-border data-[state=unchecked]:bg-accent",
       },
       size: {
         default: "h-5 w-9",
@@ -32,7 +33,8 @@ const switchThumbVariants = cva(
   {
     variants: {
       variant: {
-        primary: "data-[state=checked]:bg-background data-[state=unchecked]:bg-background",
+        primary:
+          "data-[state=checked]:bg-background data-[state=unchecked]:bg-background",
       },
       size: {
         default: "size-4 data-[state=checked]:translate-x-4",
@@ -50,8 +52,8 @@ const switchThumbVariants = cva(
 
 export interface SwitchProps
   extends React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>,
-    VariantProps<typeof switchRootVariants>, VariantProps<typeof switchThumbVariants> {
-}
+    VariantProps<typeof switchRootVariants>,
+    VariantProps<typeof switchThumbVariants> {}
 
 const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitives.Root>,

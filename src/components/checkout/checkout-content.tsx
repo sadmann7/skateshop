@@ -21,14 +21,14 @@ import {
 } from "@/hooks/use-shipping-rate-state"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
+import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Switch } from "@/components/ui/switch"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
 import ShippingLineItem from "@/components/checkout/shipping-line-item"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
 
 interface CheckoutContentProps {
@@ -125,6 +125,7 @@ export default function CheckoutContent({
       .then((result) => {
         setClientSecret(result.clientSecret)
       })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       .catch((e) => {
         toast.error(
           "Something went wrong with setting up the payment, please try again."
@@ -143,7 +144,7 @@ export default function CheckoutContent({
               className="group flex w-28 items-center space-x-2 lg:flex-auto"
             >
               <ArrowLeftIcon
-                className="h-5 w-5 text-muted-foreground transition-colors group-hover:text-primary"
+                className="size-5 text-muted-foreground transition-colors group-hover:text-primary"
                 aria-hidden="true"
               />
               <div className="block font-medium transition group-hover:hidden">
@@ -215,7 +216,7 @@ export default function CheckoutContent({
       <CheckoutShell
         storeStripeAccountId={store.stripeAccountId}
         clientSecret={clientSecret}
-        className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
+        className="size-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
       >
         <ScrollArea className="h-full">
           <CheckoutForm
@@ -252,7 +253,7 @@ export default function CheckoutContent({
               />
               {isPending && (
                 <Icons.spinner
-                  className="mr-2 h-8 w-8 animate-spin text-nav"
+                  className="mr-2 size-8 animate-spin text-primary"
                   aria-hidden="true"
                 />
               )}

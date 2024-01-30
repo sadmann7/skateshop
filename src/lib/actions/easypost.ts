@@ -1,6 +1,6 @@
 "use server"
 
-import type { GetShippingRateProps, Dimensions } from "@/types"
+import type { Dimensions, GetShippingRateProps } from "@/types"
 import type { Address, Parcel } from "@easypost/api"
 import { Shipment } from "@easypost/api"
 import { z } from "zod"
@@ -36,7 +36,9 @@ export async function buyShippingLabel(shipment: Shipment) {
 //   return shipment
 // }
 
-export async function getShippingRate(input: GetShippingRateProps): Promise<ShipmentResponse> {
+export async function getShippingRate(
+  input: GetShippingRateProps
+): Promise<ShipmentResponse> {
   try {
     const data = ratesSchema.parse(input)
 
@@ -97,7 +99,12 @@ export async function getShippingRate(input: GetShippingRateProps): Promise<Ship
     })
 
     // handled the return like it was a response from a POST but can be changed
-    return { rate: Number(shipment.lowestRate().list_rate), error: 'No Error', ok: true, status: 200 }
+    return {
+      rate: Number(shipment.lowestRate().list_rate),
+      error: "No Error",
+      ok: true,
+      status: 200,
+    }
   } catch (err) {
     console.error(err)
 
@@ -106,9 +113,19 @@ export async function getShippingRate(input: GetShippingRateProps): Promise<Ship
     }
 
     if (err instanceof Error && "statusCode" in err) {
-      return { rate: null, error: err.message, ok: false, status: err.statusCode as number }
+      return {
+        rate: null,
+        error: err.message,
+        ok: false,
+        status: err.statusCode as number,
+      }
     }
 
-    return { rate: null, error: "Something went wrong.", ok: false, status: 500 }
+    return {
+      rate: null,
+      error: "Something went wrong.",
+      ok: false,
+      status: 500,
+    }
   }
 }

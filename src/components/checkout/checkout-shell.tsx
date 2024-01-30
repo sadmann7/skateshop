@@ -34,7 +34,7 @@ export function CheckoutShell({
         <div className="size-full bg-white">
           <div className="flex h-full flex-col items-center justify-center">
             <Icons.spinner
-              className="h-64 w-64 animate-spin text-nav"
+              className="size-64 animate-spin text-primary"
               aria-hidden="true"
             />
           </div>
@@ -53,9 +53,9 @@ export function CheckoutShell({
 
   return (
     <section className={cn("size-full", className)} {...props}>
-        <Elements key={clientSecret} options={options} stripe={stripePromise}>
-          {children}
-        </Elements>
+      <Elements key={clientSecret} options={options} stripe={stripePromise}>
+        {children}
+      </Elements>
     </section>
   )
 }

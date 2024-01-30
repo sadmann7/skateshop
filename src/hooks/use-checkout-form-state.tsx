@@ -46,16 +46,17 @@ export function useCheckoutFormState(initialState: FormState) {
     const savedEmail = localStorage.getItem("checkoutEmail")
     return savedEmail ? parseEmail(savedEmail) : initialState.email
   })
-  
+
   const [confirmed, setConfirmed] = useState<boolean>(() => {
     const savedConfirmed = localStorage.getItem("confirmedState")
-    return savedConfirmed !== null ? parseConfirmed(savedConfirmed) : initialState.confirmed
+    return savedConfirmed !== null
+      ? parseConfirmed(savedConfirmed)
+      : initialState.confirmed
   })
 
   const [isLoading, setIsLoading] = useState(false)
 
   const [isPending, startTransition] = useTransition()
-
 
   // Effects for synchronization with local storage
   useEffect(() => {
@@ -69,7 +70,6 @@ export function useCheckoutFormState(initialState: FormState) {
   useEffect(() => {
     localStorage.setItem("confirmedState", JSON.stringify(confirmed))
   }, [confirmed])
-
 
   // Functions to update the states
   const updateEmail = (newEmail: string) => {
@@ -89,9 +89,9 @@ export function useCheckoutFormState(initialState: FormState) {
   }
 
   const clearForm: () => void = () => {
-    localStorage.removeItem('confirmedState')
-    localStorage.removeItem('checkoutEmail')
-    localStorage.removeItem('checkoutAddress')
+    localStorage.removeItem("confirmedState")
+    localStorage.removeItem("checkoutEmail")
+    localStorage.removeItem("checkoutAddress")
   }
 
   return {
@@ -105,6 +105,6 @@ export function useCheckoutFormState(initialState: FormState) {
     toggleConfirmed,
     updateLoading,
     startTransition,
-    clearForm
+    clearForm,
   }
 }

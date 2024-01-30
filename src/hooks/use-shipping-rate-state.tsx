@@ -1,7 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import type { CartLineItem, EasyPostAddress, StripeAddress, Dimensions } from "@/types"
+import type {
+  CartLineItem,
+  Dimensions,
+  EasyPostAddress,
+  StripeAddress,
+} from "@/types"
 
 export const transformAddress = (
   address: StripeAddress,

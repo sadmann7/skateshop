@@ -1,4 +1,5 @@
 import * as z from "zod"
+
 import { cartLineItemSchema } from "@/lib/validations/cart"
 
 export const ratesSchema = z.object({

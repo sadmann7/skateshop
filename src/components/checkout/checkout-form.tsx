@@ -10,17 +10,21 @@ import {
 } from "@stripe/react-stripe-js"
 import { toast } from "sonner"
 
+import type { StripeAddress } from "@/types/index"
 import { absoluteUrl, cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
-import type { StripeAddress } from "@/types/index"
 
 // See the stripe playemnts docs: https://stripe.com/docs/payments/quickstart
 
 interface CheckoutFormProps
   extends Omit<
     React.ComponentPropsWithoutRef<"form">,
-    "updateEmail" | "updateAddress" | "toggleConfirmed" | "clearForm" | "updateLoading"
+    | "updateEmail"
+    | "updateAddress"
+    | "toggleConfirmed"
+    | "clearForm"
+    | "updateLoading"
   > {
   storeId: number
   userFullName: string
@@ -156,6 +160,7 @@ export function CheckoutForm({
         onChange={(e) => {
           if (e.complete) updateAddress(e.value.address)
         }}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         onFocus={(e) => {
           toggleConfirmed(false)
         }}

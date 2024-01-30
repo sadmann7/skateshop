@@ -8,6 +8,7 @@ export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   productImage: f({ image: { maxFileSize: "4MB", maxFileCount: 3 } })
     // Set permissions and file types for this FileRoute
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .middleware(async (req) => {
       // This code runs on your server before upload
       const user = await currentUser()
