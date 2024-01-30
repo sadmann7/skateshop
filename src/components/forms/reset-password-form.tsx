@@ -48,7 +48,7 @@ export function ResetPasswordForm() {
         })
 
         if (firstFactor.status === "needs_first_factor") {
-          router.push("/signin/reset-password/step2")
+          router.push("/signin/reset-password/confirm")
           toast.message("Check your email", {
             description: "We sent you a 6-digit verification code.",
           })
@@ -81,7 +81,7 @@ export function ResetPasswordForm() {
         <Button disabled={isPending}>
           {isPending && (
             <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
+              className="mr-2 size-4 animate-spin"
               aria-hidden="true"
             />
           )}

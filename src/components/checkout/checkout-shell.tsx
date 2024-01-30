@@ -30,8 +30,8 @@ export function CheckoutShell({
 
   if (!clientSecret) {
     return (
-      <section className={cn("h-full w-full", className)} {...props}>
-        <div className="h-full w-full bg-white">
+      <section className={cn("size-full", className)} {...props}>
+        <div className="size-full bg-white">
           <div className="flex h-full flex-col items-center justify-center">
             <Icons.spinner
               className="h-64 w-64 animate-spin text-nav"
@@ -52,7 +52,7 @@ export function CheckoutShell({
   }
 
   return (
-    <section className={cn("h-full w-full", className)} {...props}>
+    <section className={cn("size-full", className)} {...props}>
         <Elements key={clientSecret} options={options} stripe={stripePromise}>
           {children}
         </Elements>

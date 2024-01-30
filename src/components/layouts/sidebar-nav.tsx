@@ -40,7 +40,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
                 item.disabled && "pointer-events-none opacity-60"
               )}
             >
-              <Icon className="mr-2 h-4 w-4" aria-hidden="true" />
+              <Icon className="mr-2 size-4" aria-hidden="true" />
               <span>{item.title}</span>
             </span>
           </Link>

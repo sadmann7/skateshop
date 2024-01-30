@@ -1,0 +1,1 @@
+ALTER TABLE `stores` ADD `nano_id` varchar(128) DEFAULT 'abc' NOT NULL;

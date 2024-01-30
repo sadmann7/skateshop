@@ -1,5 +1,6 @@
 "use server"
 
+import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, payments } from "@/db/schema"
@@ -69,6 +70,8 @@ export async function manageSubscription(
       userId: user.id,
     },
   })
+
+  revalidateTag("user-subscription")
 
   return {
     url: stripeSession.url,

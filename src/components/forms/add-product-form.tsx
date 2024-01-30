@@ -268,7 +268,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   <Image
                     src={file.preview}
                     alt={file.name}
-                    className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                    className="size-20 shrink-0 rounded-md object-cover object-center"
                     width={80}
                     height={80}
                   />
@@ -301,7 +301,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         >
           {isPending && (
             <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
+              className="mr-2 size-4 animate-spin"
               aria-hidden="true"
             />
           )}

@@ -25,22 +25,18 @@ interface AwaitedCustomer {
 }
 
 interface CustomersTableShellProps {
-  transaction: Promise<{
-    items: AwaitedCustomer[]
-    count: number
+  promise: Promise<{
+    data: AwaitedCustomer[]
+    pageCount: number
   }>
-  limit: number
   storeId: number
 }
 
 export function CustomersTableShell({
-  transaction,
-  limit,
+  promise,
   storeId,
 }: CustomersTableShellProps) {
-  const { items: data, count } = React.use(transaction)
-
-  const pageCount = Math.ceil(count / limit)
+  const { data, pageCount } = React.use(promise)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<AwaitedCustomer, unknown>[]>(
@@ -94,9 +90,9 @@ export function CustomersTableShell({
                 <Button
                   aria-label="Open menu"
                   variant="ghost"
-                  className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                  className="flex size-8 p-0 data-[state=open]:bg-muted"
                 >
-                  <DotsHorizontalIcon className="h-4 w-4" aria-hidden="true" />
+                  <DotsHorizontalIcon className="size-4" aria-hidden="true" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[160px]">

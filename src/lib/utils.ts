@@ -2,12 +2,20 @@ import { env } from "@/env.mjs"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
+import { customAlphabet } from "nanoid"
 import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
 import * as z from "zod"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function createId(length = 7) {
+  return customAlphabet(
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    length
+  )()
 }
 
 export function formatPrice(
@@ -44,11 +52,16 @@ export function formatNumber(
   }).format(Number(number))
 }
 
-export function formatDate(date: Date | string | number) {
-  return new Intl.DateTimeFormat("en-US", {
+export function formatDate(
+  date: Date | string | number,
+  options: Intl.DateTimeFormatOptions = {
     month: "long",
     day: "numeric",
     year: "numeric",
+  }
+) {
+  return new Intl.DateTimeFormat("en-US", {
+    ...options,
   }).format(new Date(date))
 }
 
@@ -122,11 +135,11 @@ export function catchError(err: unknown) {
     const errors = err.issues.map((issue) => {
       return issue.message
     })
-    return toast(errors.join("\n"))
+    return toast.error(errors.join("\n"))
   } else if (err instanceof Error) {
-    return toast(err.message)
+    return toast.error(err.message)
   } else {
-    return toast("Something went wrong, please try again later.")
+    return toast.error("Something went wrong, please try again later.")
   }
 }
 

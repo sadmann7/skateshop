@@ -41,7 +41,7 @@ export function ProductPager({ product }: ProductPagerProps) {
         }}
         disabled={isPending}
       >
-        <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
+        <ChevronLeftIcon className="size-4" aria-hidden="true" />
         <span className="sr-only">Previous product</span>
       </Button>
       <Button
@@ -66,7 +66,7 @@ export function ProductPager({ product }: ProductPagerProps) {
         }}
         disabled={isPending}
       >
-        <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
+        <ChevronRightIcon className="size-4" aria-hidden="true" />
         <span className="sr-only">Next product</span>
       </Button>
     </div>

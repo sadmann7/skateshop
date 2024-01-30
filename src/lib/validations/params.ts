@@ -1,8 +1,8 @@
 import * as z from "zod"
 
 export const searchParamsSchema = z.object({
-  page: z.string().default("1"),
-  per_page: z.string().default("10"),
+  page: z.coerce.number().default(1),
+  per_page: z.coerce.number().default(10),
   from: z.string().optional(),
   to: z.string().optional(),
   sort: z.string().optional().default("createdAt.desc"),
@@ -16,11 +16,11 @@ export const productsSearchParamsSchema = searchParamsSchema
     subcategories: z.string().optional(),
     price_range: z.string().optional(),
     store_ids: z.string().optional(),
-    store_page: z.string().optional(),
+    store_page: z.coerce.number().default(1),
     active: z.string().optional().default("true"),
   })
 
-export const dashboardProductsSearchParamsSchema = searchParamsSchema.extend({
+export const storesProductsSearchParamsSchema = searchParamsSchema.extend({
   name: z.string().optional(),
   category: z.string().optional(),
 })

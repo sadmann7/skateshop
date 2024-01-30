@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 import type { StripeAddress } from "@/types/index"
 
-// Docs: https://stripe.com/docs/payments/quickstart
+// See the stripe playemnts docs: https://stripe.com/docs/payments/quickstart
 
 interface CheckoutFormProps
   extends Omit<
@@ -182,7 +182,7 @@ export function CheckoutForm({
           {isLoading ||
             (isPending && (
               <Icons.spinner
-                className="mr-2 h-4 w-4 animate-spin"
+                className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
             ))}

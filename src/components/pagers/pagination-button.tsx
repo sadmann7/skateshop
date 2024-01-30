@@ -73,7 +73,7 @@ export function PaginationButton({
         aria-label="Go to first page"
         variant="outline"
         size="icon"
-        className="hidden h-8 w-8 lg:flex"
+        className="hidden size-8 lg:flex"
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -87,13 +87,13 @@ export function PaginationButton({
         }}
         disabled={Number(page) === 1 || isPending}
       >
-        <DoubleArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
+        <DoubleArrowLeftIcon className="size-4" aria-hidden="true" />
       </Button>
       <Button
         aria-label="Go to previous page"
         variant="outline"
         size="icon"
-        className="h-8 w-8"
+        className="size-8"
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -107,7 +107,7 @@ export function PaginationButton({
         }}
         disabled={Number(page) === 1 || isPending}
       >
-        <ChevronLeftIcon className="h-4 w-4" aria-hidden="true" />
+        <ChevronLeftIcon className="size-4" aria-hidden="true" />
       </Button>
       {paginationRange.map((pageNumber, i) =>
         pageNumber === "..." ? (
@@ -116,7 +116,7 @@ export function PaginationButton({
             key={i}
             variant="outline"
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             disabled
           >
             ...
@@ -127,7 +127,7 @@ export function PaginationButton({
             key={i}
             variant={Number(page) === pageNumber ? "default" : "outline"}
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             onClick={() => {
               startTransition(() => {
                 router.push(
@@ -149,7 +149,7 @@ export function PaginationButton({
         aria-label="Go to next page"
         variant="outline"
         size="icon"
-        className="h-8 w-8"
+        className="size-8"
         onClick={() => {
           startTransition(() => {
             router.push(
@@ -163,13 +163,13 @@ export function PaginationButton({
         }}
         disabled={Number(page) === (pageCount ?? 10) || isPending}
       >
-        <ChevronRightIcon className="h-4 w-4" aria-hidden="true" />
+        <ChevronRightIcon className="size-4" aria-hidden="true" />
       </Button>
       <Button
         aria-label="Go to last page"
         variant="outline"
         size="icon"
-        className="hidden h-8 w-8 lg:flex"
+        className="hidden size-8 lg:flex"
         onClick={() => {
           router.push(
             `${pathname}?${createQueryString({
@@ -181,7 +181,7 @@ export function PaginationButton({
         }}
         disabled={Number(page) === (pageCount ?? 10) || isPending}
       >
-        <DoubleArrowRightIcon className="h-4 w-4" aria-hidden="true" />
+        <DoubleArrowRightIcon className="size-4" aria-hidden="true" />
       </Button>
     </div>
   )

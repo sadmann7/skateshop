@@ -92,17 +92,17 @@ export function JoinNewsletterForm() {
               </FormControl>
               <FormMessage />
               <Button
-                className="absolute right-[3.5px] top-[4px] z-20 h-7 w-7"
+                className="absolute right-[3.5px] top-[4px] z-20 size-7"
                 size="icon"
                 disabled={isPending}
               >
                 {isPending ? (
                   <Icons.spinner
-                    className="h-3 w-3 animate-spin"
+                    className="size-3 animate-spin"
                     aria-hidden="true"
                   />
                 ) : (
-                  <PaperPlaneIcon className="h-3 w-3" aria-hidden="true" />
+                  <PaperPlaneIcon className="size-3" aria-hidden="true" />
                 )}
                 <span className="sr-only">Join newsletter</span>
               </Button>

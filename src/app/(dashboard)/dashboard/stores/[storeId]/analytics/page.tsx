@@ -1,21 +1,40 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
-import { orders, stores } from "@/db/schema"
+import { stores } from "@/db/schema"
 import { env } from "@/env.mjs"
-import { and, desc, eq, gte, lte, sql } from "drizzle-orm"
+import type { SearchParams } from "@/types"
+import { format } from "date-fns"
+import { eq } from "drizzle-orm"
 
-import { formatNumber, formatPrice } from "@/lib/utils"
+import {
+  getCustomers,
+  getOrderCount,
+  getSaleCount,
+  getSales,
+} from "@/lib/fetchers/order"
+import { cn, formatNumber, formatPrice } from "@/lib/utils"
 import { searchParamsSchema } from "@/lib/validations/params"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 import { DateRangePicker } from "@/components/date-range-picker"
+
+import { OverviewCard } from "./_components/overview-card"
+import { SalesChart } from "./_components/sales-chart"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -27,9 +46,7 @@ interface AnalyticsPageProps {
   params: {
     storeId: string
   }
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function AnalyticsPage({
@@ -38,8 +55,8 @@ export default async function AnalyticsPage({
 }: AnalyticsPageProps) {
   const storeId = Number(params.storeId)
 
-  const { from, to } = searchParamsSchema
-    .pick({ from: true, to: true })
+  const { page, from, to } = searchParamsSchema
+    .omit({ per_page: true, sort: true })
     .parse(searchParams)
 
   const fromDay = from ? new Date(from) : undefined
@@ -64,167 +81,154 @@ export default async function AnalyticsPage({
     notFound()
   }
 
-  const storeOrders = await db
-    .select({
-      amount: orders.amount,
-      createdAt: orders.createdAt,
-    })
-    .from(orders)
-    .where(
-      and(
-        eq(orders.storeId, store.id),
-        // Filter by createdAt
-        fromDay && toDay
-          ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
-          : undefined
-      )
-    )
+  const orderCountPromise = getOrderCount({
+    storeId,
+    fromDay: fromDay,
+    toDay: toDay,
+  })
 
-  const sales = storeOrders.reduce(
-    (acc, order) => acc + Number(order.amount),
-    0
-  )
+  const saleCountPromise = getSaleCount({
+    storeId,
+    fromDay: fromDay,
+    toDay: toDay,
+  })
 
-  const customers = await db
-    .select({
-      name: orders.name,
-      email: orders.email,
-      totalSpent: sql<number>`sum(${orders.amount})`,
-      createdAt: sql<string>`min(${orders.createdAt})`,
-    })
-    .from(orders)
-    .where(
-      and(
-        eq(orders.storeId, store.id),
-        // Filter by createdAt
-        fromDay && toDay
-          ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
-          : undefined
-      )
-    )
-    .groupBy(orders.email, orders.name)
-    .orderBy(desc(sql<number>`sum(${orders.amount})`))
+  const salesPromise = getSales({
+    storeId,
+    fromDay: fromDay,
+    toDay: toDay,
+  })
+
+  const customersPromise = getCustomers({
+    storeId,
+    limit: 5,
+    offset: (page - 1) * 5,
+    fromDay: fromDay,
+    toDay: toDay,
+  })
+
+  const [saleCount, orderCount, sales, { customers, customerCount }] =
+    await Promise.all([
+      saleCountPromise,
+      orderCountPromise,
+      salesPromise,
+      customersPromise,
+    ])
 
   return (
     <div className="space-y-6 p-1">
       <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         <h2 className="text-2xl font-bold tracking-tight">Analytics</h2>
-        <DateRangePicker align="end" dayCount={360} />
+        <DateRangePicker align="end" dayCount={30} />
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatPrice(sales, {
-                notation: "standard",
-              })}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <rect width="20" height="14" x="2" y="5" rx="2" />
-              <path d="M2 10h20" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatPrice(sales, {
-                notation: "standard",
-              })}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              +19% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Customers</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{customers.length}</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <OverviewCard
+          title="Total Revenue"
+          value={formatPrice(saleCount, {
+            notation: "standard",
+          })}
+          description="Total revenue for your store"
+          icon="dollarSign"
+        />
+        <OverviewCard
+          title="Sales"
+          value={formatPrice(saleCount, {
+            notation: "standard",
+          })}
+          description="Total sales for your store"
+          icon="credit"
+        />
+        <OverviewCard
+          title="Orders"
+          value={formatNumber(orderCount)}
+          description="Total orders for your store"
+          icon="cart"
+        />
+        <OverviewCard
+          title="Customers"
+          value={formatNumber(customerCount)}
+          description="Total customers for your store"
+          icon="activity"
+        />
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Customers</CardTitle>
-          <CardDescription>
-            {customers.length} customers{" "}
-            {dayCount && `in the last ${dayCount} days`}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-8">
+      <div className="flex flex-col gap-4 2xl:flex-row">
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>Sales</CardTitle>
+            <CardDescription>
+              Total sales in the last {dayCount} days
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SalesChart
+              data={sales.map((sale) => ({
+                name: format(new Date(sale.year, sale.month - 1), "MMM"),
+                Total: sale.totalSales,
+              }))}
+            />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Customers</CardTitle>
+            <CardDescription>
+              Customers who have purchased in the last {dayCount} days
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
             {customers.map((customer) => (
-              <div key={customer.email} className="flex items-center">
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                  <AvatarFallback>
-                    {customer.name?.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="ml-4 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {customer.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {customer.email}
-                  </p>
+              <div
+                key={customer.email}
+                className="flex flex-col gap-2 sm:flex-row sm:items-center"
+              >
+                <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
+                  <Avatar className="size-9">
+                    <AvatarFallback>
+                      {customer.name?.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="w-full space-y-1 text-sm">
+                    <p className="font-medium leading-none">{customer.name}</p>
+                    <p className="break-all leading-none text-muted-foreground">
+                      {customer.email}
+                    </p>
+                  </div>
                 </div>
-                <div className="ml-auto font-medium">
-                  +${formatNumber(customer.totalSpent)}
-                </div>
+                <p className="text-sm font-medium leading-none">
+                  {formatPrice(customer.totalSpent)}
+                </p>
               </div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+          <CardFooter>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href={`?page=${page - 1}&from=${from}&to=${to}`}
+                    scroll={false}
+                    className={cn(
+                      "transition-opacity",
+                      page === 1 && "pointer-events-none opacity-50"
+                    )}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    href={`?page=${page + 1}&from=${from}&to=${to}`}
+                    scroll={false}
+                    className={cn(
+                      "transition-opacity",
+                      Math.ceil(customerCount / 5) === page &&
+                        "pointer-events-none opacity-50"
+                    )}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }

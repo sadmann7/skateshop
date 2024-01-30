@@ -29,21 +29,18 @@ type AwaitedProduct = Pick<
 >
 
 interface ProductsTableShellProps {
-  transaction: Promise<{
-    items: AwaitedProduct[]
-    count: number
+  promise: Promise<{
+    data: AwaitedProduct[]
+    pageCount: number
   }>
-  limit: number
   storeId: number
 }
 
 export function ProductsTableShell({
-  transaction,
-  limit,
+  promise,
   storeId,
 }: ProductsTableShellProps) {
-  const { items: data, count } = React.use(transaction)
-  const pageCount = Math.ceil(count / limit)
+  const { data, pageCount } = React.use(promise)
 
   const [isPending, startTransition] = React.useTransition()
   const [selectedRowIds, setSelectedRowIds] = React.useState<number[]>([])
@@ -143,9 +140,9 @@ export function ProductsTableShell({
               <Button
                 aria-label="Open menu"
                 variant="ghost"
-                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                className="flex size-8 p-0 data-[state=open]:bg-muted"
               >
-                <DotsHorizontalIcon className="h-4 w-4" aria-hidden="true" />
+                <DotsHorizontalIcon className="size-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[160px]">

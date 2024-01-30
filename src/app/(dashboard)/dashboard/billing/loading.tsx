@@ -46,7 +46,7 @@ export default function BillingLoading() {
                 <div className="w-full space-y-2">
                   {Array.from({ length: 2 }).map((_, i) => (
                     <div key={i} className="flex items-center gap-2">
-                      <Skeleton className="h-4 w-4" />
+                      <Skeleton className="size-4" />
                       <Skeleton className="h-4 w-4/5" />
                     </div>
                   ))}

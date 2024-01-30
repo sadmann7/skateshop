@@ -27,7 +27,7 @@ export function ProductCardSkeleton({
       </CardContent>
       <CardFooter className="space-x-2 p-4 pt-1">
         <Skeleton className="h-8 w-full" />
-        <Skeleton className="h-8 w-8 shrink-0" />
+        <Skeleton className="size-8 shrink-0" />
       </CardFooter>
     </Card>
   )

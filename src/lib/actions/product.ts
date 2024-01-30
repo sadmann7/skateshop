@@ -1,6 +1,7 @@
 "use server"
 
 import { unstable_noStore as noStore, revalidatePath } from "next/cache"
+import * as productsJson from "@/assets/data/products.json"
 import { db } from "@/db"
 import { products, type Product } from "@/db/schema"
 import { faker } from "@faker-js/faker"
@@ -60,7 +61,33 @@ export async function seedProducts({
   }
 
   await db.delete(products).where(eq(products.storeId, storeId))
+  console.log(`📝 Inserting ${data.length} products`)
+  await db.insert(products).values(data)
+}
 
+export async function seedRealProducts({ storeId }: { storeId: number }) {
+  const data: Product[] = productsJson.map((product) => ({
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    images: product.images.map((image) => ({
+      id: image.id,
+      name: image.name,
+      url: image.url,
+    })),
+    category: product.category as Product["category"],
+    subcategory: product.subcategory,
+    storeId,
+    inventory: product.inventory,
+    rating: product.rating,
+    tags: product.tags,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }))
+
+  await db.delete(products).where(eq(products.storeId, storeId))
+  console.log(`📝 Inserting ${data.length} products`)
   await db.insert(products).values(data)
 }
 

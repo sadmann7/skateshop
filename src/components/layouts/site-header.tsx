@@ -6,7 +6,7 @@ import { dashboardConfig } from "@/config/dashboard"
 import { siteConfig } from "@/config/site"
 import { getUserEmail } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,9 +50,9 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="secondary"
-                    className="relative h-8 w-8 rounded-full"
+                    className="relative size-8 rounded-full"
                   >
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="size-8">
                       <AvatarImage
                         src={user.imageUrl}
                         alt={user.username ?? ""}
@@ -77,7 +77,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/stores">
                         <DashboardIcon
-                          className="mr-2 h-4 w-4"
+                          className="mr-2 size-4"
                           aria-hidden="true"
                         />
                         Dashboard
@@ -87,7 +87,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/billing">
                         <Icons.credit
-                          className="mr-2 h-4 w-4"
+                          className="mr-2 size-4"
                           aria-hidden="true"
                         />
                         Billing
@@ -96,7 +96,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/dashboard/account">
-                        <GearIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                        <GearIcon className="mr-2 size-4" aria-hidden="true" />
                         Settings
                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                       </Link>
@@ -105,7 +105,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/signout">
-                      <ExitIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                      <ExitIcon className="mr-2 size-4" aria-hidden="true" />
                       Log out
                       <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
                     </Link>
@@ -113,15 +113,12 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Link
-                href="/signin"
-                className={buttonVariants({
-                  size: "sm",
-                })}
-              >
-                Sign In
-                <span className="sr-only">Sign In</span>
-              </Link>
+              <Button size="sm">
+                <Link href="/signin">
+                  Sign In
+                  <span className="sr-only">Sign In</span>
+                </Link>
+              </Button>
             )}
           </nav>
         </div>

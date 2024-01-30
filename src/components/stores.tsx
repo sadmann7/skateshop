@@ -81,7 +81,7 @@ export function Stores({ stores, pageCount }: StoresProps) {
           <DropdownMenuTrigger asChild>
             <Button aria-label="Sort stores" size="sm" disabled={isPending}>
               Sort
-              <ChevronDownIcon className="ml-2 h-4 w-4" aria-hidden="true" />
+              <ChevronDownIcon className="ml-2 size-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-48">
@@ -124,7 +124,7 @@ export function Stores({ stores, pageCount }: StoresProps) {
               onClick={() => setFilterValues([])}
             >
               Reset
-              <Cross2Icon className="ml-2 h-4 w-4" aria-hidden="true" />
+              <Cross2Icon className="ml-2 size-4" aria-hidden="true" />
             </Button>
           )}
         </div>

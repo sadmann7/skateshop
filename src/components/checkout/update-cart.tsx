@@ -24,7 +24,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           id={`${id}-decrement`}
           variant="outline"
           size="icon"
-          className="h-8 w-8 rounded-r-none"
+          className="size-8 rounded-r-none"
           onClick={() => {
             startTransition(async () => {
               try {
@@ -39,7 +39,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           }}
           disabled={isPending}
         >
-          <MinusIcon className="h-3 w-3" aria-hidden="true" />
+          <MinusIcon className="size-3" aria-hidden="true" />
           <span className="sr-only">Remove one item</span>
         </Button>
         <Input
@@ -66,7 +66,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           id={`${id}-increment`}
           variant="outline"
           size="icon"
-          className="h-8 w-8 rounded-l-none"
+          className="size-8 rounded-l-none"
           onClick={() => {
             startTransition(async () => {
               try {
@@ -81,7 +81,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
           }}
           disabled={isPending}
         >
-          <PlusIcon className="h-3 w-3" aria-hidden="true" />
+          <PlusIcon className="size-3" aria-hidden="true" />
           <span className="sr-only">Add one item</span>
         </Button>
       </div>
@@ -89,7 +89,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         id={`${id}-delete`}
         variant="outline"
         size="icon"
-        className="h-8 w-8"
+        className="size-8"
         onClick={() => {
           startTransition(async () => {
             try {
@@ -103,7 +103,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         }}
         disabled={isPending}
       >
-        <TrashIcon className="h-3 w-3" aria-hidden="true" />
+        <TrashIcon className="size-3" aria-hidden="true" />
         <span className="sr-only">Delete item</span>
       </Button>
     </div>

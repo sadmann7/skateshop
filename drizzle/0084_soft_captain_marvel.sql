@@ -1,0 +1,1 @@
+ALTER TABLE `stores` MODIFY COLUMN `new_id` varchar(128) NOT NULL DEFAULT '2dPDbt8';

@@ -69,20 +69,14 @@ export function ProductsCommandMenu() {
     callback()
   }, [])
 
-  React.useEffect(() => {
-    if (!open) {
-      setQuery("")
-    }
-  }, [open])
-
   return (
     <>
       <Button
         variant="outline"
-        className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+        className="relative size-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
         onClick={() => setOpen(true)}
       >
-        <MagnifyingGlassIcon className="h-4 w-4 xl:mr-2" aria-hidden="true" />
+        <MagnifyingGlassIcon className="size-4 xl:mr-2" aria-hidden="true" />
         <span className="hidden xl:inline-flex">Search products...</span>
         <span className="sr-only">Search products</span>
         <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 xl:flex">
@@ -95,7 +89,16 @@ export function ProductsCommandMenu() {
           K
         </kbd>
       </Button>
-      <CommandDialog position="top" open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open)
+          if (!open) {
+            setQuery("")
+          }
+        }}
+        className="top-48 translate-y-0"
+      >
         <CommandInput
           placeholder="Search products..."
           value={query}
@@ -129,13 +132,14 @@ export function ProductsCommandMenu() {
                   return (
                     <CommandItem
                       key={item.id}
+                      className="h-9"
                       value={item.name}
                       onSelect={() =>
                         handleSelect(() => router.push(`/product/${item.id}`))
                       }
                     >
                       <CategoryIcon
-                        className="mr-2.5 h-3 w-3 text-muted-foreground"
+                        className="mr-2.5 size-3 text-muted-foreground"
                         aria-hidden="true"
                       />
                       <span className="truncate">{item.name}</span>

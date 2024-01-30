@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { env } from "@/env.mjs"
-import { currentUser } from "@clerk/nextjs"
 
+import { getCacheduser } from "@/lib/fetchers/auth"
 import {
   Card,
   CardContent,
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 }
 
 export default async function NewStorePage() {
-  const user = await currentUser()
+  const user = await getCacheduser()
 
   if (!user) {
     redirect("/signin")

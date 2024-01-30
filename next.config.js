@@ -48,9 +48,9 @@ const nextConfig = {
         hostname: "loremflickr.com",
       },
     ],
+    unoptimized: true,
   },
   experimental: {
-    // TODO: Enable after fixing "Static Bail Out Caught" errors in production
     // ppr: true,
     esmExternals: "loose",
   },

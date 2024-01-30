@@ -1,0 +1,1 @@
+ALTER TABLE `stores` ADD CONSTRAINT `stores_stripe_account_id_unique` UNIQUE(`stripe_account_id`);

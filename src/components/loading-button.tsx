@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
 import { useFormStatus } from "react-dom"
 
 import { cn } from "@/lib/utils"
@@ -13,9 +14,15 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
-const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, className, variant, size, ...props }, ref) => {
+type ButtonActionProps = ButtonProps & {
+  action: string
+}
+
+const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonActionProps>(
+  ({ children, className, variant, size, action, ...props }, ref) => {
     const { pending } = useFormStatus()
+    const [del, setDel] = useState(false)
+    const [update, setUpdate] = useState(false)
     const mounted = useMounted()
 
     if (!mounted)
@@ -36,10 +43,23 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={pending}
         {...props}
+        onClick={() => {
+          if (action === "update") {
+            setUpdate(true)
+          } else {
+            setDel(true)
+          }
+        }}
       >
-        {pending && (
+        {del && pending && (
           <Icons.spinner
-            className="mr-2 h-4 w-4 animate-spin"
+            className="mr-2 size-4 animate-spin"
+            aria-hidden="true"
+          />
+        )}
+        {update && pending && (
+          <Icons.spinner
+            className="mr-2 size-4 animate-spin"
             aria-hidden="true"
           />
         )}

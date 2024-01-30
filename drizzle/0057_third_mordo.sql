@@ -1,0 +1,1 @@
+ALTER TABLE `stores` MODIFY COLUMN `nano_id` varchar(128);

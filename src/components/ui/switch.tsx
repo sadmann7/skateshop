@@ -35,10 +35,10 @@ const switchThumbVariants = cva(
         primary: "data-[state=checked]:bg-background data-[state=unchecked]:bg-background",
       },
       size: {
-        default: "h-4 w-4 data-[state=checked]:translate-x-4",
-        sm: "h-3 w-3 data-[state=checked]:translate-x-4",
-        lg: "h-5 w-5 data-[state=checked]:translate-x-6",
-        xl: "h-7 w-7 data-[state=checked]:translate-x-8",
+        default: "size-4 data-[state=checked]:translate-x-4",
+        sm: "size-3 data-[state=checked]:translate-x-4",
+        lg: "size-5 data-[state=checked]:translate-x-6",
+        xl: "size-7 data-[state=checked]:translate-x-8",
       },
     },
     defaultVariants: {

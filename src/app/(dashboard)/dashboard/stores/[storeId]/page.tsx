@@ -186,13 +186,14 @@ export default async function UpdateStorePage({
               />
             </div>
             <div className="flex flex-col gap-2 xs:flex-row">
-              <LoadingButton>
+              <LoadingButton action="update">
                 Update store
                 <span className="sr-only">Update store</span>
               </LoadingButton>
               <LoadingButton
                 formAction={deleteStore.bind(null, storeId)}
                 variant="destructive"
+                action="delete"
               >
                 Delete store
                 <span className="sr-only">Delete store</span>
