@@ -154,9 +154,9 @@ export interface RateResponse {
   error?: string
 }
 
-// export type GetRateProps = z.infer<typeof ratesSchema>
-export interface GetRateProps {
+// export type GetShippingRateProps = z.infer<typeof ratesSchema>
+export interface GetShippingRateProps {
   toAddress: EasyPostAddress
+  items: CartLineItem[]
   storeId: number
-  dimensions: Dimensions
 }

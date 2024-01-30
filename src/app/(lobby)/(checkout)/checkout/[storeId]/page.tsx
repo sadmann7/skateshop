@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { createPaymentIntent } from "@/lib/actions/stripe"
+// import { createPaymentIntent } from "@/lib/actions/stripe"
 import { getCart } from "@/lib/fetchers/cart"
 import { getStripeAccount } from "@/lib/fetchers/stripe"
 import CheckoutContent from "@/components/checkout/checkout-content"
@@ -57,10 +57,10 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
 
   const cartLineItems = await getCart({ storeId })
 
-  const paymentIntentPromise = createPaymentIntent({
-    storeId: store.id,
-    items: cartLineItems,
-  })
+  // const paymentIntentPromise = createPaymentIntent({
+  //   storeId: storeId,
+  //   items: cartLineItems,
+  // })
 
   const clientUser = {
     firstName: user.firstName,
@@ -104,12 +104,11 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   }
 
   return (
-    <CheckoutContent
+    <CheckoutContent 
       user={clientUser}
       store={clientStore}
-      cartLineItems={cartLineItems}
-      paymentIntentPromise={paymentIntentPromise}
+      cartLineItems={cartLineItems} 
+      // paymentIntentPromise={paymentIntentPromise}
     />
   )
 }
-

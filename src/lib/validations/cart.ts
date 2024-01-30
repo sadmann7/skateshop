@@ -11,6 +11,7 @@ export const checkoutItemSchema = cartItemSchema.extend({
   price: z.number(),
 })
 
+// TODO: Remove optional on dimensions
 export const cartLineItemSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -28,6 +29,10 @@ export const cartLineItemSchema = z.object({
   subcategory: z.string().optional().nullable(),
   price: z.string().regex(/^\d+(\.\d{1,2})?$/),
   inventory: z.number().default(0),
+  width: z.number().optional().nullable(),
+  height: z.number().optional().nullable(),
+  length: z.number().optional().nullable(),
+  weight: z.number().optional().nullable(),
   quantity: z.number(),
   storeId: z.number(),
   storeName: z.string().optional().nullable(),

@@ -2,20 +2,34 @@
 
 import * as React from "react"
 import Link from "next/link"
-import type { Dimensions } from "@/types"
+import type { CartLineItem, GetShippingRateProps } from "@/types"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
+import { toast } from "sonner"
 
+import { getShippingRate } from "@/lib/actions/easypost"
+import {
+  createPaymentIntent,
+  updatePaymentIntentWithShipping,
+} from "@/lib/actions/stripe"
 import { formatPrice } from "@/lib/utils"
+import { useCheckoutFormState } from "@/hooks/use-checkout-form-state"
+import { useDebounce } from "@/hooks/use-debounce"
+import {
+  getDimensions,
+  transformAddress,
+  useShipping,
+} from "@/hooks/use-shipping-rate-state"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import ShippingLineItem from "@/components/checkout/shipping-line-item"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
 import { CheckoutForm } from "@/components/checkout/checkout-form"
 import { CheckoutShell } from "@/components/checkout/checkout-shell"
-
-import type { CartLineItem } from "@/types"
+import ShippingLineItem from "@/components/checkout/shipping-line-item"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Icons } from "@/components/icons"
 
 interface CheckoutContentProps {
   user: {
@@ -29,43 +43,94 @@ interface CheckoutContentProps {
     stripeAccountId: string
   }
   cartLineItems: CartLineItem[]
-  paymentIntentPromise: Promise<{
-    clientSecret: string | null
-  }>
 }
 
 export default function CheckoutContent({
   user,
   store,
   cartLineItems,
-  paymentIntentPromise,
 }: CheckoutContentProps) {
+  // clientSecret needs to be accessible to the Checkout Shell and Checkout Form below
+  const [clientSecret, setClientSecret] = React.useState<string | null>(null)
+
+  // State management for shipping related variables
   const name = `${user.firstName || ""} ${user.lastName || ""}`.trim()
+  const { rate, setRate, total } = useShipping(cartLineItems)
 
-  const total = cartLineItems.reduce(
-    (total, item) => total + item.quantity * Number(item.price),
-    0
-  )
+  // Form data state management
+  const {
+    email,
+    address,
+    confirmed,
+    isLoading,
+    isPending,
+    updateEmail,
+    updateAddress,
+    toggleConfirmed,
+    updateLoading,
+    startTransition,
+    clearForm,
+  } = useCheckoutFormState({
+    email: user.email,
+    address: undefined,
+    confirmed: false,
+  })
+  const debouncedAddress = useDebounce(address, 500)
 
-  // TODO: Add support for dimension packing algorithm to calculate shipping rates
-  const dimensions = cartLineItems.reduce(
-    (dimensions, item) => {
-      const { width, height, length, weight } = item
-      if (width) dimensions.width += Number(width)
-      if (height) dimensions.height += Number(height)
-      if (length) dimensions.length += Number(length)
-      if (weight) dimensions.weight += Number(weight)
-      return dimensions
-    },
-    {
-      width: 10,
-      height: 10,
-      length: 10,
-      weight: 10,
-    }
-  ) as Dimensions
+  // When Confirmed is toggled, we need to update the shipping rate and payment intent
+  const handleShippingChange = (checked: boolean) => {
+    startTransition(async () => {
+      if (debouncedAddress) {
+        const shippingAddress = transformAddress(debouncedAddress)
+        const shippingRate = await getShippingRate({
+          toAddress: shippingAddress,
+          items: cartLineItems,
+          storeId: store.id,
+          // dimensions: dimensions,
+        } as GetShippingRateProps)
 
-  const [rate, setRate] = React.useState<number>(0)
+        const dimensions = getDimensions(cartLineItems)
+
+        if (typeof shippingRate.rate === "number") {
+          const updatedIntent = await updatePaymentIntentWithShipping({
+            toAddress: shippingAddress,
+            storeId: store.id,
+            dimensions: dimensions,
+            items: cartLineItems,
+          })
+          if (updatedIntent.clientSecret) {
+            toggleConfirmed(checked)
+            setRate(shippingRate.rate)
+            setClientSecret(updatedIntent.clientSecret)
+          } else {
+            toast.error(
+              "Something went wrong with setting up the payment, please try again."
+            )
+          }
+        } else {
+          toast.error(
+            "Something went wrong with the address, please update it and try again."
+          )
+        }
+      }
+    })
+  }
+
+  // On Setup make the paymentIntent and then store the clientSecret
+  React.useEffect(() => {
+    createPaymentIntent({
+      storeId: store.id,
+      items: cartLineItems,
+    })
+      .then((result) => {
+        setClientSecret(result.clientSecret)
+      })
+      .catch((e) => {
+        toast.error(
+          "Something went wrong with setting up the payment, please try again."
+        )
+      })
+  }, [store.id, cartLineItems])
 
   return (
     <section className="relative flex h-full min-h-[100dvh] flex-col items-start justify-center lg:h-[100dvh] lg:flex-row lg:overflow-hidden">
@@ -102,7 +167,11 @@ export default function CheckoutContent({
                   className="container h-full flex-1 pr-8"
                 />
                 <ShippingLineItem
-                  shipping={(rate === 0) ? "Calculcated after shipping address confirmed" : rate}
+                  shipping={
+                    rate === 0
+                      ? "Calculcated after shipping address confirmed"
+                      : rate
+                  }
                   variant="minimal"
                   className="container h-full flex-1 pr-8"
                 />
@@ -136,30 +205,61 @@ export default function CheckoutContent({
           className="container hidden w-full max-w-xl lg:ml-auto lg:mr-0 lg:flex lg:max-h-[580px] lg:pr-[4.5rem]"
         />
         <ShippingLineItem
-          shipping={(rate === 0) ? "Calculcated after shipping address confirmed" : rate}
+          shipping={
+            rate === 0 ? "Calculcated after shipping address confirmed" : rate
+          }
           variant="minimal"
           className="container hidden w-full max-w-xl lg:ml-auto lg:mr-0 lg:flex lg:max-h-[580px] lg:pr-[4.5rem]"
         />
       </div>
       <CheckoutShell
-        paymentIntentPromise={paymentIntentPromise}
         storeStripeAccountId={store.stripeAccountId}
+        clientSecret={clientSecret}
         className="h-full w-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
       >
         <ScrollArea className="h-full">
           <CheckoutForm
             storeId={store.id}
-            userFullName={ name }
-            userEmail={user.email}
-            dimensions={dimensions}
-            onRateChange={(shippingRate: number): void => {
-              setRate(shippingRate)
-            }}
+            userFullName={name}
+            email={email}
+            address={address}
+            debouncedAddress={debouncedAddress}
+            confirmed={confirmed}
+            updateEmail={updateEmail}
+            updateAddress={updateAddress}
+            toggleConfirmed={toggleConfirmed}
+            clearForm={clearForm}
+            isLoading={isLoading}
+            updateLoading={updateLoading}
+            isPending={isPending}
             className="container max-w-xl pr-6 lg:ml-0 lg:mr-auto"
           />
+          <div className="mt-6 grid gap-2.5 pl-6">
+            <Label
+              htmlFor="confirm-shipping-address"
+              className="text-lg text-slate-950"
+            >
+              Confirm Shipping Address
+            </Label>
+            <div className="grid grid-cols-2 gap-2.5 lg:ml-0 lg:mr-auto">
+              <Switch
+                id="confirm-shipping-address"
+                aria-describedby="confirm-shipping-address-description"
+                name="completed"
+                size="xl"
+                checked={confirmed}
+                onCheckedChange={handleShippingChange}
+              />
+              {isPending && (
+                <Icons.spinner
+                  className="mr-2 h-8 w-8 animate-spin text-nav"
+                  aria-hidden="true"
+                />
+              )}
+            </div>
+          </div>
         </ScrollArea>
       </CheckoutShell>
     </section>
   )
 }
-

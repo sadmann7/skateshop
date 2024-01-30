@@ -1,3 +1,5 @@
+"use server"
+
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { payments, stores } from "@/db/schema"
@@ -18,9 +20,45 @@ import {
 
 // Getting the subscription plan for a user
 export async function getSubscriptionPlan(
-  userId: string
+  userId: string,
+  userRole?: string | null
 ): Promise<UserSubscriptionPlan | null> {
   try {
+    // If onboarding user, return onboarding plan which allows them to setup products to be transfered to another store
+    if (userRole === "onboarding") {
+      return {
+        id: "onboarding",
+        name: "Onboarding",
+        description:
+          "Allows the user to setup products to be transfered to another store.",
+        features: [
+          "Create up to 50 stores",
+          "Create up to 100 products per store",
+        ],
+        stripePriceId: "onboarding",
+        price: 0,
+        isSubscribed: true,
+        isCanceled: false,
+        isActive: true,
+      } as UserSubscriptionPlan
+    } else if (userRole === "admin") {
+      return {
+        id: "admin",
+        name: "Admin",
+        description:
+          "Allows the user to verify that products are setup correctly before transfering products.",
+        features: [
+          "Create up to 10000 stores",
+          "Create up to 100 products per store",
+        ],
+        stripePriceId: "admin",
+        price: 0,
+        isSubscribed: true,
+        isCanceled: false,
+        isActive: true,
+      } as UserSubscriptionPlan
+    }
+
     const user = await clerkClient.users.getUser(userId)
 
     if (!user) {

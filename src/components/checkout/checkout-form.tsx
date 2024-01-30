@@ -10,97 +10,58 @@ import {
 } from "@stripe/react-stripe-js"
 import { toast } from "sonner"
 
-import type {
-  Dimensions,
-  EasyPostAddress,
-  GetRateProps,
-  StripeAddress,
-} from "@/types/index"
-import { getShippingRate } from "@/lib/actions/easypost"
 import { absoluteUrl, cn } from "@/lib/utils"
-import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
+import type { StripeAddress } from "@/types/index"
 
 // Docs: https://stripe.com/docs/payments/quickstart
 
-interface CheckoutFormProps extends Omit<React.ComponentPropsWithoutRef<"form">, 'onRateChange'> {
+interface CheckoutFormProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<"form">,
+    "updateEmail" | "updateAddress" | "toggleConfirmed" | "clearForm" | "updateLoading"
+  > {
   storeId: number
   userFullName: string
-  userEmail: string
-  dimensions: Dimensions
-  onRateChange: (rate: number) => void
-}
-
-const transformAddress = (
-  address: StripeAddress,
-  additionalFields?: object
-): EasyPostAddress => {
-  const {
-    line1: street1,
-    line2: street2,
-    postal_code: zip,
-    ...restOfAddressData
-  } = address
-  const transformedAddress = {
-    street1,
-    zip,
-    ...restOfAddressData,
-    ...additionalFields,
-  } as EasyPostAddress
-  if (street2) transformedAddress.street2 = street2
-  return transformedAddress
+  email: string
+  address: StripeAddress | undefined
+  debouncedAddress: StripeAddress | undefined
+  confirmed: boolean
+  updateEmail: (newEmail: string) => void
+  updateAddress: (newAddress: StripeAddress | undefined) => void
+  toggleConfirmed: (newConfirmed: boolean) => void
+  clearForm: () => void
+  isLoading: boolean
+  updateLoading: (newLoading: boolean) => void
+  isPending: boolean
 }
 
 export function CheckoutForm({
   storeId,
   userFullName,
-  userEmail,
-  dimensions,
-  onRateChange,
+  email,
+  address,
+  debouncedAddress,
+  confirmed,
+  updateEmail,
+  updateAddress,
+  toggleConfirmed,
+  clearForm,
+  isLoading,
+  updateLoading,
+  isPending,
   className,
   ...props
 }: CheckoutFormProps) {
+  //Stripe Elements variables
   const id = React.useId()
   const stripe = useStripe()
   const elements = useElements()
-  const [email, setEmail] = React.useState("")
+
   const [message, setMessage] = React.useState<string | null>(null)
-  const [address, setAddress] = React.useState<StripeAddress | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false)
 
-  const debouncedAddress = useDebounce(address, 500)
-  const [isPending, startTransition] = React.useTransition()
-
-  const [confirmed, setConfirmed] = React.useState(false)
-  const handleConfirmedSwitchChange = (checked: boolean) => {
-    startTransition(async () => {
-      if (debouncedAddress) {
-        const shippingAddress = transformAddress(debouncedAddress)
-        const shippingRate = await getShippingRate({
-          toAddress: shippingAddress,
-          storeId: storeId,
-          dimensions: dimensions,
-        } as GetRateProps)
-
-        if (typeof shippingRate.rate === "number") {
-          onRateChange(shippingRate.rate)
-          setConfirmed(checked)
-        } else {
-          toast.error("Something went wrong with the address, please update it and try again.")
-        }
-      }
-    })
-  }
-
-  React.useEffect(() => {
-    setConfirmed(false)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedAddress])
-
+  // When the client secret changes, we need to update the payment intent
   React.useEffect(() => {
     if (!stripe) return
 
@@ -130,6 +91,7 @@ export function CheckoutForm({
       })
   }, [stripe])
 
+  // Payment submission
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -139,8 +101,10 @@ export function CheckoutForm({
       return
     }
 
-    setIsLoading(true)
+    updateLoading(true)
     setMessage(null)
+    toggleConfirmed(false)
+    clearForm()
 
     const { error } = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
@@ -164,7 +128,7 @@ export function CheckoutForm({
 
     toast.error(message)
 
-    setIsLoading(false)
+    updateLoading(false)
   }
 
   return (
@@ -177,56 +141,54 @@ export function CheckoutForm({
     >
       <LinkAuthenticationElement
         id={`${id}-link-authentication-element`}
-        options={{ defaultValues: { email: userEmail } }}
-        onChange={(e) => setEmail(e.value.email)}
+        options={{ defaultValues: { email: email } }}
+        onChange={(e) => updateEmail(e.value.email)}
       />
       <AddressElement
         id={`${id}-address-element`}
         options={{
           mode: "shipping",
-          defaultValues: { name: userFullName },
+          defaultValues: {
+            name: userFullName,
+            address: address,
+          },
         }}
         onChange={(e) => {
-          if (e.complete) setAddress(e.value.address)
+          if (e.complete) updateAddress(e.value.address)
+        }}
+        onFocus={(e) => {
+          toggleConfirmed(false)
         }}
       />
-      <PaymentElement
-        id={`${id}-payment-element`}
-        options={{
-          layout: "tabs",
-        }}
-      />
-      <div className="grid gap-2.5">
-        <Label htmlFor="confirm-shipping-address" className="text-slate-950">
-          Confirm Shipping Address
-        </Label>
-        <Switch
-          id="confirm-shipping-address"
-          aria-describedby="confirm-shipping-address-description"
-          name="completed"
-          checked={confirmed}
-          onCheckedChange={handleConfirmedSwitchChange}
-          className="data-[state=checked]:bg-accent"
+      {confirmed && (
+        <PaymentElement
+          id={`${id}-payment-element`}
+          options={{
+            layout: "tabs",
+          }}
         />
-      </div>
-      <Button
-        type="submit"
-        aria-label="Pay"
-        id={`${id}-checkout-form-submit`}
-        variant="secondary"
-        className="w-full bg-blue-600 hover:bg-blue-500 hover:shadow-md"
-        disabled={!stripe || !elements || isLoading || isPending || !confirmed}
-      >
-        {isLoading ||
-          (isPending && (
-            <Icons.spinner
-              className="mr-2 h-4 w-4 animate-spin"
-              aria-hidden="true"
-            />
-          ))}
-        Pay
-      </Button>
+      )}
+      {confirmed && (
+        <Button
+          type="submit"
+          aria-label="Pay"
+          id={`${id}-checkout-form-submit`}
+          variant="secondary"
+          className="w-full bg-blue-600 hover:bg-blue-500 hover:shadow-md"
+          disabled={
+            !stripe || !elements || isLoading || isPending || !confirmed
+          }
+        >
+          {isLoading ||
+            (isPending && (
+              <Icons.spinner
+                className="mr-2 h-4 w-4 animate-spin"
+                aria-hidden="true"
+              />
+            ))}
+          Pay
+        </Button>
+      )}
     </form>
   )
 }
-

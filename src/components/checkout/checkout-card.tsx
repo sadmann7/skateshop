@@ -71,4 +71,3 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
     </Card>
   )
 }
-
