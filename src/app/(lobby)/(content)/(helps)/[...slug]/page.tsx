@@ -95,7 +95,7 @@ export default function Page({ params }: PageProps) {
     slug: page.slug.replace(/^\/pages/, ""),
   }
 
-  const formattedPages = allPages.map((page: { slug: string }) => ({
+  const formattedPages = allPages.map((page) => ({
     ...page,
     slug: page.slug.replace(/^\/pages/, ""),
   }))
