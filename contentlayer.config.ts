@@ -7,6 +7,7 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings"
 import rehypeCodeTitles from "rehype-code-titles"
 import rehypePrettyCode from "rehype-pretty-code"
 import rehypeSlug from "rehype-slug"
+import remarkGfm from "remark-gfm"
 
 const computedFields: ComputedFields = {
   slug: {
@@ -111,6 +112,7 @@ export default makeSource({
   contentDirPath: "./src/content",
   documentTypes: [Post, Author, Page],
   mdx: {
+    remarkPlugins: [remarkGfm],
     rehypePlugins: [
       [
         // @ts-expect-error rehype-pretty-code has no types
@@ -119,9 +121,6 @@ export default makeSource({
           theme: {
             dark: "one-dark-pro",
             light: "github-light",
-          },
-          defaultLang: {
-            block: "typescript",
           },
         },
       ],

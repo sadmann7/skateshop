@@ -22,7 +22,7 @@ export default authMiddleware({
     "/about(.*)",
     "/contact(.*)",
     "/terms(.*)",
-    "/privacy(.*)", 
+    "/privacy(.*)",
     "/api(.*)",
   ],
   async afterAuth(auth, req) {

@@ -25,7 +25,9 @@ interface PageProps {
 
 function getPageFromParams(params: PageProps["params"]) {
   const slug = params?.slug?.join("/") ?? ""
-  const page = allPages.find((page) => page.slugAsParams === slug)
+  const page = allPages.find(
+    (page: { slugAsParams: string }) => page.slugAsParams === slug
+  )
 
   if (!page) {
     null
@@ -93,11 +95,11 @@ export default function Page({ params }: PageProps) {
     slug: page.slug.replace(/^\/pages/, ""),
   }
 
-  const formattedPages = allPages.map((page) => ({
+  const formattedPages = allPages.map((page: { slug: string }) => ({
     ...page,
     slug: page.slug.replace(/^\/pages/, ""),
   }))
-  
+
   return (
     <Shell as="article" variant="markdown">
       <PageHeader>
