@@ -103,7 +103,7 @@ export const siteConfig = {
         },
         {
           title: "Contact",
-          href: "/pages/Contact",
+          href: "/pages/contact",
           external: false,
         },
         {

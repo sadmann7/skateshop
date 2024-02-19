@@ -97,7 +97,7 @@ export default function Page({ params }: PageProps) {
     ...page,
     slug: page.slug.replace(/^\/pages/, ""),
   }))
-
+  
   return (
     <Shell as="article" variant="markdown">
       <PageHeader>
