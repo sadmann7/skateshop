@@ -25,7 +25,9 @@ interface PageProps {
 
 function getPageFromParams(params: PageProps["params"]) {
   const slug = params?.slug?.join("/") ?? ""
-  const page = allPages.find((page) => page.slugAsParams === slug)
+  const page = allPages.find(
+    (page: { slugAsParams: string }) => page.slugAsParams === slug
+  )
 
   if (!page) {
     null
