@@ -9,6 +9,8 @@ import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { type z } from "zod"
 
+import type { GetShippingRateProps } from "@/types/index"
+import { getShippingRate } from "@/lib/actions/easypost"
 import { calculateOrderAmount } from "@/lib/checkout"
 import { getStripeAccount } from "@/lib/fetchers/stripe"
 import { stripe } from "@/lib/stripe"
@@ -17,6 +19,7 @@ import {
   createPaymentIntentSchema,
   getStripeAccountSchema,
   manageSubscriptionSchema,
+  updatePaymentIntentSchema,
 } from "@/lib/validations/stripe"
 
 // Managing stripe subscriptions for a user
@@ -51,7 +54,7 @@ export async function manageSubscription(
   const stripeSession = await stripe.checkout.sessions.create({
     success_url: billingUrl,
     cancel_url: billingUrl,
-    payment_method_types: ["card"],
+    payment_method_types: ["card", "link"],
     mode: "subscription",
     billing_address_collection: "auto",
     customer_email: email,
@@ -133,7 +136,7 @@ export async function createAccountLink(
 // Creating a payment intent for a store
 export async function createPaymentIntent(
   rawInput: z.infer<typeof createPaymentIntentSchema>
-): Promise<{ clientSecret: string | null }> {
+): Promise<{ paymentId: string | null; clientSecret: string | null }> {
   try {
     const input = createPaymentIntentSchema.parse(rawInput)
 
@@ -196,9 +199,108 @@ export async function createPaymentIntent(
         application_fee_amount: fee,
         currency: "usd",
         metadata,
-        automatic_payment_methods: {
-          enabled: true,
-        },
+        // automatic_payment_methods: {
+        //   enabled: true,
+        // },
+        payment_method_types: ["card", "link"],
+        // payment_method_options: {
+        //   link: {
+        //     persistent_token: req.cookies[LINK_PERSISTENT_TOKEN_COOKIE_NAME],
+        //   }
+        // }
+      },
+      {
+        stripeAccount: payment.stripeAccountId,
+      }
+    )
+
+    // Update the cart with the payment intent id and client secret
+    if (paymentIntent.status === "requires_payment_method") {
+      await db
+        .update(carts)
+        .set({
+          paymentIntentId: paymentIntent.id,
+          clientSecret: paymentIntent.client_secret,
+        })
+        .where(eq(carts.id, cartId))
+    }
+
+    return {
+      paymentId: paymentIntent.id,
+      clientSecret: paymentIntent.client_secret,
+    }
+  } catch (err) {
+    console.error(err)
+    return {
+      paymentId: null,
+      clientSecret: null,
+    }
+  }
+}
+
+export async function updatePaymentIntentWithShipping(
+  rawInput: z.infer<typeof updatePaymentIntentSchema>
+): Promise<{ clientSecret: string | null }> {
+  try {
+    const input = updatePaymentIntentSchema.parse(rawInput)
+
+    const { isConnected, payment } = await getStripeAccount(input)
+
+    if (!isConnected || !payment) {
+      throw new Error("Store not connected to Stripe.")
+    }
+
+    if (!payment.stripeAccountId) {
+      throw new Error("Stripe account not found.")
+    }
+
+    const cartId = Number(cookies().get("cartId")?.value)
+
+    const checkoutItems: CheckoutItem[] = input.items.map((item) => ({
+      productId: item.id,
+      price: Number(item.price),
+      quantity: item.quantity,
+    }))
+
+    const metadata = {
+      cartId: isNaN(cartId) ? "" : cartId,
+      // Stripe metadata values must be within 500 characters string
+      items: JSON.stringify(checkoutItems),
+    }
+
+    const { total, fee } = calculateOrderAmount(input.items)
+
+    // Calculate shipping cost using EasyPost based on the address
+    const rate = await getShippingRate({
+      toAddress: input.toAddress,
+      items: input.items,
+      storeId: input.storeId,
+      // dimensions: input.dimensions,
+    } as GetShippingRateProps)
+
+    const shippingCost = rate.rate
+    if (typeof shippingCost !== "number" || shippingCost === null) {
+      throw new Error("Shipping cost not found.")
+    } else if (shippingCost < 0) {
+      throw new Error("Invalid shipping cost calculated.")
+    }
+
+    // Create a payment intent if it doesn't exist
+    const paymentIntent = await stripe.paymentIntents.create(
+      {
+        amount: total,
+        application_fee_amount: fee + Number((shippingCost * 100).toFixed(0)),
+        currency: "usd",
+        metadata,
+        // automatic_payment_methods: {
+        //   enabled: true,
+        // },
+        payment_method_types: ["card", "link"],
+        // payment_method_options: {
+        //   link: {
+        //     persistent_token: req.cookies[LINK_PERSISTENT_TOKEN_COOKIE_NAME],
+        //   }
+        // }
       },
       {
         stripeAccount: payment.stripeAccountId,

@@ -39,7 +39,9 @@ export default async function OrderSuccessPage({
   const storeId = Number(params.storeId)
   const {
     payment_intent,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     payment_intent_client_secret,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     redirect_status,
     delivery_postal_code,
   } = searchParams ?? {}

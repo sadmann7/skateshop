@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
+import ShippingLineItem from "@/components/checkout/shipping-line-item"
 
 interface CheckoutCardProps {
   storeId: number
@@ -51,6 +52,10 @@ export async function CheckoutCard({ storeId }: CheckoutCardProps) {
       <Separator className="mb-4" />
       <CardContent className="pb-6 pl-6 pr-0">
         <CartLineItems items={cartLineItems} className="max-h-[280px]" />
+        <ShippingLineItem
+          shipping={"Calculcated at checkout"}
+          className="max-h-[280px]"
+        />
       </CardContent>
       <Separator className="mb-4" />
       <CardFooter className="space-x-4">

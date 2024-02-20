@@ -20,6 +20,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: z.string().min(1),
     STRIPE_STD_MONTHLY_PRICE_ID: z.string().min(1),
     STRIPE_PRO_MONTHLY_PRICE_ID: z.string().min(1),
+    EASYPOST_API_KEY: z.string(),
     OPENAI_API_KEY: z.string().optional(),
   },
 
@@ -55,6 +56,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     STRIPE_STD_MONTHLY_PRICE_ID: process.env.STRIPE_STD_MONTHLY_PRICE_ID,
     STRIPE_PRO_MONTHLY_PRICE_ID: process.env.STRIPE_PRO_MONTHLY_PRICE_ID,
+    EASYPOST_API_KEY: process.env.EASYPOST_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
   /**

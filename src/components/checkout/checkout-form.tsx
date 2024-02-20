@@ -10,28 +10,62 @@ import {
 } from "@stripe/react-stripe-js"
 import { toast } from "sonner"
 
+import type { StripeAddress } from "@/types/index"
 import { absoluteUrl, cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 // See the stripe playemnts docs: https://stripe.com/docs/payments/quickstart
 
-interface CheckoutFormProps extends React.ComponentPropsWithoutRef<"form"> {
+interface CheckoutFormProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<"form">,
+    | "updateEmail"
+    | "updateAddress"
+    | "toggleConfirmed"
+    | "clearForm"
+    | "updateLoading"
+  > {
   storeId: number
+  userFullName: string
+  email: string
+  address: StripeAddress | undefined
+  debouncedAddress: StripeAddress | undefined
+  confirmed: boolean
+  updateEmail: (newEmail: string) => void
+  updateAddress: (newAddress: StripeAddress | undefined) => void
+  toggleConfirmed: (newConfirmed: boolean) => void
+  clearForm: () => void
+  isLoading: boolean
+  updateLoading: (newLoading: boolean) => void
+  isPending: boolean
 }
 
 export function CheckoutForm({
   storeId,
+  userFullName,
+  email,
+  address,
+  debouncedAddress,
+  confirmed,
+  updateEmail,
+  updateAddress,
+  toggleConfirmed,
+  clearForm,
+  isLoading,
+  updateLoading,
+  isPending,
   className,
   ...props
 }: CheckoutFormProps) {
+  //Stripe Elements variables
   const id = React.useId()
   const stripe = useStripe()
   const elements = useElements()
-  const [email, setEmail] = React.useState("")
-  const [message, setMessage] = React.useState<string | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false)
 
+  const [message, setMessage] = React.useState<string | null>(null)
+
+  // When the client secret changes, we need to update the payment intent
   React.useEffect(() => {
     if (!stripe) return
 
@@ -61,17 +95,20 @@ export function CheckoutForm({
       })
   }, [stripe])
 
+  // Payment submission
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!stripe || !elements) {
+    if (!stripe || !elements || !debouncedAddress) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return
     }
 
-    setIsLoading(true)
+    updateLoading(true)
     setMessage(null)
+    toggleConfirmed(false)
+    clearForm()
 
     const { error } = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
@@ -95,7 +132,7 @@ export function CheckoutForm({
 
     toast.error(message)
 
-    setIsLoading(false)
+    updateLoading(false)
   }
 
   return (
@@ -108,34 +145,55 @@ export function CheckoutForm({
     >
       <LinkAuthenticationElement
         id={`${id}-link-authentication-element`}
-        onChange={(e) => setEmail(e.value.email)}
+        options={{ defaultValues: { email: email } }}
+        onChange={(e) => updateEmail(e.value.email)}
       />
       <AddressElement
         id={`${id}-address-element`}
-        options={{ mode: "shipping" }}
-      />
-      <PaymentElement
-        id={`${id}-payment-element`}
         options={{
-          layout: "tabs",
+          mode: "shipping",
+          defaultValues: {
+            name: userFullName,
+            address: address,
+          },
+        }}
+        onChange={(e) => {
+          if (e.complete) updateAddress(e.value.address)
+        }}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        onFocus={(e) => {
+          toggleConfirmed(false)
         }}
       />
-      <Button
-        type="submit"
-        aria-label="Pay"
-        id={`${id}-checkout-form-submit`}
-        variant="secondary"
-        className="w-full bg-blue-600 hover:bg-blue-500 hover:shadow-md"
-        disabled={!stripe || !elements || isLoading}
-      >
-        {isLoading && (
-          <Icons.spinner
-            className="mr-2 size-4 animate-spin"
-            aria-hidden="true"
-          />
-        )}
-        Pay
-      </Button>
+      {confirmed && (
+        <PaymentElement
+          id={`${id}-payment-element`}
+          options={{
+            layout: "tabs",
+          }}
+        />
+      )}
+      {confirmed && (
+        <Button
+          type="submit"
+          aria-label="Pay"
+          id={`${id}-checkout-form-submit`}
+          variant="secondary"
+          className="w-full bg-blue-600 hover:bg-blue-500 hover:shadow-md"
+          disabled={
+            !stripe || !elements || isLoading || isPending || !confirmed
+          }
+        >
+          {isLoading ||
+            (isPending && (
+              <Icons.spinner
+                className="mr-2 size-4 animate-spin"
+                aria-hidden="true"
+              />
+            ))}
+          Pay
+        </Button>
+      )}
     </form>
   )
 }

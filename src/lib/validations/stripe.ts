@@ -35,3 +35,24 @@ export const getPaymentIntentSchema = z.object({
   paymentIntentId: z.string(),
   deliveryPostalCode: z.string().optional().nullable(),
 })
+
+export const updatePaymentIntentSchema = z.object({
+  toAddress: z.object({
+    company: z.string().optional(),
+    street1: z.string(),
+    street2: z.string().optional().nullable(),
+    city: z.string(),
+    state: z.string(),
+    zip: z.string(),
+    country: z.string(),
+    phone: z.string().optional(),
+  }),
+  storeId: z.number(),
+  dimensions: z.object({
+    length: z.number(),
+    width: z.number(),
+    height: z.number(),
+    weight: z.number(),
+  }),
+  items: z.array(cartLineItemSchema),
+})

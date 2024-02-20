@@ -26,6 +26,7 @@
   "dependencies": {
     "@clerk/nextjs": "^4.29.4",
     "@clerk/themes": "^1.7.9",
+    "@easypost/api": "^6.8.2",
     "@hookform/resolvers": "^3.3.4",
     "@loglib/tracker": "^0.8.0",
     "@planetscale/database": "^1.14.0",
