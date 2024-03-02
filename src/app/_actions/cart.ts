@@ -66,14 +66,14 @@ export async function getCartItemsAction() {
   //   throw new Error("Invalid cartId, please try again.")
   // }
 
-  if (!cartId) {
-    const cart = await db.insert(carts).values({
-      items: [],
-    })
+  // if (!cartId) {
+  //   const cart = await db.insert(carts).values({
+  //     items: [],
+  //   })
 
-    // Convert to string because cookieStore.set() only accepts string values
-    cookieStore.set("cartId", String(cart.insertId))
-  }
+  //   // Convert to string because cookieStore.set() only accepts string values
+  //   cookieStore.set("cartId", String(cart.insertId))
+  // }
 
   const cart = await db.query.carts.findFirst({
     where: eq(carts.id, cartId),

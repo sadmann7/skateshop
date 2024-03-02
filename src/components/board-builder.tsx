@@ -2,9 +2,11 @@
 
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { type Product } from "@/db/schema"
+import { productsRelations, type Product,products as PR } from "@/db/schema"
 import type { CartItem } from "@/types"
 import { toast } from "sonner"
+// import { carts, products, stores } from "@/db/schema"
+import { db } from "@/db"
 
 import { sortOptions } from "@/config/products"
 import { cn } from "@/lib/utils"
@@ -33,24 +35,34 @@ import { Icons } from "@/components/icons"
 import { PaginationButton } from "@/components/pagination-button"
 import { ProductCard } from "@/components/product-card"
 import { addToCartAction, deleteCartItemAction } from "@/app/_actions/cart"
+import { desc } from "drizzle-orm"
 
 interface BoardBuilderProps {
   products: Product[]
   pageCount: number
   subcategory: string | null
   cartItems: CartItem[]
+  app?: any
 }
 
-export function BoardBuilder({
+export  function BoardBuilder({
   products,
   pageCount,
   subcategory,
   cartItems,
+  app
 }: BoardBuilderProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [isPending, startTransition] = React.useTransition()
+
+
+  // const allProducts  = await db
+  //   .select()
+  //   .from(app)
+  //   .limit(8)
+    // .orderBy(desc(app.createdAt))
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
@@ -78,6 +90,7 @@ export function BoardBuilder({
   // Price filter
   const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 100])
   const debouncedPrice = useDebounce(priceRange, 500)
+
 
   React.useEffect(() => {
     const [min, max] = debouncedPrice
@@ -254,7 +267,7 @@ export function BoardBuilder({
         </div>
       ) : null}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
+        {app?.map((product) => (
           <ProductCard
             key={product.id}
             variant="switchable"

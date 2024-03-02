@@ -20,6 +20,7 @@ import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
+import { BoardBuilder } from "@/components/board-builder"
 
 export const runtime = "edge"
 
@@ -173,9 +174,8 @@ export default async function IndexPage() {
           ]?.subcategories.map((subcategory) => (
             <Link
               key={subcategory.slug}
-              href={`/categories/${String(productCategories[0]?.title)}/${
-                subcategory.slug
-              }`}
+              href={`/categories/${String(productCategories[0]?.title)}/${subcategory.slug
+                }`}
             >
               <Badge variant="secondary" className="rounded px-3 py-1">
                 {subcategory.title}
@@ -184,6 +184,12 @@ export default async function IndexPage() {
             </Link>
           ))}
         </div>
+        {/* <BoardBuilder
+          products={productsTransaction.items}
+          pageCount={pageCount}
+          subcategory={activeSubcategory}
+          cartItems={cartItems ?? []}
+        /> */}
       </Shell>
     </div>
   )
