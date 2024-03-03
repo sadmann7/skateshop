@@ -1,1 +1,0 @@
-ALTER TABLE `carts` ADD `isClosed` boolean DEFAULT false NOT NULL;

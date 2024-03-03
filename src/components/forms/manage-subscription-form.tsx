@@ -50,7 +50,7 @@ export function ManageSubscriptionForm({
             aria-hidden="true"
           />
         )}
-        {isCurrentPlan ? "Manage" : "Subscribe"}
+        {isCurrentPlan ? "Manage plan" : "Subscribe now"}
       </Button>
     </form>
   )

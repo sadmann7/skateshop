@@ -74,10 +74,9 @@ export async function getSubscriptionPlan(input: {
           isActive: isSubscribed && !isCanceled,
         }
       },
-      ["user-subscription"],
+      [`${input.userId}-subscription`],
       {
         revalidate: 900,
-        tags: ["user-subscription"],
       }
     )()
   } catch (err) {

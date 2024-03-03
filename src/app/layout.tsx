@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { ClerkProvider } from "@clerk/nextjs"
 
 import "@/styles/globals.css"

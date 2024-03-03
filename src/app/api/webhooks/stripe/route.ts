@@ -1,7 +1,8 @@
+import { revalidateTag } from "next/cache"
 import { headers } from "next/headers"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import type { CheckoutItem } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
@@ -89,6 +90,7 @@ export async function POST(req: Request) {
           }
         )
       }
+      revalidateTag(`${invoicePaymentSucceeded?.metadata?.userId}-subscription`)
       break
 
     // Handling payment events

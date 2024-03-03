@@ -33,12 +33,12 @@ export const filterProductsSchema = z.object({
 })
 
 export const getProductSchema = z.object({
-  id: z.number(),
-  storeId: z.number(),
+  id: z.string(),
+  storeId: z.string(),
 })
 
 export const getProductInventorySchema = z.object({
-  id: z.number(),
+  id: z.string(),
 })
 
 export const getProductsSchema = z.object({
@@ -53,6 +53,6 @@ export const getProductsSchema = z.object({
 })
 
 export const updateProductRatingSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   rating: z.number(),
 })

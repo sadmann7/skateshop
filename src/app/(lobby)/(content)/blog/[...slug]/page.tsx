@@ -8,7 +8,7 @@ import "@/styles/mdx.css"
 import { type Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { ChevronLeftIcon } from "@radix-ui/react-icons"
 
 import { absoluteUrl, cn, formatDate } from "@/lib/utils"

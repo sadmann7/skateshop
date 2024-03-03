@@ -1,1 +1,0 @@
-ALTER TABLE `products` ADD `subcategories` json DEFAULT ('null');

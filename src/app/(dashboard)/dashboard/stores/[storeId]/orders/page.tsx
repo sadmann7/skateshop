@@ -4,7 +4,7 @@ import { unstable_noStore as noStore } from "next/cache"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores, type Order } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 

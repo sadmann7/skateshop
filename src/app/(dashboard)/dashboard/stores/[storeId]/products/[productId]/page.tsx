@@ -2,7 +2,7 @@ import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { products } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { and, eq } from "drizzle-orm"
 
 import {

@@ -30,7 +30,7 @@ export async function getFeaturedStores() {
       },
       ["featured-stores"],
       {
-        revalidate: 3600,
+        revalidate: 1,
         tags: ["featured-stores"],
       }
     )()

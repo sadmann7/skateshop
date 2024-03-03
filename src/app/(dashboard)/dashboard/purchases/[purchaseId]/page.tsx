@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
 import { orders, stores } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { and, eq } from "drizzle-orm"
 
 import { getOrderLineItems } from "@/lib/fetchers/order"

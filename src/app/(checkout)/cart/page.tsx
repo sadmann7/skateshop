@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 
 import { getUniqueStoreIds } from "@/lib/fetchers/cart"
 import { cn } from "@/lib/utils"

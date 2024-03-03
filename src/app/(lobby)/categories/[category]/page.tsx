@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { type Product } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 
 import { getProducts } from "@/lib/fetchers/product"

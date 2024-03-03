@@ -1,1 +1,0 @@
-ALTER TABLE `newsletter_subscriptions` DROP PRIMARY KEY

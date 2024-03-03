@@ -1,23 +1,31 @@
 import { db } from "@/db"
-import { emailPreferences } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { notifications } from "@/db/schema"
+import { env } from "@/env.js"
 import { currentUser } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 
 import { resend } from "@/lib/resend"
-import { joinNewsletterSchema } from "@/lib/validations/email"
+import { joinNewsletterSchema } from "@/lib/validations/notification"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
 export async function POST(req: Request) {
   const input = joinNewsletterSchema.parse(await req.json())
 
   try {
-    const emailPreference = await db.query.emailPreferences.findFirst({
-      where: eq(emailPreferences.email, input.email),
-    })
+    const notification = await db
+      .select({
+        id: notifications.id,
+        newsletter: notifications.newsletter,
+        email: notifications.email,
+        token: notifications.token,
+      })
+      .from(notifications)
+      .where(eq(notifications.email, input.email))
+      .execute()
+      .then((res) => res[0])
 
-    if (emailPreference?.newsletter) {
+    if (notification?.newsletter) {
       return new Response("You are already subscribed to the newsletter.", {
         status: 409,
       })
@@ -25,58 +33,41 @@ export async function POST(req: Request) {
 
     const user = await currentUser()
 
-    const subject = input.subject ?? "Welcome to our newsletter"
-
-    // If email preference exists, update it and send the email
-    if (emailPreference) {
-      await db
-        .update(emailPreferences)
-        .set({
+    await Promise.all([
+      resend.emails.send({
+        from: env.EMAIL_FROM_ADDRESS,
+        to: input.email,
+        subject: input.subject ?? "Welcome to TrendsAI",
+        react: NewsletterWelcomeEmail({
+          firstName: user?.firstName ?? "",
+          fromEmail: env.EMAIL_FROM_ADDRESS,
+          token: notification?.token ?? input.token,
+        }),
+      }),
+      db
+        .insert(notifications)
+        .values({
+          email: input.email,
+          token: input.token,
           newsletter: true,
         })
-        .where(eq(emailPreferences.email, input.email))
-
-      await resend.emails.send({
-        from: env.EMAIL_FROM_ADDRESS,
-        to: input.email,
-        subject,
-        react: NewsletterWelcomeEmail({
-          firstName: user?.firstName ?? undefined,
-          fromEmail: env.EMAIL_FROM_ADDRESS,
-          token: emailPreference.token,
+        .onDuplicateKeyUpdate({
+          set: {
+            newsletter: true,
+          },
         }),
-      })
-    } else {
-      // If email preference does not exist, create it and send the email
-      await resend.emails.send({
-        from: env.EMAIL_FROM_ADDRESS,
-        to: input.email,
-        subject,
-        react: NewsletterWelcomeEmail({
-          firstName: user?.firstName ?? undefined,
-          fromEmail: env.EMAIL_FROM_ADDRESS,
-          token: input.token,
-        }),
-      })
-
-      await db.insert(emailPreferences).values({
-        email: input.email,
-        token: input.token,
-        userId: user?.id,
-        newsletter: true,
-      })
-    }
+    ])
 
     return new Response(null, { status: 200 })
-  } catch (err) {
-    console.error(err)
+  } catch (error) {
+    console.error(error)
 
-    if (err instanceof z.ZodError) {
-      return new Response(err.message, { status: 422 })
+    if (error instanceof z.ZodError) {
+      return new Response(error.message, { status: 422 })
     }
 
-    if (err instanceof Error) {
-      return new Response(err.message, { status: 500 })
+    if (error instanceof Error) {
+      return new Response(error.message, { status: 500 })
     }
 
     return new Response("Something went wrong", { status: 500 })

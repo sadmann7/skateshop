@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { eq } from "drizzle-orm"
 
 import { getOrderLineItems } from "@/lib/fetchers/order"

@@ -1,4 +1,5 @@
-import { env } from "@/env.mjs"
+import { isRedirectError } from "next/dist/client/components/redirect"
+import { env } from "@/env.js"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
@@ -6,6 +7,8 @@ import { customAlphabet } from "nanoid"
 import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
 import * as z from "zod"
+
+import { unknownError } from "@/lib/constants"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -20,17 +23,13 @@ export function createId(length = 7) {
 
 export function formatPrice(
   price: number | string,
-  options: {
-    currency?: "USD" | "EUR" | "GBP" | "BDT"
-    notation?: Intl.NumberFormatOptions["notation"]
-  } = {}
+  options: Intl.NumberFormatOptions = {}
 ) {
-  const { currency = "USD", notation = "compact" } = options
-
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency,
-    notation,
+    currency: options.currency ?? "USD",
+    notation: options.notation ?? "compact",
+    ...options,
   }).format(Number(price))
 }
 
@@ -138,8 +137,12 @@ export function catchError(err: unknown) {
     return toast.error(errors.join("\n"))
   } else if (err instanceof Error) {
     return toast.error(err.message)
+  } else if (isClerkAPIResponseError(err)) {
+    return toast.error(err.errors[0]?.longMessage ?? unknownError)
+  } else if (isRedirectError(err)) {
+    throw err
   } else {
-    return toast.error("Something went wrong, please try again later.")
+    return toast.error(unknownError)
   }
 }
 

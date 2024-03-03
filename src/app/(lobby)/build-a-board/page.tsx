@@ -1,7 +1,7 @@
 import { type Metadata } from "next"
 import { cookies } from "next/headers"
 import Link from "next/link"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"

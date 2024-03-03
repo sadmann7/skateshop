@@ -1,6 +1,6 @@
 import * as React from "react"
 import { type Metadata } from "next"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { allPosts } from "contentlayer/generated"
 
 import { Separator } from "@/components/ui/separator"

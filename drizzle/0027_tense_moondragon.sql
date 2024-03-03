@@ -1,1 +1,0 @@
-ALTER TABLE `payments` DROP COLUMN `userId`;

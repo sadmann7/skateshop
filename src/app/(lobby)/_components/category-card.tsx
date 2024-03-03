@@ -2,10 +2,7 @@ import * as React from "react"
 import Link from "next/link"
 import type { Category } from "@/types"
 
-import {
-  getProductCount,
-  type ProductCountPromise,
-} from "@/lib/fetchers/product"
+import { getProductCount } from "@/lib/fetchers/product"
 import {
   Card,
   CardContent,
@@ -43,11 +40,11 @@ export function CategoryCard({ category }: CategoryCardProps) {
 }
 
 interface ProductCountProps {
-  productCountPromise: ProductCountPromise
+  productCountPromise: ReturnType<typeof getProductCount>
 }
 
 async function ProductCount({ productCountPromise }: ProductCountProps) {
-  const productCount = await productCountPromise
+  const { data } = await productCountPromise
 
-  return <CardDescription>{productCount} products</CardDescription>
+  return <CardDescription>{data} products</CardDescription>
 }

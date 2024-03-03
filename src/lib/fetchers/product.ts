@@ -7,14 +7,11 @@ import {
 import { db } from "@/db"
 import { products, type Product } from "@/db/schema"
 import type { Category } from "@/types"
-import { and, asc, desc, eq, gt, gte, inArray, lt, lte, sql } from "drizzle-orm"
+import { and, asc, desc, eq, gte, inArray, lte, sql } from "drizzle-orm"
 import { stores } from "drizzle/schema"
-import { z } from "zod"
+import { type z } from "zod"
 
-import {
-  getProductSchema,
-  type getProductsSchema,
-} from "@/lib/validations/product"
+import { type getProductsSchema } from "@/lib/validations/product"
 
 // See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
 export async function getFeaturedProducts() {
@@ -43,12 +40,11 @@ export async function getFeaturedProducts() {
       },
       ["featured-products"],
       {
-        revalidate: 3600,
+        revalidate: 1,
         tags: ["featured-products"],
       }
     )()
   } catch (err) {
-    console.error(err)
     return []
   }
 }
@@ -65,7 +61,7 @@ export async function getProducts(input: z.infer<typeof getProductsSchema>) {
     const categories =
       (input.categories?.split(".") as Product["category"][]) ?? []
     const subcategories = input.subcategories?.split(".") ?? []
-    const storeIds = input.store_ids?.split(".").map(Number) ?? []
+    const storeIds = input.store_ids?.split(".") ?? []
 
     const transaction = await db.transaction(async (tx) => {
       const data = await tx
@@ -156,7 +152,7 @@ export async function getProducts(input: z.infer<typeof getProductsSchema>) {
 export async function getProductCount({ category }: { category: Category }) {
   noStore()
   try {
-    return await db
+    const count = await db
       .select({
         count: sql<number>`count(*)`.mapWith(Number),
       })
@@ -164,76 +160,15 @@ export async function getProductCount({ category }: { category: Category }) {
       .where(eq(products.category, category.title))
       .execute()
       .then((res) => res[0]?.count ?? 0)
-  } catch (err) {
-    console.error(err)
-    return null
-  }
-}
 
-export type ProductCountPromise = ReturnType<typeof getProductCount>
-
-export async function getNextProductId(
-  rawInput: z.infer<typeof getProductSchema>
-) {
-  noStore()
-  try {
-    const input = getProductSchema.parse(rawInput)
-
-    const product = await db.query.products.findFirst({
-      columns: {
-        id: true,
-      },
-      where: and(
-        eq(products.storeId, input.storeId),
-        gt(products.id, input.id)
-      ),
-      orderBy: asc(products.id),
-    })
-
-    if (!product) {
-      throw new Error("Product not found.")
+    return {
+      data: count,
+      error: null,
     }
-
-    return product.id
   } catch (err) {
-    console.error(err)
-    throw err instanceof Error
-      ? err.message
-      : err instanceof z.ZodError
-        ? err.issues.map((issue) => issue.message).join("\n")
-        : new Error("Unknown error.")
-  }
-}
-
-export async function getPreviousProductId(
-  rawInput: z.infer<typeof getProductSchema>
-) {
-  noStore()
-  try {
-    const input = getProductSchema.parse(rawInput)
-
-    const product = await db.query.products.findFirst({
-      columns: {
-        id: true,
-      },
-      where: and(
-        eq(products.storeId, input.storeId),
-        lt(products.id, input.id)
-      ),
-      orderBy: desc(products.id),
-    })
-
-    if (!product) {
-      throw new Error("Product not found.")
+    return {
+      data: 0,
+      error: err,
     }
-
-    return product.id
-  } catch (err) {
-    console.error(err)
-    throw err instanceof Error
-      ? err.message
-      : err instanceof z.ZodError
-        ? err.issues.map((issue) => issue.message).join("\n")
-        : new Error("Unknown error.")
   }
 }

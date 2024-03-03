@@ -1,1 +1,0 @@
-ALTER TABLE `orders` ADD `itemCount` int DEFAULT 0;

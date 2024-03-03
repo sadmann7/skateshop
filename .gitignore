@@ -2,7 +2,6 @@
 
 # dependencies
 /node_modules
-/.react-email/node_modules
 /.pnp
 .pnp.js
 
@@ -13,7 +12,6 @@
 
 # next.js
 /.next/
-/.react-email/.next/
 /out/
 next-env.d.ts
 
@@ -37,6 +35,9 @@ yarn-error.log*
 
 # web vitals
 .unlighthouse
+
+# external
+.react-email
 
 # vercel
 .vercel

@@ -1,1 +1,0 @@
-ALTER TABLE `newsletter_subscriptions` ADD PRIMARY KEY (`email`);

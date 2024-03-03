@@ -2,7 +2,7 @@ import * as React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
 import { getCacheduser } from "@/lib/fetchers/auth"

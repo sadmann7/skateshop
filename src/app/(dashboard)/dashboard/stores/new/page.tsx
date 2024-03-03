@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-import { env } from "@/env.mjs"
+import { env } from "@/env.js"
 
 import { getCacheduser } from "@/lib/fetchers/auth"
 import {
