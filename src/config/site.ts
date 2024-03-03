@@ -98,22 +98,22 @@ export const siteConfig = {
       items: [
         {
           title: "About",
-          href: "/pages/about",
+          href: "/about",
           external: false,
         },
         {
           title: "Contact",
-          href: "/pages/Contact",
+          href: "/contact",
           external: false,
         },
         {
           title: "Terms",
-          href: "/pages/terms",
+          href: "/terms",
           external: false,
         },
         {
           title: "Privacy",
-          href: "/pages/privacy",
+          href: "/privacy",
           external: false,
         },
       ],
