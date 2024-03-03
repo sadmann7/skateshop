@@ -1,7 +1,7 @@
 import * as React from "react"
 
-import { getGithubStars } from "@/lib/fetchers/github"
-import { getFeaturedProducts } from "@/lib/fetchers/product"
+import { getGithubStars } from "@/lib/actions/github"
+import { getFeaturedProducts } from "@/lib/actions/product"
 import { getFeaturedStores } from "@/lib/fetchers/store"
 
 import { Lobby } from "./_components/lobby"

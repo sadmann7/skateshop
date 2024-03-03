@@ -5,7 +5,7 @@ import { env } from "@/env.js"
 import { CheckIcon } from "@radix-ui/react-icons"
 
 import { storeSubscriptionPlans } from "@/config/subscriptions"
-import { getCacheduser } from "@/lib/fetchers/auth"
+import { getCacheduser } from "@/lib/actions/auth"
 import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { cn, formatDate, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"

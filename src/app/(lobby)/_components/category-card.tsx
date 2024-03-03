@@ -2,7 +2,7 @@ import * as React from "react"
 import Link from "next/link"
 import type { Category } from "@/types"
 
-import { getProductCount } from "@/lib/fetchers/product"
+import { getProductCount } from "@/lib/actions/product"
 import {
   Card,
   CardContent,

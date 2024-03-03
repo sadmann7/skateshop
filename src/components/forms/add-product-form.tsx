@@ -13,7 +13,7 @@ import { type z } from "zod"
 import { getSubcategories } from "@/config/products"
 import { addProduct, checkProduct } from "@/lib/actions/product"
 import { catchError, isArrayOfFile } from "@/lib/utils"
-import { productSchema } from "@/lib/validations/product"
+import { newProductSchema } from "@/lib/validations/product"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -43,7 +43,7 @@ interface AddProductFormProps {
   storeId: number
 }
 
-type Inputs = z.infer<typeof productSchema>
+type Inputs = z.infer<typeof newProductSchema>
 
 const { useUploadThing } = generateReactHelpers<OurFileRouter>()
 
@@ -55,7 +55,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
   const { isUploading, startUpload } = useUploadThing("productImage")
 
   const form = useForm<Inputs>({
-    resolver: zodResolver(productSchema),
+    resolver: zodResolver(newProductSchema),
     defaultValues: {
       name: "",
       description: "",

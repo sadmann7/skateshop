@@ -1,130 +1,239 @@
 "use server"
 
-import { unstable_noStore as noStore, revalidatePath } from "next/cache"
-import * as productsJson from "@/assets/data/products.json"
-import { db } from "@/db"
-import { products, type Product } from "@/db/schema"
-import { faker } from "@faker-js/faker"
-import { and, desc, eq, like, not } from "drizzle-orm"
-import { z } from "zod"
-
-import { getSubcategories, productTags } from "@/config/products"
 import {
-  getProductSchema,
-  productSchema,
+  unstable_cache as cache,
+  unstable_noStore as noStore,
+  revalidatePath,
+} from "next/cache"
+import { db } from "@/db"
+import { products, stores, type Product } from "@/db/schema"
+import type { Category, StoredFile } from "@/types"
+import {
+  and,
+  asc,
+  desc,
+  eq,
+  gte,
+  inArray,
+  like,
+  lte,
+  not,
+  sql,
+} from "drizzle-orm"
+import { type z } from "zod"
+
+import { getErrorMessage } from "@/lib/handle-error"
+import type {
+  addProductSchema,
   updateProductRatingSchema,
 } from "@/lib/validations/product"
+import { type getProductsSchema } from "@/lib/validations/product"
 
-export async function seedProducts({
-  storeId,
-  count,
-}: {
-  storeId: number
-  count?: number
-}) {
-  const productCount = count ?? 10
-
-  const data: Product[] = []
-
-  for (let i = 0; i < productCount; i++) {
-    const category =
-      faker.helpers.shuffle(products.category.enumValues)[0] ?? "skateboards"
-
-    const subcategories = getSubcategories(category)
-
-    data.push({
-      id: new Date().getTime() + new Date().getMilliseconds() + i,
-      name: faker.commerce.productName(),
-      description: faker.commerce.productDescription(),
-      price: faker.commerce.price(),
-      images: Array.from({ length: 3 }).map(() => ({
-        id: faker.string.uuid(),
-        name: faker.system.fileName(),
-        url: faker.image.urlLoremFlickr({
-          category,
-          width: 640,
-          height: 480,
-        }),
-      })),
-      category,
-      subcategory:
-        faker.helpers.shuffle(subcategories)[0]?.value ??
-        subcategories[0]?.value ??
-        "decks",
-      storeId,
-      inventory: faker.number.float({ min: 50, max: 100 }),
-      rating: faker.number.float({ min: 0, max: 5 }),
-      tags: productTags.slice(0, faker.number.float({ min: 0, max: 5 })),
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.past(),
-    })
+// See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
+export async function getFeaturedProducts() {
+  try {
+    return await cache(
+      async () => {
+        return db
+          .select({
+            id: products.id,
+            name: products.name,
+            images: products.images,
+            category: products.category,
+            price: products.price,
+            inventory: products.inventory,
+            stripeAccountId: stores.stripeAccountId,
+          })
+          .from(products)
+          .limit(8)
+          .leftJoin(stores, eq(products.storeId, stores.id))
+          .groupBy(products.id)
+          .orderBy(
+            desc(sql<number>`count(${stores.stripeAccountId})`),
+            desc(sql<number>`count(${products.images})`),
+            desc(products.createdAt)
+          )
+      },
+      ["featured-products"],
+      {
+        revalidate: 1,
+        tags: ["featured-products"],
+      }
+    )()
+  } catch (err) {
+    console.error(err)
+    return []
   }
-
-  await db.delete(products).where(eq(products.storeId, storeId))
-  console.log(`📝 Inserting ${data.length} products`)
-  await db.insert(products).values(data)
 }
 
-export async function seedRealProducts({ storeId }: { storeId: number }) {
-  const data: Product[] = productsJson.map((product) => ({
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    images: product.images.map((image) => ({
-      id: image.id,
-      name: image.name,
-      url: image.url,
-    })),
-    category: product.category as Product["category"],
-    subcategory: product.subcategory,
-    storeId,
-    inventory: product.inventory,
-    rating: product.rating,
-    tags: product.tags,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }))
+// See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
+export async function getProducts(input: z.infer<typeof getProductsSchema>) {
+  noStore()
+  try {
+    const [column, order] = (input.sort?.split(".") as [
+      keyof Product | undefined,
+      "asc" | "desc" | undefined,
+    ]) ?? ["createdAt", "desc"]
+    const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
+    const categories =
+      (input.categories?.split(".") as Product["category"][]) ?? []
+    const subcategories = input.subcategories?.split(".") ?? []
+    const storeIds = input.store_ids?.split(".") ?? []
 
-  await db.delete(products).where(eq(products.storeId, storeId))
-  console.log(`📝 Inserting ${data.length} products`)
-  await db.insert(products).values(data)
-}
+    const transaction = await db.transaction(async (tx) => {
+      const data = await tx
+        .select({
+          id: products.id,
+          name: products.name,
+          description: products.description,
+          images: products.images,
+          category: products.category,
+          subcategory: products.subcategory,
+          price: products.price,
+          inventory: products.inventory,
+          rating: products.rating,
+          tags: products.tags,
+          storeId: products.storeId,
+          createdAt: products.createdAt,
+          updatedAt: products.updatedAt,
+          stripeAccountId: stores.stripeAccountId,
+        })
+        .from(products)
+        .limit(input.limit)
+        .offset(input.offset)
+        .leftJoin(stores, eq(products.storeId, stores.id))
+        .where(
+          and(
+            categories.length
+              ? inArray(products.category, categories)
+              : undefined,
+            subcategories.length
+              ? inArray(products.subcategory, subcategories)
+              : undefined,
+            minPrice ? gte(products.price, minPrice) : undefined,
+            maxPrice ? lte(products.price, maxPrice) : undefined,
+            storeIds.length ? inArray(products.storeId, storeIds) : undefined,
+            input.active === "true"
+              ? sql`(${stores.stripeAccountId}) is not null`
+              : undefined
+          )
+        )
+        .groupBy(products.id)
+        .orderBy(
+          column && column in products
+            ? order === "asc"
+              ? asc(products[column])
+              : desc(products[column])
+            : desc(products.createdAt)
+        )
 
-const extendedProductSchema = productSchema.extend({
-  storeId: z.number(),
-  images: z
-    .array(z.object({ id: z.string(), name: z.string(), url: z.string() }))
-    .nullable(),
-})
+      const count = await tx
+        .select({
+          count: sql<number>`count(*)`,
+        })
+        .from(products)
+        .where(
+          and(
+            categories.length
+              ? inArray(products.category, categories)
+              : undefined,
+            subcategories.length
+              ? inArray(products.subcategory, subcategories)
+              : undefined,
+            minPrice ? gte(products.price, minPrice) : undefined,
+            maxPrice ? lte(products.price, maxPrice) : undefined,
+            storeIds.length ? inArray(products.storeId, storeIds) : undefined
+          )
+        )
+        .execute()
+        .then((res) => res[0]?.count ?? 0)
 
-export async function filterProducts(query: string) {
-  if (query.length === 0) return null
+      const pageCount = Math.ceil(count / input.limit)
 
-  const filteredProducts = await db
-    .select({
-      id: products.id,
-      name: products.name,
-      category: products.category,
+      return {
+        data,
+        pageCount,
+      }
     })
-    .from(products)
-    .where(like(products.name, `%${query}%`))
-    .orderBy(desc(products.createdAt))
-    .limit(10)
 
-  const productsByCategory = Object.values(products.category.enumValues).map(
-    (category) => ({
-      category,
-      products: filteredProducts.filter(
-        (product) => product.category === category
-      ),
-    })
-  )
-
-  return productsByCategory
+    return transaction
+  } catch (err) {
+    console.error(err)
+    return {
+      data: [],
+      pageCount: 0,
+    }
+  }
 }
 
-export async function checkProduct(input: { name: string; id?: number }) {
+export async function getProductCount({ category }: { category: Category }) {
+  noStore()
+  try {
+    const count = await db
+      .select({
+        count: sql<number>`count(*)`.mapWith(Number),
+      })
+      .from(products)
+      .where(eq(products.category, category.title))
+      .execute()
+      .then((res) => res[0]?.count ?? 0)
+
+    return {
+      data: count,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: 0,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
+export async function filterProducts({ query }: { query: string }) {
+  noStore()
+
+  try {
+    if (query.length === 0) {
+      return {
+        data: null,
+        error: null,
+      }
+    }
+
+    const filteredProducts = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        category: products.category,
+      })
+      .from(products)
+      .where(like(products.name, `%${query}%`))
+      .orderBy(desc(products.createdAt))
+      .limit(10)
+
+    const productsByCategory = Object.values(products.category.enumValues).map(
+      (category) => ({
+        category,
+        products: filteredProducts.filter(
+          (product) => product.category === category
+        ),
+      })
+    )
+
+    return {
+      data: productsByCategory,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
+export async function checkProduct(input: { name: string; id?: string }) {
   noStore()
   try {
     const productWithSameName = await db.query.products.findFirst({
@@ -146,36 +255,35 @@ export async function checkProduct(input: { name: string; id?: number }) {
 }
 
 export async function addProduct(
-  rawInput: z.infer<typeof extendedProductSchema>
+  input: z.infer<typeof addProductSchema> & { storeId: string }
 ) {
-  const input = extendedProductSchema.parse(rawInput)
+  try {
+    const productWithSameName = await db.query.products.findFirst({
+      columns: {
+        id: true,
+      },
+      where: eq(products.name, input.name),
+    })
 
-  const productWithSameName = await db.query.products.findFirst({
-    columns: {
-      id: true,
-    },
-    where: eq(products.name, input.name),
-  })
+    if (productWithSameName) {
+      throw new Error("Product name already taken.")
+    }
 
-  if (productWithSameName) {
-    throw new Error("Product name already taken.")
+    await db.insert(products).values({
+      ...input,
+      images: JSON.stringify(input.images) as unknown as StoredFile[],
+    })
+
+    return revalidatePath(`/dashboard/stores/${input.storeId}/products.`)
+  } catch (err) {
+    return {
+      error: getErrorMessage(err),
+    }
   }
-
-  await db.insert(products).values({
-    ...input,
-    storeId: input.storeId,
-    images: input.images,
-  })
-
-  revalidatePath(`/dashboard/stores/${input.storeId}/products.`)
 }
 
-const extendedProductSchemaWithId = extendedProductSchema.extend({
-  id: z.number(),
-})
-
 export async function updateProduct(
-  input: z.infer<typeof extendedProductSchemaWithId>
+  input: z.infer<typeof addProductSchema> & { id: string; storeId: string }
 ) {
   const product = await db.query.products.findFirst({
     where: and(eq(products.id, input.id), eq(products.storeId, input.storeId)),
@@ -185,16 +293,20 @@ export async function updateProduct(
     throw new Error("Product not found.")
   }
 
-  await db.update(products).set(input).where(eq(products.id, input.id))
+  await db
+    .update(products)
+    .set({
+      ...input,
+      images: JSON.stringify(input.images) as unknown as StoredFile[],
+    })
+    .where(eq(products.id, input.id))
 
   revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`)
 }
 
 export async function updateProductRating(
-  rawInput: z.infer<typeof updateProductRatingSchema>
+  input: z.infer<typeof updateProductRatingSchema>
 ) {
-  const input = updateProductRatingSchema.parse(rawInput)
-
   const product = await db.query.products.findFirst({
     columns: {
       id: true,
@@ -215,11 +327,7 @@ export async function updateProductRating(
   revalidatePath("/")
 }
 
-export async function deleteProduct(
-  rawInput: z.infer<typeof getProductSchema>
-) {
-  const input = getProductSchema.parse(rawInput)
-
+export async function deleteProduct(input: { id: string; storeId: string }) {
   const product = await db.query.products.findFirst({
     columns: {
       id: true,

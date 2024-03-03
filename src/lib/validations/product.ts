@@ -1,7 +1,7 @@
 import { products } from "@/db/schema"
 import * as z from "zod"
 
-export const productSchema = z.object({
+export const addProductSchema = z.object({
   name: z.string().min(1, {
     message: "Must be at least 1 character",
   }),
@@ -30,11 +30,6 @@ export const productSchema = z.object({
 
 export const filterProductsSchema = z.object({
   query: z.string(),
-})
-
-export const getProductSchema = z.object({
-  id: z.string(),
-  storeId: z.string(),
 })
 
 export const getProductInventorySchema = z.object({

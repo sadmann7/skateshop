@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
-import { getCacheduser } from "@/lib/fetchers/auth"
+import { getCacheduser } from "@/lib/actions/auth"
 import { getUserStores } from "@/lib/fetchers/store"
 import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { getDashboardRedirectPath, getPlanFeatures } from "@/lib/subscription"

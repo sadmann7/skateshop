@@ -1,14 +1,8 @@
-import { isRedirectError } from "next/dist/client/components/redirect"
 import { env } from "@/env.js"
-import { isClerkAPIResponseError } from "@clerk/nextjs"
 import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
 import { customAlphabet } from "nanoid"
-import { toast } from "sonner"
 import { twMerge } from "tailwind-merge"
-import * as z from "zod"
-
-import { unknownError } from "@/lib/constants"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -127,38 +121,6 @@ export function getUserEmail(user: User | null) {
       ?.emailAddress ?? ""
 
   return email
-}
-
-export function catchError(err: unknown) {
-  if (err instanceof z.ZodError) {
-    const errors = err.issues.map((issue) => {
-      return issue.message
-    })
-    return toast.error(errors.join("\n"))
-  } else if (err instanceof Error) {
-    return toast.error(err.message)
-  } else if (isClerkAPIResponseError(err)) {
-    return toast.error(err.errors[0]?.longMessage ?? unknownError)
-  } else if (isRedirectError(err)) {
-    throw err
-  } else {
-    return toast.error(unknownError)
-  }
-}
-
-export function catchClerkError(err: unknown) {
-  const unknownErr = "Something went wrong, please try again later."
-
-  if (err instanceof z.ZodError) {
-    const errors = err.issues.map((issue) => {
-      return issue.message
-    })
-    return toast(errors.join("\n"))
-  } else if (isClerkAPIResponseError(err)) {
-    return toast.error(err.errors[0]?.longMessage ?? unknownErr)
-  } else {
-    return toast.error(unknownErr)
-  }
 }
 
 export function isMacOs() {

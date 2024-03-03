@@ -7,7 +7,7 @@ import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
-import { getCacheduser } from "@/lib/fetchers/auth"
+import { getCacheduser } from "@/lib/actions/auth"
 import { getUserEmail } from "@/lib/utils"
 import { purchasesSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"

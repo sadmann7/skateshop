@@ -19,10 +19,10 @@ export const stores = mysqlTable("stores", {
   id: varchar("id", { length: 128 })
     .$defaultFn(() => createId())
     .primaryKey(),
-  userId: varchar("user_id", { length: 255 }).notNull(),
+  userId: varchar("user_id", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 191 }).notNull(),
   description: text("description"),
-  slug: text("slug"),
+  slug: text("slug").unique(),
   active: boolean("active").notNull().default(false),
   stripeAccountId: varchar("stripe_account_id", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -95,13 +95,12 @@ export const notifications = mysqlTable("notifications", {
   id: varchar("id", { length: 128 })
     .$defaultFn(() => createId())
     .primaryKey(),
-  userId: varchar("user_id", { length: 255 }),
+  userId: varchar("user_id", { length: 255 }).unique(),
   email: varchar("email", { length: 191 }).notNull().unique(),
   token: varchar("token", { length: 191 }).notNull().unique(),
   referredBy: varchar("referred_by", { length: 191 }),
   newsletter: boolean("newsletter").default(false).notNull(),
   marketing: boolean("marketing").default(false).notNull(),
-  transactional: boolean("transactional").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").onUpdateNow(),
 })
@@ -113,7 +112,7 @@ export const subscriptions = mysqlTable("subscriptions", {
   id: varchar("id", { length: 128 })
     .$defaultFn(() => createId())
     .primaryKey(),
-  userId: varchar("user_id", { length: 255 }).unique().notNull(),
+  userId: varchar("user_id", { length: 255 }).notNull().unique(),
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
   stripePriceId: varchar("stripe_price_id", { length: 255 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),

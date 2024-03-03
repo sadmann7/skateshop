@@ -3,7 +3,7 @@ import { db } from "@/db"
 import { stores } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
-import { getCacheduser } from "@/lib/fetchers/auth"
+import { getCacheduser } from "@/lib/actions/auth"
 import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
 import { getDashboardRedirectPath } from "@/lib/subscription"
 import {

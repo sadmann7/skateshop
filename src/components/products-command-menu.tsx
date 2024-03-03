@@ -41,7 +41,7 @@ export function ProductsCommandMenu() {
 
     async function fetchData() {
       try {
-        const data = await filterProducts(debouncedQuery)
+        const { data } = await filterProducts({ query: debouncedQuery })
         setData(data)
       } catch (err) {
         catchError(err)
