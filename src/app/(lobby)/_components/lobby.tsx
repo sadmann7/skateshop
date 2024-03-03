@@ -4,7 +4,7 @@ import { productCategories } from "@/config/products"
 import { siteConfig } from "@/config/site"
 import { type getGithubStars } from "@/lib/actions/github"
 import { type getFeaturedProducts } from "@/lib/actions/product"
-import { type getFeaturedStores } from "@/lib/fetchers/store"
+import { type getFeaturedStores } from "@/lib/actions/store"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ProductCard } from "@/components/cards/product-card"
@@ -36,16 +36,26 @@ export async function Lobby({
   return (
     <Shell className="max-w-6xl">
       <section className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center gap-4 py-24 text-center md:py-32">
+        <Link href={siteConfig.links.x} target="_blank" rel="noreferrer">
+          <Badge
+            aria-hidden="true"
+            className="rounded-full px-3.5 py-1.5"
+            variant="secondary"
+          >
+            Rewritting with Next.js 14 mental models, follow along on X for
+            updates
+          </Badge>
+          <span className="sr-only">X</span>
+        </Link>
         <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
           <Badge
             aria-hidden="true"
-            className="rounded-md px-3.5 py-1.5"
+            className="rounded-full px-3.5 py-1.5"
             variant="secondary"
           >
             <Icons.gitHub className="mr-2 size-3.5" aria-hidden="true" />
             {githubStars} stars on GitHub
           </Badge>
-
           <span className="sr-only">GitHub</span>
         </Link>
         <h1 className="text-balance font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
