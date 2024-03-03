@@ -6,7 +6,7 @@ import { slugify } from "@/lib/utils"
 export type SiteConfig = typeof siteConfig
 
 const links = {
-  twitter: "https://twitter.com/sadmann17",
+  x: "https://twitter.com/sadmann17",
   github: "https://github.com/sadmann7/skateshop",
   githubAccount: "https://github.com/sadmann7",
   discord: "https://discord.com/users/sadmann7",
@@ -122,8 +122,8 @@ export const siteConfig = {
       title: "Social",
       items: [
         {
-          title: "Twitter",
-          href: links.twitter,
+          title: "X",
+          href: links.x,
           external: true,
         },
         {

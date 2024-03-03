@@ -37,14 +37,16 @@ export const getProductInventorySchema = z.object({
 })
 
 export const getProductsSchema = z.object({
-  limit: z.number().default(10),
-  offset: z.number().default(0),
-  categories: z.string().optional().nullable(),
-  subcategories: z.string().optional().nullable(),
-  sort: z.string().optional().nullable(),
-  price_range: z.string().optional().nullable(),
-  store_ids: z.string().optional().nullable(),
-  active: z.string().optional().nullable(),
+  page: z.coerce.number().default(1),
+  per_page: z.coerce.number().default(10),
+  sort: z.string().optional().default("createdAt.desc"),
+  categories: z.string().optional(),
+  subcategory: z.string().optional(),
+  subcategories: z.string().optional(),
+  price_range: z.string().optional(),
+  store_ids: z.string().optional(),
+  store_page: z.coerce.number().default(1),
+  active: z.string().optional().default("true"),
 })
 
 export const updateProductRatingSchema = z.object({

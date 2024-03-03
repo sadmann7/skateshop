@@ -45,6 +45,7 @@ export async function Lobby({
             <Icons.gitHub className="mr-2 size-3.5" aria-hidden="true" />
             {githubStars} stars on GitHub
           </Badge>
+
           <span className="sr-only">GitHub</span>
         </Link>
         <h1 className="text-balance font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">

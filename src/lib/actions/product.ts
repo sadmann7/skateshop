@@ -7,7 +7,7 @@ import {
 } from "next/cache"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
-import type { Category, StoredFile } from "@/types"
+import type { Category, SearchParams, StoredFile } from "@/types"
 import {
   and,
   asc,
@@ -23,62 +23,62 @@ import {
 import { type z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import type {
-  addProductSchema,
-  updateProductRatingSchema,
+import {
+  getProductsSchema,
+  type addProductSchema,
+  type updateProductRatingSchema,
 } from "@/lib/validations/product"
-import { type getProductsSchema } from "@/lib/validations/product"
 
 // See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
 export async function getFeaturedProducts() {
-  try {
-    return await cache(
-      async () => {
-        return db
-          .select({
-            id: products.id,
-            name: products.name,
-            images: products.images,
-            category: products.category,
-            price: products.price,
-            inventory: products.inventory,
-            stripeAccountId: stores.stripeAccountId,
-          })
-          .from(products)
-          .limit(8)
-          .leftJoin(stores, eq(products.storeId, stores.id))
-          .groupBy(products.id)
-          .orderBy(
-            desc(sql<number>`count(${stores.stripeAccountId})`),
-            desc(sql<number>`count(${products.images})`),
-            desc(products.createdAt)
-          )
-      },
-      ["featured-products"],
-      {
-        revalidate: 1,
-        tags: ["featured-products"],
-      }
-    )()
-  } catch (err) {
-    console.error(err)
-    return []
-  }
+  return await cache(
+    async () => {
+      return db
+        .select({
+          id: products.id,
+          name: products.name,
+          images: products.images,
+          category: products.category,
+          price: products.price,
+          inventory: products.inventory,
+          stripeAccountId: stores.stripeAccountId,
+        })
+        .from(products)
+        .limit(8)
+        .leftJoin(stores, eq(products.storeId, stores.id))
+        .groupBy(products.id)
+        .orderBy(
+          desc(sql<number>`count(${stores.stripeAccountId})`),
+          desc(sql<number>`count(${products.images})`),
+          desc(products.createdAt)
+        )
+    },
+    ["featured-products"],
+    {
+      revalidate: 1,
+      tags: ["featured-products"],
+    }
+  )()
 }
 
 // See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
-export async function getProducts(input: z.infer<typeof getProductsSchema>) {
+export async function getProducts(input: SearchParams) {
   noStore()
   try {
-    const [column, order] = (input.sort?.split(".") as [
+    const search = getProductsSchema.parse(input)
+
+    const limit = search.per_page
+    const offset = (search.page - 1) * limit
+
+    const [column, order] = (search.sort?.split(".") as [
       keyof Product | undefined,
       "asc" | "desc" | undefined,
     ]) ?? ["createdAt", "desc"]
-    const [minPrice, maxPrice] = input.price_range?.split("-") ?? []
+    const [minPrice, maxPrice] = search.price_range?.split("-") ?? []
     const categories =
-      (input.categories?.split(".") as Product["category"][]) ?? []
-    const subcategories = input.subcategories?.split(".") ?? []
-    const storeIds = input.store_ids?.split(".") ?? []
+      (search.categories?.split(".") as Product["category"][]) ?? []
+    const subcategories = search.subcategories?.split(".") ?? []
+    const storeIds = search.store_ids?.split(".") ?? []
 
     const transaction = await db.transaction(async (tx) => {
       const data = await tx
@@ -99,8 +99,8 @@ export async function getProducts(input: z.infer<typeof getProductsSchema>) {
           stripeAccountId: stores.stripeAccountId,
         })
         .from(products)
-        .limit(input.limit)
-        .offset(input.offset)
+        .limit(limit)
+        .offset(offset)
         .leftJoin(stores, eq(products.storeId, stores.id))
         .where(
           and(
@@ -148,7 +148,7 @@ export async function getProducts(input: z.infer<typeof getProductsSchema>) {
         .execute()
         .then((res) => res[0]?.count ?? 0)
 
-      const pageCount = Math.ceil(count / input.limit)
+      const pageCount = Math.ceil(count / limit)
 
       return {
         data,
@@ -248,9 +248,16 @@ export async function checkProduct(input: { name: string; id?: string }) {
     if (productWithSameName) {
       throw new Error("Product name already taken.")
     }
+
+    return {
+      data: null,
+      error: null,
+    }
   } catch (err) {
-    console.error(err)
-    return null
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
   }
 }
 
@@ -274,9 +281,15 @@ export async function addProduct(
       images: JSON.stringify(input.images) as unknown as StoredFile[],
     })
 
-    return revalidatePath(`/dashboard/stores/${input.storeId}/products.`)
+    revalidatePath(`/dashboard/stores/${input.storeId}/products.`)
+
+    return {
+      data: null,
+      error: null,
+    }
   } catch (err) {
     return {
+      data: null,
       error: getErrorMessage(err),
     }
   }
@@ -285,61 +298,103 @@ export async function addProduct(
 export async function updateProduct(
   input: z.infer<typeof addProductSchema> & { id: string; storeId: string }
 ) {
-  const product = await db.query.products.findFirst({
-    where: and(eq(products.id, input.id), eq(products.storeId, input.storeId)),
-  })
-
-  if (!product) {
-    throw new Error("Product not found.")
-  }
-
-  await db
-    .update(products)
-    .set({
-      ...input,
-      images: JSON.stringify(input.images) as unknown as StoredFile[],
+  try {
+    const product = await db.query.products.findFirst({
+      where: and(
+        eq(products.id, input.id),
+        eq(products.storeId, input.storeId)
+      ),
     })
-    .where(eq(products.id, input.id))
 
-  revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`)
+    if (!product) {
+      throw new Error("Product not found.")
+    }
+
+    await db
+      .update(products)
+      .set({
+        ...input,
+        images: JSON.stringify(input.images) as unknown as StoredFile[],
+      })
+      .where(eq(products.id, input.id))
+
+    revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`)
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
 }
 
 export async function updateProductRating(
   input: z.infer<typeof updateProductRatingSchema>
 ) {
-  const product = await db.query.products.findFirst({
-    columns: {
-      id: true,
-      rating: true,
-    },
-    where: eq(products.id, input.id),
-  })
+  try {
+    const product = await db.query.products.findFirst({
+      columns: {
+        id: true,
+        rating: true,
+      },
+      where: eq(products.id, input.id),
+    })
 
-  if (!product) {
-    throw new Error("Product not found.")
+    if (!product) {
+      throw new Error("Product not found.")
+    }
+
+    await db
+      .update(products)
+      .set({ rating: input.rating })
+      .where(eq(products.id, input.id))
+
+    revalidatePath("/")
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
   }
-
-  await db
-    .update(products)
-    .set({ rating: input.rating })
-    .where(eq(products.id, input.id))
-
-  revalidatePath("/")
 }
 
 export async function deleteProduct(input: { id: string; storeId: string }) {
-  const product = await db.query.products.findFirst({
-    columns: {
-      id: true,
-    },
-    where: and(eq(products.id, input.id), eq(products.storeId, input.storeId)),
-  })
+  try {
+    const product = await db.query.products.findFirst({
+      columns: {
+        id: true,
+      },
+      where: and(
+        eq(products.id, input.id),
+        eq(products.storeId, input.storeId)
+      ),
+    })
 
-  if (!product) {
-    throw new Error("Product not found.")
+    if (!product) {
+      throw new Error("Product not found.")
+    }
+
+    await db.delete(products).where(eq(products.id, input.id))
+
+    revalidatePath(`/dashboard/stores/${input.storeId}/products`)
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
   }
-
-  await db.delete(products).where(eq(products.id, input.id))
-
-  revalidatePath(`/dashboard/stores/${input.storeId}/products`)
 }
