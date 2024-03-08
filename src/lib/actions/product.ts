@@ -46,7 +46,7 @@ export async function getFeaturedProducts() {
         .from(products)
         .limit(8)
         .leftJoin(stores, eq(products.storeId, stores.id))
-        .groupBy(products.id)
+        .groupBy(products.id, stores.stripeAccountId)
         .orderBy(
           desc(sql<number>`count(${stores.stripeAccountId})`),
           desc(sql<number>`count(${products.images})`),
@@ -55,7 +55,7 @@ export async function getFeaturedProducts() {
     },
     ["featured-products"],
     {
-      revalidate: 1,
+      revalidate: 3600, // every hour
       tags: ["featured-products"],
     }
   )()

@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1709490439136,
-      "tag": "0000_thick_the_watchers",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1709491624380,
-      "tag": "0001_noisy_kronos",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1709491640168,
-      "tag": "0002_cynical_newton_destine",
+      "when": 1709920211142,
+      "tag": "0000_next_gambit",
       "breakpoints": true
     }
   ]

@@ -7,7 +7,7 @@ import { CircleIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons"
 
 import { productCategories } from "@/config/products"
 import { filterProducts } from "@/lib/actions/product"
-import { catchError, cn, isMacOs } from "@/lib/utils"
+import { cn, isMacOs } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import {
@@ -40,12 +40,10 @@ export function ProductsCommandMenu() {
     }
 
     async function fetchData() {
-      try {
-        const { data } = await filterProducts({ query: debouncedQuery })
-        setData(data)
-      } catch (err) {
-        catchError(err)
-      }
+      const { data, error } = await filterProducts({ query: debouncedQuery })
+
+      if (error) return
+      setData(data)
     }
 
     startTransition(fetchData)

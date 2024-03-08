@@ -1,16 +1,23 @@
 {
-  "tailwindCSS.includeLanguages": {
-    "plaintext": "html"
-  },
-  "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["tw=\"([^\"]*)\""]
-  ],
-  "markdownlint.config": {
-    "MD033": {
-      "allowed_elements": ["img", "p", "a"]
-    },
-    "MD045": false
-  }
+	"tailwindCSS.includeLanguages": {
+		"plaintext": "html"
+	},
+	"tailwindCSS.experimental.classRegex": [
+		["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+		["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+		["tw=\"([^\"]*)\""]
+	],
+	"markdownlint.config": {
+		"MD033": {
+			"allowed_elements": ["img", "p", "a"]
+		},
+		"MD045": false
+	},
+	"json.schemas": [
+		{
+			"fileMatch": ["/package.json"],
+			"url": "https://json.schemastore.org/package",
+			"schema": true
+		}
+	]
 }

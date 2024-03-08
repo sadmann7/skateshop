@@ -1,7 +1,19 @@
-import { mysqlTableCreator } from "drizzle-orm/mysql-core"
+import { pgTableCreator } from "drizzle-orm/pg-core"
+import { customAlphabet } from "nanoid"
 
 import { databasePrefix } from "@/lib/constants"
 
-export const mysqlTable = mysqlTableCreator(
-  (name) => `${databasePrefix}_${name}`
-)
+export function createId(length = 16) {
+  return customAlphabet(
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    length
+  )()
+}
+
+/**
+ * This lets us use the multi-project schema feature of Drizzle ORM. So the same
+ * database instance can be used for multiple projects.
+ *
+ * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
+ */
+export const pgTable = pgTableCreator((name) => `${databasePrefix}_${name}`)

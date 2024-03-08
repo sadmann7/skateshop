@@ -5,7 +5,7 @@ async function runSeed() {
 
   const start = Date.now()
 
-  await seedRealProducts({ storeId: "flh0ii4" })
+  await seedRealProducts({ storeId: "yyWi6kd2ZjvAQ08K" })
 
   const end = Date.now()
 

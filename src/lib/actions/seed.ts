@@ -1,11 +1,11 @@
 import productsJson from "@/assets/data/products.json"
 import { db } from "@/db"
 import { products, type Product } from "@/db/schema"
+import { createId } from "@/db/utils"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
 import { getSubcategories, productTags } from "@/config/products"
-import { createId } from "@/lib/utils"
 
 export async function seedProducts({
   storeId,

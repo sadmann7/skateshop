@@ -39,7 +39,7 @@ export async function getFeaturedStores() {
     },
     ["featured-stores"],
     {
-      revalidate: 1,
+      revalidate: 3600, // every hour
       tags: ["featured-stores"],
     }
   )()

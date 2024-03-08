@@ -42,8 +42,7 @@ export async function Lobby({
             className="rounded-full px-3.5 py-1.5"
             variant="secondary"
           >
-            Rewritting with Next.js 14 mental models, follow along on X for
-            updates
+            Rewritting with Next.js 14, follow along on X for updates
           </Badge>
           <span className="sr-only">X</span>
         </Link>
