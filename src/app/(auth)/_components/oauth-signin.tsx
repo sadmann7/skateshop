@@ -19,20 +19,20 @@ const oauthProviders = [
 }[]
 
 export function OAuthSignIn() {
-  const [isLoading, setIsLoading] = React.useState<OAuthStrategy | null>(null)
+  const [loading, setLoading] = React.useState<OAuthStrategy | null>(null)
   const { signIn, isLoaded: signInLoaded } = useSignIn()
 
   async function oauthSignIn(provider: OAuthStrategy) {
     if (!signInLoaded) return null
     try {
-      setIsLoading(provider)
+      setLoading(provider)
       await signIn.authenticateWithRedirect({
         strategy: provider,
         redirectUrl: "/sso-callback",
         redirectUrlComplete: "/",
       })
     } catch (error) {
-      setIsLoading(null)
+      setLoading(null)
 
       const unknownError = "Something went wrong, please try again."
 
@@ -54,9 +54,9 @@ export function OAuthSignIn() {
             variant="outline"
             className="w-full bg-background sm:w-auto"
             onClick={() => void oauthSignIn(provider.strategy)}
-            disabled={isLoading !== null}
+            disabled={loading !== null}
           >
-            {isLoading === provider.strategy ? (
+            {loading === provider.strategy ? (
               <Icons.spinner
                 className="mr-2 size-4 animate-spin"
                 aria-hidden="true"

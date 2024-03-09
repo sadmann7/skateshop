@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { VerifyEmailForm } from "@/components/forms/verify-email-form"
 import { Shell } from "@/components/shells/shell"
+import { VerifyEmailForm } from "@/app/(auth)/_components/verify-email-form"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

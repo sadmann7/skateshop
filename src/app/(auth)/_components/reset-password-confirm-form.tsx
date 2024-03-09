@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 
-import { catchClerkError } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
 import { resetPasswordSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,7 +28,7 @@ type Inputs = z.infer<typeof resetPasswordSchema>
 export function ResetPasswordConfirmForm() {
   const router = useRouter()
   const { isLoaded, signIn, setActive } = useSignIn()
-  const [isPending, startTransition] = React.useTransition()
+  const [loading, setLoading] = React.useState(false)
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -40,40 +40,39 @@ export function ResetPasswordConfirmForm() {
     },
   })
 
-  function onSubmit(data: Inputs) {
+  async function onSubmit(data: Inputs) {
     if (!isLoaded) return
 
-    startTransition(async () => {
-      try {
-        const attemptFirstFactor = await signIn.attemptFirstFactor({
-          strategy: "reset_password_email_code",
-          code: data.code,
-          password: data.password,
-        })
+    setLoading(true)
 
-        if (attemptFirstFactor.status === "needs_second_factor") {
-          // TODO: implement 2FA (requires clerk pro plan)
-        } else if (attemptFirstFactor.status === "complete") {
-          await setActive({
-            session: attemptFirstFactor.createdSessionId,
-          })
-          router.push(`${window.location.origin}/`)
-          toast.success("Password reset successfully.")
-        } else {
-          console.error(attemptFirstFactor)
-        }
-      } catch (err) {
-        catchClerkError(err)
+    try {
+      const attemptFirstFactor = await signIn.attemptFirstFactor({
+        strategy: "reset_password_email_code",
+        code: data.code,
+        password: data.password,
+      })
+
+      if (attemptFirstFactor.status === "needs_second_factor") {
+        // TODO: implement 2FA (requires clerk pro plan)
+      } else if (attemptFirstFactor.status === "complete") {
+        await setActive({
+          session: attemptFirstFactor.createdSessionId,
+        })
+        router.push(`${window.location.origin}/`)
+        toast.success("Password reset successfully.")
+      } else {
+        console.error(attemptFirstFactor)
       }
-    })
+    } catch (err) {
+      showErrorToast(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <Form {...form}>
-      <form
-        className="grid gap-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
-      >
+      <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="password"
@@ -120,8 +119,8 @@ export function ResetPasswordConfirmForm() {
             </FormItem>
           )}
         />
-        <Button disabled={isPending}>
-          {isPending && (
+        <Button disabled={loading}>
+          {loading && (
             <Icons.spinner
               className="mr-2 size-4 animate-spin"
               aria-hidden="true"

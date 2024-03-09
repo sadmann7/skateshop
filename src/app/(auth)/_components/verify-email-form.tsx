@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
 
-import { catchClerkError } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
 import { verifyEmailSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,7 +26,7 @@ type Inputs = z.infer<typeof verifyEmailSchema>
 export function VerifyEmailForm() {
   const router = useRouter()
   const { isLoaded, signUp, setActive } = useSignUp()
-  const [isPending, startTransition] = React.useTransition()
+  const [loading, setLoading] = React.useState(false)
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -36,28 +36,30 @@ export function VerifyEmailForm() {
     },
   })
 
-  function onSubmit(data: Inputs) {
+  async function onSubmit(data: Inputs) {
     if (!isLoaded) return
 
-    startTransition(async () => {
-      try {
-        const completeSignUp = await signUp.attemptEmailAddressVerification({
-          code: data.code,
-        })
-        if (completeSignUp.status !== "complete") {
-          /*  investigate the response, to see if there was an error
-             or if the user needs to complete more steps.*/
-          console.log(JSON.stringify(completeSignUp, null, 2))
-        }
-        if (completeSignUp.status === "complete") {
-          await setActive({ session: completeSignUp.createdSessionId })
+    setLoading(true)
 
-          router.push(`${window.location.origin}/`)
-        }
-      } catch (err) {
-        catchClerkError(err)
+    try {
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code: data.code,
+      })
+      if (completeSignUp.status !== "complete") {
+        /*  investigate the response, to see if there was an error
+             or if the user needs to complete more steps.*/
+        console.log(JSON.stringify(completeSignUp, null, 2))
       }
-    })
+      if (completeSignUp.status === "complete") {
+        await setActive({ session: completeSignUp.createdSessionId })
+
+        router.push(`${window.location.origin}/`)
+      }
+    } catch (err) {
+      showErrorToast(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -83,8 +85,8 @@ export function VerifyEmailForm() {
             </FormItem>
           )}
         />
-        <Button disabled={isPending}>
-          {isPending && (
+        <Button disabled={loading}>
+          {loading && (
             <Icons.spinner
               className="mr-2 size-4 animate-spin"
               aria-hidden="true"

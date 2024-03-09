@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { ResetPasswordConfirmForm } from "@/components/forms/reset-password-confirm-form"
 import { Shell } from "@/components/shells/shell"
+import { ResetPasswordConfirmForm } from "@/app/(auth)/_components/reset-password-confirm-form"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

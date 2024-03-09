@@ -1,13 +1,13 @@
 import type { Metadata } from "next"
 import { env } from "@/env.js"
 
-import { LogOutButtons } from "@/components/auth/logout-buttons"
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shells/shell"
+import { LogOutButtons } from "@/app/(auth)/_components/logout-buttons"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
