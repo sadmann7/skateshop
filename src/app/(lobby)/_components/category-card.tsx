@@ -1,16 +1,10 @@
 import * as React from "react"
 import Link from "next/link"
-import { BoxIcon } from "@radix-ui/react-icons"
 
 import { getProductCount, type getCategories } from "@/lib/actions/product"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Icons } from "@/components/icons"
 
 interface CategoryCardProps {
   category: Awaited<ReturnType<typeof getCategories>>[number]
@@ -23,19 +17,24 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link href={`/categories/${category.name}`}>
-      <span className="sr-only">{category.name}</span>
-      <Card className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
-        <CardHeader>
-          <div className="grid size-11 place-items-center rounded-full border-2">
-            <BoxIcon className="size-5" aria-hidden="true" />
-          </div>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center space-y-1.5">
+      <Card className="relative flex size-full flex-col bg-secondary p-4 transition-colors hover:bg-muted/50">
+        <Icons.product
+          className="size-10 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <div className="flex flex-1 flex-col space-y-1.5 pb-4 pt-10">
           <CardTitle className="capitalize">{category.name}</CardTitle>
-          <React.Suspense fallback={<Skeleton className="h-4 w-20" />}>
-            <ProductCount productCountPromise={productCountPromise} />
-          </React.Suspense>
-        </CardContent>
+          <CardDescription>{category.description}</CardDescription>
+        </div>
+        <React.Suspense
+          fallback={
+            <div className="pt-1">
+              <Skeleton className="h-3.5 w-20" />
+            </div>
+          }
+        >
+          <ProductCount productCountPromise={productCountPromise} />
+        </React.Suspense>
       </Card>
     </Link>
   )

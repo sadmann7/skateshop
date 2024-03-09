@@ -1,11 +1,58 @@
 import productsJson from "@/assets/data/products.json"
 import { db } from "@/db"
-import { products, type Product } from "@/db/schema"
+import {
+  categories,
+  products,
+  subcategories,
+  type Product,
+  type Subcategory,
+} from "@/db/schema"
 import { createId } from "@/db/utils"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
-import { getSubcategories, productTags } from "@/config/product"
+import { getSubcategories, productConfig } from "@/config/product"
+
+export async function seedCategories() {
+  const data = productConfig.categories.map((category) => ({
+    id: createId(),
+    name: category.title,
+    description: category.description,
+  }))
+
+  await db.delete(categories)
+  console.log(`📝 Inserting ${data.length} categories`)
+  await db.insert(categories).values(data)
+}
+
+export async function seedSubcategories() {
+  const data: Subcategory[] = []
+
+  const allCategories = await db.select().from(categories).execute()
+
+  allCategories.forEach((category) => {
+    const subcategories = productConfig.categories.find(
+      (c) => c.title === category.name
+    )?.subcategories
+
+    if (subcategories) {
+      subcategories.forEach((subcategory) => {
+        data.push({
+          id: createId(),
+          name: subcategory.title,
+          categoryId: category.id,
+          description: subcategory.description,
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        })
+      })
+    }
+  })
+
+  await db.delete(subcategories)
+  console.log(`📝 Inserting ${data.length} subcategories`)
+  await db.insert(subcategories).values(data)
+}
 
 export async function seedProducts({
   storeId,
@@ -18,9 +65,10 @@ export async function seedProducts({
 
   const data: Product[] = []
 
+  const categories = productConfig.categories.map((category) => category.title)
+
   for (let i = 0; i < productCount; i++) {
-    const category =
-      faker.helpers.shuffle(products.category.enumValues)[0] ?? "skateboards"
+    const category = faker.helpers.shuffle(categories)[0] ?? "skateboards"
 
     const subcategories = getSubcategories(category)
 
@@ -38,15 +86,12 @@ export async function seedProducts({
           height: 480,
         }),
       })),
-      category,
-      subcategory:
-        faker.helpers.shuffle(subcategories)[0]?.value ??
-        subcategories[0]?.value ??
-        "decks",
+      categoryId: category,
+      subcategoryId: subcategories[0]?.value ?? "decks",
       storeId,
       inventory: faker.number.float({ min: 50, max: 100 }),
       rating: faker.number.float({ min: 0, max: 5 }),
-      tags: productTags.slice(0, faker.number.float({ min: 0, max: 5 })),
+      tags: productConfig.tags.slice(0, faker.number.float({ min: 0, max: 5 })),
       createdAt: faker.date.past(),
       updatedAt: faker.date.past(),
     })
@@ -68,8 +113,8 @@ export async function seedRealProducts({ storeId }: { storeId: string }) {
       name: image.name,
       url: image.url,
     })),
-    category: product.category as Product["category"],
-    subcategory: product.subcategory,
+    categoryId: product.category,
+    subcategoryId: product.subcategory,
     storeId,
     inventory: product.inventory,
     rating: product.rating,

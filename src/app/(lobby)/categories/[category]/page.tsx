@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
-import { type Product } from "@/db/schema"
 import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 
-import { getProducts } from "@/lib/fetchers/product"
-import { getStores } from "@/lib/fetchers/store"
+import { getProducts } from "@/lib/actions/product"
+import { getStores } from "@/lib/actions/store"
 import { toTitleCase } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
@@ -17,7 +16,7 @@ import { Shell } from "@/components/shells/shell"
 
 interface CategoryPageProps {
   params: {
-    category: Product["category"]
+    category: string
   }
   searchParams: SearchParams
 }

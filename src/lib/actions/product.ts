@@ -213,8 +213,10 @@ export async function getCategories() {
       return db
         .selectDistinct({
           name: categories.name,
+          description: categories.description,
         })
         .from(categories)
+        .orderBy(desc(categories.name))
     },
     ["categories"],
     {

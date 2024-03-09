@@ -9,7 +9,7 @@ export const productConfig = {
   categories: [
     {
       title: "skateboards",
-      image: "/images/skateboard-one.webp",
+      description: "The best skateboards for all levels of skaters.",
       icon: Icons.logo,
       subcategories: [
         {
@@ -58,7 +58,7 @@ export const productConfig = {
     },
     {
       title: "clothing",
-      image: "/images/clothing-one.webp",
+      description: "Stylish and comfortable skateboarding clothing.",
       icon: Icons.shirt,
       subcategories: [
         {
@@ -90,7 +90,7 @@ export const productConfig = {
     },
     {
       title: "shoes",
-      image: "/images/shoe-one.webp",
+      description: "Rad shoes for long skate sessions.",
       icon: Icons.footprints,
       subcategories: [
         {
@@ -122,7 +122,8 @@ export const productConfig = {
     },
     {
       title: "accessories",
-      image: "/images/backpack-one.webp",
+      description:
+        "The essential skateboarding accessories to keep you rolling.",
       icon: MixIcon,
       subcategories: [
         {

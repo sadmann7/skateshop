@@ -1,11 +1,13 @@
-import { seedRealProducts } from "@/lib/actions/seed"
+import { seedCategories, seedSubcategories } from "@/lib/actions/seed"
 
 async function runSeed() {
   console.log("⏳ Running seed...")
 
   const start = Date.now()
 
-  await seedRealProducts({ storeId: "yyWi6kd2ZjvAQ08K" })
+  await seedCategories()
+
+  await seedSubcategories()
 
   const end = Date.now()
 

@@ -41,6 +41,7 @@ export const categories = pgTable("categories", {
     .$defaultFn(() => createId())
     .primaryKey(),
   name: varchar("name", { length: 256 }).notNull().unique(),
+  description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
 })
@@ -60,9 +61,10 @@ export const subcategories = pgTable(
       .$defaultFn(() => createId())
       .primaryKey(),
     name: varchar("name", { length: 256 }).notNull().unique(),
+    description: text("description"),
     categoryId: varchar("category_id", { length: 30 })
-      .notNull()
-      .references(() => categories.id),
+      .references(() => categories.id, { onDelete: "cascade" })
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },
@@ -94,15 +96,16 @@ export const products = pgTable(
     images: json("images").$type<StoredFile[] | null>().default(null),
     categoryId: varchar("category_id", { length: 30 }).notNull(),
     subcategoryId: varchar("subcategory_id", { length: 30 }).references(
-      () => subcategories.id
+      () => subcategories.id,
+      { onDelete: "cascade" }
     ),
     price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
     inventory: integer("inventory").notNull().default(0),
     rating: integer("rating").notNull().default(0),
     tags: json("tags").$type<string[] | null>().default(null),
     storeId: varchar("store_id", { length: 30 })
-      .notNull()
-      .references(() => stores.id),
+      .references(() => stores.id, { onDelete: "cascade" })
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },
@@ -191,8 +194,8 @@ export const payments = pgTable(
       .$defaultFn(() => createId())
       .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
     storeId: varchar("store_id", { length: 30 })
-      .notNull()
-      .references(() => stores.id),
+      .references(() => stores.id, { onDelete: "cascade" })
+      .notNull(),
     stripeAccountId: varchar("stripe_account_id", { length: 256 }).notNull(),
     stripeAccountCreatedAt: integer("stripe_account_created_at"),
     stripeAccountExpiresAt: integer("stripe_account_expires_at"),
@@ -222,8 +225,8 @@ export const orders = pgTable(
       .$defaultFn(() => createId())
       .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
     storeId: varchar("store_id", { length: 30 })
-      .notNull()
-      .references(() => stores.id),
+      .references(() => stores.id, { onDelete: "cascade" })
+      .notNull(),
     items: json("items").$type<CheckoutItem[] | null>().default(null),
     quantity: integer("quantity"),
     amount: decimal("amount", { precision: 10, scale: 2 })
@@ -238,8 +241,8 @@ export const orders = pgTable(
     name: varchar("name", { length: 256 }).notNull(),
     email: varchar("email", { length: 256 }).notNull(),
     addressId: varchar("address_id", { length: 30 })
-      .notNull()
-      .references(() => addresses.id),
+      .references(() => addresses.id, { onDelete: "cascade" })
+      .notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },

@@ -81,7 +81,7 @@ export async function Lobby({
           </Button>
         </div>
       </section>
-      <section className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-4">
         {categories.map((category) => (
           <CategoryCard key={category.name} category={category} />
         ))}
