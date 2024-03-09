@@ -4,7 +4,7 @@ import Link from "next/link"
 import { env } from "@/env.js"
 import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
-import { productCategories } from "@/config/products"
+import { productCategories } from "@/config/product"
 import { getCartItems } from "@/lib/fetchers/cart"
 import { getProducts } from "@/lib/fetchers/product"
 import { cn } from "@/lib/utils"

@@ -7,13 +7,19 @@ import { type StripeElementsOptions } from "@stripe/stripe-js"
 import { getStripe } from "@/lib/get-stripe"
 import { cn } from "@/lib/utils"
 
-// Docs: https://stripe.com/docs/payments/quickstart
+/**
+ * See the Stripe documentation for more information:
+ * @see https://stripe.com/docs/payments/quickstart
+ */
 
 interface CheckoutShellProps
   extends React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> {
   storeStripeAccountId: string
   paymentIntentPromise: Promise<{
-    clientSecret: string | null
+    data: {
+      clientSecret: string | null
+    } | null
+    error: string | null
   }>
 }
 
@@ -29,10 +35,12 @@ export function CheckoutShell({
     [storeStripeAccountId]
   )
 
-  // Calling createPaymentIntentAction at the client component to avoid stripe authentication error in server action
-  const { clientSecret } = React.use(paymentIntentPromise)
+  /**
+   * Calling createPaymentIntentAction at the client component to avoid stripe authentication error in server action
+   */
+  const { data, error } = React.use(paymentIntentPromise)
 
-  if (!clientSecret) {
+  if (!data?.clientSecret || error) {
     return (
       <section className={cn("size-full", className)} {...props}>
         <div className="size-full bg-white" />
@@ -41,7 +49,7 @@ export function CheckoutShell({
   }
 
   const options: StripeElementsOptions = {
-    clientSecret,
+    clientSecret: data.clientSecret,
     appearance: {
       theme: "stripe",
     },

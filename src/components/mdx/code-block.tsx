@@ -1,27 +1,72 @@
-/** Originally from `t3-env-docs`
- * @link https://github.com/t3-oss/t3-env/blob/main/docs/src/components/mdx/code-block.tsx
- */
+"use client"
+
 import * as React from "react"
+import { CheckIcon, CopyIcon } from "@radix-ui/react-icons"
 
-import { CopyButton } from "@/components/copy-button"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Icons } from "@/components/icons"
 
-type CodeBlockProps = React.DetailedHTMLProps<
-  React.HTMLAttributes<HTMLPreElement>,
-  HTMLPreElement
-> & {
-  raw?: string
+interface CodeBlockProps extends React.HTMLProps<HTMLPreElement> {
+  // set by `rehype-pretty-code`
+  "data-language"?: string
+  // set by `rehype-pretty-code`
+  "data-theme"?: string
 }
 
-export function CodeBlock({ children, raw, ...props }: CodeBlockProps) {
+export function CodeBlock({ children, ...props }: CodeBlockProps) {
+  const language = props["data-language"] as string
+  const theme = props["data-theme"] as string
+  const Icon = {
+    js: Icons.javascript,
+    ts: Icons.typescript,
+    bash: Icons.bash,
+  }[language]
+
+  const ref = React.useRef<HTMLSpanElement>(null)
+  const [isCopied, setIsCopied] = React.useState(false)
+
   return (
-    <>
-      <CopyButton value={raw} />
-      <pre
-        className="relative mb-4 mt-6 max-h-[640px] overflow-x-auto rounded-lg border bg-muted p-4 font-mono text-sm font-semibold text-muted-foreground"
-        {...props}
+    <pre
+      className="my-4 flex items-center gap-2 rounded-lg border bg-muted px-4 py-2.5 font-mono text-sm font-semibold text-muted-foreground"
+      {...props}
+    >
+      {Icon && (
+        <Icon
+          data-language-icon
+          data-theme={theme}
+          className="size-5 text-foreground"
+        />
+      )}
+      <ScrollArea
+        orientation="horizontal"
+        className="flex-1 py-2"
+        scrollBarClassName="h-2"
       >
-        {children}
-      </pre>
-    </>
+        <span ref={ref}>{children}</span>
+      </ScrollArea>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-6 hover:bg-zinc-200 hover:text-zinc-900 dark:hover:bg-zinc-700 dark:hover:text-zinc-50"
+        onClick={() => {
+          if (typeof window === "undefined") return
+          setIsCopied(true)
+          void window.navigator.clipboard.writeText(
+            ref.current?.innerText ?? ""
+          )
+          setTimeout(() => setIsCopied(false), 2000)
+        }}
+      >
+        {isCopied ? (
+          <CheckIcon className="size-3" aria-hidden="true" />
+        ) : (
+          <CopyIcon className="size-3" aria-hidden="true" />
+        )}
+        <span className="sr-only">
+          {isCopied ? "Copied" : "Copy to clipboard"}
+        </span>
+      </Button>
+    </pre>
   )
 }

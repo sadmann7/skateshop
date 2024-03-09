@@ -7,7 +7,7 @@ import type { CartItem } from "@/types"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
-import { sortOptions } from "@/config/products"
+import { sortOptions } from "@/config/product"
 import { addToCart, deleteCartItem } from "@/lib/actions/cart"
 import { catchError, cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"

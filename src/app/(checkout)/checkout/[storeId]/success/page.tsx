@@ -5,8 +5,8 @@ import { stores } from "@/db/schema"
 import { env } from "@/env.js"
 import { eq } from "drizzle-orm"
 
-import { getOrderLineItems } from "@/lib/fetchers/order"
-import { getPaymentIntent } from "@/lib/fetchers/stripe"
+import { getOrderLineItems } from "@/lib/actions/order"
+import { getPaymentIntent } from "@/lib/actions/stripe"
 import { cn, formatPrice } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { CartLineItems } from "@/components/checkout/cart-line-items"
@@ -36,7 +36,7 @@ export default async function OrderSuccessPage({
   params,
   searchParams,
 }: OrderSuccessPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
   const {
     payment_intent,
     payment_intent_client_secret,

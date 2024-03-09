@@ -7,7 +7,6 @@ import {
   index,
   integer,
   json,
-  pgEnum,
   text,
   timestamp,
   varchar,
@@ -37,12 +36,51 @@ export const storesRelations = relations(stores, ({ many }) => ({
 export type Store = typeof stores.$inferSelect
 export type NewStore = typeof stores.$inferInsert
 
-export const categoryEnum = pgEnum(`${databasePrefix}_category`, [
-  "skateboards",
-  "clothing",
-  "shoes",
-  "accessories",
-])
+export const categories = pgTable("categories", {
+  id: varchar("id", { length: 30 })
+    .$defaultFn(() => createId())
+    .primaryKey(),
+  name: varchar("name", { length: 256 }).notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+})
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  subcategories: many(subcategories),
+}))
+
+export type Category = typeof categories.$inferSelect
+export type NewCategory = typeof categories.$inferInsert
+
+export const subcategories = pgTable(
+  "subcategories",
+  {
+    id: varchar("id", { length: 30 })
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    name: varchar("name", { length: 256 }).notNull().unique(),
+    categoryId: varchar("category_id", { length: 30 })
+      .notNull()
+      .references(() => categories.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  },
+  (table) => ({
+    subcategoriesCategoryIdIdx: index(
+      `${databasePrefix}_subcategories_category_id_idx`
+    ).on(table.categoryId),
+  })
+)
+
+export const subcategoriesRelations = relations(subcategories, ({ one }) => ({
+  category: one(categories, {
+    fields: [subcategories.categoryId],
+    references: [categories.id],
+  }),
+}))
+
+export type Subcategory = typeof subcategories.$inferSelect
+export type NewSubcategory = typeof subcategories.$inferInsert
 
 export const products = pgTable(
   "products",
@@ -53,27 +91,43 @@ export const products = pgTable(
     name: varchar("name", { length: 256 }).notNull(),
     description: text("description"),
     images: json("images").$type<StoredFile[] | null>().default(null),
-    category: categoryEnum("category").notNull().default("skateboards"),
-    subcategory: varchar("subcategory", { length: 256 }),
+    categoryId: varchar("category_id", { length: 30 }).notNull(),
+    subcategoryId: varchar("subcategory_id", { length: 30 }).references(
+      () => subcategories.id
+    ),
     price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
     inventory: integer("inventory").notNull().default(0),
     rating: integer("rating").notNull().default(0),
     tags: json("tags").$type<string[] | null>().default(null),
-    storeId: varchar("store_id", { length: 30 }).notNull(),
+    storeId: varchar("store_id", { length: 30 })
+      .notNull()
+      .references(() => stores.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },
   (table) => ({
-    storeIdIdx: index("store_id_idx").on(table.storeId),
+    storeIdIdx: index(`${databasePrefix}_products_store_id_idx`).on(
+      table.storeId
+    ),
+    categoryIdIdx: index(`${databasePrefix}_products_category_id_idx`).on(
+      table.categoryId
+    ),
+    subcategoryIdIdx: index(`${databasePrefix}_products_subcategory_id_idx`).on(
+      table.subcategoryId
+    ),
   })
 )
 
-export type Product = typeof products.$inferSelect
-export type NewProduct = typeof products.$inferInsert
-
 export const productsRelations = relations(products, ({ one }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
+  subcategory: one(subcategories, {
+    fields: [products.subcategoryId],
+    references: [subcategories.id],
+  }),
 }))
+
+export type Product = typeof products.$inferSelect
+export type NewProduct = typeof products.$inferInsert
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const carts = pgTable("carts", {
@@ -125,18 +179,28 @@ export type Subscription = typeof subscriptions.$inferSelect
 export type NewSubscription = typeof subscriptions.$inferInsert
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
-export const payments = pgTable("payments", {
-  id: varchar("id", { length: 30 })
-    .$defaultFn(() => createId())
-    .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
-  storeId: varchar("store_id", { length: 30 }).notNull(),
-  stripeAccountId: varchar("stripe_account_id", { length: 256 }).notNull(),
-  stripeAccountCreatedAt: integer("stripe_account_created_at"),
-  stripeAccountExpiresAt: integer("stripe_account_expires_at"),
-  detailsSubmitted: boolean("details_submitted").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
-})
+export const payments = pgTable(
+  "payments",
+  {
+    id: varchar("id", { length: 30 })
+      .$defaultFn(() => createId())
+      .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+    storeId: varchar("store_id", { length: 30 })
+      .notNull()
+      .references(() => stores.id),
+    stripeAccountId: varchar("stripe_account_id", { length: 256 }).notNull(),
+    stripeAccountCreatedAt: integer("stripe_account_created_at"),
+    stripeAccountExpiresAt: integer("stripe_account_expires_at"),
+    detailsSubmitted: boolean("details_submitted").notNull().default(false),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  },
+  (table) => ({
+    storeIdIdx: index(`${databasePrefix}_payments_store_id_idx`).on(
+      table.storeId
+    ),
+  })
+)
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   store: one(stores, { fields: [payments.storeId], references: [stores.id] }),
@@ -146,26 +210,43 @@ export type Payment = typeof payments.$inferSelect
 export type NewPayment = typeof payments.$inferInsert
 
 // Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
-export const orders = pgTable("orders", {
-  id: varchar("id", { length: 30 })
-    .$defaultFn(() => createId())
-    .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
-  storeId: varchar("store_id", { length: 30 }).notNull(),
-  items: json("items").$type<CheckoutItem[] | null>().default(null),
-  quantity: integer("quantity"),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull().default("0"),
-  stripePaymentIntentId: varchar("stripe_payment_intent_id", {
-    length: 256,
-  }).notNull(),
-  stripePaymentIntentStatus: varchar("stripe_payment_intent_status", {
-    length: 256,
-  }).notNull(),
-  name: varchar("name", { length: 256 }).notNull(),
-  email: varchar("email", { length: 256 }).notNull(),
-  addressId: integer("address_id"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
-})
+export const orders = pgTable(
+  "orders",
+  {
+    id: varchar("id", { length: 30 })
+      .$defaultFn(() => createId())
+      .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+    storeId: varchar("store_id", { length: 30 })
+      .notNull()
+      .references(() => stores.id),
+    items: json("items").$type<CheckoutItem[] | null>().default(null),
+    quantity: integer("quantity"),
+    amount: decimal("amount", { precision: 10, scale: 2 })
+      .notNull()
+      .default("0"),
+    stripePaymentIntentId: varchar("stripe_payment_intent_id", {
+      length: 256,
+    }).notNull(),
+    stripePaymentIntentStatus: varchar("stripe_payment_intent_status", {
+      length: 256,
+    }).notNull(),
+    name: varchar("name", { length: 256 }).notNull(),
+    email: varchar("email", { length: 256 }).notNull(),
+    addressId: varchar("address_id", { length: 30 })
+      .notNull()
+      .references(() => addresses.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  },
+  (table) => ({
+    storeIdIdx: index(`${databasePrefix}_orders_store_id_idx`).on(
+      table.storeId
+    ),
+    addressIdIdx: index(`${databasePrefix}_orders_address_id_idx`).on(
+      table.addressId
+    ),
+  })
+)
 
 export type Order = typeof orders.$inferSelect
 export type NewOrder = typeof orders.$inferInsert

@@ -1,6 +1,6 @@
 import type { FooterItem, MainNavItem } from "@/types"
 
-import { productCategories } from "@/config/products"
+import { productConfig } from "@/config/product"
 import { slugify } from "@/lib/utils"
 
 export type SiteConfig = typeof siteConfig
@@ -44,7 +44,7 @@ export const siteConfig = {
         },
       ],
     },
-    ...productCategories.map((category) => ({
+    ...productConfig.categories.map((category) => ({
       title: category.title,
       items: [
         {

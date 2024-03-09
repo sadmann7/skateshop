@@ -12,7 +12,7 @@ import {
   getOrderCount,
   getSaleCount,
   getSales,
-} from "@/lib/fetchers/order"
+} from "@/lib/actions/order"
 import { cn, formatNumber, formatPrice } from "@/lib/utils"
 import { searchParamsSchema } from "@/lib/validations/params"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -53,7 +53,7 @@ export default async function AnalyticsPage({
   params,
   searchParams,
 }: AnalyticsPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
   const { page, from, to } = searchParamsSchema
     .omit({ per_page: true, sort: true })

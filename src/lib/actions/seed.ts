@@ -5,7 +5,7 @@ import { createId } from "@/db/utils"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
-import { getSubcategories, productTags } from "@/config/products"
+import { getSubcategories, productTags } from "@/config/product"
 
 export async function seedProducts({
   storeId,

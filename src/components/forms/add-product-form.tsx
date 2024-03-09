@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { getSubcategories } from "@/config/products"
+import { getSubcategories } from "@/config/product"
 import { addProduct, checkProduct } from "@/lib/actions/product"
 import { catchError, isArrayOfFile } from "@/lib/utils"
 import { newProductSchema } from "@/lib/validations/product"

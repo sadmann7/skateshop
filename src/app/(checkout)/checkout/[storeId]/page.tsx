@@ -7,9 +7,8 @@ import { env } from "@/env.js"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { eq } from "drizzle-orm"
 
-import { createPaymentIntent } from "@/lib/actions/stripe"
-import { getCart } from "@/lib/fetchers/cart"
-import { getStripeAccount } from "@/lib/fetchers/stripe"
+import { getCart } from "@/lib/actions/cart"
+import { createPaymentIntent, getStripeAccount } from "@/lib/actions/stripe"
 import { cn, formatPrice } from "@/lib/utils"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
@@ -33,7 +32,7 @@ interface CheckoutPageProps {
 }
 
 export default async function CheckoutPage({ params }: CheckoutPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
   const store = await db
     .select({
@@ -62,7 +61,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   })
 
   const total = cartLineItems.reduce(
-    (total, item) => total + item.quantity * Number(item.price),
+    (total, item) => total + Number(item.quantity) * Number(item.price),
     0
   )
 
@@ -133,7 +132,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                     <div className="flex-1">
                       Total (
                       {cartLineItems.reduce(
-                        (acc, item) => acc + item.quantity,
+                        (acc, item) => acc + Number(item.quantity),
                         0
                       )}
                       )

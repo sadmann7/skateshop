@@ -143,16 +143,21 @@ export async function POST(req: Request) {
           // Create new address in DB
           const stripeAddress = paymentIntentSucceeded?.shipping?.address
 
-          const newAddress = await db.insert(addresses).values({
-            line1: stripeAddress?.line1,
-            line2: stripeAddress?.line2,
-            city: stripeAddress?.city,
-            state: stripeAddress?.state,
-            country: stripeAddress?.country,
-            postalCode: stripeAddress?.postal_code,
-          })
+          const newAddress = await db
+            .insert(addresses)
+            .values({
+              line1: stripeAddress?.line1,
+              line2: stripeAddress?.line2,
+              city: stripeAddress?.city,
+              state: stripeAddress?.state,
+              country: stripeAddress?.country,
+              postalCode: stripeAddress?.postal_code,
+            })
+            .returning({
+              insertedId: addresses.id,
+            })
 
-          if (!newAddress.insertId) throw new Error("No address created.")
+          if (!newAddress[0]?.insertedId) throw new Error("No address created.")
 
           // Create new order in db
           await db.insert(orders).values({
@@ -165,9 +170,9 @@ export async function POST(req: Request) {
             amount: String(Number(orderAmount) / 100),
             stripePaymentIntentId: paymentIntentId,
             stripePaymentIntentStatus: paymentIntentSucceeded?.status,
-            name: paymentIntentSucceeded?.shipping?.name,
-            email: paymentIntentSucceeded?.receipt_email,
-            addressId: Number(newAddress.insertId),
+            name: paymentIntentSucceeded?.shipping?.name ?? "",
+            email: paymentIntentSucceeded?.receipt_email ?? "",
+            addressId: newAddress[0]?.insertedId,
           })
 
           // Update product inventory in db

@@ -34,7 +34,7 @@ interface OrdersTableShellProps {
     data: AwaitedOrder[]
     pageCount: number
   }>
-  storeId: number
+  storeId: string
   isSearchable?: boolean
 }
 
@@ -54,7 +54,7 @@ export function OrdersTableShell({
           <DataTableColumnHeader column={column} title="Order ID" />
         ),
         cell: ({ cell }) => {
-          return <span>{formatId(Number(cell.getValue()))}</span>
+          return <span>{formatId(String(cell.getValue()))}</span>
         },
       },
       {

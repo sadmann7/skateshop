@@ -6,9 +6,11 @@ import { db } from "@/db"
 import {
   addresses,
   carts,
+  categories,
   orders,
   payments,
   products,
+  subcategories,
   type Order,
 } from "@/db/schema"
 import type { CartLineItem, CheckoutItem, SearchParams } from "@/types"
@@ -39,13 +41,15 @@ export async function getOrderLineItems(
         id: products.id,
         name: products.name,
         images: products.images,
-        category: products.category,
-        subcategory: products.subcategory,
         price: products.price,
         inventory: products.inventory,
         storeId: products.storeId,
+        categoryId: products.categoryId,
+        subcategoryId: products.subcategoryId,
       })
       .from(products)
+      .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
+      .leftJoin(categories, eq(products.categoryId, categories.id))
       .where(
         inArray(
           products.id,
@@ -71,7 +75,7 @@ export async function getOrderLineItems(
     // Temporary workaround for payment_intent.succeeded webhook event not firing in production
     // TODO: Remove this once the webhook is working
     if (input.paymentIntent?.status === "succeeded") {
-      const cartId = Number(cookies().get("cartId")?.value)
+      const cartId = String(cookies().get("cartId")?.value)
 
       const cart = await db.query.carts.findFirst({
         columns: {
@@ -105,16 +109,19 @@ export async function getOrderLineItems(
       // Create new address in DB
       const stripeAddress = input.paymentIntent.shipping?.address
 
-      const newAddress = await db.insert(addresses).values({
-        line1: stripeAddress?.line1,
-        line2: stripeAddress?.line2,
-        city: stripeAddress?.city,
-        state: stripeAddress?.state,
-        country: stripeAddress?.country,
-        postalCode: stripeAddress?.postal_code,
-      })
+      const newAddress = await db
+        .insert(addresses)
+        .values({
+          line1: stripeAddress?.line1,
+          line2: stripeAddress?.line2,
+          city: stripeAddress?.city,
+          state: stripeAddress?.state,
+          country: stripeAddress?.country,
+          postalCode: stripeAddress?.postal_code,
+        })
+        .returning({ insertedId: addresses.id })
 
-      if (!newAddress.insertId) throw new Error("No address created.")
+      if (!newAddress[0]?.insertedId) throw new Error("No address created.")
 
       // Create new order in db
       await db.insert(orders).values({
@@ -127,9 +134,9 @@ export async function getOrderLineItems(
         amount: String(Number(input.paymentIntent.amount) / 100),
         stripePaymentIntentId: input.paymentIntent.id,
         stripePaymentIntentStatus: input.paymentIntent.status,
-        name: input.paymentIntent.shipping?.name,
-        email: input.paymentIntent.receipt_email,
-        addressId: Number(newAddress.insertId),
+        name: input.paymentIntent.shipping?.name ?? "",
+        email: input.paymentIntent.receipt_email ?? "",
+        addressId: newAddress[0].insertedId,
       })
 
       // Update product inventory in db
@@ -176,7 +183,7 @@ export async function getOrderLineItems(
 }
 
 export async function getStoreOrders(input: {
-  storeId: number
+  storeId: string
   searchParams: SearchParams
 }) {
   noStore()
@@ -286,7 +293,7 @@ export async function getStoreOrders(input: {
 }
 
 export async function getOrderCount(input: {
-  storeId: number
+  storeId: string
   fromDay?: Date
   toDay?: Date
 }) {
@@ -315,7 +322,7 @@ export async function getOrderCount(input: {
 }
 
 export async function getSaleCount(input: {
-  storeId: number
+  storeId: string
   fromDay?: Date
   toDay?: Date
 }) {
@@ -349,7 +356,7 @@ export async function getSaleCount(input: {
 }
 
 export async function getSales(input: {
-  storeId: number
+  storeId: string
   fromDay?: Date
   toDay?: Date
 }) {
@@ -387,7 +394,7 @@ export async function getSales(input: {
 }
 
 export async function getCustomers(input: {
-  storeId: number
+  storeId: string
   limit: number
   offset: number
   fromDay?: Date

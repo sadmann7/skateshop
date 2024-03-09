@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { env } from "@/env.js"
 
-import { getUniqueStoreIds } from "@/lib/fetchers/cart"
+import { getUniqueStoreIds } from "@/lib/actions/cart"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import { CheckoutCard } from "@/components/checkout/checkout-card"

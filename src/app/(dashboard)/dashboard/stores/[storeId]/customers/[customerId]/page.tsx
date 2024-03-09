@@ -30,7 +30,7 @@ export default async function CustomerPage({
   params,
   searchParams,
 }: CustomerPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
   // Get email from the customer id
   const emailParts = params.customerId.split("-")
   const email = `${emailParts[0]}@${emailParts[2]}.com`

@@ -7,7 +7,7 @@ import {
 } from "next/cache"
 import { db } from "@/db"
 import { products, stores, type Product } from "@/db/schema"
-import type { Category, SearchParams, StoredFile } from "@/types"
+import type { SearchParams, StoredFile } from "@/types"
 import {
   and,
   asc,

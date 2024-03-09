@@ -10,7 +10,7 @@ import {
   ChevronRightIcon,
 } from "@radix-ui/react-icons"
 
-import { getSubcategories, sortOptions } from "@/config/products"
+import { getSubcategories, sortOptions } from "@/config/product"
 import { cn, toTitleCase, truncate } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"

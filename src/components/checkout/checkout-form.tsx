@@ -17,7 +17,7 @@ import { Icons } from "@/components/icons"
 // See the stripe playemnts docs: https://stripe.com/docs/payments/quickstart
 
 interface CheckoutFormProps extends React.ComponentPropsWithoutRef<"form"> {
-  storeId: number
+  storeId: string
 }
 
 export function CheckoutForm({

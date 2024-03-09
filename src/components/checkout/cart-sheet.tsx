@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { getCart } from "@/lib/fetchers/cart"
+import { getCart } from "@/lib/actions/cart"
 import { cn, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"

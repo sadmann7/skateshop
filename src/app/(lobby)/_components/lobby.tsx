@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { productCategories } from "@/config/products"
+import { productCategories } from "@/config/product"
 import { siteConfig } from "@/config/site"
 import { type getGithubStars } from "@/lib/actions/github"
 import { type getFeaturedProducts } from "@/lib/actions/product"

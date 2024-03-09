@@ -122,6 +122,7 @@
     "rehype-code-titles": "^1.2.0",
     "rehype-pretty-code": "^0.13.0",
     "rehype-slug": "^6.0.0",
+    "remark-code-import": "^1.2.0",
     "remark-math": "^6.0.0",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.7.1",

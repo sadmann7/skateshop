@@ -1,13 +1,1 @@
-{
-  "version": "5",
-  "dialect": "mysql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "5",
-      "when": 1709920211142,
-      "tag": "0000_next_gambit",
-      "breakpoints": true
-    }
-  ]
-}
+{"version":"5","dialect":"mysql","entries":[]}

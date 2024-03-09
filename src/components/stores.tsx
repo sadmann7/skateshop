@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { CuratedStore } from "@/types"
 import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons"
 
-import { storeSortOptions, storeStatusOptions } from "@/config/stores"
+import { storeSortOptions, storeStatusOptions } from "@/config/store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {

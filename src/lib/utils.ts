@@ -64,7 +64,7 @@ export function formatBytes(
   }`
 }
 
-export function formatId(id: number) {
+export function formatId(id: string) {
   return `#${id.toString().padStart(4, "0")}`
 }
 

@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
+import { toast } from "sonner"
 import { type z } from "zod"
 
 import { manageSubscription } from "@/lib/actions/stripe"
-import { catchError } from "@/lib/utils"
 import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
@@ -18,33 +18,38 @@ export function ManageSubscriptionForm({
   stripeSubscriptionId,
   stripePriceId,
 }: ManageSubscriptionFormProps) {
-  const [isPending, startTransition] = React.useTransition()
+  const [loading, setLoading] = React.useState(false)
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
-    startTransition(async () => {
-      try {
-        const session = await manageSubscription({
-          isSubscribed,
-          isCurrentPlan,
-          stripeCustomerId,
-          stripeSubscriptionId,
-          stripePriceId,
-        })
-        if (session) {
-          window.location.href = session.url ?? "/dashboard/billing"
-        }
-      } catch (err) {
-        catchError(err)
-      }
+    setLoading(true)
+
+    const { data, error } = await manageSubscription({
+      isSubscribed,
+      isCurrentPlan,
+      stripeCustomerId,
+      stripeSubscriptionId,
+      stripePriceId,
     })
+
+    if (data?.url) {
+      window.location.href = data.url
+      return
+    }
+
+    if (error) {
+      toast.error(error)
+      return
+    }
+
+    setLoading(false)
   }
 
   return (
     <form className="w-full" onSubmit={(e) => onSubmit(e)}>
-      <Button className="w-full" disabled={isPending}>
-        {isPending && (
+      <Button className="w-full" disabled={loading}>
+        {loading && (
           <Icons.spinner
             className="mr-2 size-4 animate-spin"
             aria-hidden="true"

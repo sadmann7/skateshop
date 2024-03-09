@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { productCategories } from "@/config/products"
+import { productCategories } from "@/config/product"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ContentSection } from "@/components/shells/content-section"

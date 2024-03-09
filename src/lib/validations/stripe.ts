@@ -11,17 +11,17 @@ export const manageSubscriptionSchema = z.object({
 })
 
 export const getStripeAccountSchema = z.object({
-  storeId: z.number(),
+  storeId: z.string(),
   retrieveAccount: z.boolean().default(true).optional(),
 })
 
 export const createPaymentIntentSchema = z.object({
-  storeId: z.number(),
+  storeId: z.string(),
   items: z.array(cartLineItemSchema),
 })
 
 export const getPaymentIntentsSchema = z.object({
-  storeId: z.number(),
+  storeId: z.string(),
   limit: z.number().optional(),
   starting_after: z.string().optional(),
   ending_before: z.string().optional(),
@@ -31,7 +31,7 @@ export const getPaymentIntentsSchema = z.object({
 })
 
 export const getPaymentIntentSchema = z.object({
-  storeId: z.number(),
+  storeId: z.string(),
   paymentIntentId: z.string(),
   deliveryPostalCode: z.string().optional().nullable(),
 })

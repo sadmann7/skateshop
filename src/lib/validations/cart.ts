@@ -1,10 +1,8 @@
-import { products } from "@/db/schema"
 import * as z from "zod"
 
 export const cartItemSchema = z.object({
-  productId: z.number(),
+  productId: z.string(),
   quantity: z.number().min(0),
-  subcategory: z.string().optional().nullable(),
 })
 
 export const checkoutItemSchema = cartItemSchema.extend({
@@ -12,7 +10,7 @@ export const checkoutItemSchema = cartItemSchema.extend({
 })
 
 export const cartLineItemSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   images: z
     .array(
@@ -24,22 +22,22 @@ export const cartLineItemSchema = z.object({
     )
     .optional()
     .nullable(),
-  category: z.enum(products.category.enumValues),
-  subcategory: z.string().optional().nullable(),
+  categoryId: z.string(),
+  subcategoryId: z.string().optional().nullable(),
   price: z.string().regex(/^\d+(\.\d{1,2})?$/),
   inventory: z.number().default(0),
   quantity: z.number(),
-  storeId: z.number(),
+  storeId: z.string(),
   storeName: z.string().optional().nullable(),
   storeStripeAccountId: z.string().optional().nullable(),
 })
 
 export const deleteCartItemSchema = z.object({
-  productId: z.number(),
+  productId: z.string(),
 })
 
 export const deleteCartItemsSchema = z.object({
-  productIds: z.array(z.number()),
+  productIds: z.array(z.string()),
 })
 
 export const updateCartItemSchema = z.object({

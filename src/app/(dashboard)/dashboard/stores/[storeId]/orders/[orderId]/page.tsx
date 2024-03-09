@@ -6,7 +6,7 @@ import { orders, products } from "@/db/schema"
 import { env } from "@/env.js"
 import { and, eq } from "drizzle-orm"
 
-import { getOrderLineItems } from "@/lib/fetchers/order"
+import { getOrderLineItems } from "@/lib/actions/order"
 import { formatId, formatPrice } from "@/lib/utils"
 import {
   Card,
