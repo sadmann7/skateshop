@@ -1,4 +1,3 @@
-import { isRedirectError } from "next/dist/client/components/redirect"
 import { isClerkAPIResponseError } from "@clerk/nextjs"
 import { toast } from "sonner"
 import * as z from "zod"
@@ -15,8 +14,6 @@ export function getErrorMessage(err: unknown) {
     return err.message
   } else if (isClerkAPIResponseError(err)) {
     return err.errors[0]?.longMessage ?? unknownError
-  } else if (isRedirectError(err)) {
-    throw err
   } else {
     return unknownError
   }

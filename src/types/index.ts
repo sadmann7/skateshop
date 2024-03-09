@@ -109,3 +109,7 @@ export interface UserSubscriptionPlan extends SubscriptionPlan {
   isCanceled: boolean
   isActive: boolean
 }
+
+export interface SetOptimisticData<TData> {
+  (action: { action: "update" | "delete" | "add"; item: TData }): void
+}

@@ -6,7 +6,6 @@ import {
   revalidatePath,
   revalidateTag,
 } from "next/cache"
-import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import type { SearchParams } from "@/types"
@@ -45,13 +44,14 @@ export async function getFeaturedStores() {
   )()
 }
 
-export async function getUserStores(input: { userId: string }) {
+export async function getStoresByUserId(input: { userId: string }) {
   return await cache(
     async () => {
       return db
         .select({
           id: stores.id,
           name: stores.name,
+          slug: stores.slug,
           description: stores.description,
           stripeAccountId: stores.stripeAccountId,
         })
@@ -61,10 +61,10 @@ export async function getUserStores(input: { userId: string }) {
         .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
         .where(eq(stores.userId, input.userId))
     },
-    ["user-stores"],
+    [`stores-${input.userId}`],
     {
       revalidate: 900,
-      tags: ["user-stores"],
+      tags: [`stores-${input.userId}`],
     }
   )()
 }
@@ -176,17 +176,24 @@ export async function addStore(
       throw new Error("Store name already taken.")
     }
 
-    await db.insert(stores).values({
-      name: input.name,
-      description: input.description,
-      userId: input.userId,
-      slug: slugify(input.name),
-    })
+    const newStore = await db
+      .insert(stores)
+      .values({
+        name: input.name,
+        description: input.description,
+        userId: input.userId,
+        slug: slugify(input.name),
+      })
+      .returning({
+        id: stores.id,
+        slug: stores.slug,
+      })
+      .then((res) => res[0])
 
-    revalidateTag("user-stores")
+    revalidateTag(`stores-${input.userId}`)
 
     return {
-      data: null,
+      data: newStore,
       error: null,
     }
   } catch (err) {
@@ -258,7 +265,6 @@ export async function deleteStore(storeId: string) {
 
     const path = "/dashboard/stores"
     revalidatePath(path)
-    redirect(path)
 
     return {
       data: null,

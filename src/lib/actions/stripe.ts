@@ -40,7 +40,7 @@ export async function getSubscriptionPlans(): Promise<
 > {
   return await cache(
     async () => {
-      const standardPriceId = subscriptionConfig.plans.pro.stripePriceId
+      const standardPriceId = subscriptionConfig.plans.standard.stripePriceId
       const proPriceId = subscriptionConfig.plans.pro.stripePriceId
 
       const [standardPrice, proPrice] = await Promise.all([

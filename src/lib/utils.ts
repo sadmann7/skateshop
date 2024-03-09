@@ -21,31 +21,25 @@ export function formatPrice(
 
 export function formatNumber(
   number: number | string,
-  options: {
-    decimals?: number
-    style?: Intl.NumberFormatOptions["style"]
-    notation?: Intl.NumberFormatOptions["notation"]
-  } = {}
+  options: Intl.NumberFormatOptions = {}
 ) {
-  const { decimals = 0, style = "decimal", notation = "standard" } = options
-
   return new Intl.NumberFormat("en-US", {
-    style,
-    notation,
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+    style: options.style ?? "decimal",
+    notation: options.notation ?? "standard",
+    minimumFractionDigits: options.minimumFractionDigits ?? 0,
+    maximumFractionDigits: options.maximumFractionDigits ?? 2,
+    ...options,
   }).format(Number(number))
 }
 
 export function formatDate(
   date: Date | string | number,
-  options: Intl.DateTimeFormatOptions = {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  }
+  options: Intl.DateTimeFormatOptions = {}
 ) {
   return new Intl.DateTimeFormat("en-US", {
+    month: options.month ?? "long",
+    day: options.day ?? "numeric",
+    year: options.year ?? "numeric",
     ...options,
   }).format(new Date(date))
 }

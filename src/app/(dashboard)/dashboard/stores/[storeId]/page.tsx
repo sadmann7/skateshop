@@ -7,7 +7,7 @@ import { env } from "@/env.js"
 import { eq } from "drizzle-orm"
 
 import { deleteStore, updateStore } from "@/lib/actions/store"
-import { getStripeAccount } from "@/lib/fetchers/stripe"
+import { getStripeAccount } from "@/lib/actions/stripe"
 import { cn, formatDate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import {
@@ -24,38 +24,56 @@ import { Textarea } from "@/components/ui/textarea"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
 import { LoadingButton } from "@/components/loading-button"
 
-export const metadata: Metadata = {
-  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Manage Store",
-  description: "Manage your store",
-}
-
 interface UpdateStorePageProps {
   params: {
     storeId: string
   }
 }
 
-export default async function UpdateStorePage({
-  params,
-}: UpdateStorePageProps) {
-  const storeId = Number(params.storeId)
+async function getStoreFromParams(params: UpdateStorePageProps["params"]) {
+  const storeId = decodeURIComponent(params.storeId)
 
   const store = await db.query.stores.findFirst({
-    where: eq(stores.id, storeId),
     columns: {
       id: true,
       name: true,
       description: true,
     },
+    where: eq(stores.id, storeId),
   })
+
+  if (!store) return null
+
+  return store
+}
+
+export async function generateMetadata({
+  params,
+}: UpdateStorePageProps): Promise<Metadata> {
+  const store = await getStoreFromParams(params)
+
+  if (!store) {
+    return {}
+  }
+
+  return {
+    metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+    title: `Update ${store.name} store`,
+    description: `Update your ${store.name} store name and description, or delete it`,
+  }
+}
+
+export default async function UpdateStorePage({
+  params,
+}: UpdateStorePageProps) {
+  const store = await getStoreFromParams(params)
 
   if (!store) {
     notFound()
   }
 
   const { account: stripeAccount } = await getStripeAccount({
-    storeId,
+    storeId: store.id,
   })
 
   return (
@@ -144,7 +162,7 @@ export default async function UpdateStorePage({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ConnectStoreToStripeButton storeId={storeId} />
+            <ConnectStoreToStripeButton storeId={store.id} />
           </CardContent>
         </Card>
       )}
@@ -157,7 +175,7 @@ export default async function UpdateStorePage({
         </CardHeader>
         <CardContent>
           <form
-            action={updateStore.bind(null, storeId)}
+            action={updateStore.bind(null, store.id)}
             className="grid w-full max-w-xl gap-5"
           >
             <div className="grid gap-2.5">
@@ -191,7 +209,7 @@ export default async function UpdateStorePage({
                 <span className="sr-only">Update store</span>
               </LoadingButton>
               <LoadingButton
-                formAction={deleteStore.bind(null, storeId)}
+                formAction={deleteStore.bind(null, store.id)}
                 variant="destructive"
                 action="delete"
               >

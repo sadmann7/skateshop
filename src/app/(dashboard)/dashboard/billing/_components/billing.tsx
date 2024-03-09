@@ -2,7 +2,7 @@ import Link from "next/link"
 import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 
-import { formatDate } from "@/lib/utils"
+import { cn, formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -31,8 +31,8 @@ export async function Billing({
 
   return (
     <>
-      <Card className="space-y-2.5 p-8">
-        <CardTitle className="text-2xl">
+      <Card className="space-y-2.5 p-6">
+        <CardTitle className="text-2xl capitalize">
           {subscriptionPlan?.title ?? "Free"}
         </CardTitle>
         <CardDescription>
@@ -46,9 +46,14 @@ export async function Billing({
             : null}
         </CardDescription>
       </Card>
-      <section className="grid gap-6 lg:grid-cols-2">
-        {subscriptionPlans.map((plan) => (
-          <Card key={plan.title} className="flex flex-col p-4">
+      <section className="grid gap-6 lg:grid-cols-3">
+        {subscriptionPlans.map((plan, i) => (
+          <Card
+            key={plan.title}
+            className={cn("flex flex-col", {
+              "sm:col-span-2 lg:col-span-1": i === subscriptionPlans.length - 1,
+            })}
+          >
             <CardHeader className="h-full">
               <CardTitle className="line-clamp-1 text-2xl capitalize">
                 {plan.title}
@@ -66,9 +71,9 @@ export async function Billing({
               </div>
               <div className="w-full space-y-2">
                 {plan.features.map((feature) => (
-                  <div key={feature} className="flex items-center gap-2">
+                  <div key={feature} className="flex items-start gap-2">
                     <div className="aspect-square shrink-0 rounded-full bg-foreground p-px text-background">
-                      <CheckIcon className="size-4" aria-hidden="true" />
+                      <CheckIcon className="size-3.5" aria-hidden="true" />
                     </div>
                     <span className="text-sm text-muted-foreground">
                       {feature}

@@ -6,9 +6,10 @@ import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 import { eq } from "drizzle-orm"
 
-import { getProducts } from "@/lib/fetchers/product"
-import { getStores } from "@/lib/fetchers/store"
+import { getProducts } from "@/lib/actions/product"
+import { getStores } from "@/lib/actions/store"
 import { Separator } from "@/components/ui/separator"
+import { AlertCard } from "@/components/alert-card"
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shells/shell"
@@ -21,11 +22,15 @@ interface StorePageProps {
 }
 
 async function getStoreFromParams(params: StorePageProps["params"]) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
-  return await db.query.stores.findFirst({
+  const store = await db.query.stores.findFirst({
     where: eq(stores.id, storeId),
   })
+
+  if (!store) return null
+
+  return store
 }
 
 export async function generateMetadata({
@@ -60,11 +65,7 @@ export default async function StorePage({
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
-  const productsTransaction = await getProducts({
-    limit: limit,
-    offset: offset,
-    store_ids: String(store.id),
-  })
+  const productsTransaction = await getProducts(searchParams)
 
   // Stores transaction
   const storesLimit = 25
@@ -73,11 +74,7 @@ export default async function StorePage({
       ? (parseInt(store_page) - 1) * storesLimit
       : 0
 
-  const storesTransaction = await getStores({
-    limit: storesLimit,
-    offset: storesOffset,
-    sort: "name.asc",
-  })
+  const storesTransaction = await getStores(searchParams)
 
   return (
     <Shell>
@@ -102,13 +99,14 @@ export default async function StorePage({
             </p>
           </div>
           <Separator className="my-1.5" />
-          <Products
+          {/* <Products
             products={productsTransaction.data}
             pageCount={productsTransaction.pageCount}
             categories={Object.values(products.category.enumValues)}
             stores={storesTransaction.data}
             storePageCount={storesTransaction.pageCount}
-          />
+          /> */}
+          <AlertCard />
         </div>
       </div>
     </Shell>

@@ -18,7 +18,7 @@ export const stores = pgTable("stores", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => createId())
     .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
-  userId: varchar("user_id", { length: 36 }).unique(), // uuid v4
+  userId: varchar("user_id", { length: 36 }), // uuid v4
   name: varchar("name").notNull(),
   description: text("description"),
   slug: text("slug").unique(),
@@ -157,7 +157,7 @@ export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => createId())
     .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
-  userId: varchar("user_id", { length: 36 }).unique(), // uuid v4
+  userId: varchar("user_id", { length: 36 }), // uuid v4
   email: varchar("email", { length: 256 }).notNull().unique(),
   token: varchar("token", { length: 256 }).notNull().unique(),
   referredBy: varchar("referred_by", { length: 256 }),
@@ -174,7 +174,7 @@ export const subscriptions = pgTable("subscriptions", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => createId())
     .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
-  userId: varchar("user_id", { length: 36 }).unique(), // uuid v4
+  userId: varchar("user_id", { length: 36 }), // uuid v4
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 256 }),
   stripePriceId: varchar("stripe_price_id", { length: 256 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 256 }),
