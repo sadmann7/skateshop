@@ -29,7 +29,7 @@ export default async function CustomersPage({
   params,
   searchParams,
 }: CustomersPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
   const { page, per_page, sort, email, from, to } =
     customersSearchParamsSchema.parse(searchParams)

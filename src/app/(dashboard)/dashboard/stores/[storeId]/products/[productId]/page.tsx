@@ -31,8 +31,8 @@ interface UpdateProductPageProps {
 export default async function UpdateProductPage({
   params,
 }: UpdateProductPageProps) {
-  const storeId = Number(params.storeId)
-  const productId = Number(params.productId)
+  const storeId = decodeURIComponent(params.storeId)
+  const productId = decodeURIComponent(params.productId)
 
   const product = await db.query.products.findFirst({
     where: and(eq(products.id, productId), eq(products.storeId, storeId)),

@@ -3,7 +3,7 @@
 import { unstable_noStore as noStore, revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
-import { carts, products, stores } from "@/db/schema"
+import { carts, categories, products, stores, subcategories } from "@/db/schema"
 import type { CartLineItem } from "@/types"
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm"
 import { type z } from "zod"
@@ -43,8 +43,8 @@ export async function getCart(input?: {
         id: products.id,
         name: products.name,
         images: products.images,
-        category: products.category,
-        subcategory: products.subcategory,
+        category: categories.name,
+        subcategory: subcategories.name,
         price: products.price,
         inventory: products.inventory,
         storeId: products.storeId,
@@ -53,6 +53,8 @@ export async function getCart(input?: {
       })
       .from(products)
       .leftJoin(stores, eq(stores.id, products.storeId))
+      .leftJoin(categories, eq(categories.id, products.categoryId))
+      .leftJoin(subcategories, eq(subcategories.id, products.subcategoryId))
       .where(
         and(
           inArray(products.id, uniqueProductIds),
@@ -160,7 +162,10 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
       cookieStore.set("cartId", String(cart[0]?.insertedId))
 
       revalidatePath("/")
-      return
+      return {
+        data: [input],
+        error: null,
+      }
     }
 
     const cart = await db.query.carts.findFirst({
@@ -194,7 +199,10 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
       cookieStore.set("cartId", String(newCart[0]?.insertedId))
 
       revalidatePath("/")
-      return
+      return {
+        data: [input],
+        error: null,
+      }
     }
 
     const cartItem = cart.items?.find(

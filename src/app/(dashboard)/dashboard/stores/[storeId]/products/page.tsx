@@ -3,7 +3,7 @@ import { type Metadata } from "next"
 import { unstable_noStore as noStore } from "next/cache"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
-import { products, stores, type Product } from "@/db/schema"
+import { categories, products, stores, type Product } from "@/db/schema"
 import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
@@ -30,7 +30,7 @@ export default async function ProductsPage({
   params,
   searchParams,
 }: ProductsPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
   // Parse search params using zod schema
   const { page, per_page, sort, name, category, from, to } =
@@ -60,7 +60,7 @@ export default async function ProductsPage({
     "asc" | "desc" | undefined,
   ]) ?? ["createdAt", "desc"]
 
-  const categories = (category?.split(".") as Product["category"][]) ?? []
+  const categoryIds = category?.split(".") ?? []
 
   const fromDay = from ? new Date(from) : undefined
   const toDay = to ? new Date(to) : undefined
@@ -73,7 +73,7 @@ export default async function ProductsPage({
         .select({
           id: products.id,
           name: products.name,
-          category: products.category,
+          category: categories.name,
           price: products.price,
           inventory: products.inventory,
           rating: products.rating,
@@ -82,14 +82,15 @@ export default async function ProductsPage({
         .from(products)
         .limit(limit)
         .offset(offset)
+        .leftJoin(categories, eq(products.categoryId, categories.id))
         .where(
           and(
             eq(products.storeId, storeId),
             // Filter by name
             name ? like(products.name, `%${name}%`) : undefined,
             // Filter by category
-            categories.length > 0
-              ? inArray(products.category, categories)
+            categoryIds.length > 0
+              ? inArray(products.categoryId, categoryIds)
               : undefined,
             // Filter by createdAt
             fromDay && toDay
@@ -119,8 +120,8 @@ export default async function ProductsPage({
             // Filter by name
             name ? like(products.name, `%${name}%`) : undefined,
             // Filter by category
-            categories.length > 0
-              ? inArray(products.category, categories)
+            categoryIds.length > 0
+              ? inArray(products.categoryId, categoryIds)
               : undefined,
             // Filter by createdAt
             fromDay && toDay

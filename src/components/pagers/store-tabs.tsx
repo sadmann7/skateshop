@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 
 interface StoreTabsProps {
-  storeId: number
+  storeId: string
 }
 
 export function StoreTabs({ storeId }: StoreTabsProps) {

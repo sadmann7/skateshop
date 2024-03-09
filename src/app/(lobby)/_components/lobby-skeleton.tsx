@@ -1,6 +1,5 @@
 import Link from "next/link"
 
-import { productCategories } from "@/config/product"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { ContentSection } from "@/components/shells/content-section"
@@ -8,7 +7,7 @@ import { Shell } from "@/components/shells/shell"
 import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton"
 import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 
-import { CategoryCard } from "./category-card"
+import { CategoryCardSkeleton } from "./category-card-skeleton"
 
 export function LobbySkeleton() {
   return (
@@ -39,8 +38,8 @@ export function LobbySkeleton() {
         </div>
       </section>
       <section className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {productCategories.map((category) => (
-          <CategoryCard key={category.title} category={category} />
+        {Array.from({ length: 4 }).map((_, i) => (
+          <CategoryCardSkeleton key={i} />
         ))}
       </section>
       <ContentSection

@@ -8,7 +8,8 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { deleteProduct } from "@/lib/actions/product"
-import { catchError, formatDate, formatPrice } from "@/lib/utils"
+import { getErrorMessage } from "@/lib/handle-error"
+import { formatDate, formatPrice } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -25,7 +26,7 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 
 type AwaitedProduct = Pick<
   Product,
-  "id" | "name" | "category" | "price" | "inventory" | "rating" | "createdAt"
+  "id" | "name" | "categoryId" | "price" | "inventory" | "rating" | "createdAt"
 >
 
 interface ProductsTableShellProps {
@@ -33,7 +34,7 @@ interface ProductsTableShellProps {
     data: AwaitedProduct[]
     pageCount: number
   }>
-  storeId: number
+  storeId: string
 }
 
 export function ProductsTableShell({
@@ -43,7 +44,7 @@ export function ProductsTableShell({
   const { data, pageCount } = React.use(promise)
 
   const [isPending, startTransition] = React.useTransition()
-  const [selectedRowIds, setSelectedRowIds] = React.useState<number[]>([])
+  const [selectedRowIds, setSelectedRowIds] = React.useState<string[]>([])
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<AwaitedProduct, unknown>[]>(
@@ -94,7 +95,7 @@ export function ProductsTableShell({
         ),
         cell: ({ cell }) => {
           const categories = Object.values(products.category.enumValues)
-          const category = cell.getValue() as Product["category"]
+          const category = cell.getValue() as string
 
           if (!categories.includes(category)) return null
 
@@ -170,7 +171,7 @@ export function ProductsTableShell({
                       {
                         loading: "Deleting...",
                         success: () => "Product deleted successfully.",
-                        error: (err: unknown) => catchError(err),
+                        error: (err: unknown) => getErrorMessage(err),
                       }
                     )
                   })
@@ -206,7 +207,7 @@ export function ProductsTableShell({
         },
         error: (err: unknown) => {
           setSelectedRowIds([])
-          return catchError(err)
+          return getErrorMessage(err)
         },
       }
     )

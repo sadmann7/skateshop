@@ -1,9 +1,8 @@
 import Link from "next/link"
 
-import { productCategories } from "@/config/product"
 import { siteConfig } from "@/config/site"
 import { type getGithubStars } from "@/lib/actions/github"
-import { type getFeaturedProducts } from "@/lib/actions/product"
+import type { getCategories, getFeaturedProducts } from "@/lib/actions/product"
 import { type getFeaturedStores } from "@/lib/actions/store"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -16,21 +15,24 @@ import { Shell } from "@/components/shells/shell"
 import { CategoryCard } from "./category-card"
 
 interface LobbyProps {
-  productsPromise: ReturnType<typeof getFeaturedProducts>
-  storesPromise: ReturnType<typeof getFeaturedStores>
   githubStarsPromise: ReturnType<typeof getGithubStars>
+  productsPromise: ReturnType<typeof getFeaturedProducts>
+  categoriesPromise: ReturnType<typeof getCategories>
+  storesPromise: ReturnType<typeof getFeaturedStores>
 }
 
 export async function Lobby({
-  productsPromise,
-  storesPromise,
   githubStarsPromise,
+  productsPromise,
+  categoriesPromise,
+  storesPromise,
 }: LobbyProps) {
   // See the "Parallel data fetching" docs: https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#parallel-data-fetching
-  const [products, stores, githubStars] = await Promise.all([
-    productsPromise,
-    storesPromise,
+  const [githubStars, products, categories, stores] = await Promise.all([
     githubStarsPromise,
+    productsPromise,
+    categoriesPromise,
+    storesPromise,
   ])
 
   return (
@@ -80,8 +82,8 @@ export async function Lobby({
         </div>
       </section>
       <section className="grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {productCategories.map((category) => (
-          <CategoryCard key={category.title} category={category} />
+        {categories.map((category) => (
+          <CategoryCard key={category.name} category={category} />
         ))}
       </section>
       <ContentSection

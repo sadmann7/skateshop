@@ -46,6 +46,7 @@ export const categories = pgTable("categories", {
 })
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
+  products: many(products),
   subcategories: many(subcategories),
 }))
 
@@ -120,6 +121,10 @@ export const products = pgTable(
 
 export const productsRelations = relations(products, ({ one }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
+  category: one(categories, {
+    fields: [products.categoryId],
+    references: [categories.id],
+  }),
   subcategory: one(subcategories, {
     fields: [products.subcategoryId],
     references: [subcategories.id],

@@ -4,7 +4,7 @@ import { stores } from "@/db/schema"
 import { eq } from "drizzle-orm"
 
 import { getCacheduser } from "@/lib/actions/auth"
-import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
+import { getSubscriptionPlan } from "@/lib/actions/stripe"
 import { getDashboardRedirectPath } from "@/lib/subscription"
 import {
   PageHeader,
@@ -25,7 +25,7 @@ export default async function StoreLayout({
   children,
   params,
 }: StoreLayoutProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
   const user = await getCacheduser()
 

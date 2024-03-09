@@ -8,7 +8,7 @@ import { CheckIcon, EyeOpenIcon, PlusIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { addToCart } from "@/lib/actions/cart"
-import { catchError, cn, formatPrice } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -23,10 +23,9 @@ import { Icons } from "@/components/icons"
 import { PlaceholderImage } from "@/components/placeholder-image"
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  product: Pick<
-    Product,
-    "id" | "name" | "price" | "images" | "category" | "inventory"
-  >
+  product: Pick<Product, "id" | "name" | "price" | "images" | "inventory"> & {
+    category: string | null
+  }
   variant?: "default" | "switchable"
   isAddedToCart?: boolean
   onSwitch?: () => Promise<void>
@@ -40,7 +39,7 @@ export function ProductCard({
   className,
   ...props
 }: ProductCardProps) {
-  const [isAddingToCart, startAddingToCart] = React.useTransition()
+  const [isUpdatePending, startUpdateTransition] = React.useTransition()
 
   return (
     <Card
@@ -83,22 +82,20 @@ export function ProductCard({
               aria-label="Add to cart"
               size="sm"
               className="h-8 w-full rounded-sm"
-              onClick={() => {
-                startAddingToCart(async () => {
-                  try {
-                    await addToCart({
-                      productId: product.id,
-                      quantity: 1,
-                    })
-                    toast.success("Added to cart.")
-                  } catch (err) {
-                    catchError(err)
-                  }
+              onClick={async () => {
+                startUpdateTransition(() => {})
+                const { error } = await addToCart({
+                  productId: product.id,
+                  quantity: 1,
                 })
+
+                if (error) {
+                  toast.error(error)
+                }
               }}
-              disabled={isAddingToCart}
+              disabled={isUpdatePending}
             >
-              {isAddingToCart && (
+              {isUpdatePending && (
                 <Icons.spinner
                   className="mr-2 size-4 animate-spin"
                   aria-hidden="true"
@@ -126,14 +123,13 @@ export function ProductCard({
             aria-label={isAddedToCart ? "Remove from cart" : "Add to cart"}
             size="sm"
             className="h-8 w-full rounded-sm"
-            onClick={() => {
-              startAddingToCart(async () => {
-                await onSwitch?.()
-              })
+            onClick={async () => {
+              startUpdateTransition(async () => {})
+              await onSwitch?.()
             }}
-            disabled={isAddingToCart}
+            disabled={isUpdatePending}
           >
-            {isAddingToCart ? (
+            {isUpdatePending ? (
               <Icons.spinner
                 className="mr-2 size-4 animate-spin"
                 aria-hidden="true"

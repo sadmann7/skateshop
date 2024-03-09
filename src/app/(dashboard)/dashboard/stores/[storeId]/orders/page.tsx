@@ -30,7 +30,7 @@ export default async function OrdersPage({
   params,
   searchParams,
 }: OrdersPageProps) {
-  const storeId = Number(params.storeId)
+  const storeId = decodeURIComponent(params.storeId)
 
   const { page, per_page, sort, customer, status, from, to } =
     ordersSearchParamsSchema.parse(searchParams)

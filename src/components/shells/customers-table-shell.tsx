@@ -29,7 +29,7 @@ interface CustomersTableShellProps {
     data: AwaitedCustomer[]
     pageCount: number
   }>
-  storeId: number
+  storeId: string
 }
 
 export function CustomersTableShell({

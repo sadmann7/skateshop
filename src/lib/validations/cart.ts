@@ -22,8 +22,8 @@ export const cartLineItemSchema = z.object({
     )
     .optional()
     .nullable(),
-  categoryId: z.string(),
-  subcategoryId: z.string().optional().nullable(),
+  category: z.string().optional().nullable(),
+  subcategory: z.string().optional().nullable(),
   price: z.string().regex(/^\d+(\.\d{1,2})?$/),
   inventory: z.number().default(0),
   quantity: z.number(),

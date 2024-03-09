@@ -6,7 +6,13 @@ import {
   revalidatePath,
 } from "next/cache"
 import { db } from "@/db"
-import { products, stores, type Product } from "@/db/schema"
+import {
+  categories,
+  products,
+  stores,
+  subcategories,
+  type Product,
+} from "@/db/schema"
 import type { SearchParams, StoredFile } from "@/types"
 import {
   and,
@@ -38,7 +44,7 @@ export async function getFeaturedProducts() {
           id: products.id,
           name: products.name,
           images: products.images,
-          category: products.category,
+          category: categories.name,
           price: products.price,
           inventory: products.inventory,
           stripeAccountId: stores.stripeAccountId,
@@ -46,7 +52,8 @@ export async function getFeaturedProducts() {
         .from(products)
         .limit(8)
         .leftJoin(stores, eq(products.storeId, stores.id))
-        .groupBy(products.id, stores.stripeAccountId)
+        .leftJoin(categories, eq(products.categoryId, categories.id))
+        .groupBy(products.id, stores.stripeAccountId, categories.name)
         .orderBy(
           desc(sql<number>`count(${stores.stripeAccountId})`),
           desc(sql<number>`count(${products.images})`),
@@ -64,6 +71,7 @@ export async function getFeaturedProducts() {
 // See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
 export async function getProducts(input: SearchParams) {
   noStore()
+
   try {
     const search = getProductsSchema.parse(input)
 
@@ -75,9 +83,8 @@ export async function getProducts(input: SearchParams) {
       "asc" | "desc" | undefined,
     ]) ?? ["createdAt", "desc"]
     const [minPrice, maxPrice] = search.price_range?.split("-") ?? []
-    const categories =
-      (search.categories?.split(".") as Product["category"][]) ?? []
-    const subcategories = search.subcategories?.split(".") ?? []
+    const categoryIds = search.categories?.split(".") ?? []
+    const subcategoryIds = search.subcategories?.split(".") ?? []
     const storeIds = search.store_ids?.split(".") ?? []
 
     const transaction = await db.transaction(async (tx) => {
@@ -87,8 +94,8 @@ export async function getProducts(input: SearchParams) {
           name: products.name,
           description: products.description,
           images: products.images,
-          category: products.category,
-          subcategory: products.subcategory,
+          category: categories.name,
+          subcategory: subcategories.name,
           price: products.price,
           inventory: products.inventory,
           rating: products.rating,
@@ -102,13 +109,15 @@ export async function getProducts(input: SearchParams) {
         .limit(limit)
         .offset(offset)
         .leftJoin(stores, eq(products.storeId, stores.id))
+        .leftJoin(categories, eq(products.categoryId, categories.id))
+        .leftJoin(subcategories, eq(products.subcategoryId, subcategories.id))
         .where(
           and(
-            categories.length
-              ? inArray(products.category, categories)
+            categoryIds.length > 0
+              ? inArray(products.categoryId, categoryIds)
               : undefined,
-            subcategories.length
-              ? inArray(products.subcategory, subcategories)
+            subcategoryIds.length > 0
+              ? inArray(products.subcategoryId, subcategoryIds)
               : undefined,
             minPrice ? gte(products.price, minPrice) : undefined,
             maxPrice ? lte(products.price, maxPrice) : undefined,
@@ -134,11 +143,11 @@ export async function getProducts(input: SearchParams) {
         .from(products)
         .where(
           and(
-            categories.length
-              ? inArray(products.category, categories)
+            categoryIds.length > 0
+              ? inArray(products.categoryId, categoryIds)
               : undefined,
-            subcategories.length
-              ? inArray(products.subcategory, subcategories)
+            subcategoryIds.length > 0
+              ? inArray(products.subcategoryId, subcategoryIds)
               : undefined,
             minPrice ? gte(products.price, minPrice) : undefined,
             maxPrice ? lte(products.price, maxPrice) : undefined,
@@ -158,7 +167,6 @@ export async function getProducts(input: SearchParams) {
 
     return transaction
   } catch (err) {
-    console.error(err)
     return {
       data: [],
       pageCount: 0,
@@ -166,28 +174,93 @@ export async function getProducts(input: SearchParams) {
   }
 }
 
-export async function getProductCount({ category }: { category: Category }) {
+export async function getProductCount({
+  categoryName,
+}: {
+  categoryName: string
+}) {
   noStore()
+
   try {
     const count = await db
       .select({
         count: sql<number>`count(*)`.mapWith(Number),
       })
       .from(products)
-      .where(eq(products.category, category.title))
+      .where(eq(products.name, categoryName))
       .execute()
       .then((res) => res[0]?.count ?? 0)
 
     return {
-      data: count,
+      data: {
+        count,
+      },
       error: null,
     }
   } catch (err) {
     return {
-      data: 0,
+      data: {
+        count: 0,
+      },
       error: getErrorMessage(err),
     }
   }
+}
+
+export async function getCategories() {
+  return await cache(
+    async () => {
+      return db
+        .selectDistinct({
+          name: categories.name,
+        })
+        .from(categories)
+    },
+    ["categories"],
+    {
+      revalidate: 3600, // every hour
+      tags: ["categories"],
+    }
+  )()
+}
+
+export async function getSubcategories() {
+  return await cache(
+    async () => {
+      return db
+        .selectDistinct({
+          name: subcategories.name,
+        })
+        .from(subcategories)
+    },
+    ["subcategories"],
+    {
+      revalidate: 3600, // every hour
+      tags: ["subcategories"],
+    }
+  )()
+}
+
+export async function getSubcategoriesByCategory({
+  categoryId,
+}: {
+  categoryId: string
+}) {
+  return await cache(
+    async () => {
+      return db
+        .selectDistinct({
+          name: subcategories.name,
+        })
+        .from(subcategories)
+        .where(eq(subcategories.categoryId, categoryId))
+    },
+    [`subcategories-${categoryId}`],
+    {
+      revalidate: 3600, // every hour
+      tags: [`subcategories-${categoryId}`],
+    }
+  )()
 }
 
 export async function filterProducts({ query }: { query: string }) {
@@ -201,28 +274,24 @@ export async function filterProducts({ query }: { query: string }) {
       }
     }
 
-    const filteredProducts = await db
-      .select({
-        id: products.id,
-        name: products.name,
-        category: products.category,
-      })
-      .from(products)
-      .where(like(products.name, `%${query}%`))
-      .orderBy(desc(products.createdAt))
-      .limit(10)
-
-    const productsByCategory = Object.values(products.category.enumValues).map(
-      (category) => ({
-        category,
-        products: filteredProducts.filter(
-          (product) => product.category === category
-        ),
-      })
-    )
+    const categoriesWithProducts = await db.query.categories.findMany({
+      columns: {
+        id: true,
+        name: true,
+      },
+      with: {
+        products: {
+          columns: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      where: like(categories.name, `%${query}%`),
+    })
 
     return {
-      data: productsByCategory,
+      data: categoriesWithProducts,
       error: null,
     }
   } catch (err) {

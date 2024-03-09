@@ -1,8 +1,8 @@
 import * as React from "react"
 import Link from "next/link"
-import type { Category } from "@/types"
+import { BoxIcon } from "@radix-ui/react-icons"
 
-import { getProductCount } from "@/lib/actions/product"
+import { getProductCount, type getCategories } from "@/lib/actions/product"
 import {
   Card,
   CardContent,
@@ -13,23 +13,25 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface CategoryCardProps {
-  category: Category
+  category: Awaited<ReturnType<typeof getCategories>>[number]
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const productCountPromise = getProductCount({ category })
+  const productCountPromise = getProductCount({
+    categoryName: category.name,
+  })
 
   return (
-    <Link href={`/categories/${category.title}`}>
-      <span className="sr-only">{category.title}</span>
+    <Link href={`/categories/${category.name}`}>
+      <span className="sr-only">{category.name}</span>
       <Card className="relative flex size-full flex-col items-center justify-center overflow-hidden rounded-lg bg-transparent transition-colors hover:bg-muted/50">
         <CardHeader>
           <div className="grid size-11 place-items-center rounded-full border-2">
-            <category.icon className="size-5" aria-hidden="true" />
+            <BoxIcon className="size-5" aria-hidden="true" />
           </div>
         </CardHeader>
         <CardContent className="flex flex-col items-center space-y-1.5">
-          <CardTitle className="capitalize">{category.title}</CardTitle>
+          <CardTitle className="capitalize">{category.name}</CardTitle>
           <React.Suspense fallback={<Skeleton className="h-4 w-20" />}>
             <ProductCount productCountPromise={productCountPromise} />
           </React.Suspense>
@@ -46,5 +48,5 @@ interface ProductCountProps {
 async function ProductCount({ productCountPromise }: ProductCountProps) {
   const { data } = await productCountPromise
 
-  return <CardDescription>{data} products</CardDescription>
+  return <CardDescription>{data.count} products</CardDescription>
 }
