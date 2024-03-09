@@ -17,7 +17,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link href={`/categories/${category.name}`}>
-      <Card className="relative flex size-full flex-col bg-secondary p-4 transition-colors hover:bg-muted/50">
+      <Card className="relative flex size-full flex-col bg-muted p-4 transition-colors hover:bg-muted/50">
         <Icons.product
           className="size-10 text-muted-foreground"
           aria-hidden="true"
@@ -29,7 +29,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
         <React.Suspense
           fallback={
             <div className="pt-1">
-              <Skeleton className="h-3.5 w-20" />
+              <Skeleton className="h-4 w-20" />
             </div>
           }
         >

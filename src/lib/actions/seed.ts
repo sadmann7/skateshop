@@ -16,7 +16,7 @@ import { getSubcategories, productConfig } from "@/config/product"
 export async function seedCategories() {
   const data = productConfig.categories.map((category) => ({
     id: createId(),
-    name: category.title,
+    name: category.name,
     description: category.description,
   }))
 
@@ -32,14 +32,14 @@ export async function seedSubcategories() {
 
   allCategories.forEach((category) => {
     const subcategories = productConfig.categories.find(
-      (c) => c.title === category.name
+      (c) => c.name === category.name
     )?.subcategories
 
     if (subcategories) {
       subcategories.forEach((subcategory) => {
         data.push({
           id: createId(),
-          name: subcategory.title,
+          name: subcategory.name,
           categoryId: category.id,
           description: subcategory.description,
           updatedAt: new Date(),
@@ -65,7 +65,7 @@ export async function seedProducts({
 
   const data: Product[] = []
 
-  const categories = productConfig.categories.map((category) => category.title)
+  const categories = productConfig.categories.map((category) => category.name)
 
   for (let i = 0; i < productCount; i++) {
     const category = faker.helpers.shuffle(categories)[0] ?? "skateboards"

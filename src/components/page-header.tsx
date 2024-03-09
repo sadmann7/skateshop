@@ -3,24 +3,20 @@
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-import { Separator } from "@/components/ui/separator"
 
 interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType
-  separated?: boolean
 }
 
 function PageHeader({
   className,
   children,
   as: Comp = "section",
-  separated = false,
   ...props
 }: PageHeaderProps) {
   return (
     <Comp className={cn("flex flex-col gap-1", className)} {...props}>
       {children}
-      {separated ? <Separator className="mt-2.5" /> : null}
     </Comp>
   )
 }
@@ -32,7 +28,7 @@ const headingVariants = cva(
       size: {
         default: "text-3xl md:text-4xl",
         sm: "text-2xl md:text-3xl",
-        lg: "text-4xl md:text-5xl",
+        lg: "text-3xl sm:text-5xl md:text-6xl lg:text-7xl",
       },
     },
     defaultVariants: {
@@ -58,21 +54,18 @@ function PageHeaderHeading({
   )
 }
 
-const descriptionVariants = cva(
-  "max-w-[750px] text-balance text-muted-foreground",
-  {
-    variants: {
-      size: {
-        default: "text-base sm:text-lg",
-        sm: "text-sm sm:text-base",
-        lg: "text-lg sm:text-xl",
-      },
+const descriptionVariants = cva("text-balance text-muted-foreground", {
+  variants: {
+    size: {
+      default: "text-base sm:text-lg",
+      sm: "text-sm sm:text-base",
+      lg: "text-lg sm:text-xl",
     },
-    defaultVariants: {
-      size: "default",
-    },
-  }
-)
+  },
+  defaultVariants: {
+    size: "default",
+  },
+})
 
 interface PageHeaderDescriptionProps
   extends React.HTMLAttributes<HTMLParagraphElement>,
