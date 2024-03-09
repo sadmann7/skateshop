@@ -12,7 +12,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core"
 
-import { databasePrefix } from "@/lib/constants"
+import { dbPrefix } from "@/lib/constants"
 
 export const stores = pgTable("stores", {
   id: varchar("id", { length: 30 })
@@ -41,6 +41,7 @@ export const categories = pgTable("categories", {
     .$defaultFn(() => createId())
     .primaryKey(),
   name: varchar("name", { length: 256 }).notNull().unique(),
+  slug: varchar("slug", { length: 256 }).unique().notNull(),
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
@@ -61,6 +62,7 @@ export const subcategories = pgTable(
       .$defaultFn(() => createId())
       .primaryKey(),
     name: varchar("name", { length: 256 }).notNull().unique(),
+    slug: varchar("slug", { length: 256 }).unique().notNull(),
     description: text("description"),
     categoryId: varchar("category_id", { length: 30 })
       .references(() => categories.id, { onDelete: "cascade" })
@@ -70,7 +72,7 @@ export const subcategories = pgTable(
   },
   (table) => ({
     subcategoriesCategoryIdIdx: index(
-      `${databasePrefix}_subcategories_category_id_idx`
+      `${dbPrefix}_subcategories_category_id_idx`
     ).on(table.categoryId),
   })
 )
@@ -110,13 +112,11 @@ export const products = pgTable(
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },
   (table) => ({
-    storeIdIdx: index(`${databasePrefix}_products_store_id_idx`).on(
-      table.storeId
-    ),
-    categoryIdIdx: index(`${databasePrefix}_products_category_id_idx`).on(
+    storeIdIdx: index(`${dbPrefix}_products_store_id_idx`).on(table.storeId),
+    categoryIdIdx: index(`${dbPrefix}_products_category_id_idx`).on(
       table.categoryId
     ),
-    subcategoryIdIdx: index(`${databasePrefix}_products_subcategory_id_idx`).on(
+    subcategoryIdIdx: index(`${dbPrefix}_products_subcategory_id_idx`).on(
       table.subcategoryId
     ),
   })
@@ -204,9 +204,7 @@ export const payments = pgTable(
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },
   (table) => ({
-    storeIdIdx: index(`${databasePrefix}_payments_store_id_idx`).on(
-      table.storeId
-    ),
+    storeIdIdx: index(`${dbPrefix}_payments_store_id_idx`).on(table.storeId),
   })
 )
 
@@ -247,10 +245,8 @@ export const orders = pgTable(
     updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
   },
   (table) => ({
-    storeIdIdx: index(`${databasePrefix}_orders_store_id_idx`).on(
-      table.storeId
-    ),
-    addressIdIdx: index(`${databasePrefix}_orders_address_id_idx`).on(
+    storeIdIdx: index(`${dbPrefix}_orders_store_id_idx`).on(table.storeId),
+    addressIdIdx: index(`${dbPrefix}_orders_address_id_idx`).on(
       table.addressId
     ),
   })

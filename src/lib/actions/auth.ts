@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 
 import { cache } from "react"
 import { unstable_noStore as noStore } from "next/cache"

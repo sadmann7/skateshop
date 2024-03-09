@@ -9,4 +9,4 @@ export const redirects = {
   afterVerify: "/dashboard/stores",
 } as const
 
-export const databasePrefix = "skateshop"
+export const dbPrefix = "skateshop"

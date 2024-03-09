@@ -1,7 +1,7 @@
 import { pgTableCreator } from "drizzle-orm/pg-core"
 import { customAlphabet } from "nanoid"
 
-import { databasePrefix } from "@/lib/constants"
+import { dbPrefix } from "@/lib/constants"
 
 export function createId(length = 16) {
   return customAlphabet(
@@ -16,4 +16,4 @@ export function createId(length = 16) {
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const pgTable = pgTableCreator((name) => `${databasePrefix}_${name}`)
+export const pgTable = pgTableCreator((name) => `${dbPrefix}_${name}`)

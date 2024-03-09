@@ -1,9 +1,11 @@
 import type { SubscriptionPlan, UserSubscriptionPlan } from "@/types"
 
-import { storeSubscriptionPlans } from "@/config/subscriptions"
+import { subscriptionConfig } from "@/config/subscription"
 
-export function getPlanFeatures(planId?: SubscriptionPlan["id"]) {
-  const plan = storeSubscriptionPlans.find((plan) => plan.id === planId)
+export function getPlanFeatures(title: SubscriptionPlan["title"]) {
+  const plan = Object.values(subscriptionConfig.plans).find(
+    (plan) => plan.title === title
+  )
   const features = plan?.features.map((feature) => feature.split(",")).flat()
 
   const maxStoreCount =
@@ -25,10 +27,10 @@ export function getDashboardRedirectPath(input: {
   const { storeCount, subscriptionPlan } = input
 
   const minStoresWithProductCount = {
-    basic: 1,
+    free: 1,
     standard: 2,
     pro: 3,
-  }[subscriptionPlan?.id ?? "basic"]
+  }[subscriptionPlan?.title ?? "free"]
 
   const isActive = subscriptionPlan?.isActive ?? false
   const hasEnoughStores = storeCount >= minStoresWithProductCount

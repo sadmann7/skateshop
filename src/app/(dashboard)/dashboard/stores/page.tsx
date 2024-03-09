@@ -6,8 +6,8 @@ import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
 import { getCacheduser } from "@/lib/actions/auth"
-import { getUserStores } from "@/lib/fetchers/store"
-import { getSubscriptionPlan } from "@/lib/fetchers/stripe"
+import { getUserStores } from "@/lib/actions/store"
+import { getSubscriptionPlan } from "@/lib/actions/stripe"
 import { getDashboardRedirectPath, getPlanFeatures } from "@/lib/subscription"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -44,7 +44,7 @@ export default async function StoresPage() {
   ])
 
   const { maxStoreCount, maxProductCount } = getPlanFeatures(
-    subscriptionPlan?.id
+    subscriptionPlan?.title ?? "free"
   )
 
   return (
@@ -78,7 +78,7 @@ export default async function StoresPage() {
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>
           You are currently on the{" "}
-          <span className="font-semibold">{subscriptionPlan?.name}</span> plan.
+          <span className="font-semibold">{subscriptionPlan?.title}</span> plan.
           You can create up to{" "}
           <span className="font-semibold">{maxStoreCount}</span> stores and{" "}
           <span className="font-semibold">{maxProductCount}</span> products on

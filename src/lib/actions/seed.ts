@@ -12,11 +12,13 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
 import { getSubcategories, productConfig } from "@/config/product"
+import { slugify } from "@/lib/utils"
 
 export async function seedCategories() {
   const data = productConfig.categories.map((category) => ({
     id: createId(),
     name: category.name,
+    slug: slugify(category.name),
     description: category.description,
   }))
 
@@ -40,6 +42,7 @@ export async function seedSubcategories() {
         data.push({
           id: createId(),
           name: subcategory.name,
+          slug: slugify(subcategory.name),
           categoryId: category.id,
           description: subcategory.description,
           updatedAt: new Date(),
@@ -102,7 +105,7 @@ export async function seedProducts({
   await db.insert(products).values(data)
 }
 
-export async function seedRealProducts({ storeId }: { storeId: string }) {
+export async function seedCozyProducts({ storeId }: { storeId: string }) {
   const data: Product[] = productsJson.map((product) => ({
     id: product.id,
     name: product.name,

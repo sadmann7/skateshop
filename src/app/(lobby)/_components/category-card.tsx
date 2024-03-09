@@ -16,7 +16,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
   })
 
   return (
-    <Link href={`/categories/${category.name}`}>
+    <Link href={`/collections/${category.slug}`}>
       <Card className="relative flex size-full flex-col bg-muted p-4 transition-colors hover:bg-muted/50">
         <Icons.product
           className="size-10 text-muted-foreground"

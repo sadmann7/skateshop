@@ -213,6 +213,7 @@ export async function getCategories() {
       return db
         .selectDistinct({
           name: categories.name,
+          slug: categories.slug,
           description: categories.description,
         })
         .from(categories)
@@ -232,6 +233,8 @@ export async function getSubcategories() {
       return db
         .selectDistinct({
           name: subcategories.name,
+          slug: subcategories.slug,
+          description: subcategories.description,
         })
         .from(subcategories)
     },
@@ -253,6 +256,8 @@ export async function getSubcategoriesByCategory({
       return db
         .selectDistinct({
           name: subcategories.name,
+          slug: subcategories.slug,
+          description: subcategories.description,
         })
         .from(subcategories)
         .where(eq(subcategories.categoryId, categoryId))

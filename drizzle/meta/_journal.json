@@ -15,6 +15,20 @@
       "when": 1709987551303,
       "tag": "0001_flawless_fixer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1709994471163,
+      "tag": "0002_demonic_spot",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1709994742891,
+      "tag": "0003_colossal_invisible_woman",
+      "breakpoints": true
     }
   ]
 }
