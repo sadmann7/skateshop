@@ -21,6 +21,7 @@ import { type z } from "zod"
 
 import { subscriptionConfig } from "@/config/subscription"
 import { calculateOrderAmount } from "@/lib/checkout"
+import { getErrorMessage } from "@/lib/handle-error"
 import { stripe } from "@/lib/stripe"
 import { absoluteUrl, formatPrice, getUserEmail } from "@/lib/utils"
 import { userPrivateMetadataSchema } from "@/lib/validations/auth"
@@ -31,8 +32,6 @@ import type {
   getStripeAccountSchema,
   manageSubscriptionSchema,
 } from "@/lib/validations/stripe"
-
-import { getErrorMessage } from "../handle-error"
 
 // Retrieve prices for all plans from Stripe
 export async function getSubscriptionPlans(): Promise<
@@ -71,6 +70,7 @@ export async function getSubscriptionPlans(): Promise<
     }
   )()
 }
+
 // Getting the subscription plan for a user
 export async function getSubscriptionPlan(input: {
   userId: string

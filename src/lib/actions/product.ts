@@ -17,6 +17,7 @@ import type { SearchParams, StoredFile } from "@/types"
 import {
   and,
   asc,
+  count,
   desc,
   eq,
   gte,
@@ -55,8 +56,8 @@ export async function getFeaturedProducts() {
         .leftJoin(categories, eq(products.categoryId, categories.id))
         .groupBy(products.id, stores.stripeAccountId, categories.name)
         .orderBy(
-          desc(sql<number>`count(${stores.stripeAccountId})`),
-          desc(sql<number>`count(${products.images})`),
+          desc(count(stores.stripeAccountId)),
+          desc(count(products.images)),
           desc(products.createdAt)
         )
     },
@@ -136,9 +137,9 @@ export async function getProducts(input: SearchParams) {
             : desc(products.createdAt)
         )
 
-      const count = await tx
+      const total = await tx
         .select({
-          count: sql<number>`count(*)`,
+          count: count(products.id),
         })
         .from(products)
         .where(
@@ -157,7 +158,7 @@ export async function getProducts(input: SearchParams) {
         .execute()
         .then((res) => res[0]?.count ?? 0)
 
-      const pageCount = Math.ceil(count / limit)
+      const pageCount = Math.ceil(total / limit)
 
       return {
         data,

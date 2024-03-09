@@ -2,7 +2,7 @@ import { type Metadata } from "next"
 import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 
-import { getStores } from "@/lib/fetchers/store"
+import { getStores } from "@/lib/actions/store"
 import { storesSearchParamsSchema } from "@/lib/validations/params"
 import {
   PageHeader,
@@ -34,12 +34,7 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
 
-  const { data, pageCount } = await getStores({
-    limit,
-    offset,
-    sort,
-    statuses,
-  })
+  const { data, pageCount } = await getStores(searchParams)
 
   return (
     <Shell>

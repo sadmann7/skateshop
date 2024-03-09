@@ -2,7 +2,9 @@ import Link from "next/link"
 import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 
+import { getPlanLimits } from "@/lib/subscription"
 import { cn, formatDate } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,37 +16,75 @@ import {
 } from "@/components/ui/card"
 
 import { ManageSubscriptionForm } from "./manage-subscription-form"
+import { UsageCard } from "./usage-card"
 
 interface BillingProps {
   subscriptionPlanPromise: Promise<UserSubscriptionPlan | null>
   subscriptionPlansPromise: Promise<SubscriptionPlanWithPrice[]>
+  usagePromise: Promise<{
+    storeCount: number
+    productCount: number
+  }>
 }
 
 export async function Billing({
   subscriptionPlanPromise,
   subscriptionPlansPromise,
+  usagePromise,
 }: BillingProps) {
-  const [subscriptionPlan, subscriptionPlans] = await Promise.all([
+  const [subscriptionPlan, subscriptionPlans, usage] = await Promise.all([
     subscriptionPlanPromise,
     subscriptionPlansPromise,
+    usagePromise,
   ])
+
+  const { storeLimit, productLimit } = getPlanLimits({
+    planTitle: subscriptionPlan?.title ?? "free",
+  })
+
+  const storeProgress = Math.floor((usage.storeCount / storeLimit) * 100)
+  const productProgress = Math.floor((usage.productCount / productLimit) * 100)
 
   return (
     <>
-      <Card className="space-y-2.5 p-6">
-        <CardTitle className="text-2xl capitalize">
-          {subscriptionPlan?.title ?? "Free"}
-        </CardTitle>
-        <CardDescription>
-          {!subscriptionPlan?.isSubscribed
-            ? "Upgrade to unlock more features."
-            : subscriptionPlan.isCanceled
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg capitalize">Plan and Usage</CardTitle>
+          <div className="text-sm text-muted-foreground">
+            You&apos;re currently on the{" "}
+            <Badge
+              variant="secondary"
+              className="pointer-events-none capitalize text-foreground/90"
+            >
+              {subscriptionPlan?.title}
+            </Badge>{" "}
+            plan.{" "}
+            {subscriptionPlan?.isCanceled
               ? "Your plan will be canceled on "
               : "Your plan renews on "}
-          {subscriptionPlan?.stripeCurrentPeriodEnd
-            ? `${formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.`
-            : null}
-        </CardDescription>
+            {subscriptionPlan?.stripeCurrentPeriodEnd ? (
+              <span className="font-medium text-foreground/90">
+                {formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.
+              </span>
+            ) : null}
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-6 sm:grid-cols-2">
+          <UsageCard
+            title="Stores"
+            usage={usage.storeCount}
+            limit={storeLimit}
+            progress={storeProgress}
+            moreInfo="The number of stores you can create on the current plan."
+          />
+          <UsageCard
+            title="Products"
+            usage={usage.productCount}
+            limit={productLimit}
+            progress={productProgress}
+            moreInfo="The number of products you can create on the current plan."
+          />
+        </CardContent>
       </Card>
       <section className="grid gap-6 lg:grid-cols-3">
         {subscriptionPlans.map((plan, i) => (
@@ -54,15 +94,11 @@ export async function Billing({
               "sm:col-span-2 lg:col-span-1": i === subscriptionPlans.length - 1,
             })}
           >
-            <CardHeader className="h-full">
-              <CardTitle className="line-clamp-1 text-2xl capitalize">
-                {plan.title}
-              </CardTitle>
-              <CardDescription className="line-clamp-2">
-                {plan.description}
-              </CardDescription>
+            <CardHeader className="flex-1">
+              <CardTitle className="text-lg capitalize">{plan.title}</CardTitle>
+              <CardDescription>{plan.description}</CardDescription>
             </CardHeader>
-            <CardContent className="grid h-full flex-1 place-items-start gap-6">
+            <CardContent className="grid flex-1 place-items-start gap-6">
               <div className="text-3xl font-bold">
                 {plan.price}
                 <span className="text-sm font-normal text-muted-foreground">

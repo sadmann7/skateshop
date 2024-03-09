@@ -9,7 +9,7 @@ import {
 import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import type { SearchParams } from "@/types"
-import { and, asc, desc, eq, isNull, not, sql } from "drizzle-orm"
+import { and, asc, count, desc, eq, isNull, not, sql } from "drizzle-orm"
 import { type z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
@@ -83,14 +83,14 @@ export async function getStores(input: SearchParams) {
       ]) ?? []
     const statuses = search.statuses?.split(".") ?? []
 
-    const { data, count } = await db.transaction(async (tx) => {
+    const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
         .select({
           id: stores.id,
           name: stores.name,
           description: stores.description,
           stripeAccountId: stores.stripeAccountId,
-          productCount: sql<number>`count(*)`,
+          productCount: count(products.id),
         })
         .from(stores)
         .limit(limit)
@@ -124,9 +124,9 @@ export async function getStores(input: SearchParams) {
                     : desc(stores.createdAt)
         )
 
-      const count = await tx
+      const total = await tx
         .select({
-          count: sql<number>`count(*)`,
+          count: count(stores.id),
         })
         .from(stores)
         .where(
@@ -145,11 +145,11 @@ export async function getStores(input: SearchParams) {
 
       return {
         data,
-        count,
+        total,
       }
     })
 
-    const pageCount = Math.ceil(count / limit)
+    const pageCount = Math.ceil(total / limit)
 
     return {
       data,
@@ -164,9 +164,36 @@ export async function getStores(input: SearchParams) {
   }
 }
 
+export async function getUsage(input: { userId: string }) {
+  noStore()
+  try {
+    const data = await db
+      .select({
+        storeCount: count(stores.id),
+        productCount: count(products.id),
+      })
+      .from(stores)
+      .leftJoin(products, eq(products.storeId, stores.id))
+      .where(eq(stores.userId, input.userId))
+      .execute()
+      .then((res) => res[0])
+
+    return {
+      storeCount: data?.storeCount ?? 0,
+      productCount: data?.productCount ?? 0,
+    }
+  } catch (err) {
+    return {
+      storeCount: 0,
+      productCount: 0,
+    }
+  }
+}
+
 export async function addStore(
   input: z.infer<typeof addStoreSchema> & { userId: string }
 ) {
+  noStore()
   try {
     const storeWithSameName = await db.query.stores.findFirst({
       where: eq(stores.name, input.name),
@@ -205,6 +232,7 @@ export async function addStore(
 }
 
 export async function updateStore(storeId: string, fd: FormData) {
+  noStore()
   try {
     const input = updateStoreSchema.parse({
       name: fd.get("name"),
@@ -246,6 +274,7 @@ export async function updateStore(storeId: string, fd: FormData) {
 }
 
 export async function deleteStore(storeId: string) {
+  noStore()
   try {
     const store = await db.query.stores.findFirst({
       where: eq(stores.id, storeId),
