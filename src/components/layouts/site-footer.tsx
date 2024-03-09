@@ -6,7 +6,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { JoinNewsletterForm } from "@/components/forms/join-newsletter-form"
 import { Icons } from "@/components/icons"
 import { ModeToggle } from "@/components/layouts/mode-toggle"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export function SiteFooter() {
   return (

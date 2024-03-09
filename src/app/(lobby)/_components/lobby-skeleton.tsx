@@ -2,8 +2,8 @@ import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ContentSection } from "@/components/shells/content-section"
-import { Shell } from "@/components/shells/shell"
+import { ContentSection } from "@/components/content-section"
+import { Shell } from "@/components/shell"
 import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton"
 import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 

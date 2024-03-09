@@ -11,46 +11,35 @@ import {
 interface DataTableSkeletonProps {
   columnCount: number
   rowCount?: number
-  isNewRowCreatable?: boolean
-  isRowsDeletable?: boolean
-  searchableFieldCount?: number
-  filterableFieldCount?: number
+  searchableColumnCount?: number
+  filterableColumnCount?: number
 }
 
 export function DataTableSkeleton({
   columnCount,
   rowCount = 10,
-  isNewRowCreatable = false,
-  isRowsDeletable = false,
-  searchableFieldCount = 1,
-  filterableFieldCount = 1,
+  searchableColumnCount = 1,
+  filterableColumnCount = 1,
 }: DataTableSkeletonProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
       <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
         <div className="flex flex-1 items-center space-x-2">
-          {searchableFieldCount > 0
-            ? Array.from({ length: searchableFieldCount }).map((_, i) => (
+          {searchableColumnCount > 0
+            ? Array.from({ length: searchableColumnCount }).map((_, i) => (
                 <Skeleton key={i} className="h-7 w-[150px] lg:w-[250px]" />
               ))
             : null}
-          {filterableFieldCount > 0
-            ? Array.from({ length: filterableFieldCount }).map((_, i) => (
+          {filterableColumnCount > 0
+            ? Array.from({ length: filterableColumnCount }).map((_, i) => (
                 <Skeleton key={i} className="h-7 w-[70px] border-dashed" />
               ))
             : null}
         </div>
-        <div className="flex items-center space-x-2">
-          {isRowsDeletable ? (
-            <Skeleton className="h-7 w-[70px]" />
-          ) : isNewRowCreatable ? (
-            <Skeleton className="h-7 w-[70px]" />
-          ) : null}
-          <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
-        </div>
+        <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
       </div>
       <div className="rounded-md border">
-        <Table className="min-w-[640px]">
+        <Table>
           <TableHeader>
             {Array.from({ length: 1 }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
@@ -65,8 +54,8 @@ export function DataTableSkeleton({
           <TableBody>
             {Array.from({ length: rowCount }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
-                {Array.from({ length: columnCount }).map((_, j) => (
-                  <TableCell key={j}>
+                {Array.from({ length: columnCount }).map((_, i) => (
+                  <TableCell key={i}>
                     <Skeleton className="h-6 w-full" />
                   </TableCell>
                 ))}

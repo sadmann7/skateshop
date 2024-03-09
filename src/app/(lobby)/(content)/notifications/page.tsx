@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card"
 import { UpdateNotificationForm } from "@/components/forms/update-notification-form"
 import { PageHeader } from "@/components/page-header"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

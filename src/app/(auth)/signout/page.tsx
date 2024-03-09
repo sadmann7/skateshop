@@ -6,7 +6,7 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 import { LogOutButtons } from "@/app/(auth)/_components/logout-buttons"
 
 export const metadata: Metadata = {

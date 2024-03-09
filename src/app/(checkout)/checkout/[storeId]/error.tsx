@@ -4,7 +4,7 @@
 import * as React from "react"
 
 import { ErrorCard } from "@/components/cards/error-card"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export default function StoreCheckoutError({
   error,

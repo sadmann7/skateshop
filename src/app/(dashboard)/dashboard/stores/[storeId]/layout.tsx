@@ -13,7 +13,7 @@ import {
 } from "@/components/page-header"
 import { StoreSwitcher } from "@/components/pagers/store-switcher"
 import { StoreTabs } from "@/components/pagers/store-tabs"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 interface StoreLayoutProps extends React.PropsWithChildren {
   params: {

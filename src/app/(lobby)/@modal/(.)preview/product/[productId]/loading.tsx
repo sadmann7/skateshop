@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
+import { DialogShell } from "@/components/dialog-shell"
 import { PlaceholderImage } from "@/components/placeholder-image"
-import { DialogShell } from "@/components/shells/dialog-shell"
 
 export default function ProductModalLoading() {
   return (

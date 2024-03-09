@@ -12,7 +12,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Products } from "@/components/products"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 interface SubcategoryPageProps {
   params: {

@@ -2,7 +2,7 @@ import { type UseChatHelpers } from "ai/react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 const examples = [
   "Get me the top 5 stories on Hacker News in markdown table format. Use columns like title, link, score, and comments.",

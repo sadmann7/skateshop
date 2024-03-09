@@ -13,7 +13,7 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 import { Billing } from "./_components/billing"
 import { BillingSkeleton } from "./_components/billing-skeleton"
@@ -21,7 +21,7 @@ import { BillingSkeleton } from "./_components/billing-skeleton"
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Billing",
-  description: "Manage your billing and subscription",
+  description: "Manage your billing and subscription plan",
 }
 
 export default async function BillingPage() {
@@ -40,7 +40,7 @@ export default async function BillingPage() {
       <PageHeader>
         <PageHeaderHeading size="sm">Billing</PageHeaderHeading>
         <PageHeaderDescription size="sm">
-          Manage your billing and subscription
+          Manage your billing and subscription plan
         </PageHeaderDescription>
       </PageHeader>
       <Alert>
@@ -53,7 +53,7 @@ export default async function BillingPage() {
             href="https://stripe.com/docs/testing"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium underline underline-offset-4 transition-colors hover:text-foreground/90"
+            className="font-medium underline underline-offset-4 transition-colors hover:text-foreground/80"
           >
             Stripe docs
           </a>

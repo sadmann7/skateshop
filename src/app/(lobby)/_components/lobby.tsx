@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ProductCard } from "@/components/cards/product-card"
 import { StoreCard } from "@/components/cards/store-card"
+import { ContentSection } from "@/components/content-section"
 import { Icons } from "@/components/icons"
-import { ContentSection } from "@/components/shells/content-section"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 import { CategoryCard } from "./category-card"
 

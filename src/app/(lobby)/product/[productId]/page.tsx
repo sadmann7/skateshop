@@ -20,7 +20,7 @@ import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Rating } from "@/components/rating"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 import { UpdateProductRatingButton } from "@/components/update-product-rating-button"
 
 interface ProductPageProps {

@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { AlertCard } from "@/components/alert-card"
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { Products } from "@/components/products"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 interface StorePageProps {
   params: {

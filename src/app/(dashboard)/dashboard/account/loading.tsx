@@ -4,12 +4,12 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export default function AccountLoading() {
   return (
     <Shell variant="sidebar">
-      <PageHeader separated>
+      <PageHeader>
         <PageHeaderHeading size="sm">Account</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your account settings

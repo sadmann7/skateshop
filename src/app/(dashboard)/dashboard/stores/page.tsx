@@ -11,7 +11,7 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 
 import { AddStoreDialog } from "./_components/add-store-dialog"

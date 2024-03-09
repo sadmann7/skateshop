@@ -15,7 +15,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { MdxPager } from "@/components/pagers/mdx-pager"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 interface PageProps {
   params: {

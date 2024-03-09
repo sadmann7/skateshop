@@ -11,9 +11,9 @@ import { cn, formatPrice } from "@/lib/utils"
 import { AlertDialogAction } from "@/components/ui/alert-dialog"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { buttonVariants } from "@/components/ui/button"
+import { DialogShell } from "@/components/dialog-shell"
 import { PlaceholderImage } from "@/components/placeholder-image"
 import { Rating } from "@/components/rating"
-import { DialogShell } from "@/components/shells/dialog-shell"
 
 interface ProductModalPageProps {
   params: {
