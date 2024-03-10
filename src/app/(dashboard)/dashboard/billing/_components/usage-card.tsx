@@ -20,7 +20,7 @@ interface UsageCardProps {
   usage: number
   limit: number
   progress: number
-  moreInfo: string
+  moreInfo?: string
 }
 
 export function UsageCard({
@@ -33,21 +33,23 @@ export function UsageCard({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <CardTitle>{title}</CardTitle>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-4">
-                <QuestionMarkCircledIcon
-                  className="size-full"
-                  aria-hidden="true"
-                />
-              </Button>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80" sideOffset={8}>
-              <p className="text-sm">{moreInfo}</p>
-            </HoverCardContent>
-          </HoverCard>
+          {moreInfo && (
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Button variant="ghost" size="icon" className="size-4">
+                  <QuestionMarkCircledIcon
+                    className="size-full"
+                    aria-hidden="true"
+                  />
+                </Button>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-80" sideOffset={8}>
+                <p className="text-sm">{moreInfo}</p>
+              </HoverCardContent>
+            </HoverCard>
+          )}
         </div>
         <CardDescription>
           {usage} / {limit} stores ({progress}%)

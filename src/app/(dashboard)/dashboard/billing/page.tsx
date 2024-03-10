@@ -4,9 +4,8 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
-import { getCacheduser } from "@/lib/actions/auth"
-import { getUsage } from "@/lib/actions/store"
 import { getSubscriptionPlan, getSubscriptionPlans } from "@/lib/actions/stripe"
+import { getCacheduser, getUsage } from "@/lib/actions/user"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   PageHeader,

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { getCacheduser } from "@/lib/actions/auth"
+import { getCacheduser } from "@/lib/actions/user"
 import {
   PageHeader,
   PageHeaderDescription,

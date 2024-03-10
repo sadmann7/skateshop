@@ -164,32 +164,6 @@ export async function getStores(input: SearchParams) {
   }
 }
 
-export async function getUsage(input: { userId: string }) {
-  noStore()
-  try {
-    const data = await db
-      .select({
-        storeCount: count(stores.id),
-        productCount: count(products.id),
-      })
-      .from(stores)
-      .leftJoin(products, eq(products.storeId, stores.id))
-      .where(eq(stores.userId, input.userId))
-      .execute()
-      .then((res) => res[0])
-
-    return {
-      storeCount: data?.storeCount ?? 0,
-      productCount: data?.productCount ?? 0,
-    }
-  } catch (err) {
-    return {
-      storeCount: 0,
-      productCount: 0,
-    }
-  }
-}
-
 export async function addStore(
   input: z.infer<typeof addStoreSchema> & { userId: string }
 ) {

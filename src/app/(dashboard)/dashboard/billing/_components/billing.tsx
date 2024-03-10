@@ -2,7 +2,7 @@ import Link from "next/link"
 import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 
-import { getPlanLimits } from "@/lib/subscription"
+import { getUsageWithProgress } from "@/lib/subscription"
 import { cn, formatDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -14,8 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
 
-import { ManageSubscriptionForm } from "./manage-subscription-form"
 import { UsageCard } from "./usage-card"
 
 interface BillingProps {
@@ -38,12 +38,12 @@ export async function Billing({
     usagePromise,
   ])
 
-  const { storeLimit, productLimit } = getPlanLimits({
-    planTitle: subscriptionPlan?.title ?? "free",
-  })
-
-  const storeProgress = Math.floor((usage.storeCount / storeLimit) * 100)
-  const productProgress = Math.floor((usage.productCount / productLimit) * 100)
+  const { storeLimit, storeProgress, productLimit, productProgress } =
+    getUsageWithProgress({
+      planTitle: subscriptionPlan?.title ?? "free",
+      storeCount: usage.storeCount,
+      productCount: usage.productCount,
+    })
 
   return (
     <>

@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import type { z } from "zod"
 
 import { addStore } from "@/lib/actions/store"
-import { type getSubscriptionPlan } from "@/lib/actions/stripe"
+import { type getProgress } from "@/lib/actions/user"
 import { cn } from "@/lib/utils"
 import { addStoreSchema } from "@/lib/validations/store"
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -39,29 +39,38 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
+import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
 
 interface AddStoreDialogProps
-  extends React.ComponentPropsWithRef<typeof Dialog> {
+  extends React.ComponentPropsWithoutRef<typeof Dialog> {
   userId: string
-  subscriptionPlanPromise: ReturnType<typeof getSubscriptionPlan>
+  progressPromise: ReturnType<typeof getProgress>
+  showTrigger?: boolean
 }
 
 type Inputs = z.infer<typeof addStoreSchema>
 
 export function AddStoreDialog({
   userId,
-  subscriptionPlanPromise,
+  progressPromise,
+  onOpenChange,
+  showTrigger = true,
   ...props
 }: AddStoreDialogProps) {
-  const subscriptionPlan = React.use(subscriptionPlanPromise)
-
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 640px)")
+
+  const progress = React.use(progressPromise)
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -104,12 +113,15 @@ export function AddStoreDialog({
             form.reset()
           }
           setOpen(open)
+          onOpenChange?.(open)
         }}
         {...props}
       >
-        <DialogTrigger asChild>
-          <Button>Create store</Button>
-        </DialogTrigger>
+        <DynamicTrigger
+          showTrigger={showTrigger}
+          isDesktop={isDesktop}
+          progress={progress}
+        />
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Create a new store</DialogTitle>
@@ -119,22 +131,7 @@ export function AddStoreDialog({
           </DialogHeader>
           <AddStoreForm form={form} onSubmit={onSubmit}>
             <DialogFooter>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading && (
-                  <Icons.spinner
-                    className="mr-2 size-4 animate-spin"
-                    aria-hidden="true"
-                  />
-                )}
-                Add store
-              </Button>
+              <FormFooter loading={loading} setOpen={setOpen} />
             </DialogFooter>
           </AddStoreForm>
         </DialogContent>
@@ -150,12 +147,15 @@ export function AddStoreDialog({
           form.reset()
         }
         setOpen(open)
+        onOpenChange?.(open)
       }}
       {...props}
     >
-      <DrawerTrigger asChild>
-        <Button>Create store</Button>
-      </DrawerTrigger>
+      <DynamicTrigger
+        showTrigger={showTrigger}
+        isDesktop={isDesktop}
+        progress={progress}
+      />
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Create a new store</DrawerTitle>
@@ -165,22 +165,7 @@ export function AddStoreDialog({
         </DrawerHeader>
         <AddStoreForm form={form} onSubmit={onSubmit} className="px-4">
           <DrawerFooter className="flex-col-reverse px-0">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading && (
-                <Icons.spinner
-                  className="mr-2 size-4 animate-spin"
-                  aria-hidden="true"
-                />
-              )}
-              Add store
-            </Button>
+            <FormFooter loading={loading} setOpen={setOpen} />
           </DrawerFooter>
         </AddStoreForm>
       </DrawerContent>
@@ -242,5 +227,107 @@ function AddStoreForm({
         {children}
       </form>
     </Form>
+  )
+}
+
+interface FormFooterProps {
+  loading: boolean
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function FormFooter({ loading, setOpen }: FormFooterProps) {
+  return (
+    <>
+      <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+        Cancel
+      </Button>
+      <Button type="submit" disabled={loading}>
+        {loading && (
+          <Icons.spinner
+            className="mr-2 size-4 animate-spin"
+            aria-hidden="true"
+          />
+        )}
+        Add store
+      </Button>
+    </>
+  )
+}
+
+interface DynamicTriggerProps {
+  isDesktop: boolean
+  showTrigger?: boolean
+  progress: Awaited<ReturnType<typeof getProgress>>
+}
+
+function DynamicTrigger({
+  showTrigger,
+  isDesktop,
+  progress,
+}: DynamicTriggerProps) {
+  if (!showTrigger) return null
+
+  const {
+    storeLimit,
+    storeProgress,
+    productLimit,
+    productProgress,
+    subscriptionPlan,
+  } = progress
+
+  const limtReached = storeProgress === 100 || productProgress === 100
+
+  if (limtReached) {
+    return (
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <Button className="cursor-not-allowed opacity-50 hover:bg-primary">
+            Create store
+          </Button>
+        </HoverCardTrigger>
+        <HoverCardContent
+          className="w-80 space-y-2.5"
+          align="end"
+          sideOffset={8}
+        >
+          {storeProgress === 100 ? (
+            <div className="text-sm text-muted-foreground">
+              You can only create upto{" "}
+              <span className="font-bold">{storeLimit}</span> stores in your
+              current plan.
+            </div>
+          ) : productProgress === 100 ? (
+            <div className="text-sm text-muted-foreground">
+              You can only create upto{" "}
+              <span className="font-bold">{productLimit}</span> products in your
+              current plan.
+            </div>
+          ) : null}
+          {subscriptionPlan && subscriptionPlan.title !== "pro" ? (
+            <ManageSubscriptionForm
+              stripePriceId={subscriptionPlan.stripePriceId}
+              stripeCustomerId={subscriptionPlan.stripeCustomerId}
+              stripeSubscriptionId={subscriptionPlan.stripeSubscriptionId}
+              isSubscribed={subscriptionPlan.isSubscribed ?? false}
+              isCurrentPlan={subscriptionPlan.title === "standard"}
+            />
+          ) : null}
+        </HoverCardContent>
+      </HoverCard>
+    )
+  }
+
+  if (isDesktop) {
+    return (
+      <DialogTrigger>
+        <Button>Create store</Button>
+      </DialogTrigger>
+    )
+  }
+
+  return (
+    <DrawerTrigger asChild>
+      <Button>Create store</Button>
+    </DrawerTrigger>
   )
 }

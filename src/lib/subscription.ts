@@ -1,24 +1,6 @@
-import type { SubscriptionPlan, UserSubscriptionPlan } from "@/types"
+import type { SubscriptionPlan } from "@/types"
 
 import { subscriptionConfig } from "@/config/subscription"
-
-export function getPlanFeatures(title: SubscriptionPlan["title"]) {
-  const plan = Object.values(subscriptionConfig.plans).find(
-    (plan) => plan.title === title
-  )
-  const features = plan?.features.map((feature) => feature.split(",")).flat()
-
-  const maxStoreCount =
-    features?.find((feature) => feature.match(/store/i))?.match(/\d+/) ?? 0
-
-  const maxProductCount =
-    features?.find((feature) => feature.match(/product/i))?.match(/\d+/) ?? 0
-
-  return {
-    maxStoreCount,
-    maxProductCount,
-  }
-}
 
 export function getPlanLimits({
   planTitle,
@@ -35,22 +17,22 @@ export function getPlanLimits({
   return { storeLimit: storeLimit ?? 0, productLimit: productLimit ?? 0 }
 }
 
-export function getDashboardRedirectPath(input: {
+export function getUsageWithProgress(input: {
+  planTitle: SubscriptionPlan["title"]
   storeCount: number
-  subscriptionPlan: UserSubscriptionPlan | null
-}): string {
-  const { storeCount, subscriptionPlan } = input
+  productCount: number
+}) {
+  const { storeLimit, productLimit } = getPlanLimits({
+    planTitle: input.planTitle,
+  })
 
-  const minStoresWithProductCount = {
-    free: 1,
-    standard: 2,
-    pro: 3,
-  }[subscriptionPlan?.title ?? "free"]
+  const storeProgress = Math.floor((input.storeCount / storeLimit) * 100)
+  const productProgress = Math.floor((input.productCount / productLimit) * 100)
 
-  const isActive = subscriptionPlan?.isActive ?? false
-  const hasEnoughStores = storeCount >= minStoresWithProductCount
-
-  return isActive && hasEnoughStores
-    ? "/dashboard/billing"
-    : "/dashboard/stores/new"
+  return {
+    storeLimit,
+    storeProgress,
+    productLimit,
+    productProgress,
+  }
 }
