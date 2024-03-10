@@ -1,5 +1,3 @@
-import type { Option } from "@/types"
-
 export type ProductConfig = typeof productConfig
 
 export const productConfig = {
@@ -171,18 +169,4 @@ export const productConfig = {
     "limited",
     "exclusive",
   ],
-}
-
-export function getSubcategories(category?: string): Option[] {
-  if (!category) return []
-
-  const subcategories =
-    productConfig.categories
-      .find((c) => c.name === category)
-      ?.subcategories.map((s) => ({
-        label: s.name,
-        value: s.slug,
-      })) ?? []
-
-  return subcategories
 }

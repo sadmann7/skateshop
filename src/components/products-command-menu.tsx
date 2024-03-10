@@ -2,10 +2,8 @@
 
 import * as React from "react"
 import { useRouter } from "next/navigation"
-import { type Product } from "@/db/schema"
-import { CircleIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons"
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
 
-import { productCategories } from "@/config/product"
 import { filterProducts } from "@/lib/actions/product"
 import { cn, isMacOs } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
@@ -19,11 +17,11 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Icons } from "@/components/icons"
 
-interface ProductGroup {
-  category: Product["category"]
-  products: Pick<Product, "id" | "name" | "category">[]
-}
+type ProductGroup = NonNullable<
+  Awaited<ReturnType<typeof filterProducts>>["data"]
+>[number]
 
 export function ProductsCommandMenu() {
   const router = useRouter()
@@ -31,7 +29,7 @@ export function ProductsCommandMenu() {
   const [query, setQuery] = React.useState("")
   const debouncedQuery = useDebounce(query, 300)
   const [data, setData] = React.useState<ProductGroup[] | null>(null)
-  const [isPending, startTransition] = React.useTransition()
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
     if (debouncedQuery.length <= 0) {
@@ -40,15 +38,18 @@ export function ProductsCommandMenu() {
     }
 
     async function fetchData() {
+      setLoading(true)
       const { data, error } = await filterProducts({ query: debouncedQuery })
 
-      if (error) return
+      if (error) {
+        setLoading(false)
+        return
+      }
       setData(data)
+      setLoading(false)
     }
 
-    startTransition(fetchData)
-
-    return () => setData(null)
+    void fetchData()
   }, [debouncedQuery])
 
   React.useEffect(() => {
@@ -104,11 +105,11 @@ export function ProductsCommandMenu() {
         />
         <CommandList>
           <CommandEmpty
-            className={cn(isPending ? "hidden" : "py-6 text-center text-sm")}
+            className={cn(loading ? "hidden" : "py-6 text-center text-sm")}
           >
             No products found.
           </CommandEmpty>
-          {isPending ? (
+          {loading ? (
             <div className="space-y-1 overflow-hidden px-1 py-2">
               <Skeleton className="h-4 w-10 rounded" />
               <Skeleton className="h-8 rounded-sm" />
@@ -117,16 +118,11 @@ export function ProductsCommandMenu() {
           ) : (
             data?.map((group) => (
               <CommandGroup
-                key={group.category}
+                key={group.name}
                 className="capitalize"
-                heading={group.category}
+                heading={group.name}
               >
                 {group.products.map((item) => {
-                  const CategoryIcon =
-                    productCategories.find(
-                      (category) => category.title === group.category
-                    )?.icon ?? CircleIcon
-
                   return (
                     <CommandItem
                       key={item.id}
@@ -136,7 +132,7 @@ export function ProductsCommandMenu() {
                         handleSelect(() => router.push(`/product/${item.id}`))
                       }
                     >
-                      <CategoryIcon
+                      <Icons.product
                         className="mr-2.5 size-3 text-muted-foreground"
                         aria-hidden="true"
                       />

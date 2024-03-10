@@ -89,6 +89,7 @@
     "react-medium-image-zoom": "^5.1.10",
     "react-syntax-highlighter": "^15.5.0",
     "react-textarea-autosize": "^8.5.3",
+    "remark-gfm": "^4.0.0",
     "resend": "^3.2.0",
     "server-only": "^0.0.1",
     "sonner": "^1.4.3",

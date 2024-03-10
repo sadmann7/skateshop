@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
-import { type Product } from "@/db/schema"
 import { env } from "@/env.js"
 
-import { getProducts } from "@/lib/fetchers/product"
-import { getStores } from "@/lib/fetchers/store"
+import { getProducts } from "@/lib/actions/product"
+import { getStores } from "@/lib/actions/store"
 import { toTitleCase, unslugify } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {
@@ -16,7 +15,7 @@ import { Shell } from "@/components/shell"
 
 interface SubcategoryPageProps {
   params: {
-    category: Product["category"]
+    category: string
     subcategory: string
   }
   searchParams: {
@@ -46,16 +45,7 @@ export default async function SubcategoryPage({
   const limit = typeof per_page === "string" ? parseInt(per_page) : 8
   const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
 
-  const productsTransaction = await getProducts({
-    limit,
-    offset,
-    sort: typeof sort === "string" ? sort : null,
-    categories: category,
-    subcategories: subcategory,
-    price_range: typeof price_range === "string" ? price_range : null,
-    store_ids: typeof store_ids === "string" ? store_ids : null,
-    active,
-  })
+  const productsTransaction = await getProducts(searchParams)
 
   // Stores transaction
   const storesLimit = 25
@@ -64,11 +54,7 @@ export default async function SubcategoryPage({
       ? (parseInt(store_page) - 1) * storesLimit
       : 0
 
-  const storesTransaction = await getStores({
-    limit: storesLimit,
-    offset: storesOffset,
-    sort: "productCount.desc",
-  })
+  const storesTransaction = await getStores(searchParams)
 
   return (
     <Shell>
@@ -80,12 +66,12 @@ export default async function SubcategoryPage({
           {`Buy the best ${unslugify(subcategory)}`}
         </PageHeaderDescription>
       </PageHeader>
-      <Products
+      {/* <Products
         products={productsTransaction.data}
         pageCount={productsTransaction.pageCount}
         stores={storesTransaction.data}
         storePageCount={storesTransaction.pageCount}
-      />
+      /> */}
     </Shell>
   )
 }

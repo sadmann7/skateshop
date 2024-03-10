@@ -11,9 +11,9 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
-import { StoreSwitcher } from "@/components/pagers/store-switcher"
-import { StoreTabs } from "@/components/pagers/store-tabs"
 import { Shell } from "@/components/shell"
+import { StoreSwitcher } from "@/components/store-switcher"
+import { StoreTabs } from "@/components/store-tabs"
 
 interface StoreLayoutProps extends React.PropsWithChildren {
   params: {

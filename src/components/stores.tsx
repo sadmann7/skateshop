@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { StoreCard } from "@/components/cards/store-card"
-import { PaginationButton } from "@/components/pagers/pagination-button"
+import { PaginationButton } from "@/components/pagination-button"
 
 import { FacetedFilter } from "./faceted-filter"
 

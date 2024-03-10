@@ -1,10 +1,10 @@
 import { type MetadataRoute } from "next"
 import { db } from "@/db"
+import { products, stores } from "@/db/schema"
 import { allPages, allPosts } from "contentlayer/generated"
-import { desc, eq, sql } from "drizzle-orm"
-import { products, stores } from "drizzle/schema"
+import { count, desc, eq, sql } from "drizzle-orm"
 
-import { productCategories } from "@/config/product"
+import { getCategories, getSubcategories } from "@/lib/actions/product"
 import { absoluteUrl } from "@/lib/utils"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -30,8 +30,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .leftJoin(stores, eq(products.storeId, stores.id))
     .groupBy(products.id)
     .orderBy(
-      desc(sql<number>`count(${stores.stripeAccountId})`),
-      desc(sql<number>`count(${products.images})`),
+      desc(count(stores.stripeAccountId)),
+      desc(count(products.images)),
       desc(products.createdAt)
     )
 
@@ -40,15 +40,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date().toISOString(),
   }))
 
-  const categoriesRoutes = productCategories.map((category) => ({
-    url: absoluteUrl(`/categories/${category.title}`),
+  const allCategories = await getCategories()
+
+  const categoriesRoutes = allCategories.map((category) => ({
+    url: absoluteUrl(`/collections/${category.slug}`),
     lastModified: new Date().toISOString(),
   }))
 
-  const subcategoriesRoutes = productCategories
-    .map((category) =>
-      category.subcategories.map((subcategory) => ({
-        url: absoluteUrl(`/categories/${category.title}/${subcategory.slug}`),
+  const allSubcategories = await getSubcategories()
+
+  const subcategoriesRoutes = allSubcategories
+    .map((s) =>
+      categoriesRoutes.map((c) => ({
+        url: absoluteUrl(`/collections/${c.url.split("/").pop()}/${s.slug}`),
         lastModified: new Date().toISOString(),
       }))
     )
