@@ -39,8 +39,8 @@ export async function getSubscriptionPlans(): Promise<
 > {
   return await cache(
     async () => {
-      const standardPriceId = subscriptionConfig.plans.standard.stripePriceId
-      const proPriceId = subscriptionConfig.plans.pro.stripePriceId
+      const standardPriceId = subscriptionConfig.plans.Standard.stripePriceId
+      const proPriceId = subscriptionConfig.plans.Pro.stripePriceId
 
       const [standardPrice, proPrice] = await Promise.all([
         stripe.prices.retrieve(standardPriceId),
@@ -76,7 +76,6 @@ export async function getSubscriptionPlan(input: {
   userId: string
 }): Promise<UserSubscriptionPlan | null> {
   noStore()
-
   try {
     const user = await clerkClient.users.getUser(input.userId)
 
@@ -101,7 +100,7 @@ export async function getSubscriptionPlan(input: {
       ? Object.values(subscriptionConfig.plans).find(
           (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
         )
-      : subscriptionConfig.plans.free
+      : subscriptionConfig.plans.Free
 
     if (!plan) {
       throw new Error("Plan not found.")

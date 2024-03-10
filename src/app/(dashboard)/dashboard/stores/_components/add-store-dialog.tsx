@@ -46,6 +46,7 @@ import {
 } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { UsageCard } from "@/components/cards/usage-card"
 import { Icons } from "@/components/icons"
 import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
 
@@ -100,6 +101,7 @@ export function AddStoreDialog({
     } finally {
       setLoading(false)
       setOpen(false)
+      onOpenChange?.(false)
       form.reset()
     }
   }
@@ -269,15 +271,16 @@ function DynamicTrigger({
 
   const {
     storeLimit,
-    storeProgress,
+    storeCount,
     productLimit,
-    productProgress,
+    productCount,
     subscriptionPlan,
   } = progress
 
-  const limtReached = storeProgress === 100 || productProgress === 100
+  const storeLimitReached = storeCount >= storeLimit
+  const productLimitReached = productCount >= productLimit
 
-  if (limtReached) {
+  if (storeLimitReached || productLimitReached) {
     return (
       <HoverCard>
         <HoverCardTrigger asChild>
@@ -286,30 +289,43 @@ function DynamicTrigger({
           </Button>
         </HoverCardTrigger>
         <HoverCardContent
-          className="w-80 space-y-2.5"
+          className="space-y-4 sm:w-80"
           align="end"
           sideOffset={8}
         >
-          {storeProgress === 100 ? (
-            <div className="text-sm text-muted-foreground">
-              You can only create upto{" "}
-              <span className="font-bold">{storeLimit}</span> stores in your
-              current plan.
+          {storeLimitReached && (
+            <div className="space-y-3">
+              <div className="text-sm text-muted-foreground">
+                You&apos;ve reached the limit of{" "}
+                <span className="font-bold">{storeLimit}</span> stores for the{" "}
+                <span className="font-bold">{subscriptionPlan?.title}</span>{" "}
+                plan.
+              </div>
+              <UsageCard title="Stores" count={storeCount} limit={storeLimit} />
             </div>
-          ) : productProgress === 100 ? (
-            <div className="text-sm text-muted-foreground">
-              You can only create upto{" "}
-              <span className="font-bold">{productLimit}</span> products in your
-              current plan.
+          )}
+          {productLimitReached && (
+            <div className="space-y-3">
+              <div className="text-sm text-muted-foreground">
+                You&apos;ve reached the limit of{" "}
+                <span className="font-bold">{productLimit}</span> products for
+                the <span className="font-bold">{subscriptionPlan?.title}</span>{" "}
+                plan.
+              </div>
+              <UsageCard
+                title="Products"
+                count={productCount}
+                limit={productLimit}
+              />
             </div>
-          ) : null}
-          {subscriptionPlan && subscriptionPlan.title !== "pro" ? (
+          )}
+          {subscriptionPlan && subscriptionPlan.title !== "Pro" ? (
             <ManageSubscriptionForm
               stripePriceId={subscriptionPlan.stripePriceId}
               stripeCustomerId={subscriptionPlan.stripeCustomerId}
               stripeSubscriptionId={subscriptionPlan.stripeSubscriptionId}
               isSubscribed={subscriptionPlan.isSubscribed ?? false}
-              isCurrentPlan={subscriptionPlan.title === "standard"}
+              isCurrentPlan={subscriptionPlan.title === "Standard"}
             />
           ) : null}
         </HoverCardContent>
@@ -319,7 +335,7 @@ function DynamicTrigger({
 
   if (isDesktop) {
     return (
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button>Create store</Button>
       </DialogTrigger>
     )

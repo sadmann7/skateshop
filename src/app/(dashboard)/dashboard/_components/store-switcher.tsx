@@ -5,12 +5,12 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import {
   CaretSortIcon,
   CheckIcon,
-  CircleIcon,
   PlusCircledIcon,
+  ShadowIcon,
 } from "@radix-ui/react-icons"
 
+import { type getProgress } from "@/lib/actions/limit"
 import { type getStoresByUserId } from "@/lib/actions/store"
-import { type getProgress } from "@/lib/actions/user"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -85,28 +85,32 @@ export function StoreSwitcher({
             <CommandList>
               <CommandInput placeholder="Search store..." />
               <CommandEmpty>No store found.</CommandEmpty>
-              {stores.map((store) => (
-                <CommandItem
-                  key={store.id}
-                  onSelect={() => {
-                    setOpen(false)
-                    router.push(`/dashboard/stores/${store.id}`)
-                  }}
-                  className="text-sm"
-                >
-                  <CircleIcon className="mr-2 size-5" aria-hidden="true" />
-                  {store.name}
-                  <CheckIcon
-                    className={cn(
-                      "ml-auto size-4",
-                      selectedStore?.id === store.id
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                    aria-hidden="true"
-                  />
-                </CommandItem>
-              ))}
+              <CommandGroup>
+                {stores.map((store) => (
+                  <CommandItem
+                    key={store.id}
+                    onSelect={() => {
+                      setOpen(false)
+                      pathname.includes(store.id)
+                        ? router.replace(pathname.replace(storeId, store.id))
+                        : router.push(`/dashboard/stores/${store.id}`)
+                    }}
+                    className="text-sm"
+                  >
+                    <ShadowIcon className="mr-2 size-5" aria-hidden="true" />
+                    {store.name}
+                    <CheckIcon
+                      className={cn(
+                        "ml-auto size-4",
+                        selectedStore?.id === store.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                      aria-hidden="true"
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
             </CommandList>
             <CommandSeparator />
             <CommandList>
@@ -116,6 +120,8 @@ export function StoreSwitcher({
                     setOpen(false)
                     setShowNewStoreDialog(true)
                   }}
+                  aria-disabled={false}
+                  disabled={false}
                 >
                   <PlusCircledIcon className="mr-2 size-5" aria-hidden="true" />
                   Create store

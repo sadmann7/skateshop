@@ -12,7 +12,7 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category }: CategoryCardProps) {
   const productCountPromise = getProductCount({
-    categoryName: category.name,
+    categoryId: category.id,
   })
 
   return (

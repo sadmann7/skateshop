@@ -158,23 +158,6 @@ export default {
         mono: ["var(--font-mono)", ...fontFamily.mono],
         heading: ["var(--font-heading)", ...fontFamily.sans],
       },
-      typography: {
-        DEFAULT: {
-          css: {
-            h1: {
-              fontFamily: "Cal Sans",
-            },
-            h2: {
-              fontFamily: "Cal Sans",
-            },
-            h3: {
-              fontFamily: "Cal Sans",
-            },
-            "blockquote p:first-of-type::before": { content: "none" },
-            "blockquote p:first-of-type::after": { content: "none" },
-          },
-        },
-      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

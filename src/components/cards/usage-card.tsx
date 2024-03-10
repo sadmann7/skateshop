@@ -1,5 +1,6 @@
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -15,23 +16,25 @@ import {
 } from "@/components/ui/hover-card"
 import { Progress } from "@/components/ui/progress"
 
-interface UsageCardProps {
+interface UsageCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
   title: string
-  usage: number
+  count: number
   limit: number
-  progress: number
   moreInfo?: string
 }
 
 export function UsageCard({
   title,
+  count,
   limit,
-  progress,
-  usage,
   moreInfo,
+  className,
+  ...props
 }: UsageCardProps) {
+  const progress = Math.round((count / limit) * 100)
+
   return (
-    <Card>
+    <Card className={cn(className)} {...props}>
       <CardHeader>
         <div className="flex items-center gap-2">
           <CardTitle>{title}</CardTitle>
@@ -45,14 +48,14 @@ export function UsageCard({
                   />
                 </Button>
               </HoverCardTrigger>
-              <HoverCardContent className="w-80" sideOffset={8}>
+              <HoverCardContent className="sm:w-80" sideOffset={8}>
                 <p className="text-sm">{moreInfo}</p>
               </HoverCardContent>
             </HoverCard>
           )}
         </div>
         <CardDescription>
-          {usage} / {limit} stores ({progress}%)
+          {count} / {limit} stores ({progress}%)
         </CardDescription>
       </CardHeader>
       <CardContent>

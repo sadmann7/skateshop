@@ -11,7 +11,7 @@ import { createId } from "@/db/utils"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
-import { getSubcategories, productConfig } from "@/config/product"
+import { productConfig } from "@/config/product"
 import { slugify } from "@/lib/utils"
 
 export async function seedCategories() {
@@ -30,7 +30,13 @@ export async function seedCategories() {
 export async function seedSubcategories() {
   const data: Subcategory[] = []
 
-  const allCategories = await db.select().from(categories).execute()
+  const allCategories = await db
+    .select({
+      id: categories.id,
+      name: categories.name,
+    })
+    .from(categories)
+    .execute()
 
   allCategories.forEach((category) => {
     const subcategories = productConfig.categories.find(
@@ -73,7 +79,13 @@ export async function seedProducts({
   for (let i = 0; i < productCount; i++) {
     const category = faker.helpers.shuffle(categories)[0] ?? "skateboards"
 
-    const subcategories = getSubcategories(category)
+    const allSubcategories = await db
+      .select({
+        id: subcategories.id,
+      })
+      .from(subcategories)
+      .where(eq(subcategories.categoryId, category))
+      .execute()
 
     data.push({
       id: createId(),
@@ -90,7 +102,7 @@ export async function seedProducts({
         }),
       })),
       categoryId: category,
-      subcategoryId: subcategories[0]?.value ?? "decks",
+      subcategoryId: faker.helpers.shuffle(allSubcategories)[0]?.id ?? null,
       storeId,
       inventory: faker.number.float({ min: 50, max: 100 }),
       rating: faker.number.float({ min: 0, max: 5 }),
@@ -106,25 +118,47 @@ export async function seedProducts({
 }
 
 export async function seedCozyProducts({ storeId }: { storeId: string }) {
-  const data: Product[] = productsJson.map((product) => ({
-    id: product.id,
-    name: product.name,
-    description: product.description,
-    price: product.price,
-    images: product.images.map((image) => ({
-      id: image.id,
-      name: image.name,
-      url: image.url,
-    })),
-    categoryId: product.category,
-    subcategoryId: product.subcategory,
-    storeId,
-    inventory: product.inventory,
-    rating: product.rating,
-    tags: product.tags,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  }))
+  const data: Product[] = []
+
+  for (const product of productsJson) {
+    const category = await db.query.categories.findFirst({
+      columns: {
+        id: true,
+      },
+      where: eq(categories.slug, product.category),
+    })
+
+    if (!category) {
+      throw new Error(`Category not found: ${product.category}`)
+    }
+
+    const subcategory = await db.query.subcategories.findFirst({
+      columns: {
+        id: true,
+      },
+      where: eq(subcategories.slug, product.subcategory),
+    })
+
+    data.push({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      images: product.images.map((image) => ({
+        id: image.id,
+        name: image.name,
+        url: image.url,
+      })),
+      categoryId: category.id,
+      subcategoryId: subcategory?.id ?? null,
+      storeId,
+      inventory: product.inventory,
+      rating: product.rating,
+      tags: product.tags,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+  }
 
   await db.delete(products).where(eq(products.storeId, storeId))
   console.log(`📝 Inserting ${data.length} products`)

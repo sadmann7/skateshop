@@ -91,7 +91,7 @@ export type CartLineItem = z.infer<typeof cartLineItemSchema>
 export type StripePaymentStatus = Stripe.PaymentIntent.Status
 
 export interface SubscriptionPlan {
-  title: "free" | "standard" | "pro"
+  title: "Free" | "Standard" | "Pro"
   description: string
   features: string[]
   stripePriceId: string

@@ -2,7 +2,7 @@ import Link from "next/link"
 import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 
-import { getUsageWithProgress } from "@/lib/subscription"
+import { getPlanLimits } from "@/lib/subscription"
 import { cn, formatDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -14,9 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { UsageCard } from "@/components/cards/usage-card"
 import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
-
-import { UsageCard } from "./usage-card"
 
 interface BillingProps {
   subscriptionPlanPromise: Promise<UserSubscriptionPlan | null>
@@ -38,23 +37,20 @@ export async function Billing({
     usagePromise,
   ])
 
-  const { storeLimit, storeProgress, productLimit, productProgress } =
-    getUsageWithProgress({
-      planTitle: subscriptionPlan?.title ?? "free",
-      storeCount: usage.storeCount,
-      productCount: usage.productCount,
-    })
+  const { storeLimit, productLimit } = getPlanLimits({
+    planTitle: subscriptionPlan?.title,
+  })
 
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg capitalize">Plan and Usage</CardTitle>
+          <CardTitle className="text-lg">Plan and Usage</CardTitle>
           <div className="text-sm text-muted-foreground">
             You&apos;re currently on the{" "}
             <Badge
               variant="secondary"
-              className="pointer-events-none capitalize text-foreground/90"
+              className="pointer-events-none text-foreground/90"
             >
               {subscriptionPlan?.title}
             </Badge>{" "}
@@ -72,16 +68,14 @@ export async function Billing({
         <CardContent className="grid gap-6 sm:grid-cols-2">
           <UsageCard
             title="Stores"
-            usage={usage.storeCount}
+            count={usage.storeCount}
             limit={storeLimit}
-            progress={storeProgress}
             moreInfo="The number of stores you can create on the current plan."
           />
           <UsageCard
             title="Products"
-            usage={usage.productCount}
+            count={usage.productCount}
             limit={productLimit}
-            progress={productProgress}
             moreInfo="The number of products you can create on the current plan."
           />
         </CardContent>
@@ -95,7 +89,7 @@ export async function Billing({
             })}
           >
             <CardHeader className="flex-1">
-              <CardTitle className="text-lg capitalize">{plan.title}</CardTitle>
+              <CardTitle className="text-lg">{plan.title}</CardTitle>
               <CardDescription>{plan.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid flex-1 place-items-start gap-6">
@@ -119,7 +113,7 @@ export async function Billing({
               </div>
             </CardContent>
             <CardFooter className="pt-4">
-              {plan.title === "free" ? (
+              {plan.title === "Free" ? (
                 <Button className="w-full" asChild>
                   <Link href="/dashboard">
                     Get started

@@ -5,10 +5,10 @@ import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs"
-import { count, eq } from "drizzle-orm"
+import { count, countDistinct, eq } from "drizzle-orm"
 
-import { getPlanLimits } from "../subscription"
-import { getSubscriptionPlan } from "./stripe"
+import { getSubscriptionPlan } from "@/lib/actions/stripe"
+import { getPlanLimits } from "@/lib/subscription"
 
 /**
  * Cache is used with a data-fetching function like fetch to share a data snapshot between components.
@@ -30,12 +30,13 @@ export async function getUsage(input: { userId: string }) {
   try {
     const data = await db
       .select({
-        storeCount: count(stores.id),
+        storeCount: countDistinct(stores.id),
         productCount: count(products.id),
       })
       .from(stores)
-      .leftJoin(products, eq(products.storeId, stores.id))
+      .leftJoin(products, eq(stores.id, products.storeId))
       .where(eq(stores.userId, input.userId))
+      .groupBy(stores.userId)
       .execute()
       .then((res) => res[0])
 
@@ -55,10 +56,10 @@ export async function getProgress(input: { userId: string }) {
   noStore()
 
   const fallback = {
+    storeCount: 0,
     storeLimit: 0,
-    storeProgress: 0,
+    productCount: 0,
     productLimit: 0,
-    productProgress: 0,
     subscriptionPlan: null,
   }
 
@@ -77,14 +78,11 @@ export async function getProgress(input: { userId: string }) {
       planTitle: subscriptionPlan.title,
     })
 
-    const storeProgress = Math.floor((storeCount / storeLimit) * 100)
-    const productProgress = Math.floor((productCount / productLimit) * 100)
-
     return {
+      storeCount,
       storeLimit,
-      storeProgress,
+      productCount,
       productLimit,
-      productProgress,
       subscriptionPlan,
     }
   } catch (err) {

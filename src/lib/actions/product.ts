@@ -22,7 +22,6 @@ import {
   eq,
   gte,
   inArray,
-  like,
   lte,
   not,
   sql,
@@ -175,26 +174,22 @@ export async function getProducts(input: SearchParams) {
   }
 }
 
-export async function getProductCount({
-  categoryName,
-}: {
-  categoryName: string
-}) {
+export async function getProductCount({ categoryId }: { categoryId: string }) {
   noStore()
 
   try {
-    const count = await db
+    const total = await db
       .select({
-        count: sql<number>`count(*)`.mapWith(Number),
+        count: count(products.id),
       })
       .from(products)
-      .where(eq(products.name, categoryName))
+      .where(eq(products.categoryId, categoryId))
       .execute()
       .then((res) => res[0]?.count ?? 0)
 
     return {
       data: {
-        count,
+        count: total,
       },
       error: null,
     }
@@ -213,6 +208,7 @@ export async function getCategories() {
     async () => {
       return db
         .selectDistinct({
+          id: categories.id,
           name: categories.name,
           slug: categories.slug,
           description: categories.description,
@@ -233,6 +229,7 @@ export async function getSubcategories() {
     async () => {
       return db
         .selectDistinct({
+          id: subcategories.id,
           name: subcategories.name,
           slug: subcategories.slug,
           description: subcategories.description,
@@ -256,12 +253,13 @@ export async function getSubcategoriesByCategory({
     async () => {
       return db
         .selectDistinct({
+          id: subcategories.id,
           name: subcategories.name,
           slug: subcategories.slug,
           description: subcategories.description,
         })
         .from(subcategories)
-        .where(eq(subcategories.categoryId, categoryId))
+        .where(eq(subcategories.id, categoryId))
     },
     [`subcategories-${categoryId}`],
     {
@@ -273,7 +271,6 @@ export async function getSubcategoriesByCategory({
 
 export async function filterProducts({ query }: { query: string }) {
   noStore()
-
   try {
     if (query.length === 0) {
       return {
@@ -295,7 +292,8 @@ export async function filterProducts({ query }: { query: string }) {
           },
         },
       },
-      where: like(categories.name, `%${query}%`),
+      // This doesn't do anything
+      where: (table, { sql }) => sql`position(${query} in ${table.name}) > 0`,
     })
 
     return {
