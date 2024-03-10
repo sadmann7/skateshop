@@ -9,8 +9,8 @@ import {
   ShadowIcon,
 } from "@radix-ui/react-icons"
 
-import { type getProgress } from "@/lib/actions/limit"
 import { type getStoresByUserId } from "@/lib/actions/store"
+import { type getProgress } from "@/lib/actions/user"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -51,6 +51,7 @@ export function StoreSwitcher({
   const [showNewStoreDialog, setShowNewStoreDialog] = React.useState(false)
 
   const stores = React.use(storesPromise)
+  const progress = React.use(progressPromise)
 
   const selectedStore = stores.find((store) => store.id === storeId)
 
@@ -120,8 +121,7 @@ export function StoreSwitcher({
                     setOpen(false)
                     setShowNewStoreDialog(true)
                   }}
-                  aria-disabled={false}
-                  disabled={false}
+                  disabled={progress.storeCount >= progress.storeLimit}
                 >
                   <PlusCircledIcon className="mr-2 size-5" aria-hidden="true" />
                   Create store

@@ -4,6 +4,7 @@ import type { SearchParams } from "@/types"
 
 import { getStores } from "@/lib/actions/store"
 import { storesSearchParamsSchema } from "@/lib/validations/params"
+import { AlertCard } from "@/components/alert-card"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -44,7 +45,8 @@ export default async function StoresPage({ searchParams }: StoresPageProps) {
           Buy products from our stores
         </PageHeaderDescription>
       </PageHeader>
-      <Stores stores={data} pageCount={pageCount} />
+      {/* <Stores stores={data} pageCount={pageCount} /> */}
+      <AlertCard />
     </Shell>
   )
 }

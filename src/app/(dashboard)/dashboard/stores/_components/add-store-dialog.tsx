@@ -57,6 +57,8 @@ interface AddStoreDialogProps
   showTrigger?: boolean
 }
 
+type Progress = Awaited<ReturnType<typeof getProgress>>
+
 type Inputs = z.infer<typeof addStoreSchema>
 
 export function AddStoreDialog({
@@ -82,6 +84,11 @@ export function AddStoreDialog({
     },
   })
 
+  function onToggle(open: boolean) {
+    setOpen(open)
+    onOpenChange?.(open)
+  }
+
   async function onSubmit(data: Inputs) {
     setLoading(true)
 
@@ -100,8 +107,7 @@ export function AddStoreDialog({
       }
     } finally {
       setLoading(false)
-      setOpen(false)
-      onOpenChange?.(false)
+      onToggle(false)
       form.reset()
     }
   }
@@ -114,15 +120,14 @@ export function AddStoreDialog({
           if (!open) {
             form.reset()
           }
-          setOpen(open)
-          onOpenChange?.(open)
+          onToggle(open)
         }}
         {...props}
       >
         <DynamicTrigger
-          showTrigger={showTrigger}
-          isDesktop={isDesktop}
           progress={progress}
+          isDesktop={isDesktop}
+          showTrigger={showTrigger}
         />
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -132,8 +137,12 @@ export function AddStoreDialog({
             </DialogDescription>
           </DialogHeader>
           <AddStoreForm form={form} onSubmit={onSubmit}>
-            <DialogFooter>
-              <FormFooter loading={loading} setOpen={setOpen} />
+            <DialogFooter className="pt-4">
+              <FormFooter
+                loading={loading}
+                progress={progress}
+                onToggle={onToggle}
+              />
             </DialogFooter>
           </AddStoreForm>
         </DialogContent>
@@ -154,9 +163,9 @@ export function AddStoreDialog({
       {...props}
     >
       <DynamicTrigger
-        showTrigger={showTrigger}
-        isDesktop={isDesktop}
         progress={progress}
+        isDesktop={isDesktop}
+        showTrigger={showTrigger}
       />
       <DrawerContent>
         <DrawerHeader className="text-left">
@@ -167,7 +176,11 @@ export function AddStoreDialog({
         </DrawerHeader>
         <AddStoreForm form={form} onSubmit={onSubmit} className="px-4">
           <DrawerFooter className="flex-col-reverse px-0">
-            <FormFooter loading={loading} setOpen={setOpen} />
+            <FormFooter
+              loading={loading}
+              progress={progress}
+              onToggle={onToggle}
+            />
           </DrawerFooter>
         </AddStoreForm>
       </DrawerContent>
@@ -234,16 +247,24 @@ function AddStoreForm({
 
 interface FormFooterProps {
   loading: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  progress: Progress
+  onToggle: (open: boolean) => void
 }
 
-function FormFooter({ loading, setOpen }: FormFooterProps) {
+function FormFooter({ onToggle, loading, progress }: FormFooterProps) {
   return (
     <>
-      <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+      <Button type="button" variant="outline" onClick={() => onToggle(false)}>
         Cancel
       </Button>
-      <Button type="submit" disabled={loading}>
+      <Button
+        type="submit"
+        disabled={
+          loading ||
+          progress.storeCount >= progress.storeLimit ||
+          progress.productCount >= progress.productLimit
+        }
+      >
         {loading && (
           <Icons.spinner
             className="mr-2 size-4 animate-spin"
@@ -257,15 +278,15 @@ function FormFooter({ loading, setOpen }: FormFooterProps) {
 }
 
 interface DynamicTriggerProps {
+  progress: Progress
   isDesktop: boolean
   showTrigger?: boolean
-  progress: Awaited<ReturnType<typeof getProgress>>
 }
 
 function DynamicTrigger({
+  progress,
   showTrigger,
   isDesktop,
-  progress,
 }: DynamicTriggerProps) {
   if (!showTrigger) return null
 
@@ -293,7 +314,7 @@ function DynamicTrigger({
           align="end"
           sideOffset={8}
         >
-          {storeLimitReached && (
+          {storeLimitReached ? (
             <div className="space-y-3">
               <div className="text-sm text-muted-foreground">
                 You&apos;ve reached the limit of{" "}
@@ -303,8 +324,8 @@ function DynamicTrigger({
               </div>
               <UsageCard title="Stores" count={storeCount} limit={storeLimit} />
             </div>
-          )}
-          {productLimitReached && (
+          ) : null}
+          {productLimitReached ? (
             <div className="space-y-3">
               <div className="text-sm text-muted-foreground">
                 You&apos;ve reached the limit of{" "}
@@ -318,8 +339,8 @@ function DynamicTrigger({
                 limit={productLimit}
               />
             </div>
-          )}
-          {subscriptionPlan && subscriptionPlan.title !== "Pro" ? (
+          ) : null}
+          {subscriptionPlan ? (
             <ManageSubscriptionForm
               stripePriceId={subscriptionPlan.stripePriceId}
               stripeCustomerId={subscriptionPlan.stripeCustomerId}
