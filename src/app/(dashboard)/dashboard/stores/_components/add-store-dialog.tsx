@@ -43,7 +43,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
 
-interface AddStoreDialogProps {
+interface AddStoreDialogProps
+  extends React.ComponentPropsWithRef<typeof Dialog> {
   userId: string
   subscriptionPlanPromise: ReturnType<typeof getSubscriptionPlan>
 }
@@ -53,6 +54,7 @@ type Inputs = z.infer<typeof addStoreSchema>
 export function AddStoreDialog({
   userId,
   subscriptionPlanPromise,
+  ...props
 }: AddStoreDialogProps) {
   const subscriptionPlan = React.use(subscriptionPlanPromise)
 
@@ -103,6 +105,7 @@ export function AddStoreDialog({
           }
           setOpen(open)
         }}
+        {...props}
       >
         <DialogTrigger asChild>
           <Button>Create store</Button>
@@ -148,6 +151,7 @@ export function AddStoreDialog({
         }
         setOpen(open)
       }}
+      {...props}
     >
       <DrawerTrigger asChild>
         <Button>Create store</Button>
@@ -203,6 +207,7 @@ function AddStoreForm({
       <form
         className={cn("grid w-full gap-4", className)}
         onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="off"
         {...props}
       >
         <FormField

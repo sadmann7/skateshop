@@ -1,18 +1,12 @@
-import { notFound, redirect } from "next/navigation"
-import { db } from "@/db"
-import { stores } from "@/db/schema"
-import { eq } from "drizzle-orm"
+import { redirect } from "next/navigation"
 
 import { getCacheduser } from "@/lib/actions/auth"
-import { getSubscriptionPlan } from "@/lib/actions/stripe"
-import { getDashboardRedirectPath } from "@/lib/subscription"
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shell"
-import { StoreSwitcher } from "@/components/store-switcher"
 import { StoreTabs } from "@/components/store-tabs"
 
 interface StoreLayoutProps extends React.PropsWithChildren {
@@ -33,44 +27,14 @@ export default async function StoreLayout({
     redirect("/signin")
   }
 
-  const allStores = await db
-    .select({
-      id: stores.id,
-      name: stores.name,
-    })
-    .from(stores)
-    .where(eq(stores.userId, user.id))
-
-  const store = allStores.find((store) => store.id === storeId)
-
-  if (!store) {
-    notFound()
-  }
-
-  const subscriptionPlan = await getSubscriptionPlan({ userId: user.id })
-
-  const redirectPath = getDashboardRedirectPath({
-    subscriptionPlan,
-    storeCount: allStores.length,
-  })
-
   return (
     <Shell variant="sidebar" className="gap-4">
-      <div className="flex flex-col gap-4 pr-1 xxs:flex-row">
-        <PageHeader className="flex-1">
-          <PageHeaderHeading size="sm">Dashboard</PageHeaderHeading>
-          <PageHeaderDescription size="sm">
-            Manage your store
-          </PageHeaderDescription>
-        </PageHeader>
-        {allStores.length > 1 ? (
-          <StoreSwitcher
-            currentStore={store}
-            stores={allStores}
-            dashboardRedirectPath={redirectPath}
-          />
-        ) : null}
-      </div>
+      <PageHeader>
+        <PageHeaderHeading size="sm">Dashboard</PageHeaderHeading>
+        <PageHeaderDescription size="sm">
+          Manage your store
+        </PageHeaderDescription>
+      </PageHeader>
       <StoreTabs storeId={storeId} />
       <div className="overflow-hidden">{children}</div>
     </Shell>

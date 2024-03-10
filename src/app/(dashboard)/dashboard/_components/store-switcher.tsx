@@ -3,6 +3,7 @@
 import * as React from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { type Store } from "@/db/schema"
+import type { UserSubscriptionPlan } from "@/types"
 import {
   CaretSortIcon,
   CheckIcon,
@@ -10,6 +11,7 @@ import {
   PlusCircledIcon,
 } from "@radix-ui/react-icons"
 
+import type { getStoresByUserId } from "@/lib/actions/store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,44 +32,43 @@ import {
 
 interface StoreSwitcherProps
   extends React.ComponentPropsWithoutRef<typeof PopoverTrigger> {
-  currentStore: Pick<Store, "id" | "name">
+  currentStore?: Awaited<ReturnType<typeof getStoresByUserId>>[number]
   stores: Pick<Store, "id" | "name">[]
-  dashboardRedirectPath: string
+  subscriptionPlan: UserSubscriptionPlan | null
 }
 
 export function StoreSwitcher({
   currentStore,
   stores,
-  dashboardRedirectPath,
+  subscriptionPlan,
   className,
   ...props
 }: StoreSwitcherProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const [isOpen, setIsOpen] = React.useState(false)
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false)
+  const [showStoreDialog, setShowStoreDialog] = React.useState(false)
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={showStoreDialog} onOpenChange={setShowStoreDialog}>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
-            aria-expanded={isOpen}
-            aria-label="Select a store"
-            className={cn(
-              "w-full justify-between px-3 xxs:w-[180px]",
-              className
-            )}
+            aria-expanded={open}
+            className={cn("w-full justify-between px-3", className)}
             {...props}
           >
             <CircleIcon className="mr-2 size-4" aria-hidden="true" />
-            <span className="line-clamp-1">{currentStore.name}</span>
+            <span className="line-clamp-1">
+              {currentStore?.name ? currentStore?.name : "Select a store"}
+            </span>
             <CaretSortIcon
               className="ml-auto size-4 shrink-0 opacity-50"
               aria-hidden="true"
             />
+            <span className="sr-only">Select a store</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
@@ -82,11 +83,11 @@ export function StoreSwitcher({
                     onSelect={() => {
                       router.push(
                         pathname.replace(
-                          String(currentStore.id),
+                          String(currentStore?.id),
                           String(store.id)
                         )
                       )
-                      setIsOpen(false)
+                      setOpen(false)
                     }}
                     className="text-sm"
                   >
@@ -95,7 +96,7 @@ export function StoreSwitcher({
                     <CheckIcon
                       className={cn(
                         "ml-auto size-4",
-                        currentStore.id === store.id
+                        currentStore?.id === store.id
                           ? "opacity-100"
                           : "opacity-0"
                       )}
@@ -111,9 +112,8 @@ export function StoreSwitcher({
                 <DialogTrigger asChild>
                   <CommandItem
                     onSelect={() => {
-                      router.push(dashboardRedirectPath)
-                      setIsOpen(false)
-                      setIsDialogOpen(true)
+                      setOpen(false)
+                      setShowStoreDialog(true)
                     }}
                   >
                     <PlusCircledIcon

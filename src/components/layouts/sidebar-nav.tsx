@@ -6,8 +6,7 @@ import type { SidebarNavItem } from "@/types"
 import { ChevronLeftIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
-
-import { Icons } from "../icons"
+import { Icons } from "@/components/icons"
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[]
@@ -19,7 +18,10 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
   if (!items?.length) return null
 
   return (
-    <div className={cn("flex w-full flex-col gap-2", className)} {...props}>
+    <div
+      className={cn("flex w-full flex-col gap-2 text-sm", className)}
+      {...props}
+    >
       {items.map((item, index) => {
         const Icon = item.icon ? Icons[item.icon] : ChevronLeftIcon
 

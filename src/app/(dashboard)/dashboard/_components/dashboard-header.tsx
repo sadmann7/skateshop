@@ -1,26 +1,29 @@
+import Link from "next/link"
 import type { User } from "@clerk/nextjs/server"
 
 import { siteConfig } from "@/config/site"
-import { CartSheet } from "@/components/checkout/cart-sheet"
+import { Icons } from "@/components/icons"
 import { AuthDropdown } from "@/components/layouts/auth-dropdown"
-import { MainNav } from "@/components/layouts/main-nav"
-import { MobileNav } from "@/components/layouts/mobile-nav"
-import { ProductsCommandMenu } from "@/components/products-command-menu"
 
-interface SiteHeaderProps {
+interface DashboardHeaderProps {
   user: User | null
+  children: React.ReactNode
 }
 
-export function SiteHeader({ user }: SiteHeaderProps) {
+export function DashboardHeader({ user, children }: DashboardHeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center">
-        <MainNav items={siteConfig.mainNav} />
-        <MobileNav items={siteConfig.mainNav} />
+        <Link href="/" className="hidden items-center space-x-2 lg:flex">
+          <Icons.logo className="size-6" aria-hidden="true" />
+          <span className="hidden font-bold lg:inline-block">
+            {siteConfig.name}
+          </span>
+          <span className="sr-only">Home</span>
+        </Link>
+        {children}
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-2">
-            <ProductsCommandMenu />
-            <CartSheet />
             <AuthDropdown user={user} />
           </nav>
         </div>
