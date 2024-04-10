@@ -10,7 +10,7 @@ import { and, asc, desc, eq, gte, like, lte, sql } from "drizzle-orm"
 import { customersSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
-import { CustomersTableShell } from "@/components/shells/customers-table-shell"
+import { CustomersTable } from "@/components/tables/customers-table"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -148,10 +148,10 @@ export default async function CustomersPage({
       </div>
       <React.Suspense
         fallback={
-          <DataTableSkeleton columnCount={5} filterableFieldCount={0} />
+          <DataTableSkeleton columnCount={5} filterableColumnCount={0} />
         }
       >
-        <CustomersTableShell promise={ordersPromise} storeId={store.id} />
+        <CustomersTable promise={ordersPromise} storeId={store.id} />
       </React.Suspense>
     </div>
   )

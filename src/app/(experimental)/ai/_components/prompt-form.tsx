@@ -2,7 +2,7 @@ import * as React from "react"
 import { PaperPlaneIcon } from "@radix-ui/react-icons"
 import { type UseChatHelpers } from "ai/react"
 
-import { catchError } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
 import { useEnterSubmit } from "@/hooks/use-enter-submit"
 import { Button } from "@/components/ui/button"
 import {
@@ -40,7 +40,7 @@ export function PromptForm({
       setInput("")
       await onSubmit(input)
     } catch (err) {
-      catchError(err)
+      showErrorToast(err)
     }
   }
 

@@ -1,4 +1,4 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import { relations, sql } from "drizzle-orm"
 import {
   boolean,
@@ -9,15 +9,16 @@ import {
 } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
+import { generateId } from "@/lib/utils"
 
 import { stores } from "./stores"
 
-// Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
+// @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = pgTable(
   "payments",
   {
     id: varchar("id", { length: 30 })
-      .$defaultFn(() => createId())
+      .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
     storeId: varchar("store_id", { length: 30 })
       .references(() => stores.id, { onDelete: "cascade" })

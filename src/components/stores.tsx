@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type { CuratedStore } from "@/types"
 import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons"
 
-import { storeSortOptions, storeStatusOptions } from "@/config/store"
+import { queryConfig } from "@/config/query"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -87,7 +87,7 @@ export function Stores({ stores, pageCount }: StoresProps) {
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {storeSortOptions.map((option) => (
+            {queryConfig.store.sortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.label}
                 className={cn(option.value === sort && "font-bold")}
@@ -114,7 +114,7 @@ export function Stores({ stores, pageCount }: StoresProps) {
             title="Status"
             filterValues={filterValues}
             setFilterValues={setFilterValues}
-            options={storeStatusOptions}
+            options={queryConfig.store.sortOptions}
           />
           {filterValues.length > 0 && (
             <Button

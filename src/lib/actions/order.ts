@@ -14,7 +14,18 @@ import {
   type Order,
 } from "@/db/schema"
 import type { CartLineItem, CheckoutItem, SearchParams } from "@/types"
-import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
+import {
+  and,
+  asc,
+  countDistinct,
+  desc,
+  eq,
+  gte,
+  inArray,
+  like,
+  lte,
+  sql,
+} from "drizzle-orm"
 import type Stripe from "stripe"
 import { z } from "zod"
 
@@ -252,7 +263,7 @@ export async function getStoreOrders(input: {
 
       const count = await tx
         .select({
-          count: sql<number>`count(*)`,
+          count: sql`count(*)`.mapWith(Number),
         })
         .from(orders)
         .where(
@@ -303,7 +314,7 @@ export async function getOrderCount(input: {
 
     return await db
       .select({
-        count: sql<number>`count(*)`,
+        count: sql`count(*)`.mapWith(Number),
       })
       .from(orders)
       .where(
@@ -430,7 +441,7 @@ export async function getCustomers(input: {
 
       const customerCount = await tx
         .select({
-          count: sql<number>`count(distinct ${orders.email})`,
+          count: countDistinct(orders.email),
         })
         .from(orders)
         .where(

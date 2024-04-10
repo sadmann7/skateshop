@@ -4,9 +4,8 @@ import Link from "next/link"
 import { env } from "@/env.js"
 import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
 
-import { productCategories } from "@/config/product"
-import { getCartItems } from "@/lib/fetchers/cart"
-import { getProducts } from "@/lib/fetchers/product"
+import { getCartItems } from "@/lib/actions/cart"
+import { getProducts } from "@/lib/actions/product"
 import { cn } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import { BoardBuilder } from "@/components/board-builder"
@@ -41,18 +40,18 @@ export default async function BuildABoardPage({
   const activeSubcategory =
     typeof subcategory === "string" ? subcategory : "decks"
 
-  const { data, pageCount } = await getProducts({
-    limit,
-    offset,
-    sort: typeof sort === "string" ? sort : null,
-    subcategories: activeSubcategory,
-    price_range: typeof price_range === "string" ? price_range : null,
-    active,
-  })
+  // const { data, pageCount } = await getProducts({
+  //   limit,
+  //   offset,
+  //   sort: typeof sort === "string" ? sort : null,
+  //   subcategories: activeSubcategory,
+  //   price_range: typeof price_range === "string" ? price_range : null,
+  //   active,
+  // })
 
   // Get cart items
   const cartId = cookies().get("cartId")?.value
-  const cartItems = await getCartItems({ cartId: Number(cartId) })
+  const cartItems = await getCartItems({ cartId })
 
   return (
     <Shell className="gap-4">
@@ -65,9 +64,7 @@ export default async function BuildABoardPage({
           Select the components for your board
         </PageHeaderDescription>
       </PageHeader>
-      <section
-        id="build-a-board-categories"
-        aria-labelledby="build-a-board-categories-heading"
+      {/* <section
         className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/50 pb-4 pt-6 shadow-md sm:backdrop-blur"
       >
         <div className="grid place-items-center overflow-x-auto">
@@ -105,7 +102,7 @@ export default async function BuildABoardPage({
         pageCount={pageCount}
         subcategory={activeSubcategory}
         cartItems={cartItems ?? []}
-      />
+      /> */}
     </Shell>
   )
 }

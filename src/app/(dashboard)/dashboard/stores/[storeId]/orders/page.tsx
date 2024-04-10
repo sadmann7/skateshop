@@ -11,7 +11,7 @@ import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 import { ordersSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
-import { OrdersTableShell } from "@/components/shells/orders-table-shell"
+import { OrdersTableShell } from "@/components/tables/orders-table"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

@@ -33,14 +33,14 @@ export type AwaitedOrder = Pick<
   store: string | null
 }
 
-interface PurchasesTableShellProps {
+interface PurchasesTableProps {
   promise: Promise<{
     data: AwaitedOrder[]
     pageCount: number
   }>
 }
 
-export function PurchasesTableShell({ promise }: PurchasesTableShellProps) {
+export function PurchasesTable({ promise }: PurchasesTableProps) {
   const { data, pageCount } = React.use(promise)
 
   // Memoize the columns so they don't re-render on every render
@@ -52,7 +52,7 @@ export function PurchasesTableShell({ promise }: PurchasesTableShellProps) {
           <DataTableColumnHeader column={column} title="Order ID" />
         ),
         cell: ({ cell }) => {
-          return <span>{formatId(Number(cell.getValue()))}</span>
+          return <span>{formatId(cell.getValue())}</span>
         },
       },
       {

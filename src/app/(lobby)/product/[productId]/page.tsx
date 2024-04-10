@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { db } from "@/db"
-import { products, stores } from "@/db/schema"
+import { categories, products, stores } from "@/db/schema"
 import { env } from "@/env.js"
 import { and, desc, eq, not } from "drizzle-orm"
 
@@ -17,7 +17,6 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ProductCard } from "@/components/cards/product-card"
 import { AddToCartForm } from "@/components/forms/add-to-cart-form"
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Rating } from "@/components/rating"
 import { Shell } from "@/components/shell"
@@ -32,7 +31,7 @@ interface ProductPageProps {
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
-  const productId = Number(params.productId)
+  const productId = decodeURIComponent(params.productId)
 
   const product = await db.query.products.findFirst({
     columns: {
@@ -54,7 +53,7 @@ export async function generateMetadata({
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const productId = Number(params.productId)
+  const productId = decodeURIComponent(params.productId)
 
   const product = await db.query.products.findFirst({
     columns: {
@@ -63,10 +62,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
       description: true,
       price: true,
       images: true,
-      category: true,
       inventory: true,
       rating: true,
       storeId: true,
+    },
+    with: {
+      category: true,
     },
     where: eq(products.id, productId),
   })
@@ -90,11 +91,12 @@ export default async function ProductPage({ params }: ProductPageProps) {
           name: products.name,
           price: products.price,
           images: products.images,
-          category: products.category,
+          category: categories.name,
           inventory: products.inventory,
           rating: products.rating,
         })
         .from(products)
+        .leftJoin(categories, eq(products.categoryId, categories.id))
         .limit(4)
         .where(
           and(
@@ -107,22 +109,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <Shell className="pb-12 md:pb-14">
-      <Breadcrumbs
-        segments={[
-          {
-            title: "Products",
-            href: "/products",
-          },
-          {
-            title: toTitleCase(product.category),
-            href: `/products?category=${product.category}`,
-          },
-          {
-            title: product.name,
-            href: `/product/${product.id}`,
-          },
-        ]}
-      />
       <div className="flex flex-col gap-8 md:flex-row md:gap-16">
         <ProductImageCarousel
           className="w-full md:w-1/2"

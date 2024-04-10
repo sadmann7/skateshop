@@ -11,16 +11,22 @@ export const addProductSchema = z.object({
     message: "Must be a valid price",
   }),
   inventory: z.number(),
-  images: z
-    .unknown()
-    .refine((val) => {
-      if (!Array.isArray(val)) return false
-      if (val.some((file) => !(file instanceof File))) return false
-      return true
-    }, "Must be an array of File")
-    .optional()
-    .nullable()
-    .default(null),
+  images: z.array(z.instanceof(File)).optional().nullable().default(null),
+})
+
+export const updateProductSchema = z.object({
+  id: z.string(),
+  name: z.string().min(1, {
+    message: "Must be at least 1 character",
+  }),
+  description: z.string().optional(),
+  categoryId: z.string(),
+  subcategoryId: z.string().optional().nullable(),
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/, {
+    message: "Must be a valid price",
+  }),
+  inventory: z.number(),
+  images: z.array(z.instanceof(File)).optional().nullable().default(null),
 })
 
 export const filterProductsSchema = z.object({
@@ -48,3 +54,10 @@ export const updateProductRatingSchema = z.object({
   id: z.string(),
   rating: z.number(),
 })
+
+export type AddProductInput = z.infer<typeof addProductSchema>
+export type UpdateProductInput = z.infer<typeof updateProductSchema>
+export type FilterProductsInput = z.infer<typeof filterProductsSchema>
+export type GetProductInventoryInput = z.infer<typeof getProductInventorySchema>
+export type GetProductsInput = z.infer<typeof getProductsSchema>
+export type UpdateProductRatingInput = z.infer<typeof updateProductRatingSchema>

@@ -1,10 +1,22 @@
 import { env } from "@/env.js"
 import type { User } from "@clerk/nextjs/server"
 import { clsx, type ClassValue } from "clsx"
+import { customAlphabet } from "nanoid"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function generateId(length = 16) {
+  return customAlphabet(
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    length
+  )()
+}
+
+export function absoluteUrl(path: string) {
+  return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
 export function formatPrice(
@@ -89,16 +101,6 @@ export function toSentenceCase(str: string) {
 
 export function truncate(str: string, length: number) {
   return str.length > length ? `${str.substring(0, length)}...` : str
-}
-
-export function isArrayOfFile(files: unknown): files is File[] {
-  const isArray = Array.isArray(files)
-  if (!isArray) return false
-  return files.every((file) => file instanceof File)
-}
-
-export function absoluteUrl(path: string) {
-  return `${env.NEXT_PUBLIC_APP_URL}${path}`
 }
 
 export function getUserEmail(user: User | null) {

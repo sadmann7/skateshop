@@ -1,13 +1,15 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import { relations, sql } from "drizzle-orm"
 import { boolean, text, timestamp, varchar } from "drizzle-orm/pg-core"
+
+import { generateId } from "@/lib/utils"
 
 import { payments } from "./payments"
 import { products } from "./products"
 
 export const stores = pgTable("stores", {
   id: varchar("id", { length: 30 })
-    .$defaultFn(() => createId())
+    .$defaultFn(() => generateId())
     .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
   userId: varchar("user_id", { length: 36 }), // uuid v4
   name: varchar("name").notNull(),

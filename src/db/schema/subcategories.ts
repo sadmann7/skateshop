@@ -1,8 +1,9 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import { relations, sql } from "drizzle-orm"
 import { index, text, timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
+import { generateId } from "@/lib/utils"
 
 import { categories } from "./categories"
 
@@ -10,7 +11,7 @@ export const subcategories = pgTable(
   "subcategories",
   {
     id: varchar("id", { length: 30 })
-      .$defaultFn(() => createId())
+      .$defaultFn(() => generateId())
       .primaryKey(),
     name: varchar("name", { length: 256 }).notNull().unique(),
     slug: varchar("slug", { length: 256 }).unique().notNull(),

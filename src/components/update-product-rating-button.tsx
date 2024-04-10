@@ -5,12 +5,13 @@ import { HeartIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
 import { updateProductRating } from "@/lib/actions/product"
-import { catchError, cn } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
+import { cn } from "@/lib/utils"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 interface UpdateProductRatingButtonProps extends ButtonProps {
-  productId: number
+  productId: string
   rating: number
 }
 
@@ -20,7 +21,7 @@ export function UpdateProductRatingButton({
   className,
   ...props
 }: UpdateProductRatingButtonProps) {
-  const [isFavoriting, startFavoriting] = React.useTransition()
+  const [loading, setLoading] = React.useState(false)
 
   return (
     <Button
@@ -28,23 +29,26 @@ export function UpdateProductRatingButton({
       variant="secondary"
       size="icon"
       className={cn("size-8 shrink-0", className)}
-      onClick={() => {
-        startFavoriting(async () => {
-          try {
-            await updateProductRating({
-              id: productId,
-              rating: rating + 1,
-            })
-            toast.success("Favorited product.")
-          } catch (err) {
-            catchError(err)
-          }
+      onClick={async () => {
+        setLoading(true)
+
+        const { error } = await updateProductRating({
+          id: productId,
+          rating: rating + 1,
         })
+
+        if (error) {
+          showErrorToast(error)
+          return
+        }
+
+        toast.success("Product rating updated")
+        setLoading(false)
       }}
-      disabled={isFavoriting}
+      disabled={loading}
       {...props}
     >
-      {isFavoriting ? (
+      {loading ? (
         <Icons.spinner className="size-4 animate-spin" aria-hidden="true" />
       ) : (
         <HeartIcon className="size-4" aria-hidden="true" />

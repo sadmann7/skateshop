@@ -29,7 +29,7 @@ type AwaitedOrder = Pick<Order, "id" | "quantity" | "amount" | "createdAt"> & {
   paymentIntentId: string
 }
 
-interface OrdersTableShellProps {
+interface OrdersTableProps {
   promise: Promise<{
     data: AwaitedOrder[]
     pageCount: number
@@ -38,11 +38,11 @@ interface OrdersTableShellProps {
   isSearchable?: boolean
 }
 
-export function OrdersTableShell({
+export function OrdersTable({
   promise,
   storeId,
   isSearchable = true,
-}: OrdersTableShellProps) {
+}: OrdersTableProps) {
   const { data, pageCount } = React.use(promise)
 
   // Memoize the columns so they don't re-render on every render

@@ -11,7 +11,7 @@ import { and, asc, desc, eq, gte, inArray, like, lte, sql } from "drizzle-orm"
 import { storesProductsSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
-import { ProductsTableShell } from "@/components/shells/products-table-shell"
+import { ProductsTable } from "@/components/tables/products-table"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -155,17 +155,9 @@ export default async function ProductsPage({
         <h2 className="text-2xl font-bold tracking-tight">Products</h2>
         <DateRangePicker align="end" />
       </div>
-      <React.Suspense
-        fallback={
-          <DataTableSkeleton
-            columnCount={6}
-            isNewRowCreatable={true}
-            isRowsDeletable={true}
-          />
-        }
-      >
-        <ProductsTableShell promise={productsPromise} storeId={storeId} />
-      </React.Suspense>
+      {/* <React.Suspense fallback={<DataTableSkeleton columnCount={6} />}>
+        <ProductsTable promise={productsPromise} storeId={storeId} />
+      </React.Suspense> */}
     </div>
   )
 }

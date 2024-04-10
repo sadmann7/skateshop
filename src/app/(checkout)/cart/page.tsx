@@ -35,9 +35,10 @@ export default async function CartPage() {
         </PageHeaderDescription>
       </PageHeader>
       {uniqueStoreIds.length > 0 ? (
-        uniqueStoreIds.map((storeId) => (
-          <CheckoutCard key={storeId} storeId={storeId} />
-        ))
+        uniqueStoreIds.map(
+          (storeId) =>
+            storeId && <CheckoutCard key={storeId} storeId={storeId} />
+        )
       ) : (
         <section
           id="cart-page-empty-cart"

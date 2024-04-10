@@ -10,7 +10,6 @@ import { getProducts } from "@/lib/actions/product"
 import { getStores } from "@/lib/actions/store"
 import { Separator } from "@/components/ui/separator"
 import { AlertCard } from "@/components/alert-card"
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs"
 import { Products } from "@/components/products"
 import { Shell } from "@/components/shell"
 
@@ -78,18 +77,6 @@ export default async function StorePage({
 
   return (
     <Shell>
-      <Breadcrumbs
-        segments={[
-          {
-            title: "Stores",
-            href: "/stores",
-          },
-          {
-            title: store.name,
-            href: `/store/${store.id}`,
-          },
-        ]}
-      />
       <div className="flex flex-col gap-8 md:flex-row md:gap-16">
         <div className="flex w-full flex-col gap-4">
           <div className="space-y-2">

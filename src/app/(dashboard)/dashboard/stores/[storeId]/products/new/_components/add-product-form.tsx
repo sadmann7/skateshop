@@ -1,20 +1,31 @@
 "use client"
 
 import * as React from "react"
-import Image from "next/image"
-import { products } from "@/db/schema"
-import type { FileWithPreview } from "@/types"
+import type { StoredFile } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { generateReactHelpers } from "@uploadthing/react/hooks"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { type z } from "zod"
 
-import { getSubcategories } from "@/config/product"
-import { addProduct, checkProduct } from "@/lib/actions/product"
-import { catchError, isArrayOfFile } from "@/lib/utils"
-import { newProductSchema } from "@/lib/validations/product"
+import {
+  addProduct,
+  type getCategories,
+  type getSubcategories,
+} from "@/lib/actions/product"
+import { getErrorMessage } from "@/lib/handle-error"
+import {
+  addProductSchema,
+  type AddProductInput,
+} from "@/lib/validations/product"
+import { useUploadFile } from "@/hooks/use-upload-file"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -22,7 +33,6 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  UncontrolledFormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import {
@@ -34,88 +44,62 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { FileDialog } from "@/components/file-dialog"
+import { FilesCard } from "@/components/cards/FilesCard"
+import { FileUploader } from "@/components/file-uploader"
 import { Icons } from "@/components/icons"
-import { Zoom } from "@/components/zoom-image"
-import type { OurFileRouter } from "@/app/api/uploadthing/core"
 
 interface AddProductFormProps {
-  storeId: number
+  storeId: string
+  promises: Promise<{
+    categories: Awaited<ReturnType<typeof getCategories>>
+    subcategories: Awaited<ReturnType<typeof getSubcategories>>
+  }>
 }
 
-type Inputs = z.infer<typeof newProductSchema>
+export function AddProductForm({ storeId, promises }: AddProductFormProps) {
+  const { categories, subcategories } = React.use(promises)
 
-const { useUploadThing } = generateReactHelpers<OurFileRouter>()
+  const [loading, setLoading] = React.useState(false)
+  const { uploadFiles, progresses, uploadedFiles, isUploading } =
+    useUploadFile("productImage")
 
-export function AddProductForm({ storeId }: AddProductFormProps) {
-  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
-
-  const [isPending, startTransition] = React.useTransition()
-
-  const { isUploading, startUpload } = useUploadThing("productImage")
-
-  const form = useForm<Inputs>({
-    resolver: zodResolver(newProductSchema),
+  const form = useForm<AddProductInput>({
+    resolver: zodResolver(addProductSchema),
     defaultValues: {
       name: "",
       description: "",
       price: "",
       inventory: NaN,
-      category: "skateboards",
-      subcategory: "",
+      categoryId: "",
+      subcategoryId: "",
       images: [],
     },
   })
 
-  const subcategories = getSubcategories(form.watch("category"))
+  function onSubmit(input: AddProductInput) {
+    setLoading(true)
 
-  function onSubmit(data: Inputs) {
-    startTransition(async () => {
-      try {
-        await checkProduct({
-          name: data.name,
+    toast.promise(
+      uploadFiles(input.images ?? []).then(() => {
+        return addProduct({
+          ...input,
+          storeId,
+          images: JSON.stringify(uploadedFiles) as unknown as StoredFile[],
         })
-
-        if (isArrayOfFile(data.images)) {
-          toast.promise(
-            startUpload(data.images)
-              .then((res) => {
-                const formattedImages = res?.map((image) => ({
-                  id: image.key,
-                  name: image.key.split("_")[1] ?? image.key,
-                  url: image.url,
-                }))
-                return formattedImages ?? null
-              })
-              .then((images) => {
-                return addProduct({
-                  ...data,
-                  storeId,
-                  images,
-                })
-              }),
-            {
-              loading: "Uploading images...",
-              success: "Product added successfully.",
-              error: "Error uploading images.",
-            }
-          )
-        } else {
-          await addProduct({
-            ...data,
-            storeId,
-            images: null,
-          })
-
-          toast.success("Product added successfully.")
-        }
-
-        form.reset()
-        setFiles(null)
-      } catch (err) {
-        catchError(err)
+      }),
+      {
+        loading: "Adding product...",
+        success: () => {
+          form.reset()
+          setLoading(false)
+          return "Product"
+        },
+        error: (err) => {
+          setLoading(false)
+          return getErrorMessage(err)
+        },
       }
-    })
+    )
   }
 
   return (
@@ -156,7 +140,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
         <div className="flex flex-col items-start gap-6 sm:flex-row">
           <FormField
             control={form.control}
-            name="category"
+            name="categoryId"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Category</FormLabel>
@@ -173,17 +157,15 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   </FormControl>
                   <SelectContent>
                     <SelectGroup>
-                      {Object.values(products.category.enumValues).map(
-                        (option) => (
-                          <SelectItem
-                            key={option}
-                            value={option}
-                            className="capitalize"
-                          >
-                            {option}
-                          </SelectItem>
-                        )
-                      )}
+                      {categories.map((option) => (
+                        <SelectItem
+                          key={option.id}
+                          value={option.id}
+                          className="capitalize"
+                        >
+                          {option.name}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -193,7 +175,7 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
           />
           <FormField
             control={form.control}
-            name="subcategory"
+            name="subcategoryId"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormLabel>Subcategory</FormLabel>
@@ -209,8 +191,8 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
                   <SelectContent>
                     <SelectGroup>
                       {subcategories.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
+                        <SelectItem key={option.id} value={option.id}>
+                          {option.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -259,47 +241,83 @@ export function AddProductForm({ storeId }: AddProductFormProps) {
             )}
           />
         </div>
-        <FormItem className="flex w-full flex-col gap-1.5">
-          <FormLabel>Images</FormLabel>
-          {files?.length ? (
-            <div className="flex items-center gap-2">
-              {files.map((file, i) => (
-                <Zoom key={i}>
-                  <Image
-                    src={file.preview}
-                    alt={file.name}
-                    className="size-20 shrink-0 rounded-md object-cover object-center"
-                    width={80}
-                    height={80}
-                  />
-                </Zoom>
-              ))}
-            </div>
-          ) : null}
-          <FormControl>
-            <FileDialog
-              setValue={form.setValue}
-              name="images"
-              maxFiles={3}
-              maxSize={1024 * 1024 * 4}
-              files={files}
-              setFiles={setFiles}
-              isUploading={isUploading}
-              disabled={isPending}
-            />
-          </FormControl>
-          <UncontrolledFormMessage
-            message={form.formState.errors.images?.message}
+        <div className="space-y-6">
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Images</FormLabel>
+                <Select
+                  value={field.value?.toString()}
+                  onValueChange={field.onChange}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a subcategory" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {subcategories.map((option) => (
+                        <SelectItem key={option.id} value={option.id}>
+                          {option.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </FormItem>
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field }) => (
+              <div className="space-y-6">
+                <FormItem className="w-full">
+                  <FormLabel>Images</FormLabel>
+                  <FormControl>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">Upload files</Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-xl">
+                        <DialogHeader>
+                          <DialogTitle>Upload files</DialogTitle>
+                          <DialogDescription>
+                            Drag and drop your files here or click to browse.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <FileUploader
+                          value={field.value ?? []}
+                          onValueChange={field.onChange}
+                          maxFiles={4}
+                          maxSize={4 * 1024 * 1024}
+                          progresses={progresses}
+                          disabled={isUploading}
+                        />
+                      </DialogContent>
+                    </Dialog>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+                {uploadedFiles.length > 0 ? (
+                  <FilesCard files={uploadedFiles} />
+                ) : null}
+              </div>
+            )}
+          />
+        </div>
         <Button
           onClick={() =>
             void form.trigger(["name", "description", "price", "inventory"])
           }
           className="w-fit"
-          disabled={isPending}
+          disabled={loading}
         >
-          {isPending && (
+          {loading && (
             <Icons.spinner
               className="mr-2 size-4 animate-spin"
               aria-hidden="true"

@@ -9,7 +9,8 @@ import { toast } from "sonner"
 import type { z } from "zod"
 
 import { addToCart } from "@/lib/actions/cart"
-import { catchError, cn } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
+import { cn } from "@/lib/utils"
 import { updateCartItemSchema } from "@/lib/validations/cart"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,7 +25,7 @@ import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 
 interface AddToCartFormProps {
-  productId: number
+  productId: string
   showBuyNow?: boolean
 }
 
@@ -33,8 +34,8 @@ type Inputs = z.infer<typeof updateCartItemSchema>
 export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
   const id = React.useId()
   const router = useRouter()
-  const [isAddingToCart, startAddingToCart] = React.useTransition()
-  const [isBuyingNow, startBuyingNow] = React.useTransition()
+  const [isAddingToCart, setIsAddingToCart] = React.useState(false)
+  const [isBuyingNow, setIsBuyingNow] = React.useState(false)
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -44,18 +45,21 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
     },
   })
 
-  function onSubmit(data: Inputs) {
-    startAddingToCart(async () => {
-      try {
-        await addToCart({
-          productId,
-          quantity: data.quantity,
-        })
-        toast.success("Added to cart.")
-      } catch (err) {
-        catchError(err)
-      }
+  async function onSubmit(data: Inputs) {
+    setIsAddingToCart(true)
+    const { error } = await addToCart({
+      productId,
+      quantity: data.quantity,
     })
+
+    if (error) {
+      showErrorToast(error)
+      return
+    }
+
+    toast.success("Product added to cart")
+
+    setIsAddingToCart(false)
   }
 
   return (
@@ -132,18 +136,21 @@ export function AddToCartForm({ productId, showBuyNow }: AddToCartFormProps) {
               aria-label="Buy now"
               size="sm"
               className="w-full"
-              onClick={() => {
-                startBuyingNow(async () => {
-                  try {
-                    await addToCart({
-                      productId,
-                      quantity: form.getValues("quantity"),
-                    })
-                    router.push("/cart")
-                  } catch (err) {
-                    catchError(err)
-                  }
+              onClick={async () => {
+                setIsBuyingNow(true)
+
+                const { error } = await addToCart({
+                  productId,
+                  quantity: form.getValues("quantity"),
                 })
+
+                if (error) {
+                  showErrorToast(error)
+                  return
+                }
+
+                router.push("/cart")
+                setIsBuyingNow(false)
               }}
               disabled={isBuyingNow}
             >

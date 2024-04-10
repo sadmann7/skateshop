@@ -7,16 +7,15 @@ import {
   type Product,
   type Subcategory,
 } from "@/db/schema"
-import { createId } from "@/db/utils"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
 import { productConfig } from "@/config/product"
-import { slugify } from "@/lib/utils"
+import { generateId, slugify } from "@/lib/utils"
 
 export async function seedCategories() {
   const data = productConfig.categories.map((category) => ({
-    id: createId(),
+    id: generateId(),
     name: category.name,
     slug: slugify(category.name),
     description: category.description,
@@ -46,7 +45,7 @@ export async function seedSubcategories() {
     if (subcategories) {
       subcategories.forEach((subcategory) => {
         data.push({
-          id: createId(),
+          id: generateId(),
           name: subcategory.name,
           slug: slugify(subcategory.name),
           categoryId: category.id,
@@ -88,19 +87,11 @@ export async function seedProducts({
       .execute()
 
     data.push({
-      id: createId(),
+      id: generateId(),
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
       price: faker.commerce.price(),
-      images: Array.from({ length: 3 }).map(() => ({
-        id: faker.string.uuid(),
-        name: faker.system.fileName(),
-        url: faker.image.urlLoremFlickr({
-          category,
-          width: 640,
-          height: 480,
-        }),
-      })),
+      images: null,
       categoryId: category,
       subcategoryId: faker.helpers.shuffle(allSubcategories)[0]?.id ?? null,
       storeId,

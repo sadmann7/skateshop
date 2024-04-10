@@ -1,11 +1,13 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import { sql } from "drizzle-orm"
 import { timestamp, varchar } from "drizzle-orm/pg-core"
 
-// Original source: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
+import { generateId } from "@/lib/utils"
+
+// @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const addresses = pgTable("addresses", {
   id: varchar("id", { length: 30 })
-    .$defaultFn(() => createId())
+    .$defaultFn(() => generateId())
     .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
   line1: varchar("line1", { length: 256 }),
   line2: varchar("line2", { length: 256 }),

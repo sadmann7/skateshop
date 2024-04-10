@@ -43,3 +43,10 @@ export const deleteCartItemsSchema = z.object({
 export const updateCartItemSchema = z.object({
   quantity: z.number().min(0).default(1),
 })
+
+export type CartItemSchema = z.infer<typeof cartItemSchema>
+export type CheckoutItemSchema = z.infer<typeof checkoutItemSchema>
+export type CartLineItemSchema = z.infer<typeof cartLineItemSchema>
+export type DeleteCartItemSchema = z.infer<typeof deleteCartItemSchema>
+export type DeleteCartItemsSchema = z.infer<typeof deleteCartItemsSchema>
+export type UpdateCartItemSchema = z.infer<typeof updateCartItemSchema>

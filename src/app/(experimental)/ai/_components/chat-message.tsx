@@ -32,7 +32,6 @@ export function ChatMessage({ message }: ChatMessageProps) {
       <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
         <MemoizedReactMarkdown
           className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-          // @ts-expect-error  type check to be implemented here for Pluggable
           remarkPlugins={[remarkGfm, remarkMath]}
           components={{
             p({ children }) {

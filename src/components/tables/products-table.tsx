@@ -10,6 +10,7 @@ import { toast } from "sonner"
 import { deleteProduct } from "@/lib/actions/product"
 import { getErrorMessage } from "@/lib/handle-error"
 import { formatDate, formatPrice } from "@/lib/utils"
+import { useDataTable } from "@/hooks/use-data-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -29,7 +30,7 @@ type AwaitedProduct = Pick<
   "id" | "name" | "categoryId" | "price" | "inventory" | "rating" | "createdAt"
 >
 
-interface ProductsTableShellProps {
+interface ProductsTableProps {
   promise: Promise<{
     data: AwaitedProduct[]
     pageCount: number
@@ -37,10 +38,7 @@ interface ProductsTableShellProps {
   storeId: string
 }
 
-export function ProductsTableShell({
-  promise,
-  storeId,
-}: ProductsTableShellProps) {
+export function ProductsTable({ promise, storeId }: ProductsTableProps) {
   const { data, pageCount } = React.use(promise)
 
   const [isPending, startTransition] = React.useTransition()
@@ -213,29 +211,25 @@ export function ProductsTableShell({
     )
   }
 
-  return (
-    <DataTable
-      columns={columns}
-      data={data}
-      pageCount={pageCount}
-      filterableColumns={[
-        {
-          id: "category",
-          title: "Category",
-          options: products.category.enumValues.map((category) => ({
-            label: `${category.charAt(0).toUpperCase()}${category.slice(1)}`,
-            value: category,
-          })),
-        },
-      ]}
-      searchableColumns={[
-        {
-          id: "name",
-          title: "names",
-        },
-      ]}
-      newRowLink={`/dashboard/stores/${storeId}/products/new`}
-      deleteRowsAction={() => void deleteSelectedRows()}
-    />
-  )
+  const { table } = useDataTable({
+    data,
+    columns,
+    pageCount,
+    filterFields: [
+      {
+        value: "name",
+        label: "Name",
+      },
+      // {
+      //   value: "category",
+      //   label: "Category",
+      //   options: products.category.enumValues.map((category) => ({
+      //     label: `${category.charAt(0).toUpperCase()}${category.slice(1)}`,
+      //     value: category,
+      //   })),
+      // },
+    ],
+  })
+
+  return <DataTable table={table} />
 }

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useState } from "react"
 import { useFormStatus } from "react-dom"
 
 import { cn } from "@/lib/utils"
@@ -14,15 +13,15 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
 
-type ButtonActionProps = ButtonProps & {
+interface LoadingButtonProps extends ButtonProps {
   action: string
 }
 
-const LoadingButton = React.forwardRef<HTMLButtonElement, ButtonActionProps>(
+const LoadingButton = React.forwardRef<HTMLButtonElement, LoadingButtonProps>(
   ({ children, className, variant, size, action, ...props }, ref) => {
     const { pending } = useFormStatus()
-    const [del, setDel] = useState(false)
-    const [update, setUpdate] = useState(false)
+    const [del, setDel] = React.useState(false)
+    const [update, setUpdate] = React.useState(false)
     const mounted = useMounted()
 
     if (!mounted)

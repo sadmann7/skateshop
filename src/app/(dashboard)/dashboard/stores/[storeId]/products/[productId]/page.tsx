@@ -12,8 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { UpdateProductForm } from "@/components/forms/update-product-form"
-import { ProductPager } from "@/components/pagers/product-pager"
+
+import { UpdateProductForm } from "./_components/update-product-form"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -45,12 +45,9 @@ export default async function UpdateProductPage({
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <div className="flex items-center justify-between space-x-2">
-          <CardTitle as="h2" className="text-2xl">
-            Update product
-          </CardTitle>
-          <ProductPager product={product} />
-        </div>
+        <CardTitle as="h2" className="text-2xl">
+          Update product
+        </CardTitle>
         <CardDescription>
           Update your product information, or delete it
         </CardDescription>

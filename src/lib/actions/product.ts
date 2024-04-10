@@ -14,23 +14,13 @@ import {
   type Product,
 } from "@/db/schema"
 import type { SearchParams, StoredFile } from "@/types"
-import {
-  and,
-  asc,
-  count,
-  desc,
-  eq,
-  gte,
-  inArray,
-  lte,
-  not,
-  sql,
-} from "drizzle-orm"
+import { and, asc, count, desc, eq, gte, inArray, lte, sql } from "drizzle-orm"
 import { type z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import {
   getProductsSchema,
+  type AddProductInput,
   type addProductSchema,
   type updateProductRatingSchema,
 } from "@/lib/validations/product"
@@ -308,36 +298,11 @@ export async function filterProducts({ query }: { query: string }) {
   }
 }
 
-export async function checkProduct(input: { name: string; id?: string }) {
-  noStore()
-  try {
-    const productWithSameName = await db.query.products.findFirst({
-      columns: {
-        id: true,
-      },
-      where: input.id
-        ? and(not(eq(products.id, input.id)), eq(products.name, input.name))
-        : eq(products.name, input.name),
-    })
-
-    if (productWithSameName) {
-      throw new Error("Product name already taken.")
-    }
-
-    return {
-      data: null,
-      error: null,
-    }
-  } catch (err) {
-    return {
-      data: null,
-      error: getErrorMessage(err),
-    }
-  }
-}
-
 export async function addProduct(
-  input: z.infer<typeof addProductSchema> & { storeId: string }
+  input: Omit<AddProductInput, "images"> & {
+    storeId: string
+    images: StoredFile[]
+  }
 ) {
   try {
     const productWithSameName = await db.query.products.findFirst({

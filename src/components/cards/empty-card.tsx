@@ -1,10 +1,5 @@
 import { cn } from "@/lib/utils"
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 
 interface EmptyCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
@@ -35,10 +30,10 @@ export function EmptyCard({
       <div className="mr-4 shrink-0 rounded-full border border-dashed p-4">
         <Icon className="size-8 text-muted-foreground" aria-hidden="true" />
       </div>
-      <CardHeader className="items-center gap-1.5 space-y-0 p-0">
+      <div className="flex flex-col items-center gap-1.5 text-center">
         <CardTitle>{title}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}
-      </CardHeader>
+      </div>
       {action ? action : null}
     </Card>
   )

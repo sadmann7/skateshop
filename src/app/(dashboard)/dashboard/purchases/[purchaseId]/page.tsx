@@ -60,10 +60,7 @@ export default async function PurchasePage({ params }: PurchasePageProps) {
 
   return (
     <Shell variant="sidebar">
-      <PageHeader
-        id="purchase-page-header"
-        aria-labelledby="purchase-page-header-heading"
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">Purchase</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           View your purchase details

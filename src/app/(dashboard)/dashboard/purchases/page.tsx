@@ -17,7 +17,7 @@ import {
   PageHeaderHeading,
 } from "@/components/page-header"
 import { Shell } from "@/components/shell"
-import { PurchasesTableShell } from "@/components/shells/purchases-table-shell"
+import { PurchasesTable } from "@/components/tables/purchases-table"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -132,18 +132,14 @@ export default async function PurchasesPage({
 
   return (
     <Shell variant="sidebar">
-      <PageHeader
-        id="dashboard-purchases-header"
-        aria-labelledby="dashboard-purchases-header-heading"
-        separated
-      >
+      <PageHeader>
         <PageHeaderHeading size="sm">Purchases</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your purchases
         </PageHeaderDescription>
       </PageHeader>
       <React.Suspense fallback={<DataTableSkeleton columnCount={6} />}>
-        <PurchasesTableShell promise={ordersPromise} />
+        <PurchasesTable promise={ordersPromise} />
       </React.Suspense>
     </Shell>
   )

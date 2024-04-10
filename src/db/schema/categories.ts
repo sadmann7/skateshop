@@ -1,13 +1,15 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import { relations, sql } from "drizzle-orm"
 import { text, timestamp, varchar } from "drizzle-orm/pg-core"
+
+import { generateId } from "@/lib/utils"
 
 import { products } from "./products"
 import { subcategories } from "./subcategories"
 
 export const categories = pgTable("categories", {
   id: varchar("id", { length: 30 })
-    .$defaultFn(() => createId())
+    .$defaultFn(() => generateId())
     .primaryKey(),
   name: varchar("name", { length: 256 }).notNull().unique(),
   slug: varchar("slug", { length: 256 }).unique().notNull(),

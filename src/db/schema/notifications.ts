@@ -1,10 +1,12 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import { sql } from "drizzle-orm"
 import { boolean, timestamp, varchar } from "drizzle-orm/pg-core"
 
+import { generateId } from "@/lib/utils"
+
 export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 30 })
-    .$defaultFn(() => createId())
+    .$defaultFn(() => generateId())
     .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
   userId: varchar("user_id", { length: 36 }), // uuid v4
   email: varchar("email", { length: 256 }).notNull().unique(),

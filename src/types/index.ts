@@ -1,14 +1,10 @@
-import type { Store } from "@/db/schema"
+import { type SQL } from "drizzle-orm"
 import { type FileWithPath } from "react-dropzone"
 import type Stripe from "stripe"
+import { type ClientUploadedFileData } from "uploadthing/types"
 import { type z } from "zod"
 
 import { type userPrivateMetadataSchema } from "@/lib/validations/auth"
-import type {
-  cartItemSchema,
-  cartLineItemSchema,
-  checkoutItemSchema,
-} from "@/lib/validations/cart"
 import type { Icons } from "@/components/icons"
 
 export interface NavItem {
@@ -58,35 +54,25 @@ export type FileWithPreview = FileWithPath & {
   preview: string
 }
 
+export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
+
 export interface StoredFile {
   id: string
   name: string
   url: string
 }
 
-export interface DataTableSearchableColumn<TData> {
-  id: keyof TData
-  title: string
+export interface DataTableFilterField<TData> {
+  label: string
+  value: keyof TData
+  placeholder?: string
+  options?: Option[]
 }
 
-export interface DataTableFilterableColumn<TData>
-  extends DataTableSearchableColumn<TData> {
-  options: Option[]
-}
-
-export interface CuratedStore {
-  id: Store["id"]
-  name: Store["name"]
-  description?: Store["description"]
-  stripeAccountId?: Store["stripeAccountId"]
-  productCount?: number
-}
-
-export type CartItem = z.infer<typeof cartItemSchema>
-
-export type CheckoutItem = z.infer<typeof checkoutItemSchema>
-
-export type CartLineItem = z.infer<typeof cartLineItemSchema>
+export type DrizzleWhere<T> =
+  | SQL<unknown>
+  | ((aliases: T) => SQL<T> | undefined)
+  | undefined
 
 export type StripePaymentStatus = Stripe.PaymentIntent.Status
 
@@ -108,8 +94,4 @@ export interface UserSubscriptionPlan extends SubscriptionPlan {
   isSubscribed: boolean
   isCanceled: boolean
   isActive: boolean
-}
-
-export interface SetOptimisticData<TData> {
-  (action: { action: "update" | "delete" | "add"; item: TData }): void
 }

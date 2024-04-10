@@ -1,4 +1,4 @@
-import { createId, pgTable } from "@/db/utils"
+import { pgTable } from "@/db/utils"
 import type { StoredFile } from "@/types"
 import { relations, sql } from "drizzle-orm"
 import {
@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
+import { generateId } from "@/lib/utils"
 
 import { categories } from "./categories"
 import { stores } from "./stores"
@@ -21,7 +22,7 @@ export const products = pgTable(
   "products",
   {
     id: varchar("id", { length: 30 })
-      .$defaultFn(() => createId())
+      .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
     name: varchar("name", { length: 256 }).notNull(),
     description: text("description"),
@@ -31,6 +32,12 @@ export const products = pgTable(
       () => subcategories.id,
       { onDelete: "cascade" }
     ),
+    /**
+     * postgresql docs suggest using numeric for money
+     * @see https://www.postgresql.org/docs/current/datatype-money.html#:~:text=Values%20of%20the%20numeric%2C%20int%2C%20and%20bigint%20data%20types%20can%20be%20cast%20to%20money.
+     * numeric and decimal are the same in postgresql
+     * @see https://www.postgresql.org/docs/current/datatype-numeric.html#:~:text=9223372036854775808%20to%20%2B9223372036854775807-,decimal,the%20decimal%20point%3B%20up%20to%2016383%20digits%20after%20the%20decimal%20point,-real
+     */
     price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
     inventory: integer("inventory").notNull().default(0),
     rating: integer("rating").notNull().default(0),

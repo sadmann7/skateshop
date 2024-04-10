@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { type z } from "zod"
 
 import { updateNotification } from "@/lib/actions/notification"
-import { catchClerkError } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
 import { updateNotificationSchema } from "@/lib/validations/notification"
 import { Button } from "@/components/ui/button"
 import {
@@ -40,7 +40,6 @@ export function UpdateNotificationForm({
     defaultValues: {
       token: notification.token,
       newsletter: notification.newsletter,
-      transactional: notification.transactional,
       marketing: notification.marketing,
     },
   })
@@ -57,7 +56,7 @@ export function UpdateNotificationForm({
         })
         toast.success("Email preferences updated.")
       } catch (err) {
-        catchClerkError(err)
+        showErrorToast(err)
       }
     })
   }
