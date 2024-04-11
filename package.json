@@ -15,7 +15,6 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "check": "pnpm lint && pnpm typecheck && pnpm format:check",
     "shadcn:add": "pnpm dlx shadcn-ui@latest add",
-    "db:generate": "dotenv drizzle-kit generate:pg",
     "db:introspect": "dotenv drizzle-kit introspect:pg",
     "db:push": "dotenv drizzle-kit push:pg",
     "db:migrate": "dotenv tsx src/db/migrate.ts",

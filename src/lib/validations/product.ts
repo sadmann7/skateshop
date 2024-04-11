@@ -11,7 +11,11 @@ export const addProductSchema = z.object({
     message: "Must be a valid price",
   }),
   inventory: z.number(),
-  images: z.array(z.instanceof(File)).optional().nullable().default(null),
+  images: z
+    .custom<File[] | undefined | null>()
+    .optional()
+    .nullable()
+    .default(null),
 })
 
 export const updateProductSchema = z.object({
@@ -26,7 +30,11 @@ export const updateProductSchema = z.object({
     message: "Must be a valid price",
   }),
   inventory: z.number(),
-  images: z.array(z.instanceof(File)).optional().nullable().default(null),
+  images: z
+    .custom<File[] | undefined | null>()
+    .optional()
+    .nullable()
+    .default(null),
 })
 
 export const filterProductsSchema = z.object({
