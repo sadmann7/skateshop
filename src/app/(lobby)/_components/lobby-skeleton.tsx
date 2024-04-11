@@ -18,7 +18,7 @@ export function LobbySkeleton() {
         <h1 className="text-balance font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">
           An e-commerce skateshop built with everything new in Next.js
         </h1>
-        <p className="max-w-[42rem] text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+        <p className="max-w-2xl text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8">
           Buy and sell skateboarding gears from independent brands and stores
           around the world with ease
         </p>

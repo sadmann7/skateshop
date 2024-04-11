@@ -1,8 +1,10 @@
+import { sub } from "date-fns"
 import * as z from "zod"
 
 export const cartItemSchema = z.object({
   productId: z.string(),
   quantity: z.number().min(0),
+  subcategoryId: z.string().optional(),
 })
 
 export const checkoutItemSchema = cartItemSchema.extend({

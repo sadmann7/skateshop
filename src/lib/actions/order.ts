@@ -13,7 +13,7 @@ import {
   subcategories,
   type Order,
 } from "@/db/schema"
-import type { CartLineItem, CheckoutItem, SearchParams } from "@/types"
+import type { SearchParams } from "@/types"
 import {
   and,
   asc,
@@ -29,7 +29,11 @@ import {
 import type Stripe from "stripe"
 import { z } from "zod"
 
-import { checkoutItemSchema } from "@/lib/validations/cart"
+import {
+  checkoutItemSchema,
+  type CartLineItemSchema,
+  type CheckoutItemSchema,
+} from "@/lib/validations/cart"
 import type { getOrderLineItemsSchema } from "@/lib/validations/order"
 import { ordersSearchParamsSchema } from "@/lib/validations/params"
 
@@ -37,7 +41,7 @@ export async function getOrderLineItems(
   input: z.infer<typeof getOrderLineItemsSchema> & {
     paymentIntent?: Stripe.Response<Stripe.PaymentIntent> | null
   }
-): Promise<CartLineItem[]> {
+): Promise<CartLineItemSchema[]> {
   try {
     const safeParsedItems = z
       .array(checkoutItemSchema)
@@ -137,7 +141,7 @@ export async function getOrderLineItems(
       // Create new order in db
       await db.insert(orders).values({
         storeId: payment.storeId,
-        items: input.items as unknown as CheckoutItem[],
+        items: input.items as unknown as CheckoutItemSchema[],
         quantity: safeParsedItems.data.reduce(
           (acc, item) => acc + item.quantity,
           0

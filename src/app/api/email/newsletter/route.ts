@@ -51,7 +51,8 @@ export async function POST(req: Request) {
           token: input.token,
           newsletter: true,
         })
-        .onDuplicateKeyUpdate({
+        .onConflictDoUpdate({
+          target: [notifications.email],
           set: {
             newsletter: true,
           },

@@ -14,7 +14,7 @@ import {
 import { getErrorMessage } from "@/lib/handle-error"
 import {
   addProductSchema,
-  type AddProductInput,
+  type AddProductSchema,
 } from "@/lib/validations/product"
 import { useUploadFile } from "@/hooks/use-upload-file"
 import { Button } from "@/components/ui/button"
@@ -63,7 +63,7 @@ export function AddProductForm({ storeId, promises }: AddProductFormProps) {
   const { uploadFiles, progresses, uploadedFiles, isUploading } =
     useUploadFile("productImage")
 
-  const form = useForm<AddProductInput>({
+  const form = useForm<AddProductSchema>({
     resolver: zodResolver(addProductSchema),
     defaultValues: {
       name: "",
@@ -76,7 +76,7 @@ export function AddProductForm({ storeId, promises }: AddProductFormProps) {
     },
   })
 
-  function onSubmit(input: AddProductInput) {
+  function onSubmit(input: AddProductSchema) {
     setLoading(true)
 
     toast.promise(

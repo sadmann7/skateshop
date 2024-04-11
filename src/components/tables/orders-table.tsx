@@ -144,28 +144,28 @@ export function OrdersTable({
     [storeId]
   )
 
-  return (
-    <DataTable
-      columns={columns}
-      data={data}
-      pageCount={pageCount}
-      searchableColumns={
-        isSearchable
-          ? [
-              {
-                id: "customer",
-                title: "customers",
-              },
-            ]
-          : []
-      }
-      filterableColumns={[
-        {
-          id: "status",
-          title: "Status",
-          options: stripePaymentStatuses,
-        },
-      ]}
-    />
-  )
+  return null
+
+  // return (
+  //   <DataTable
+  //     pageCount={pageCount}
+  //     searchableColumns={
+  //       isSearchable
+  //         ? [
+  //             {
+  //               id: "customer",
+  //               title: "customers",
+  //             },
+  //           ]
+  //         : []
+  //     }
+  //     filterableColumns={[
+  //       {
+  //         id: "status",
+  //         title: "Status",
+  //         options: stripePaymentStatuses,
+  //       },
+  //     ]}
+  //   />
+  // )
 }

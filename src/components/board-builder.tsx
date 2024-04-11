@@ -3,13 +3,14 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { type Product } from "@/db/schema"
-import type { CartItem } from "@/types"
 import { ChevronDownIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 
-import { sortOptions } from "@/config/product"
+import { queryConfig } from "@/config/query"
 import { addToCart, deleteCartItem } from "@/lib/actions/cart"
-import { catchError, cn } from "@/lib/utils"
+import { showErrorToast } from "@/lib/handle-error"
+import { cn } from "@/lib/utils"
+import { type CartItemSchema } from "@/lib/validations/cart"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription } from "@/components/ui/card"
@@ -41,7 +42,7 @@ interface BoardBuilderProps {
   products: Product[]
   pageCount: number
   subcategory: string | null
-  cartItems: CartItem[]
+  cartItems: CartItemSchema[]
 }
 
 export function BoardBuilder({
@@ -110,7 +111,7 @@ export function BoardBuilder({
         // Only allow one product per subcategory in cart
         if (!hasProductInCart) {
           const productWithSameSubcategory = cartItems.find(
-            (item) => item.subcategory === product.subcategory
+            (item) => item.subcategoryId === product.subcategoryId
           )
 
           if (productWithSameSubcategory) {
@@ -122,7 +123,6 @@ export function BoardBuilder({
           await addToCart({
             productId: product.id,
             quantity: 1,
-            subcategory: product.subcategory ?? subcategory,
           })
 
           toast.success("Added to cart.")
@@ -134,10 +134,10 @@ export function BoardBuilder({
         })
         toast.success("Removed from cart.")
       } catch (err) {
-        catchError(err)
+        showErrorToast(err)
       }
     },
-    [subcategory, cartItems]
+    [cartItems]
   )
 
   return (
@@ -263,7 +263,7 @@ export function BoardBuilder({
           <DropdownMenuContent align="start" className="w-48">
             <DropdownMenuLabel>Sort by</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {sortOptions.map((option) => (
+            {queryConfig.store.sortOptions.map((option) => (
               <DropdownMenuItem
                 key={option.label}
                 className={cn(option.value === sort && "font-bold")}
@@ -295,7 +295,7 @@ export function BoardBuilder({
         </div>
       ) : null}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
+        {/* {products.map((product) => (
           <ProductCard
             key={product.id}
             variant="switchable"
@@ -305,7 +305,7 @@ export function BoardBuilder({
               .includes(product.id)}
             onSwitch={() => addProductToCart(product)}
           />
-        ))}
+        ))} */}
       </div>
       {products.length ? (
         <PaginationButton

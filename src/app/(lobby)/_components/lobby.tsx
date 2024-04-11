@@ -71,7 +71,7 @@ export async function Lobby({
           An e-commerce skateshop built with everything new in Next.js
         </h1>
         <p
-          className="max-w-[42rem] animate-fade-up text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+          className="max-w-2xl animate-fade-up text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
           style={{ animationDelay: "0.30s", animationFillMode: "both" }}
         >
           Buy and sell skateboarding gears from independent brands and stores

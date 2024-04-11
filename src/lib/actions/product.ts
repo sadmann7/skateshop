@@ -20,7 +20,7 @@ import { type z } from "zod"
 import { getErrorMessage } from "@/lib/handle-error"
 import {
   getProductsSchema,
-  type AddProductInput,
+  type AddProductSchema,
   type addProductSchema,
   type updateProductRatingSchema,
 } from "@/lib/validations/product"
@@ -299,7 +299,7 @@ export async function filterProducts({ query }: { query: string }) {
 }
 
 export async function addProduct(
-  input: Omit<AddProductInput, "images"> & {
+  input: Omit<AddProductSchema, "images"> & {
     storeId: string
     images: StoredFile[]
   }

@@ -4,20 +4,20 @@ import { unstable_noStore as noStore, revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, categories, products, stores, subcategories } from "@/db/schema"
-import type { CartLineItem } from "@/types"
 import { and, asc, desc, eq, inArray, sql } from "drizzle-orm"
 import { type z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import {
   cartItemSchema,
+  type CartLineItemSchema,
   type deleteCartItemSchema,
   type deleteCartItemsSchema,
 } from "@/lib/validations/cart"
 
 export async function getCart(input?: {
   storeId: string
-}): Promise<CartLineItem[]> {
+}): Promise<CartLineItemSchema[]> {
   noStore()
 
   const cartId = cookies().get("cartId")?.value

@@ -16,7 +16,7 @@ import {
 import { getErrorMessage } from "@/lib/handle-error"
 import {
   updateProductSchema,
-  type UpdateProductInput,
+  type UpdateProductSchema,
 } from "@/lib/validations/product"
 import { useUploadFile } from "@/hooks/use-upload-file"
 import { Button } from "@/components/ui/button"
@@ -75,7 +75,7 @@ export function UpdateProductForm({
     }
   )
 
-  const form = useForm<UpdateProductInput>({
+  const form = useForm<UpdateProductSchema>({
     resolver: zodResolver(updateProductSchema),
     defaultValues: {
       name: product.name,
@@ -87,7 +87,7 @@ export function UpdateProductForm({
     },
   })
 
-  function onSubmit(input: UpdateProductInput) {
+  function onSubmit(input: UpdateProductSchema) {
     setIsUpdating(true)
 
     toast.promise(

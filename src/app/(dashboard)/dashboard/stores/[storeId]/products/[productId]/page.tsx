@@ -5,6 +5,7 @@ import { products } from "@/db/schema"
 import { env } from "@/env.js"
 import { and, eq } from "drizzle-orm"
 
+import { getCategories, getSubcategories } from "@/lib/actions/product"
 import {
   Card,
   CardContent,
@@ -42,6 +43,10 @@ export default async function UpdateProductPage({
     notFound()
   }
 
+  const promises = Promise.all([getCategories(), getSubcategories()]).then(
+    ([categories, subcategories]) => ({ categories, subcategories })
+  )
+
   return (
     <Card>
       <CardHeader className="space-y-1">
@@ -53,7 +58,7 @@ export default async function UpdateProductPage({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <UpdateProductForm product={product} />
+        <UpdateProductForm promises={promises} product={product} />
       </CardContent>
     </Card>
   )

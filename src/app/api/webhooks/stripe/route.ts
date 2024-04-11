@@ -3,14 +3,16 @@ import { headers } from "next/headers"
 import { db } from "@/db"
 import { addresses, carts, orders, payments, products } from "@/db/schema"
 import { env } from "@/env.js"
-import type { CheckoutItem } from "@/types"
 import { clerkClient } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import type Stripe from "stripe"
 import { z } from "zod"
 
 import { stripe } from "@/lib/stripe"
-import { checkoutItemSchema } from "@/lib/validations/cart"
+import {
+  checkoutItemSchema,
+  type CheckoutItemSchema,
+} from "@/lib/validations/cart"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -110,7 +112,7 @@ export async function POST(req: Request) {
       const paymentIntentId = paymentIntentSucceeded?.id
       const orderAmount = paymentIntentSucceeded?.amount
       const checkoutItems = paymentIntentSucceeded?.metadata
-        ?.items as unknown as CheckoutItem[]
+        ?.items as unknown as CheckoutItemSchema[]
 
       // If there are items in metadata, then create order
       if (checkoutItems) {

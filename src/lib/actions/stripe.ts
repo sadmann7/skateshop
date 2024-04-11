@@ -8,11 +8,7 @@ import {
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, payments, stores } from "@/db/schema"
-import type {
-  CheckoutItem,
-  SubscriptionPlanWithPrice,
-  UserSubscriptionPlan,
-} from "@/types"
+import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
 import { clerkClient, currentUser } from "@clerk/nextjs"
 import { addDays } from "date-fns"
 import { eq } from "drizzle-orm"
@@ -25,6 +21,7 @@ import { getErrorMessage } from "@/lib/handle-error"
 import { stripe } from "@/lib/stripe"
 import { absoluteUrl, formatPrice, getUserEmail } from "@/lib/utils"
 import { userPrivateMetadataSchema } from "@/lib/validations/auth"
+import { type CheckoutItemSchema } from "@/lib/validations/cart"
 import type {
   createPaymentIntentSchema,
   getPaymentIntentSchema,
@@ -466,7 +463,7 @@ export async function createPaymentIntent(
       throw new Error("Cart not found.")
     }
 
-    const checkoutItems: CheckoutItem[] = input.items.map((item) => ({
+    const checkoutItems: CheckoutItemSchema[] = input.items.map((item) => ({
       productId: item.id,
       price: Number(item.price),
       quantity: item.quantity,

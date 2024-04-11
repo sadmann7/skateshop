@@ -55,9 +55,13 @@ export const updateProductRatingSchema = z.object({
   rating: z.number(),
 })
 
-export type AddProductInput = z.infer<typeof addProductSchema>
-export type UpdateProductInput = z.infer<typeof updateProductSchema>
-export type FilterProductsInput = z.infer<typeof filterProductsSchema>
-export type GetProductInventoryInput = z.infer<typeof getProductInventorySchema>
-export type GetProductsInput = z.infer<typeof getProductsSchema>
-export type UpdateProductRatingInput = z.infer<typeof updateProductRatingSchema>
+export type AddProductSchema = z.infer<typeof addProductSchema>
+export type UpdateProductSchema = z.infer<typeof updateProductSchema>
+export type FilterProductsSchema = z.infer<typeof filterProductsSchema>
+export type GetProductInventorySchema = z.infer<
+  typeof getProductInventorySchema
+>
+export type GetProductsSchema = z.infer<typeof getProductsSchema>
+export type UpdateProductRatingSchema = z.infer<
+  typeof updateProductRatingSchema
+>

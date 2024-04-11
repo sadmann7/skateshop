@@ -1,9 +1,10 @@
-import type { CartLineItem, StripePaymentStatus } from "@/types"
+import type { StripePaymentStatus } from "@/types"
 
 import { cn } from "@/lib/utils"
+import { type CartLineItemSchema } from "@/lib/validations/cart"
 
-// Original source: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
-export function calculateOrderAmount(items: CartLineItem[]) {
+// @see: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
+export function calculateOrderAmount(items: CartLineItemSchema[]) {
   const total = items.reduce((acc, item) => {
     return acc + Number(item.price) * item.quantity
   }, 0)

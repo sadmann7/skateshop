@@ -2,10 +2,10 @@
 
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import type { CuratedStore } from "@/types"
 import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons"
 
 import { queryConfig } from "@/config/query"
+import { type getStores } from "@/lib/actions/store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,12 +21,10 @@ import { PaginationButton } from "@/components/pagination-button"
 
 import { FacetedFilter } from "./faceted-filter"
 
-interface StoresProps {
-  stores: CuratedStore[]
-  pageCount: number
-}
-
-export function Stores({ stores, pageCount }: StoresProps) {
+export function Stores({
+  data: stores,
+  pageCount,
+}: Awaited<ReturnType<typeof getStores>>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()

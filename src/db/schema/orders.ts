@@ -1,5 +1,4 @@
 import { pgTable } from "@/db/utils"
-import type { CheckoutItem } from "@/types"
 import { sql } from "drizzle-orm"
 import {
   decimal,
@@ -12,6 +11,7 @@ import {
 
 import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/utils"
+import { type CheckoutItemSchema } from "@/lib/validations/cart"
 
 import { addresses } from "./addresses"
 import { stores } from "./stores"
@@ -26,7 +26,7 @@ export const orders = pgTable(
     storeId: varchar("store_id", { length: 30 })
       .references(() => stores.id, { onDelete: "cascade" })
       .notNull(),
-    items: json("items").$type<CheckoutItem[] | null>().default(null),
+    items: json("items").$type<CheckoutItemSchema[] | null>().default(null),
     quantity: integer("quantity"),
     amount: decimal("amount", { precision: 10, scale: 2 })
       .notNull()

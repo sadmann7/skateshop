@@ -107,17 +107,18 @@ export function CustomersTable({ promise, storeId }: CustomersTableProps) {
     [storeId]
   )
 
-  return (
-    <DataTable
-      columns={columns}
-      data={data}
-      pageCount={pageCount}
-      searchableColumns={[
-        {
-          id: "email",
-          title: "emails",
-        },
-      ]}
-    />
-  )
+  return null
+
+  // return (
+  //   <DataTable
+  //     data={data}
+  //     pageCount={pageCount}
+  //     searchableColumns={[
+  //       {
+  //         id: "email",
+  //         title: "emails",
+  //       },
+  //     ]}
+  //   />
+  // )
 }

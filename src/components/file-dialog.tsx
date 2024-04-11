@@ -120,7 +120,7 @@ export function FileDialog<TFieldValues extends FieldValues>({
           <span className="sr-only">Upload Images</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent className="sm:max-w-screen-xs">
         <p className="absolute left-5 top-4 text-base font-medium text-muted-foreground">
           Upload your images
         </p>

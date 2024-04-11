@@ -1,16 +1,16 @@
 "use client"
 
 import * as React from "react"
-import type { CartLineItem } from "@/types"
 import { MinusIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons"
 
 import { deleteCartItem, updateCartItem } from "@/lib/actions/cart"
 import { showErrorToast } from "@/lib/handle-error"
+import { type CartLineItemSchema } from "@/lib/validations/cart"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 interface UpdateCartProps {
-  cartLineItem: CartLineItem
+  cartLineItem: CartLineItemSchema
 }
 
 export function UpdateCart({ cartLineItem }: UpdateCartProps) {

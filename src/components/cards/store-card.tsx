@@ -1,6 +1,6 @@
 import Link from "next/link"
-import { type CuratedStore } from "@/types"
 
+import { type getFeaturedStores } from "@/lib/actions/store"
 import { getRandomPatternStyle } from "@/lib/generate-pattern"
 import { cn } from "@/lib/utils"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card"
 
 interface StoreCardProps {
-  store: CuratedStore
+  store: Awaited<ReturnType<typeof getFeaturedStores>>[number]
   href: string
 }
 

@@ -52,7 +52,7 @@ export function PurchasesTable({ promise }: PurchasesTableProps) {
           <DataTableColumnHeader column={column} title="Order ID" />
         ),
         cell: ({ cell }) => {
-          return <span>{formatId(cell.getValue())}</span>
+          return <span>{formatId(String(cell.getValue()))}</span>
         },
       },
       {
@@ -153,24 +153,26 @@ export function PurchasesTable({ promise }: PurchasesTableProps) {
     []
   )
 
-  return (
-    <DataTable
-      columns={columns}
-      data={data}
-      pageCount={pageCount}
-      searchableColumns={[
-        {
-          id: "store",
-          title: "stores",
-        },
-      ]}
-      filterableColumns={[
-        {
-          id: "status",
-          title: "Status",
-          options: stripePaymentStatuses,
-        },
-      ]}
-    />
-  )
+  return null
+
+  // return (
+  //   <DataTable
+  //     columns={columns}
+  //     data={data}
+  //     pageCount={pageCount}
+  //     searchableColumns={[
+  //       {
+  //         id: "store",
+  //         title: "stores",
+  //       },
+  //     ]}
+  //     filterableColumns={[
+  //       {
+  //         id: "status",
+  //         title: "Status",
+  //         options: stripePaymentStatuses,
+  //       },
+  //     ]}
+  //   />
+  // )
 }
