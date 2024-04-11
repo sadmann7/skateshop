@@ -96,7 +96,6 @@ export function ProductsCommandMenu() {
             setQuery("")
           }
         }}
-        className="top-48 translate-y-0"
       >
         <CommandInput
           placeholder="Search products..."
