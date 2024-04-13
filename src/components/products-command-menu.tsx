@@ -63,7 +63,7 @@ export function ProductsCommandMenu() {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [])
 
-  const handleSelect = React.useCallback((callback: () => unknown) => {
+  const onSelect = React.useCallback((callback: () => unknown) => {
     setOpen(false)
     callback()
   }, [])
@@ -128,7 +128,7 @@ export function ProductsCommandMenu() {
                       className="h-9"
                       value={item.name}
                       onSelect={() =>
-                        handleSelect(() => router.push(`/product/${item.id}`))
+                        onSelect(() => router.push(`/product/${item.id}`))
                       }
                     >
                       <Icons.product

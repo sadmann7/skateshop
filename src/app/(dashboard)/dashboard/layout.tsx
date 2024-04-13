@@ -47,7 +47,7 @@ export default async function DashboardLayout({
               progressPromise={progressPromise}
             />
           </DashboardSidebar>
-          <main className="flex min-h-[200vh] w-full flex-col overflow-hidden">
+          <main className="flex w-full flex-col overflow-hidden">
             {children}
           </main>
         </div>

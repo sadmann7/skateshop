@@ -8,7 +8,9 @@ await import("./src/env.js")
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-  pageExtensions: ["tsx", "mdx", "ts", "js"],
+  experimental: {
+    ppr: true,
+  },
   images: {
     remotePatterns: [
       {
