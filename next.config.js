@@ -8,9 +8,6 @@ await import("./src/env.js")
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-  experimental: {
-    ppr: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -25,5 +22,4 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: true },
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 export default withContentlayer(nextConfig)

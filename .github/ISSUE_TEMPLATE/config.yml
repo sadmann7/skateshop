@@ -1,0 +1,8 @@
+# This template is heavily inspired by the shadcn-ui/ui repository.
+# See: https://github.com/shadcn-ui/ui/blob/main/.github/ISSUE_TEMPLATE/config.yml
+
+blank_issues_enabled: false
+contact_links:
+  - name: General questions
+    url: https://github.com/sadmann7/skateshop/discussions?category=general
+    about: Please ask and answer questions here

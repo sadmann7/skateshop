@@ -43,8 +43,6 @@ jobs:
 
       - run: cp .env.example .env.local
 
-      - run: pnpm contentlayer build
-
       - run: pnpm lint
 
   format:
@@ -122,7 +120,5 @@ jobs:
         run: pnpm install
 
       - run: cp .env.example .env.local
-
-      - run: pnpm contentlayer build
 
       - run: pnpm typecheck
