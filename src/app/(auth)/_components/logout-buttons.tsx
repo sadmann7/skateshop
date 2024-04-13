@@ -16,7 +16,17 @@ export function LogOutButtons() {
   const [isPending, startTransition] = React.useTransition()
 
   return (
-    <div className="flex w-full items-center space-x-2">
+    <div className="flex w-full flex-col-reverse items-center gap-2 sm:flex-row">
+      <Button
+        variant="secondary"
+        size="sm"
+        className="w-full"
+        onClick={() => router.back()}
+        disabled={isPending}
+      >
+        Go back
+        <span className="sr-only">Previous page</span>
+      </Button>
       {mounted ? (
         <SignOutButton
           signOutCallback={() =>
@@ -25,16 +35,12 @@ export function LogOutButtons() {
             })
           }
         >
-          <Button
-            aria-label="Log out"
-            size="sm"
-            className="w-full"
-            disabled={isPending}
-          >
+          <Button size="sm" className="w-full" disabled={isPending}>
             {isPending && (
               <Icons.spinner className="mr-2 size-4 animate-spin" />
             )}
             Log out
+            <span className="sr-only">Log out</span>
           </Button>
         </SignOutButton>
       ) : (
@@ -47,16 +53,6 @@ export function LogOutButtons() {
           Log out
         </Skeleton>
       )}
-      <Button
-        aria-label="Go back to the previous page"
-        variant="outline"
-        size="sm"
-        className="w-full"
-        onClick={() => router.back()}
-        disabled={isPending}
-      >
-        Go back
-      </Button>
     </div>
   )
 }
