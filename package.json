@@ -58,7 +58,7 @@
     "@t3-oss/env-nextjs": "^0.9.2",
     "@tanstack/match-sorter-utils": "^8.15.1",
     "@tanstack/react-table": "^8.16.0",
-    "@tremor/react": "^3.15.1",
+    "@tremor/react": "^3.16.0",
     "@uploadthing/react": "^6.4.4",
     "ai": "^3.0.22",
     "class-variance-authority": "^0.7.0",
@@ -68,17 +68,17 @@
     "date-fns": "^3.6.0",
     "drizzle-orm": "^0.30.8",
     "embla-carousel-react": "8.0.2",
-    "framer-motion": "^11.0.28",
+    "framer-motion": "^11.1.1",
     "nanoid": "^5.0.7",
-    "next": "14.2.1-canary.3",
+    "next": "14.3.0-canary.4",
     "next-contentlayer": "^0.3.4",
     "next-themes": "^0.3.0",
-    "openai": "^4.33.1",
+    "openai": "^4.35.0",
     "pg": "^8.11.5",
     "postgres": "^3.4.4",
     "react": "18.2.0",
     "react-cropper": "^2.3.3",
-    "react-day-picker": "^8.10.0",
+    "react-day-picker": "^8.10.1",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-email": "^2.1.1",
@@ -107,11 +107,11 @@
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/eslint": "^8.56.9",
     "@types/node": "^20.12.7",
-    "@types/react": "^18.2.78",
+    "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@types/react-syntax-highlighter": "^15.5.11",
-    "@typescript-eslint/eslint-plugin": "^7.6.0",
-    "@typescript-eslint/parser": "^7.6.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
     "autoprefixer": "^10.4.19",
     "dotenv-cli": "^7.4.1",
     "drizzle-kit": "^0.20.14",
@@ -121,7 +121,7 @@
     "eslint-plugin-tailwindcss": "^3.15.1",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.13",
+    "prettier-plugin-tailwindcss": "^0.5.14",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-code-titles": "^1.2.0",
     "rehype-pretty-code": "^0.13.1",
@@ -141,5 +141,9 @@
     "next-contentlayer": {
       "next": "$next"
     }
-  }
+  },
+  "ct3aMetadata": {
+    "initVersion": "7.12.1"
+  },
+  "packageManager": "pnpm@9.0.0"
 }
