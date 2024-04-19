@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { db } from "@/db"
 import { notifications } from "@/db/schema"
 import { env } from "@/env.js"
+import type { SearchParams } from "@/types"
 import { eq } from "drizzle-orm"
+import { z } from "zod"
 
 import {
   Card,
@@ -12,9 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { UpdateNotificationForm } from "@/components/forms/update-notification-form"
 import { PageHeader } from "@/components/page-header"
 import { Shell } from "@/components/shell"
+
+import { UpdateNotificationForm } from "./_components/update-notification-form"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -23,15 +26,21 @@ export const metadata: Metadata = {
 }
 
 interface EmailPreferencesPageProps {
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
+
+const schema = z.object({
+  token: z.string().optional(),
+})
 
 export default async function EmailPreferencesPage({
   searchParams,
 }: EmailPreferencesPageProps) {
-  const token = typeof searchParams.token === "string" ? searchParams.token : ""
+  const { token } = schema.parse(searchParams)
+
+  if (!token) {
+    redirect("/")
+  }
 
   const notification = await db.query.notifications.findFirst({
     where: eq(notifications.token, token),

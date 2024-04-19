@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/command"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Icons } from "@/components/icons"
+import { Kbd } from "@/components/kbd"
 
 type ProductGroup = NonNullable<
   Awaited<ReturnType<typeof filterProducts>>["data"]
 >[number]
 
-export function ProductsCommandMenu() {
+export function ProductsCombobox() {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
   const [query, setQuery] = React.useState("")
@@ -78,15 +79,12 @@ export function ProductsCommandMenu() {
         <MagnifyingGlassIcon className="size-4 xl:mr-2" aria-hidden="true" />
         <span className="hidden xl:inline-flex">Search products...</span>
         <span className="sr-only">Search products</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 xl:flex">
-          <abbr
-            title={isMacOs() ? "Command" : "Control"}
-            className="no-underline"
-          >
-            {isMacOs() ? "⌘" : "Ctrl"}
-          </abbr>
-          K
-        </kbd>
+        <Kbd
+          title={isMacOs() ? "Command" : "Control"}
+          className="pointer-events-none absolute right-1.5 top-2 hidden xl:block"
+        >
+          {isMacOs() ? "⌘" : "Ctrl"} K
+        </Kbd>
       </Button>
       <CommandDialog
         open={open}

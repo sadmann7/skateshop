@@ -16,11 +16,12 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { ProductCard } from "@/components/cards/product-card"
-import { AddToCartForm } from "@/components/forms/add-to-cart-form"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Rating } from "@/components/rating"
 import { Shell } from "@/components/shell"
-import { UpdateProductRatingButton } from "@/components/update-product-rating-button"
+
+import { AddToCartForm } from "./_components/add-to-cart-form"
+import { UpdateProductRatingButton } from "./_components/update-product-rating-button"
 
 interface ProductPageProps {
   params: {
