@@ -2,6 +2,7 @@ import Link from "next/link"
 import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 
+import { type getUserUsageMetrics } from "@/lib/queries/user"
 import { getPlanLimits } from "@/lib/subscription"
 import { cn, formatDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -20,22 +21,17 @@ import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
 interface BillingProps {
   subscriptionPlanPromise: Promise<UserSubscriptionPlan | null>
   subscriptionPlansPromise: Promise<SubscriptionPlanWithPrice[]>
-  usagePromise: Promise<{
-    storeCount: number
-    productCount: number
-  }>
+  usageMetricsPromise: ReturnType<typeof getUserUsageMetrics>
 }
 
 export async function Billing({
   subscriptionPlanPromise,
   subscriptionPlansPromise,
-  usagePromise,
+  usageMetricsPromise,
 }: BillingProps) {
-  const [subscriptionPlan, subscriptionPlans, usage] = await Promise.all([
-    subscriptionPlanPromise,
-    subscriptionPlansPromise,
-    usagePromise,
-  ])
+  const [subscriptionPlan, subscriptionPlans, usageMetrics] = await Promise.all(
+    [subscriptionPlanPromise, subscriptionPlansPromise, usageMetricsPromise]
+  )
 
   const { storeLimit, productLimit } = getPlanLimits({
     planTitle: subscriptionPlan?.title,
@@ -68,13 +64,13 @@ export async function Billing({
         <CardContent className="grid gap-6 sm:grid-cols-2">
           <UsageCard
             title="Stores"
-            count={usage.storeCount}
+            count={usageMetrics.storeCount}
             limit={storeLimit}
             moreInfo="The number of stores you can create on the current plan."
           />
           <UsageCard
             title="Products"
-            count={usage.productCount}
+            count={usageMetrics.productCount}
             limit={productLimit}
             moreInfo="The number of products you can create on the current plan."
           />

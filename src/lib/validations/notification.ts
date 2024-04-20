@@ -18,3 +18,7 @@ export const updateNotificationSchema = z.object({
   transactional: z.boolean().default(false).optional(),
   marketing: z.boolean().default(false).optional(),
 })
+
+export type EmailSchema = z.infer<typeof emailSchema>
+export type JoinNewsletterSchema = z.infer<typeof joinNewsletterSchema>
+export type UpdateNotificationSchema = z.infer<typeof updateNotificationSchema>

@@ -45,3 +45,7 @@ export const userPrivateMetadataSchema = z.object({
   stripeCustomerId: z.string().optional().nullable(),
   stripeCurrentPeriodEnd: z.string().optional().nullable(),
 })
+
+export type UserPrivateMetadataSchema = z.infer<
+  typeof userPrivateMetadataSchema
+>

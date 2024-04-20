@@ -20,8 +20,8 @@ import { type z } from "zod"
 import { getErrorMessage } from "@/lib/handle-error"
 import {
   getProductsSchema,
-  type AddProductSchema,
-  type addProductSchema,
+  type CreateProductSchema,
+  type createProductSchema,
   type updateProductRatingSchema,
 } from "@/lib/validations/product"
 
@@ -168,7 +168,7 @@ export async function getProductCount({ categoryId }: { categoryId: string }) {
   noStore()
 
   try {
-    const total = await db
+    return await db
       .select({
         count: count(products.id),
       })
@@ -176,20 +176,8 @@ export async function getProductCount({ categoryId }: { categoryId: string }) {
       .where(eq(products.categoryId, categoryId))
       .execute()
       .then((res) => res[0]?.count ?? 0)
-
-    return {
-      data: {
-        count: total,
-      },
-      error: null,
-    }
   } catch (err) {
-    return {
-      data: {
-        count: 0,
-      },
-      error: getErrorMessage(err),
-    }
+    return 0
   }
 }
 
@@ -299,7 +287,7 @@ export async function filterProducts({ query }: { query: string }) {
 }
 
 export async function addProduct(
-  input: Omit<AddProductSchema, "images"> & {
+  input: Omit<CreateProductSchema, "images"> & {
     storeId: string
     images: StoredFile[]
   }
@@ -336,7 +324,7 @@ export async function addProduct(
 }
 
 export async function updateProduct(
-  input: z.infer<typeof addProductSchema> & { id: string; storeId: string }
+  input: z.infer<typeof createProductSchema> & { id: string; storeId: string }
 ) {
   try {
     const product = await db.query.products.findFirst({

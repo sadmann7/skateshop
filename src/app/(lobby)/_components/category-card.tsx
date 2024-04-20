@@ -2,9 +2,9 @@ import * as React from "react"
 import Link from "next/link"
 
 import { getProductCount, type getCategories } from "@/lib/actions/product"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
 
 interface CategoryCardProps {
   category: Awaited<ReturnType<typeof getCategories>>[number]
@@ -17,14 +17,12 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link href={`/collections/${category.slug}`}>
-      <Card className="relative flex size-full flex-col bg-muted p-4 transition-colors hover:bg-muted/50">
-        <Icons.product
-          className="size-10 text-muted-foreground"
-          aria-hidden="true"
-        />
-        <div className="flex flex-1 flex-col space-y-1.5 pb-4 pt-10">
+      <Card className="flex size-full flex-col gap-4 rounded-md p-5 transition-colors hover:bg-muted/25">
+        <div className="flex flex-1 flex-col space-y-1">
           <CardTitle className="capitalize">{category.name}</CardTitle>
-          <CardDescription>{category.description}</CardDescription>
+          <CardDescription className="line-clamp-3 text-balance">
+            {category.description}
+          </CardDescription>
         </div>
         <React.Suspense
           fallback={
@@ -45,7 +43,14 @@ interface ProductCountProps {
 }
 
 async function ProductCount({ productCountPromise }: ProductCountProps) {
-  const { data } = await productCountPromise
+  const count = await productCountPromise
 
-  return <CardDescription>{data.count} products</CardDescription>
+  return (
+    <Badge
+      variant="secondary"
+      className="pointer-events-none w-fit rounded font-medium"
+    >
+      {count} products
+    </Badge>
+  )
 }

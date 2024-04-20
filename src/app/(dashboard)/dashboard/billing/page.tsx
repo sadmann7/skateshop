@@ -5,7 +5,7 @@ import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
 import { getSubscriptionPlan, getSubscriptionPlans } from "@/lib/actions/stripe"
-import { getCachedUser, getUsage } from "@/lib/queries/user"
+import { getCachedUser, getUserUsageMetrics } from "@/lib/queries/user"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   PageHeader,
@@ -32,7 +32,7 @@ export default async function BillingPage() {
 
   const subscriptionPlanPromise = getSubscriptionPlan({ userId: user.id })
   const subscriptionPlansPromise = getSubscriptionPlans()
-  const usagePromise = getUsage({ userId: user.id })
+  const usageMetricsPromise = getUserUsageMetrics({ userId: user.id })
 
   return (
     <Shell variant="sidebar">
@@ -63,7 +63,7 @@ export default async function BillingPage() {
         <Billing
           subscriptionPlanPromise={subscriptionPlanPromise}
           subscriptionPlansPromise={subscriptionPlansPromise}
-          usagePromise={usagePromise}
+          usageMetricsPromise={usageMetricsPromise}
         />
       </React.Suspense>
     </Shell>
