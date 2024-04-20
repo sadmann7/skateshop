@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/react-icons"
 
 import { type getStoresByUserId } from "@/lib/actions/store"
-import { type getProgress } from "@/lib/actions/user"
+import { type getProgress } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {

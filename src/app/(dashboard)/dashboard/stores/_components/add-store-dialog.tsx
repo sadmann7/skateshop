@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import type { z } from "zod"
 
 import { addStore } from "@/lib/actions/store"
-import { type getProgress } from "@/lib/actions/user"
+import { type getProgress } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import { addStoreSchema } from "@/lib/validations/store"
 import { useMediaQuery } from "@/hooks/use-media-query"

@@ -1,4 +1,4 @@
-import { isClerkAPIResponseError } from "@clerk/nextjs"
+import { isClerkAPIResponseError } from "@clerk/nextjs/errors"
 import { toast } from "sonner"
 import * as z from "zod"
 

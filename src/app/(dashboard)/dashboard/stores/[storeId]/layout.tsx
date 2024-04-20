@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { getCacheduser } from "@/lib/actions/user"
+import { getCachedUser } from "@/lib/queries/user"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -21,7 +21,7 @@ export default async function StoreLayout({
 }: StoreLayoutProps) {
   const storeId = decodeURIComponent(params.storeId)
 
-  const user = await getCacheduser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/signin")

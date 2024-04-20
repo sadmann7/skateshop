@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { env } from "@/env.js"
-import { currentUser } from "@clerk/nextjs"
 
 import { getCategories, getSubcategories } from "@/lib/actions/product"
+import { getCachedUser } from "@/lib/queries/user"
 import {
   Card,
   CardContent,
@@ -29,7 +29,7 @@ interface NewProductPageProps {
 export default async function NewProductPage({ params }: NewProductPageProps) {
   const storeId = decodeURIComponent(params.storeId)
 
-  const user = await currentUser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/sigin")

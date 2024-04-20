@@ -4,7 +4,7 @@ import { cache } from "react"
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { products, stores } from "@/db/schema"
-import { currentUser } from "@clerk/nextjs"
+import { currentUser } from "@clerk/nextjs/server"
 import { count, countDistinct, eq } from "drizzle-orm"
 
 import { getSubscriptionPlan } from "@/lib/actions/stripe"
@@ -15,7 +15,7 @@ import { getPlanLimits } from "@/lib/subscription"
  * It ensures a single request is made for multiple identical data fetches, with the returned data cached and shared across components during the server render.
  * @see https://react.dev/reference/react/cache#reference
  */
-export const getCacheduser = cache(async () => {
+export const getCachedUser = cache(async () => {
   noStore()
   try {
     return await currentUser()

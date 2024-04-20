@@ -7,7 +7,7 @@ import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 import { and, asc, desc, eq, inArray, like, sql } from "drizzle-orm"
 
-import { getCacheduser } from "@/lib/actions/user"
+import { getCachedUser } from "@/lib/queries/user"
 import { getUserEmail } from "@/lib/utils"
 import { purchasesSearchParamsSchema } from "@/lib/validations/params"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
@@ -34,7 +34,7 @@ export default async function PurchasesPage({
   const { page, per_page, sort, store, status } =
     purchasesSearchParamsSchema.parse(searchParams)
 
-  const user = await getCacheduser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/signin")

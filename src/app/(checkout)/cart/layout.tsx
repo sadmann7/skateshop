@@ -1,12 +1,13 @@
+import * as React from "react"
 import { redirect } from "next/navigation"
-import { currentUser } from "@clerk/nextjs"
 
+import { getCachedUser } from "@/lib/queries/user"
 import { SiteHeader } from "@/components/layouts/site-header"
 
 export default async function CartLayout({
   children,
 }: React.PropsWithChildren) {
-  const user = await currentUser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/signin")
