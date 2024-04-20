@@ -10,7 +10,7 @@ import {
 } from "@radix-ui/react-icons"
 
 import { type getStoresByUserId } from "@/lib/actions/store"
-import { type getProgress } from "@/lib/queries/user"
+import { type getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,19 +28,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { AddStoreDialog } from "../stores/_components/add-store-dialog"
+import { CreateStoreDialog } from "../stores/_components/create-store-dialog"
 
 interface StoreSwitcherProps
   extends React.ComponentPropsWithoutRef<typeof PopoverTrigger> {
   userId: string
   storesPromise: ReturnType<typeof getStoresByUserId>
-  progressPromise: ReturnType<typeof getProgress>
+  planMetricsPromise: ReturnType<typeof getUserPlanMetrics>
 }
 
 export function StoreSwitcher({
   userId,
   storesPromise,
-  progressPromise,
+  planMetricsPromise,
   className,
   ...props
 }: StoreSwitcherProps) {
@@ -51,15 +51,15 @@ export function StoreSwitcher({
   const [showNewStoreDialog, setShowNewStoreDialog] = React.useState(false)
 
   const stores = React.use(storesPromise)
-  const progress = React.use(progressPromise)
+  const planMetrics = React.use(planMetricsPromise)
 
   const selectedStore = stores.find((store) => store.id === storeId)
 
   return (
     <>
-      <AddStoreDialog
+      <CreateStoreDialog
         userId={userId}
-        progressPromise={progressPromise}
+        planMetricsPromise={planMetricsPromise}
         open={showNewStoreDialog}
         onOpenChange={setShowNewStoreDialog}
         showTrigger={false}
@@ -70,13 +70,13 @@ export function StoreSwitcher({
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            aria-label="Select a team"
+            aria-label="Select a store"
             className={cn("w-full justify-between", className)}
             {...props}
           >
             {selectedStore?.name ?? "Select a store"}
             <CaretSortIcon
-              className="ml-auto size-4 shrink-0 opacity-50"
+              className="ml-auto size-3.5 shrink-0 opacity-50"
               aria-hidden="true"
             />
           </Button>
@@ -121,7 +121,7 @@ export function StoreSwitcher({
                     setOpen(false)
                     setShowNewStoreDialog(true)
                   }}
-                  disabled={progress.storeCount >= progress.storeLimit}
+                  disabled={planMetrics.storeLimitExceeded}
                 >
                   <PlusCircledIcon className="mr-2 size-5" aria-hidden="true" />
                   Create store

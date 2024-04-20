@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { env } from "@/env.js"
 
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -18,16 +19,17 @@ export const metadata: Metadata = {
 
 export default function AccountPage() {
   return (
-    <Shell variant="sidebar">
+    <Shell variant="sidebar" className="overflow-hidden">
       <PageHeader>
         <PageHeaderHeading size="sm">Account</PageHeaderHeading>
         <PageHeaderDescription size="sm">
           Manage your account settings
         </PageHeaderDescription>
       </PageHeader>
-      <section className="w-full overflow-hidden">
+      <ScrollArea className="w-full pb-3.5">
         <UserProfile />
-      </section>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </Shell>
   )
 }

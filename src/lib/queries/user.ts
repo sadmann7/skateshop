@@ -25,7 +25,7 @@ export const getCachedUser = cache(async () => {
   }
 })
 
-export async function getUsage(input: { userId: string }) {
+export async function getUserUsageMetrics(input: { userId: string }) {
   noStore()
   try {
     const data = await db
@@ -52,7 +52,7 @@ export async function getUsage(input: { userId: string }) {
   }
 }
 
-export async function getProgress(input: { userId: string }) {
+export async function getUserPlanMetrics(input: { userId: string }) {
   noStore()
 
   const fallback = {
@@ -60,6 +60,8 @@ export async function getProgress(input: { userId: string }) {
     storeLimit: 0,
     productCount: 0,
     productLimit: 0,
+    storeLimitExceeded: false,
+    productLimitExceeded: false,
     subscriptionPlan: null,
   }
 
@@ -70,7 +72,7 @@ export async function getProgress(input: { userId: string }) {
       return fallback
     }
 
-    const { storeCount, productCount } = await getUsage({
+    const { storeCount, productCount } = await getUserUsageMetrics({
       userId: input.userId,
     })
 
@@ -78,11 +80,16 @@ export async function getProgress(input: { userId: string }) {
       planTitle: subscriptionPlan.title,
     })
 
+    const storeLimitExceeded = storeCount >= storeLimit
+    const productLimitExceeded = productCount >= productLimit
+
     return {
       storeCount,
       storeLimit,
       productCount,
       productLimit,
+      storeLimitExceeded,
+      productLimitExceeded,
       subscriptionPlan,
     }
   } catch (err) {

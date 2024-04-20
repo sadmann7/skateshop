@@ -7,6 +7,7 @@ import { ChevronLeftIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
+import { useSidebar } from "@/app/(dashboard)/dashboard/_components/sidebar-provider"
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[]
@@ -14,6 +15,7 @@ export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
   const segment = useSelectedLayoutSegment()
+  const { open, setOpen } = useSidebar()
 
   if (!items?.length) return null
 
@@ -32,6 +34,9 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
             href={item.href}
             target={item.external ? "_blank" : ""}
             rel={item.external ? "noreferrer" : ""}
+            onClick={() => {
+              if (open) setOpen(false)
+            }}
           >
             <span
               className={cn(

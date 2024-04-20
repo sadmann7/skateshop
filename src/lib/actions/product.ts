@@ -168,7 +168,7 @@ export async function getProductCount({ categoryId }: { categoryId: string }) {
   noStore()
 
   try {
-    const total = await db
+    return await db
       .select({
         count: count(products.id),
       })
@@ -176,20 +176,8 @@ export async function getProductCount({ categoryId }: { categoryId: string }) {
       .where(eq(products.categoryId, categoryId))
       .execute()
       .then((res) => res[0]?.count ?? 0)
-
-    return {
-      data: {
-        count: total,
-      },
-      error: null,
-    }
   } catch (err) {
-    return {
-      data: {
-        count: 0,
-      },
-      error: getErrorMessage(err),
-    }
+    return 0
   }
 }
 

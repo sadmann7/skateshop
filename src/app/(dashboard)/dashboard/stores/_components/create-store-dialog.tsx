@@ -8,9 +8,10 @@ import { toast } from "sonner"
 import type { z } from "zod"
 
 import { addStore } from "@/lib/actions/store"
-import { type getProgress } from "@/lib/queries/user"
+import { getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import { addStoreSchema } from "@/lib/validations/store"
+import { useControllableState } from "@/hooks/use-controllable-state"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
@@ -46,36 +47,40 @@ import {
 } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { UsageCard } from "@/components/cards/usage-card"
 import { Icons } from "@/components/icons"
 import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
 
-interface AddStoreDialogProps
+interface CreateStoreDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   userId: string
-  progressPromise: ReturnType<typeof getProgress>
+  planMetricsPromise: ReturnType<typeof getUserPlanMetrics>
   showTrigger?: boolean
 }
 
-type Progress = Awaited<ReturnType<typeof getProgress>>
+type PlanMetrics = Awaited<ReturnType<typeof getUserPlanMetrics>>
 
 type Inputs = z.infer<typeof addStoreSchema>
 
-export function AddStoreDialog({
+export function CreateStoreDialog({
   userId,
-  progressPromise,
+  planMetricsPromise,
+  open: openProp,
   onOpenChange,
+  defaultOpen,
   showTrigger = true,
   ...props
-}: AddStoreDialogProps) {
+}: CreateStoreDialogProps) {
   const router = useRouter()
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useControllableState({
+    prop: openProp,
+    defaultProp: defaultOpen,
+    onChange: onOpenChange,
+  })
   const [loading, setLoading] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 640px)")
 
-  const progress = React.use(progressPromise)
+  const planMetrics = React.use(planMetricsPromise)
 
-  // react-hook-form
   const form = useForm<Inputs>({
     resolver: zodResolver(addStoreSchema),
     defaultValues: {
@@ -84,32 +89,24 @@ export function AddStoreDialog({
     },
   })
 
-  function onToggle(open: boolean) {
-    setOpen(open)
-    onOpenChange?.(open)
-  }
-
-  async function onSubmit(data: Inputs) {
+  async function onSubmit(input: Inputs) {
     setLoading(true)
 
-    try {
-      const { data: store, error } = await addStore({ ...data, userId })
+    const { data, error } = await addStore({ ...input, userId })
 
-      if (store) {
-        router.push(`/dashboard/stores/${store.id}`)
-        toast.success("Store created")
-        return
-      }
-
-      if (error) {
-        toast.error(error)
-        return
-      }
-    } finally {
-      setLoading(false)
-      onToggle(false)
-      form.reset()
+    if (error) {
+      toast.error(error)
+      return
     }
+
+    if (data) {
+      router.push(`/dashboard/stores/${data.id}`)
+      toast.success("Store created")
+    }
+
+    setLoading(false)
+    setOpen(false)
+    form.reset()
   }
 
   if (isDesktop) {
@@ -120,12 +117,12 @@ export function AddStoreDialog({
           if (!open) {
             form.reset()
           }
-          onToggle(open)
+          setOpen(open)
         }}
         {...props}
       >
         <DynamicTrigger
-          progress={progress}
+          planMetrics={planMetrics}
           isDesktop={isDesktop}
           showTrigger={showTrigger}
         />
@@ -136,15 +133,15 @@ export function AddStoreDialog({
               Create a new store to manage your products
             </DialogDescription>
           </DialogHeader>
-          <AddStoreForm form={form} onSubmit={onSubmit}>
+          <CreateStoreForm form={form} onSubmit={onSubmit}>
             <DialogFooter className="pt-4">
               <FormFooter
                 loading={loading}
-                progress={progress}
-                onToggle={onToggle}
+                planMetrics={planMetrics}
+                onToggle={() => setOpen(false)}
               />
             </DialogFooter>
-          </AddStoreForm>
+          </CreateStoreForm>
         </DialogContent>
       </Dialog>
     )
@@ -163,7 +160,7 @@ export function AddStoreDialog({
       {...props}
     >
       <DynamicTrigger
-        progress={progress}
+        planMetrics={planMetrics}
         isDesktop={isDesktop}
         showTrigger={showTrigger}
       />
@@ -174,34 +171,34 @@ export function AddStoreDialog({
             Create a new store to manage your products
           </DrawerDescription>
         </DrawerHeader>
-        <AddStoreForm form={form} onSubmit={onSubmit} className="px-4">
+        <CreateStoreForm form={form} onSubmit={onSubmit} className="px-4">
           <DrawerFooter className="flex-col-reverse px-0">
             <FormFooter
               loading={loading}
-              progress={progress}
-              onToggle={onToggle}
+              planMetrics={planMetrics}
+              onToggle={() => setOpen(false)}
             />
           </DrawerFooter>
-        </AddStoreForm>
+        </CreateStoreForm>
       </DrawerContent>
     </Drawer>
   )
 }
 
-interface AddStoreFormProps
+interface CreateStoreFormProps
   extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
   children: React.ReactNode
   form: UseFormReturn<Inputs>
   onSubmit: (data: Inputs) => void
 }
 
-function AddStoreForm({
+function CreateStoreForm({
   children,
   form,
   onSubmit,
   className,
   ...props
-}: AddStoreFormProps) {
+}: CreateStoreFormProps) {
   return (
     <Form {...form}>
       <form
@@ -247,11 +244,13 @@ function AddStoreForm({
 
 interface FormFooterProps {
   loading: boolean
-  progress: Progress
+  planMetrics: PlanMetrics
   onToggle: (open: boolean) => void
 }
 
-function FormFooter({ onToggle, loading, progress }: FormFooterProps) {
+function FormFooter({ onToggle, loading, planMetrics }: FormFooterProps) {
+  const { storeLimitExceeded, productLimitExceeded } = planMetrics
+
   return (
     <>
       <Button type="button" variant="outline" onClick={() => onToggle(false)}>
@@ -259,11 +258,7 @@ function FormFooter({ onToggle, loading, progress }: FormFooterProps) {
       </Button>
       <Button
         type="submit"
-        disabled={
-          loading ||
-          progress.storeCount >= progress.storeLimit ||
-          progress.productCount >= progress.productLimit
-        }
+        disabled={loading || storeLimitExceeded || productLimitExceeded}
       >
         {loading && (
           <Icons.spinner
@@ -278,13 +273,13 @@ function FormFooter({ onToggle, loading, progress }: FormFooterProps) {
 }
 
 interface DynamicTriggerProps {
-  progress: Progress
+  planMetrics: PlanMetrics
   isDesktop: boolean
   showTrigger?: boolean
 }
 
 function DynamicTrigger({
-  progress,
+  planMetrics,
   showTrigger,
   isDesktop,
 }: DynamicTriggerProps) {
@@ -292,16 +287,13 @@ function DynamicTrigger({
 
   const {
     storeLimit,
-    storeCount,
     productLimit,
-    productCount,
+    storeLimitExceeded,
+    productLimitExceeded,
     subscriptionPlan,
-  } = progress
+  } = planMetrics
 
-  const storeLimitReached = storeCount >= storeLimit
-  const productLimitReached = productCount >= productLimit
-
-  if (storeLimitReached || productLimitReached) {
+  if (storeLimitExceeded || productLimitExceeded) {
     return (
       <HoverCard>
         <HoverCardTrigger asChild>
@@ -317,33 +309,21 @@ function DynamicTrigger({
           align="end"
           sideOffset={8}
         >
-          {storeLimitReached ? (
-            <div className="space-y-3">
-              <div className="text-sm text-muted-foreground">
-                You&apos;ve reached the limit of{" "}
-                <span className="font-bold">{storeLimit}</span> stores for the{" "}
-                <span className="font-bold">{subscriptionPlan?.title}</span>{" "}
-                plan.
-              </div>
-              <UsageCard title="Stores" count={storeCount} limit={storeLimit} />
+          {storeLimitExceeded && (
+            <div className="text-sm text-muted-foreground">
+              You&apos;ve reached the limit of{" "}
+              <span className="font-bold">{storeLimit}</span> stores for the{" "}
+              <span className="font-bold">{subscriptionPlan?.title}</span> plan.
             </div>
-          ) : null}
-          {productLimitReached ? (
-            <div className="space-y-3">
-              <div className="text-sm text-muted-foreground">
-                You&apos;ve reached the limit of{" "}
-                <span className="font-bold">{productLimit}</span> products for
-                the <span className="font-bold">{subscriptionPlan?.title}</span>{" "}
-                plan.
-              </div>
-              <UsageCard
-                title="Products"
-                count={productCount}
-                limit={productLimit}
-              />
+          )}
+          {productLimitExceeded && (
+            <div className="text-sm text-muted-foreground">
+              You&apos;ve reached the limit of{" "}
+              <span className="font-bold">{productLimit}</span> products for the{" "}
+              <span className="font-bold">{subscriptionPlan?.title}</span> plan.
             </div>
-          ) : null}
-          {subscriptionPlan ? (
+          )}
+          {subscriptionPlan && (
             <ManageSubscriptionForm
               stripePriceId={subscriptionPlan.stripePriceId}
               stripeCustomerId={subscriptionPlan.stripeCustomerId}
@@ -351,7 +331,7 @@ function DynamicTrigger({
               isSubscribed={subscriptionPlan.isSubscribed ?? false}
               isCurrentPlan={subscriptionPlan.title === "Standard"}
             />
-          ) : null}
+          )}
         </HoverCardContent>
       </HoverCard>
     )

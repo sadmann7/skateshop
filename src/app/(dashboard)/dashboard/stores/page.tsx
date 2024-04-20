@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.js"
 
 import { getStoresByUserId } from "@/lib/actions/store"
-import { getCachedUser, getProgress } from "@/lib/queries/user"
+import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -13,7 +13,7 @@ import {
 import { Shell } from "@/components/shell"
 import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
 
-import { AddStoreDialog } from "./_components/add-store-dialog"
+import { CreateStoreDialog } from "./_components/create-store-dialog"
 import { Stores } from "./_components/stores"
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default async function StoresPage() {
   }
 
   const storesPromise = getStoresByUserId({ userId: user.id })
-  const progressPromise = getProgress({ userId: user.id })
+  const planMetricsPromise = getUserPlanMetrics({ userId: user.id })
 
   return (
     <Shell variant="sidebar">
@@ -39,7 +39,10 @@ export default async function StoresPage() {
           <PageHeaderHeading size="sm" className="flex-1">
             Stores
           </PageHeaderHeading>
-          <AddStoreDialog userId={user.id} progressPromise={progressPromise} />
+          <CreateStoreDialog
+            userId={user.id}
+            planMetricsPromise={planMetricsPromise}
+          />
         </div>
         <PageHeaderDescription size="sm">
           Manage your stores

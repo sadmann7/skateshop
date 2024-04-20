@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 
 import { getStoresByUserId } from "@/lib/actions/store"
-import { getCachedUser, getProgress } from "@/lib/queries/user"
+import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
 import { SiteFooter } from "@/components/layouts/site-footer"
 
 import { DashboardHeader } from "./_components/dashboard-header"
@@ -20,7 +20,7 @@ export default async function DashboardLayout({
   }
 
   const storesPromise = getStoresByUserId({ userId: user.id })
-  const progressPromise = getProgress({ userId: user.id })
+  const planMetricsPromise = getUserPlanMetrics({ userId: user.id })
 
   return (
     <SidebarProvider>
@@ -31,7 +31,7 @@ export default async function DashboardLayout({
               <StoreSwitcher
                 userId={user.id}
                 storesPromise={storesPromise}
-                progressPromise={progressPromise}
+                planMetricsPromise={planMetricsPromise}
               />
             </DashboardSidebar>
           </DashboardSidebarSheet>
@@ -44,7 +44,7 @@ export default async function DashboardLayout({
             <StoreSwitcher
               userId={user.id}
               storesPromise={storesPromise}
-              progressPromise={progressPromise}
+              planMetricsPromise={planMetricsPromise}
             />
           </DashboardSidebar>
           <main className="flex w-full flex-col overflow-hidden">
