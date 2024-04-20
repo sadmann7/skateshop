@@ -13,8 +13,8 @@ import {
 } from "@/lib/actions/product"
 import { getErrorMessage } from "@/lib/handle-error"
 import {
-  addProductSchema,
-  type AddProductSchema,
+  createProductSchema,
+  type CreateProductSchema,
 } from "@/lib/validations/product"
 import { useUploadFile } from "@/hooks/use-upload-file"
 import { Button } from "@/components/ui/button"
@@ -48,7 +48,7 @@ import { FilesCard } from "@/components/cards/FilesCard"
 import { FileUploader } from "@/components/file-uploader"
 import { Icons } from "@/components/icons"
 
-interface AddProductFormProps {
+interface CreateProductFormProps {
   storeId: string
   promises: Promise<{
     categories: Awaited<ReturnType<typeof getCategories>>
@@ -56,15 +56,18 @@ interface AddProductFormProps {
   }>
 }
 
-export function AddProductForm({ storeId, promises }: AddProductFormProps) {
+export function CreateProductForm({
+  storeId,
+  promises,
+}: CreateProductFormProps) {
   const { categories, subcategories } = React.use(promises)
 
   const [loading, setLoading] = React.useState(false)
   const { uploadFiles, progresses, uploadedFiles, isUploading } =
     useUploadFile("productImage")
 
-  const form = useForm<AddProductSchema>({
-    resolver: zodResolver(addProductSchema),
+  const form = useForm<CreateProductSchema>({
+    resolver: zodResolver(createProductSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -76,7 +79,7 @@ export function AddProductForm({ storeId, promises }: AddProductFormProps) {
     },
   })
 
-  function onSubmit(input: AddProductSchema) {
+  function onSubmit(input: CreateProductSchema) {
     setLoading(true)
 
     toast.promise(

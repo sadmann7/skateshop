@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-export const addProductSchema = z.object({
+export const createProductSchema = z.object({
   name: z.string().min(1, {
     message: "Must be at least 1 character",
   }),
@@ -63,7 +63,7 @@ export const updateProductRatingSchema = z.object({
   rating: z.number(),
 })
 
-export type AddProductSchema = z.infer<typeof addProductSchema>
+export type CreateProductSchema = z.infer<typeof createProductSchema>
 export type UpdateProductSchema = z.infer<typeof updateProductSchema>
 export type FilterProductsSchema = z.infer<typeof filterProductsSchema>
 export type GetProductInventorySchema = z.infer<

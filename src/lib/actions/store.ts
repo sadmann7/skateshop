@@ -10,14 +10,13 @@ import { db } from "@/db"
 import { products, stores, type Store } from "@/db/schema"
 import type { SearchParams } from "@/types"
 import { and, asc, count, desc, eq, isNull, not, sql } from "drizzle-orm"
-import { type z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { slugify } from "@/lib/utils"
 import {
   getStoresSchema,
   updateStoreSchema,
-  type addStoreSchema,
+  type CreateStoreSchema,
 } from "@/lib/validations/store"
 
 export async function getFeaturedStores() {
@@ -164,9 +163,7 @@ export async function getStores(input: SearchParams) {
   }
 }
 
-export async function addStore(
-  input: z.infer<typeof addStoreSchema> & { userId: string }
-) {
+export async function addStore(input: CreateStoreSchema & { userId: string }) {
   noStore()
   try {
     const storeWithSameName = await db.query.stores.findFirst({

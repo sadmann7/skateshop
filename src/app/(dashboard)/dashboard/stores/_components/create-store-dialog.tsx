@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, type UseFormReturn } from "react-hook-form"
 import { toast } from "sonner"
-import type { z } from "zod"
 
 import { addStore } from "@/lib/actions/store"
-import { getUserPlanMetrics } from "@/lib/queries/user"
+import { type getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
-import { addStoreSchema } from "@/lib/validations/store"
+import {
+  createStoreSchema,
+  type CreateStoreSchema,
+} from "@/lib/validations/store"
 import { useControllableState } from "@/hooks/use-controllable-state"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
@@ -59,8 +61,6 @@ interface CreateStoreDialogProps
 
 type PlanMetrics = Awaited<ReturnType<typeof getUserPlanMetrics>>
 
-type Inputs = z.infer<typeof addStoreSchema>
-
 export function CreateStoreDialog({
   userId,
   planMetricsPromise,
@@ -81,15 +81,15 @@ export function CreateStoreDialog({
 
   const planMetrics = React.use(planMetricsPromise)
 
-  const form = useForm<Inputs>({
-    resolver: zodResolver(addStoreSchema),
+  const form = useForm<CreateStoreSchema>({
+    resolver: zodResolver(createStoreSchema),
     defaultValues: {
       name: "",
       description: "",
     },
   })
 
-  async function onSubmit(input: Inputs) {
+  async function onSubmit(input: CreateStoreSchema) {
     setLoading(true)
 
     const { data, error } = await addStore({ ...input, userId })
@@ -188,8 +188,8 @@ export function CreateStoreDialog({
 interface CreateStoreFormProps
   extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
   children: React.ReactNode
-  form: UseFormReturn<Inputs>
-  onSubmit: (data: Inputs) => void
+  form: UseFormReturn<CreateStoreSchema>
+  onSubmit: (data: CreateStoreSchema) => void
 }
 
 function CreateStoreForm({

@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { PaperPlaneIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import type { z } from "zod"
 
-import { emailSchema } from "@/lib/validations/notification"
+import { unknownError } from "@/lib/constants"
+import { emailSchema, type EmailSchema } from "@/lib/validations/notification"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -20,26 +20,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 
-type Inputs = z.infer<typeof emailSchema>
-
 export function JoinNewsletterForm() {
-  const [isPending, startTransition] = React.useTransition()
+  const [loading, setLoading] = React.useState(false)
 
   // react-hook-form
-  const form = useForm<Inputs>({
+  const form = useForm<EmailSchema>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
       email: "",
     },
   })
 
-  function onSubmit(data: Inputs) {
-    startTransition(async () => {
+  async function onSubmit(data: EmailSchema) {
+    setLoading(true)
+    try {
       const response = await fetch("/api/email/newsletter", {
         method: "POST",
         body: JSON.stringify({
           email: data.email,
-          // This token is used as a search param in the email preferences page to identify the subscriber.
           token: crypto.randomUUID(),
           subject: "Welcome to Skateshop13",
         }),
@@ -56,18 +54,20 @@ export function JoinNewsletterForm() {
           case 429:
             toast.error("The daily email limit has been reached.")
             break
-          case 500:
-            toast.error("Something went wrong. Please try again later.")
-            break
           default:
-            toast.error("Something went wrong. Please try again later.")
+            toast.error(unknownError)
         }
         return
       }
 
       toast.success("You have been subscribed to our newsletter.")
       form.reset()
-    })
+    } catch (err) {
+      console.log(err)
+      toast.error(unknownError)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -94,9 +94,9 @@ export function JoinNewsletterForm() {
               <Button
                 className="absolute right-[3.5px] top-[4px] z-20 size-7"
                 size="icon"
-                disabled={isPending}
+                disabled={loading}
               >
-                {isPending ? (
+                {loading ? (
                   <Icons.spinner
                     className="size-3 animate-spin"
                     aria-hidden="true"

@@ -2,7 +2,7 @@ import * as z from "zod"
 
 import { slugify } from "@/lib/utils"
 
-export const addStoreSchema = z
+export const createStoreSchema = z
   .object({
     name: z.string().min(3).max(50),
     description: z.string().optional(),
@@ -39,3 +39,8 @@ export const updateStoreSchema = z.object({
   name: z.string().min(3).max(50),
   description: z.string().optional(),
 })
+
+export type CreateStoreSchema = z.infer<typeof createStoreSchema>
+export type GetStoreSchema = z.infer<typeof getStoreSchema>
+export type GetStoresSchema = z.infer<typeof getStoresSchema>
+export type UpdateStoreSchema = z.infer<typeof updateStoreSchema>

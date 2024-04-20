@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { AddProductForm } from "./_components/add-product-form"
+import { CreateProductForm } from "./_components/create-product-form"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -46,7 +46,7 @@ export default async function NewProductPage({ params }: NewProductPageProps) {
         <CardDescription>Add a new product to your store</CardDescription>
       </CardHeader>
       <CardContent>
-        <AddProductForm storeId={storeId} promises={promises} />
+        <CreateProductForm storeId={storeId} promises={promises} />
       </CardContent>
     </Card>
   )

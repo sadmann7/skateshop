@@ -2,9 +2,7 @@ import { type SQL } from "drizzle-orm"
 import { type FileWithPath } from "react-dropzone"
 import type Stripe from "stripe"
 import { type ClientUploadedFileData } from "uploadthing/types"
-import { type z } from "zod"
 
-import { type userPrivateMetadataSchema } from "@/lib/validations/auth"
 import type { Icons } from "@/components/icons"
 
 export interface NavItem {
@@ -37,8 +35,6 @@ export interface FooterItem {
 export type MainNavItem = NavItemWithOptionalChildren
 
 export type SidebarNavItem = NavItemWithChildren
-
-export type UserRole = z.infer<typeof userPrivateMetadataSchema.shape.role>
 
 export interface SearchParams {
   [key: string]: string | string[] | undefined
