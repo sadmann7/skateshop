@@ -305,7 +305,10 @@ function DynamicTrigger({
     return (
       <HoverCard>
         <HoverCardTrigger asChild>
-          <Button className="cursor-not-allowed opacity-50 hover:bg-primary">
+          <Button
+            size="sm"
+            className="cursor-not-allowed opacity-50 hover:bg-primary"
+          >
             Create store
           </Button>
         </HoverCardTrigger>
@@ -357,14 +360,14 @@ function DynamicTrigger({
   if (isDesktop) {
     return (
       <DialogTrigger asChild>
-        <Button>Create store</Button>
+        <Button size="sm">Create store</Button>
       </DialogTrigger>
     )
   }
 
   return (
     <DrawerTrigger asChild>
-      <Button>Create store</Button>
+      <Button size="sm">Create store</Button>
     </DrawerTrigger>
   )
 }
