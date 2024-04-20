@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 
 import { getStoresByUserId } from "@/lib/actions/store"
-import { getCacheduser, getProgress } from "@/lib/actions/user"
+import { getCachedUser, getProgress } from "@/lib/queries/user"
 import { SiteFooter } from "@/components/layouts/site-footer"
 
 import { DashboardHeader } from "./_components/dashboard-header"
@@ -13,7 +13,7 @@ import { StoreSwitcher } from "./_components/store-switcher"
 export default async function DashboardLayout({
   children,
 }: React.PropsWithChildren) {
-  const user = await getCacheduser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/signin")

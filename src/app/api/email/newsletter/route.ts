@@ -1,7 +1,7 @@
 import { db } from "@/db"
 import { notifications } from "@/db/schema"
 import { env } from "@/env.js"
-import { currentUser } from "@clerk/nextjs"
+import { currentUser } from "@clerk/nextjs/server"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
 

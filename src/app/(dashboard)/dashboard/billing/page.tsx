@@ -5,7 +5,7 @@ import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
 import { getSubscriptionPlan, getSubscriptionPlans } from "@/lib/actions/stripe"
-import { getCacheduser, getUsage } from "@/lib/actions/user"
+import { getCachedUser, getUsage } from "@/lib/queries/user"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   PageHeader,
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 }
 
 export default async function BillingPage() {
-  const user = await getCacheduser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/signin")

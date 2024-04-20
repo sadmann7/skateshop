@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.js"
 
 import { getStoresByUserId } from "@/lib/actions/store"
-import { getCacheduser, getProgress } from "@/lib/actions/user"
+import { getCachedUser, getProgress } from "@/lib/queries/user"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 }
 
 export default async function StoresPage() {
-  const user = await getCacheduser()
+  const user = await getCachedUser()
 
   if (!user) {
     redirect("/signin")
