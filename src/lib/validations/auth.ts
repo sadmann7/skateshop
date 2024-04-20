@@ -9,9 +9,8 @@ export const authSchema = z.object({
     .min(8, {
       message: "Password must be at least 8 characters long",
     })
-    .max(100)
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
-      message: "Password must contain at least 8 characters",
+    .max(100, {
+      message: "Password must be at most 100 characters long",
     }),
 })
 
