@@ -12,6 +12,7 @@ export const notifications = pgTable("notifications", {
   email: varchar("email", { length: 256 }).notNull().unique(),
   token: varchar("token", { length: 256 }).notNull().unique(),
   referredBy: varchar("referred_by", { length: 256 }),
+  communication: boolean("communication").default(false).notNull(),
   newsletter: boolean("newsletter").default(false).notNull(),
   marketing: boolean("marketing").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

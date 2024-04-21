@@ -14,8 +14,8 @@ export const joinNewsletterSchema = z.object({
 
 export const updateNotificationSchema = z.object({
   token: z.string(),
+  communication: z.boolean().default(false).optional(),
   newsletter: z.boolean().default(false).optional(),
-  transactional: z.boolean().default(false).optional(),
   marketing: z.boolean().default(false).optional(),
 })
 

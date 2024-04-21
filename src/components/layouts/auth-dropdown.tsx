@@ -17,7 +17,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
 
-interface AuthDropdownProps extends ButtonProps {
+interface AuthDropdownProps
+  extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
+    ButtonProps {
   user: User | null
 }
 
@@ -71,7 +73,7 @@ export function AuthDropdown({ user, className, ...props }: AuthDropdownProps) {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/account">
+                <Link href="/dashboard/settings">
                   <GearIcon className="mr-2 size-4" aria-hidden="true" />
                   Settings
                   <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>

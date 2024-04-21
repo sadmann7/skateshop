@@ -1,15 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { type Notification } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { type z } from "zod"
 
 import { updateNotification } from "@/lib/actions/notification"
-import { showErrorToast } from "@/lib/handle-error"
-import { updateNotificationSchema } from "@/lib/validations/notification"
+import { type getNotification } from "@/lib/queries/notification"
+import {
+  updateNotificationSchema,
+  type UpdateNotificationSchema,
+} from "@/lib/validations/notification"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -24,59 +25,60 @@ import { Switch } from "@/components/ui/switch"
 import { Icons } from "@/components/icons"
 
 interface UpdateNotificationFormProps {
-  notification: Notification
+  notificationPromise: ReturnType<typeof getNotification>
 }
 
-type Inputs = z.infer<typeof updateNotificationSchema>
-
 export function UpdateNotificationForm({
-  notification,
+  notificationPromise,
 }: UpdateNotificationFormProps) {
-  const [isPending, startTransition] = React.useTransition()
+  const notification = React.use(notificationPromise)
+  const [loading, setLoading] = React.useState(false)
 
-  // react-hook-form
-  const form = useForm<Inputs>({
+  const form = useForm<UpdateNotificationSchema>({
     resolver: zodResolver(updateNotificationSchema),
     defaultValues: {
-      token: notification.token,
-      newsletter: notification.newsletter,
-      marketing: notification.marketing,
+      token: notification?.token,
+      newsletter: notification?.newsletter,
+      marketing: notification?.marketing,
     },
   })
 
-  function onSubmit(data: Inputs) {
-    console.log(data)
-    startTransition(async () => {
-      try {
-        await updateNotification({
-          token: data.token,
-          newsletter: data.newsletter,
-          transactional: data.transactional,
-          marketing: data.marketing,
-        })
-        toast.success("Email preferences updated.")
-      } catch (err) {
-        showErrorToast(err)
-      }
+  async function onSubmit(input: UpdateNotificationSchema) {
+    setLoading(true)
+    const { error } = await updateNotification({
+      token: input.token,
+      newsletter: input.newsletter,
+      communication: input.communication,
+      marketing: input.marketing,
     })
+
+    if (error) {
+      toast.error(error)
+      return
+    }
+
+    toast.success("Preferences updated")
+    setLoading(false)
   }
 
   return (
     <Form {...form}>
       <form
-        className="grid w-full gap-4"
-        onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+        className="flex w-full flex-col gap-4"
+        onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
           control={form.control}
-          name="newsletter"
+          name="communication"
           render={({ field }) => (
-            <FormItem className="flex w-full flex-row items-center justify-between space-x-2 rounded-lg border p-4">
+            <FormItem className="flex w-full items-center justify-between space-x-2 rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Newsletter</FormLabel>
+                <FormLabel className="text-base">
+                  Communication emails
+                </FormLabel>
                 <FormDescription>
-                  Receive our monthly newsletter with the latest news and
-                  updates.
+                  Receive transactional emails, such as order confirmations and
+                  shipping updates.
                 </FormDescription>
               </div>
               <FormControl>
@@ -91,13 +93,14 @@ export function UpdateNotificationForm({
         />
         <FormField
           control={form.control}
-          name="transactional"
+          name="newsletter"
           render={({ field }) => (
             <FormItem className="flex w-full flex-row items-center justify-between space-x-2 rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Transactional</FormLabel>
+                <FormLabel className="text-base">Newsletter emails</FormLabel>
                 <FormDescription>
-                  Receive transactional emails, order confirmations, and more.
+                  Receive our monthly newsletter with the latest news and
+                  updates.
                 </FormDescription>
               </div>
               <FormControl>
@@ -116,7 +119,7 @@ export function UpdateNotificationForm({
           render={({ field }) => (
             <FormItem className="flex w-full flex-row items-center justify-between space-x-2 rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">Marketing</FormLabel>
+                <FormLabel className="text-base">Marketing emails</FormLabel>
                 <FormDescription>
                   Receive marketing emails, including promotions, discounts, and
                   more.
@@ -132,8 +135,8 @@ export function UpdateNotificationForm({
             </FormItem>
           )}
         />
-        <Button className="w-full" disabled={isPending}>
-          {isPending && (
+        <Button size="sm" className="w-fit" disabled={loading}>
+          {loading && (
             <Icons.spinner
               className="mr-2 size-4 animate-spin"
               aria-hidden="true"

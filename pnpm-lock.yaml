@@ -319,6 +319,9 @@ devDependencies:
   tailwindcss:
     specifier: ^3.4.3
     version: 3.4.3
+  tsx:
+    specifier: ^4.7.2
+    version: 4.7.2
   typescript:
     specifier: ^5.4.5
     version: 5.4.5
@@ -12112,6 +12115,17 @@ packages:
       tslib: 1.14.1
       typescript: 5.4.5
     dev: false
+
+  /tsx@4.7.2:
+    resolution: {integrity: sha512-BCNd4kz6fz12fyrgCTEdZHGJ9fWTGeUzXmQysh0RVocDY3h4frk05ZNCXSy4kIenF7y/QnrdiVpTsyNRn6vlAw==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+    dependencies:
+      esbuild: 0.19.12
+      get-tsconfig: 4.7.3
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   /typanion@3.14.0:
     resolution: {integrity: sha512-ZW/lVMRabETuYCd9O9ZvMhAh8GslSqaUjxmK/JLPCh6l73CvLBiuXswj/+7LdnWOgYsQ130FqLzFz5aGT4I3Ug==}
