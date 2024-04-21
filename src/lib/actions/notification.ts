@@ -6,20 +6,22 @@ import { notifications } from "@/db/schema"
 import { env } from "@/env.js"
 import { currentUser } from "@clerk/nextjs/server"
 import { eq } from "drizzle-orm"
-import { type z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { resend } from "@/lib/resend"
-import type { updateNotificationSchema } from "@/lib/validations/notification"
+import type { UpdateNotificationSchema } from "@/lib/validations/notification"
 import NewsletterWelcomeEmail from "@/components/emails/newsletter-welcome-email"
 
-export async function updateNotification(
-  input: z.infer<typeof updateNotificationSchema>
-) {
+export async function updateNotification(input: UpdateNotificationSchema) {
   try {
-    const notification = await db.query.notifications.findFirst({
-      where: eq(notifications.token, input.token),
-    })
+    const notification = await db
+      .select({
+        email: notifications.email,
+        newsletter: notifications.newsletter,
+      })
+      .from(notifications)
+      .where(eq(notifications.token, input.token))
+      .then((res) => res[0])
 
     if (!notification) {
       throw new Error("Email not found.")

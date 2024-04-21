@@ -30,5 +30,11 @@ export const dashboardConfig: DashboardConfig = {
       icon: "dollarSign",
       items: [],
     },
+    {
+      title: "Settings",
+      href: "/dashboard/settings",
+      icon: "settings",
+      items: [],
+    },
   ],
 }
