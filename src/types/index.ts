@@ -1,5 +1,4 @@
 import { type SQL } from "drizzle-orm"
-import { type FileWithPath } from "react-dropzone"
 import type Stripe from "stripe"
 import { type ClientUploadedFileData } from "uploadthing/types"
 
@@ -40,22 +39,19 @@ export interface SearchParams {
   [key: string]: string | string[] | undefined
 }
 
-export interface Option {
-  label: string
-  value: string
-  icon?: React.ComponentType<{ className?: string }>
-}
-
-export type FileWithPreview = FileWithPath & {
-  preview: string
-}
-
 export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
 
 export interface StoredFile {
   id: string
   name: string
   url: string
+}
+
+export interface Option {
+  label: string
+  value: string
+  icon?: React.ComponentType<{ className?: string }>
+  withCount?: boolean
 }
 
 export interface DataTableFilterField<TData> {
