@@ -81,7 +81,7 @@ export function ProductsCombobox() {
         <span className="sr-only">Search products</span>
         <Kbd
           title={isMacOs() ? "Command" : "Control"}
-          className="pointer-events-none absolute right-1.5 top-2 hidden xl:block"
+          className="pointer-events-none absolute right-1.5 top-1.5 hidden xl:block"
         >
           {isMacOs() ? "⌘" : "Ctrl"} K
         </Kbd>
