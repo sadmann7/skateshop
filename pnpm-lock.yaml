@@ -4315,7 +4315,7 @@ packages:
       react-day-picker: 8.10.1(date-fns@2.30.0)(react@18.2.0)
       react-dom: 18.2.0(react@18.2.0)
       react-transition-state: 2.1.1(react-dom@18.2.0)(react@18.2.0)
-      recharts: 2.12.5(react-dom@18.2.0)(react@18.2.0)
+      recharts: 2.12.6(react-dom@18.2.0)(react@18.2.0)
       tailwind-merge: 1.14.0
     transitivePeerDependencies:
       - tailwindcss
@@ -5924,8 +5924,8 @@ packages:
       vary: 1.1.2
     dev: false
 
-  /cropperjs@1.6.1:
-    resolution: {integrity: sha512-F4wsi+XkDHCOMrHMYjrTEE4QBOrsHHN5/2VsVAaRq8P7E5z7xQpT75S+f/9WikmBEailas3+yo+6zPIomW+NOA==}
+  /cropperjs@1.6.2:
+    resolution: {integrity: sha512-nhymn9GdnV3CqiEHJVai54TULFAE3VshJTXSqSJKa8yXAKyBKDWdhHarnlIPrshJ0WMFTGuFvG02YjLXfPiuOA==}
     dev: false
 
   /cross-spawn@7.0.3:
@@ -10627,7 +10627,7 @@ packages:
     peerDependencies:
       react: '>=17.0.2'
     dependencies:
-      cropperjs: 1.6.1
+      cropperjs: 1.6.2
       react: 18.2.0
     dev: false
 
@@ -10957,8 +10957,8 @@ packages:
       decimal.js-light: 2.5.1
     dev: false
 
-  /recharts@2.12.5(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-Cy+BkqrFIYTHJCyKHJEPvbHE2kVQEP6PKbOHJ8ztRGTAhvHuUnCwDaKVb13OwRFZ0QNUk1QvGTDdgWSMbuMtKw==}
+  /recharts@2.12.6(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-D+7j9WI+D0NHauah3fKHuNNcRK8bOypPW7os1DERinogGBGaHI7i6tQKJ0aUF3JXyBZ63dyfKIW2WTOPJDxJ8w==}
     engines: {node: '>=14'}
     peerDependencies:
       react: ^16.0.0 || ^17.0.0 || ^18.0.0
