@@ -2,7 +2,7 @@ import { pgTable } from "@/db/utils"
 import { sql } from "drizzle-orm"
 import { boolean, json, timestamp, varchar } from "drizzle-orm/pg-core"
 
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 import { type CartItemSchema } from "@/lib/validations/cart"
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts

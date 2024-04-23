@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 import { type CheckoutItemSchema } from "@/lib/validations/cart"
 
 import { addresses } from "./addresses"

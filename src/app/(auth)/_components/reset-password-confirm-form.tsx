@@ -14,12 +14,17 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 import { Icons } from "@/components/icons"
 import { PasswordInput } from "@/components/password-input"
 
@@ -104,31 +109,46 @@ export function ResetPasswordConfirmForm() {
           name="code"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Code</FormLabel>
+              <FormLabel>One-Time Password</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="169420"
-                  {...field}
-                  onChange={(e) => {
-                    e.target.value = e.target.value.trim()
-                    field.onChange(e)
-                  }}
-                />
+                <InputOTP maxLength={6} {...field}>
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </FormControl>
+              <FormDescription>
+                Please enter the 6-digit code sent to your email.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button disabled={loading}>
-          {loading && (
-            <Icons.spinner
-              className="mr-2 size-4 animate-spin"
-              aria-hidden="true"
-            />
-          )}
-          Reset password
-          <span className="sr-only">Reset password</span>
-        </Button>
+        <div className="mt-2.5 flex flex-col-reverse gap-2 sm:flex-row">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={() => router.back()}
+          >
+            Go back
+          </Button>
+          <Button disabled={loading} className="w-full">
+            {loading && (
+              <Icons.spinner
+                className="mr-2 size-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Reset password
+            <span className="sr-only">Reset password</span>
+          </Button>
+        </div>
       </form>
     </Form>
   )

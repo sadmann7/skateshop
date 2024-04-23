@@ -3,7 +3,7 @@ import { relations, sql } from "drizzle-orm"
 import { index, text, timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 import { categories } from "./categories"
 
