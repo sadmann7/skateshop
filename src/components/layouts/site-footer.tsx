@@ -12,26 +12,15 @@ export function SiteFooter() {
   return (
     <footer className="w-full border-t bg-background">
       <Shell>
-        <section
-          id="footer-content"
-          aria-labelledby="footer-content-heading"
-          className="flex flex-col gap-10 lg:flex-row lg:gap-20"
-        >
-          <section
-            id="footer-branding"
-            aria-labelledby="footer-branding-heading"
-          >
+        <section className="flex flex-col gap-10 lg:flex-row lg:gap-20">
+          <section>
             <Link href="/" className="flex w-fit items-center space-x-2">
               <Icons.logo className="size-6" aria-hidden="true" />
               <span className="font-bold">{siteConfig.name}</span>
               <span className="sr-only">Home</span>
             </Link>
           </section>
-          <section
-            id="footer-links"
-            aria-labelledby="footer-links-heading"
-            className="grid flex-1 grid-cols-1 gap-10 xxs:grid-cols-2 sm:grid-cols-4"
-          >
+          <section className="grid flex-1 grid-cols-1 gap-10 xxs:grid-cols-2 sm:grid-cols-4">
             {siteConfig.footerNav.map((item) => (
               <div key={item.title} className="space-y-3">
                 <h4 className="text-base font-medium">{item.title}</h4>
@@ -53,22 +42,14 @@ export function SiteFooter() {
               </div>
             ))}
           </section>
-          <section
-            id="newsletter"
-            aria-labelledby="newsletter-heading"
-            className="space-y-3"
-          >
+          <section className="space-y-3">
             <h4 className="text-base font-medium">
               Subscribe to our newsletter
             </h4>
             <JoinNewsletterForm />
           </section>
         </section>
-        <section
-          id="footer-bottom"
-          aria-labelledby="footer-bottom-heading"
-          className="flex items-center space-x-4"
-        >
+        <section className="flex items-center space-x-4">
           <div className="flex-1 text-left text-sm leading-loose text-muted-foreground">
             Built by{" "}
             <Link
