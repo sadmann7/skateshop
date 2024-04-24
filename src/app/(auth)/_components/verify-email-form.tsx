@@ -85,7 +85,7 @@ export function VerifyEmailForm() {
             </FormItem>
           )}
         />
-        <Button disabled={loading}>
+        <Button className="mt-2" disabled={loading}>
           {loading && (
             <Icons.spinner
               className="mr-2 size-4 animate-spin"

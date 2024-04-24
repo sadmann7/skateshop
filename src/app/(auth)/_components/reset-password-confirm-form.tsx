@@ -129,7 +129,7 @@ export function ResetPasswordConfirmForm() {
             </FormItem>
           )}
         />
-        <div className="mt-2.5 flex flex-col-reverse gap-2 sm:flex-row">
+        <div className="mt-2 flex flex-col-reverse gap-2 sm:flex-row">
           <Button
             type="button"
             variant="outline"
@@ -138,7 +138,7 @@ export function ResetPasswordConfirmForm() {
           >
             Go back
           </Button>
-          <Button disabled={loading} className="w-full">
+          <Button className="w-full" disabled={loading}>
             {loading && (
               <Icons.spinner
                 className="mr-2 size-4 animate-spin"

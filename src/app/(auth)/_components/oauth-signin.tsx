@@ -23,6 +23,7 @@ export function OAuthSignIn() {
 
   async function oauthSignIn(provider: OAuthStrategy) {
     if (!signInLoaded) return null
+
     try {
       setLoading(provider)
       await signIn.authenticateWithRedirect({
@@ -31,9 +32,8 @@ export function OAuthSignIn() {
         redirectUrlComplete: "/",
       })
     } catch (err) {
-      showErrorToast(err)
-    } finally {
       setLoading(null)
+      showErrorToast(err)
     }
   }
 
