@@ -2,7 +2,7 @@ import { pgTable } from "@/db/utils"
 import { sql } from "drizzle-orm"
 import { timestamp, varchar } from "drizzle-orm/pg-core"
 
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 export const subscriptions = pgTable("subscriptions", {
   id: varchar("id", { length: 30 })

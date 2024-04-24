@@ -11,7 +11,8 @@ import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
 import { productConfig } from "@/config/product"
-import { generateId, slugify } from "@/lib/utils"
+import { generateId } from "@/lib/id"
+import { slugify } from "@/lib/utils"
 
 export async function seedCategories() {
   const data = productConfig.categories.map((category) => ({

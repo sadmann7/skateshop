@@ -2,7 +2,7 @@ import { pgTable } from "@/db/utils"
 import { sql } from "drizzle-orm"
 import { boolean, timestamp, varchar } from "drizzle-orm/pg-core"
 
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 30 })

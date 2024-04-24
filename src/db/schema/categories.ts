@@ -2,7 +2,7 @@ import { pgTable } from "@/db/utils"
 import { relations, sql } from "drizzle-orm"
 import { text, timestamp, varchar } from "drizzle-orm/pg-core"
 
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 import { products } from "./products"
 import { subcategories } from "./subcategories"
