@@ -4,8 +4,11 @@ import { ClerkProvider } from "@clerk/nextjs"
 
 import "@/styles/globals.css"
 
+import { GeistMono } from "geist/font/mono"
+import { GeistSans } from "geist/font/sans"
+
 import { siteConfig } from "@/config/site"
-import { fontHeading, fontMono, fontSans } from "@/lib/fonts"
+import { fontHeading } from "@/lib/fonts"
 import { absoluteUrl, cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@/components/analytics"
@@ -63,34 +66,36 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({ children }: React.PropsWithChildren) {
+interface RootLayoutProps {
+  children: React.ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <>
-      <ClerkProvider>
-        <html lang="en" suppressHydrationWarning>
-          <head />
-          <body
-            className={cn(
-              "min-h-screen bg-background font-sans antialiased",
-              fontSans.variable,
-              fontMono.variable,
-              fontHeading.variable
-            )}
+    <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
+        <head />
+        <body
+          className={cn(
+            "min-h-screen bg-background font-sans antialiased",
+            GeistSans.variable,
+            GeistMono.variable,
+            fontHeading.variable
+          )}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
           >
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <TailwindIndicator />
-              <Analytics />
-            </ThemeProvider>
-            <Toaster />
-          </body>
-        </html>
-      </ClerkProvider>
-    </>
+            {children}
+            <TailwindIndicator />
+            <Analytics />
+          </ThemeProvider>
+          <Toaster />
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }

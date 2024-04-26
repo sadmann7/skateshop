@@ -4,12 +4,19 @@ import { siteConfig } from "@/config/site"
 import { type getGithubStars } from "@/lib/actions/github"
 import type { getCategories, getFeaturedProducts } from "@/lib/actions/product"
 import { type getFeaturedStores } from "@/lib/actions/store"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { ProductCard } from "@/components/cards/product-card"
 import { StoreCard } from "@/components/cards/store-card"
 import { ContentSection } from "@/components/content-section"
 import { Icons } from "@/components/icons"
+import {
+  PageActions,
+  PageHeader,
+  PageHeaderDescription,
+  PageHeaderHeading,
+} from "@/components/page-header"
 import { Shell } from "@/components/shell"
 
 import { CategoryCard } from "./category-card"
@@ -37,64 +44,55 @@ export async function Lobby({
 
   return (
     <Shell className="max-w-6xl">
-      <section className="mx-auto flex w-full max-w-5xl flex-col items-center justify-center gap-4 py-24 text-center md:py-32">
-        <div
-          className="flex animate-fade-up flex-col space-y-2"
+      <PageHeader
+        as="section"
+        className="mx-auto gap-2 text-center"
+        withPadding
+      >
+        <Link
+          href={siteConfig.links.github}
+          target="_blank"
+          rel="noreferrer"
+          className="animate-fade-up"
           style={{ animationDelay: "0.10s", animationFillMode: "both" }}
         >
-          <Link href={siteConfig.links.x} target="_blank" rel="noreferrer">
-            <Badge
-              aria-hidden="true"
-              className="rounded-full px-3.5 py-1.5"
-              variant="secondary"
-            >
-              Rewritting with Next.js 14, follow along on X for updates
-            </Badge>
-            <span className="sr-only">X</span>
-          </Link>
-          <Link href={siteConfig.links.github} target="_blank" rel="noreferrer">
-            <Badge
-              aria-hidden="true"
-              className="rounded-full px-3.5 py-1.5"
-              variant="secondary"
-            >
-              <Icons.gitHub className="mr-2 size-3.5" aria-hidden="true" />
-              {githubStars} stars on GitHub
-            </Badge>
-            <span className="sr-only">GitHub</span>
-          </Link>
-        </div>
-        <h1
-          className="animate-fade-up text-balance font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl"
+          <Badge
+            aria-hidden="true"
+            className="px-3.5 py-1.5"
+            variant="secondary"
+          >
+            <Icons.gitHub className="mr-2 size-3.5" aria-hidden="true" />
+            {githubStars} stars on GitHub
+          </Badge>
+        </Link>
+        <PageHeaderHeading
+          className="animate-fade-up"
           style={{ animationDelay: "0.20s", animationFillMode: "both" }}
         >
-          An e-commerce skateshop built with everything new in Next.js
-        </h1>
-        <p
-          className="max-w-2xl animate-fade-up text-balance leading-normal text-muted-foreground sm:text-xl sm:leading-8"
+          Build your commerce platforms
+        </PageHeaderHeading>
+        <PageHeaderDescription
+          className="max-w-[46.875rem] animate-fade-up"
           style={{ animationDelay: "0.30s", animationFillMode: "both" }}
         >
-          Buy and sell skateboarding gears from independent brands and stores
-          around the world with ease
-        </p>
-        <div
-          className="flex animate-fade-up flex-wrap items-center justify-center gap-4"
+          Skateshop is an open-source platform for building and customizing your
+          own commerce platform with ease.
+        </PageHeaderDescription>
+        <PageActions
+          className="animate-fade-up"
           style={{ animationDelay: "0.40s", animationFillMode: "both" }}
         >
-          <Button asChild>
-            <Link href="/products">
-              Buy now
-              <span className="sr-only">Buy now</span>
-            </Link>
-          </Button>
-          <Button variant="outline" asChild>
-            <Link href="/dashboard/stores">
-              Sell now
-              <span className="sr-only">Sell now</span>
-            </Link>
-          </Button>
-        </div>
-      </section>
+          <Link href="/products" className={cn(buttonVariants())}>
+            Buy now
+          </Link>
+          <Link
+            href="/dashboard/stores"
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
+            Sell now
+          </Link>
+        </PageActions>
+      </PageHeader>
       <section
         className="grid animate-fade-up grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-4"
         style={{ animationDelay: "0.50s", animationFillMode: "both" }}

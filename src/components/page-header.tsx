@@ -1,4 +1,4 @@
-// Modified from: https://github.com/shadcn-ui/ui/blob/main/apps/www/components/page-header.tsx
+// @see https://github.com/shadcn-ui/ui/blob/main/apps/www/components/page-header.tsx
 
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -6,16 +6,25 @@ import { cn } from "@/lib/utils"
 
 interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   as?: React.ElementType
+  withPadding?: boolean
 }
 
 function PageHeader({
   className,
   children,
   as: Comp = "section",
+  withPadding = false,
   ...props
 }: PageHeaderProps) {
   return (
-    <Comp className={cn("flex flex-col gap-1", className)} {...props}>
+    <Comp
+      className={cn(
+        "flex max-w-[61.25rem] flex-col items-center gap-1.5",
+        withPadding && "py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20",
+        className
+      )}
+      {...props}
+    >
       {children}
     </Comp>
   )
@@ -26,8 +35,8 @@ const headingVariants = cva(
   {
     variants: {
       size: {
-        default: "text-3xl md:text-4xl",
-        sm: "text-2xl md:text-3xl",
+        default: "text-3xl md:text-5xl",
+        sm: "text-2xl md:text-4xl",
         lg: "text-3xl sm:text-5xl md:text-6xl lg:text-7xl",
       },
     },
@@ -54,18 +63,21 @@ function PageHeaderHeading({
   )
 }
 
-const descriptionVariants = cva("text-balance text-muted-foreground", {
-  variants: {
-    size: {
-      default: "text-base sm:text-lg",
-      sm: "text-sm sm:text-base",
-      lg: "text-lg sm:text-xl",
+const descriptionVariants = cva(
+  "max-w-[46.875rem] text-balance text-muted-foreground",
+  {
+    variants: {
+      size: {
+        default: "text-base sm:text-lg",
+        sm: "text-sm sm:text-base",
+        lg: "text-lg sm:text-xl",
+      },
     },
-  },
-  defaultVariants: {
-    size: "default",
-  },
-})
+    defaultVariants: {
+      size: "default",
+    },
+  }
+)
 
 interface PageHeaderDescriptionProps
   extends React.HTMLAttributes<HTMLParagraphElement>,
@@ -81,4 +93,19 @@ function PageHeaderDescription({
   )
 }
 
-export { PageHeader, PageHeaderDescription, PageHeaderHeading }
+function PageActions({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "flex w-full items-center justify-center space-x-4 py-4 md:pb-10",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { PageHeader, PageHeaderDescription, PageHeaderHeading, PageActions }
