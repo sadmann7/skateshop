@@ -19,7 +19,7 @@ function PageHeader({
   return (
     <Comp
       className={cn(
-        "flex max-w-[61.25rem] flex-col items-center gap-1.5",
+        "flex max-w-[61.25rem] flex-col gap-1",
         withPadding && "py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20",
         className
       )}
@@ -108,4 +108,4 @@ function PageActions({
   )
 }
 
-export { PageHeader, PageHeaderDescription, PageHeaderHeading, PageActions }
+export { PageActions, PageHeader, PageHeaderDescription, PageHeaderHeading }

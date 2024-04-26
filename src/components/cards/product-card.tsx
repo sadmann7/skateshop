@@ -43,7 +43,7 @@ export function ProductCard({
 
   return (
     <Card
-      className={cn("size-full overflow-hidden rounded-sm", className)}
+      className={cn("size-full overflow-hidden rounded-md", className)}
       {...props}
     >
       <Link aria-label={product.name} href={`/product/${product.id}`}>

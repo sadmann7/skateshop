@@ -20,8 +20,7 @@ interface StoreCardProps {
 export function StoreCard({ store, href }: StoreCardProps) {
   return (
     <Link href={href}>
-      <span className="sr-only">{store.name}</span>
-      <Card className="h-full overflow-hidden transition-colors hover:bg-muted/50">
+      <Card className="h-full overflow-hidden rounded-md transition-colors hover:bg-muted/50">
         <AspectRatio ratio={21 / 9}>
           <div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/50" />
           <Badge
@@ -35,11 +34,11 @@ export function StoreCard({ store, href }: StoreCardProps) {
             {store.stripeAccountId ? "Active" : "Inactive"}
           </Badge>
           <div
-            className="h-full rounded-t-md border-b"
+            className="h-full border-b"
             style={getRandomPatternStyle(String(store.id))}
           />
         </AspectRatio>
-        <CardHeader className="space-y-2">
+        <CardHeader className="p-4">
           <CardTitle className="line-clamp-1">{store.name}</CardTitle>
           <CardDescription className="line-clamp-1">
             {store.description?.length
