@@ -34,7 +34,7 @@ export default async function StoresPage() {
 
   return (
     <Shell variant="sidebar">
-      <PageHeader>
+      <PageHeader className="max-w-full">
         <div className="flex space-x-4">
           <PageHeaderHeading size="sm" className="flex-1">
             Stores
@@ -48,7 +48,7 @@ export default async function StoresPage() {
           Manage your stores
         </PageHeaderDescription>
       </PageHeader>
-      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <React.Suspense
           fallback={Array.from({ length: 3 }).map((_, i) => (
             <StoreCardSkeleton key={i} />

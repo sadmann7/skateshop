@@ -5,8 +5,8 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import {
   CaretSortIcon,
   CheckIcon,
+  FrameIcon,
   PlusCircledIcon,
-  ShadowIcon,
 } from "@radix-ui/react-icons"
 
 import { type getStoresByUserId } from "@/lib/actions/store"
@@ -76,7 +76,7 @@ export function StoreSwitcher({
           >
             {selectedStore?.name ?? "Select a store"}
             <CaretSortIcon
-              className="ml-auto size-3.5 shrink-0 opacity-50"
+              className="ml-auto size-4 shrink-0 opacity-50"
               aria-hidden="true"
             />
           </Button>
@@ -98,7 +98,10 @@ export function StoreSwitcher({
                     }}
                     className="text-sm"
                   >
-                    <ShadowIcon className="mr-2 size-5" aria-hidden="true" />
+                    <FrameIcon
+                      className="mr-2 size-4  text-muted-foreground"
+                      aria-hidden="true"
+                    />
                     {store.name}
                     <CheckIcon
                       className={cn(
@@ -123,7 +126,7 @@ export function StoreSwitcher({
                   }}
                   disabled={planMetrics.storeLimitExceeded}
                 >
-                  <PlusCircledIcon className="mr-2 size-5" aria-hidden="true" />
+                  <PlusCircledIcon className="mr-2 size-4" aria-hidden="true" />
                   Create store
                 </CommandItem>
               </CommandGroup>

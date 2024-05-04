@@ -2,11 +2,15 @@
 
 import Link from "next/link"
 
-import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button, type ButtonProps } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Icons } from "@/components/icons"
 
 import { useSidebar } from "./sidebar-provider"
@@ -41,19 +45,16 @@ export function DashboardSidebarSheet({
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="inset-y-0 flex h-auto w-[300px] flex-col items-center px-0 pt-9"
+        className="inset-y-0 flex h-auto w-[18.75rem] flex-col items-center gap-4 px-0 py-4"
       >
-        <div className="w-full self-start px-7">
+        <SheetClose asChild>
           <Link
             href="/"
-            className="flex items-center"
-            onClick={() => setOpen(false)}
+            className="mx-6 flex items-center self-start font-heading tracking-wider text-foreground/90 transition-colors hover:text-foreground"
           >
-            <Icons.logo className="mr-2 size-4" aria-hidden="true" />
-            <span className="font-bold">{siteConfig.name}</span>
-            <span className="sr-only">Home</span>
+            <Icons.logo className="size-6" aria-hidden="true" />
           </Link>
-        </div>
+        </SheetClose>
         {children}
       </SheetContent>
     </Sheet>

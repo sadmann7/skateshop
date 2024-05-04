@@ -1,4 +1,9 @@
-import { AvatarIcon, GearIcon, ImageIcon } from "@radix-ui/react-icons"
+import {
+  AvatarIcon,
+  DashboardIcon,
+  GearIcon,
+  ImageIcon,
+} from "@radix-ui/react-icons"
 
 export type IconProps = React.HTMLAttributes<SVGElement>
 
@@ -285,6 +290,7 @@ export const Icons = {
       <path d="M12 18h4" />
     </svg>
   ),
+  dashboard: DashboardIcon,
   avatar: AvatarIcon,
   placeholder: ImageIcon,
   settings: GearIcon,
