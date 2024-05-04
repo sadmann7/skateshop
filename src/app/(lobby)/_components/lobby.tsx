@@ -34,7 +34,7 @@ export async function Lobby({
   categoriesPromise,
   storesPromise,
 }: LobbyProps) {
-  // See the "Parallel data fetching" docs: https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#parallel-data-fetching
+  // @see the "Parallel data fetching" docs: https://nextjs.org/docs/app/building-your-application/data-fetching/patterns#parallel-data-fetching
   const [githubStars, products, categories, stores] = await Promise.all([
     githubStarsPromise,
     productsPromise,
@@ -69,7 +69,7 @@ export async function Lobby({
           className="animate-fade-up"
           style={{ animationDelay: "0.20s", animationFillMode: "both" }}
         >
-          Foundation for your commerce platform
+          Build for your commerce platform
         </PageHeaderHeading>
         <PageHeaderDescription
           className="max-w-[46.875rem] animate-fade-up"
