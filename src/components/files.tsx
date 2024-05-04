@@ -11,11 +11,11 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { EmptyCard } from "@/components/cards/empty-card"
 
-interface FilesCardProps {
+interface FilesProps {
   files: StoredFile[]
 }
 
-export function FilesCard({ files }: FilesCardProps) {
+export function Files({ files }: FilesProps) {
   return (
     <Card>
       <CardHeader>

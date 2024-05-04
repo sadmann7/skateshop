@@ -19,7 +19,7 @@ function PageHeader({
   return (
     <Comp
       className={cn(
-        "flex flex-col gap-1",
+        "flex max-w-[61.25rem] flex-col gap-0.5",
         withPadding && "py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20",
         className
       )}
@@ -36,7 +36,7 @@ const headingVariants = cva(
     variants: {
       size: {
         default: "text-3xl md:text-5xl",
-        sm: "text-2xl md:text-4xl",
+        sm: "text-xl md:text-3xl",
         lg: "text-3xl sm:text-5xl md:text-6xl lg:text-7xl",
       },
     },

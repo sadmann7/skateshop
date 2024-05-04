@@ -44,8 +44,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { FilesCard } from "@/components/cards/FilesCard"
 import { FileUploader } from "@/components/file-uploader"
+import { Files } from "@/components/files"
 import { Icons } from "@/components/icons"
 
 interface CreateProductFormProps {
@@ -307,7 +307,7 @@ export function CreateProductForm({
                   <FormMessage />
                 </FormItem>
                 {uploadedFiles.length > 0 ? (
-                  <FilesCard files={uploadedFiles} />
+                  <Files files={uploadedFiles} />
                 ) : null}
               </div>
             )}

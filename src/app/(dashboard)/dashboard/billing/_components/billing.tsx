@@ -121,7 +121,7 @@ export async function Billing({
                   stripePriceId={plan.stripePriceId}
                   stripeCustomerId={subscriptionPlan?.stripeCustomerId}
                   stripeSubscriptionId={subscriptionPlan?.stripeSubscriptionId}
-                  isSubscribed={subscriptionPlan?.isSubscribed ?? false}
+                  isSubscribed={subscriptionPlan?.isSubscribed}
                   isCurrentPlan={subscriptionPlan?.title === plan.title}
                 />
               )}

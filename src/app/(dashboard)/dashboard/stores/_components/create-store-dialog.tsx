@@ -3,6 +3,7 @@
 import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { HoverCardPortal } from "@radix-ui/react-hover-card"
 import { useForm, type UseFormReturn } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -13,11 +14,11 @@ import {
   createStoreSchema,
   type CreateStoreSchema,
 } from "@/lib/validations/store"
-import { useControllableState } from "@/hooks/use-controllable-state"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -27,6 +28,7 @@ import {
 } from "@/components/ui/dialog"
 import {
   Drawer,
+  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -50,36 +52,27 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
-import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
+import { RateLimitAlert } from "@/components/rate-limit-alert"
 
 interface CreateStoreDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   userId: string
   planMetricsPromise: ReturnType<typeof getUserPlanMetrics>
-  showTrigger?: boolean
 }
-
-type PlanMetrics = Awaited<ReturnType<typeof getUserPlanMetrics>>
 
 export function CreateStoreDialog({
   userId,
   planMetricsPromise,
-  open: openProp,
   onOpenChange,
-  defaultOpen,
-  showTrigger = true,
   ...props
 }: CreateStoreDialogProps) {
   const router = useRouter()
-  const [open, setOpen] = useControllableState({
-    prop: openProp,
-    defaultProp: defaultOpen,
-    onChange: onOpenChange,
-  })
   const [loading, setLoading] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 640px)")
 
   const planMetrics = React.use(planMetricsPromise)
+  const rateLimitExceeded =
+    planMetrics.storeLimitExceeded || planMetrics.productLimitExceeded
 
   const form = useForm<CreateStoreSchema>({
     resolver: zodResolver(createStoreSchema),
@@ -105,27 +98,34 @@ export function CreateStoreDialog({
     }
 
     setLoading(false)
-    setOpen(false)
+    onOpenChange?.(false)
     form.reset()
   }
 
   if (isDesktop) {
     return (
       <Dialog
-        open={open}
         onOpenChange={(open) => {
           if (!open) {
             form.reset()
           }
-          setOpen(open)
+          onOpenChange?.(open)
         }}
         {...props}
       >
-        <DynamicTrigger
-          planMetrics={planMetrics}
-          isDesktop={isDesktop}
-          showTrigger={showTrigger}
-        />
+        {
+          /**
+           * If onOpenChange is provided, the drawer is controlled by the parent component.
+           * In this case, we don't show the trigger button.
+           */
+          !!onOpenChange ? null : rateLimitExceeded ? (
+            <RateLimitHoverCard planMetrics={planMetrics} />
+          ) : (
+            <DialogTrigger asChild>
+              <Button size="sm">Create store</Button>
+            </DialogTrigger>
+          )
+        }
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Create a new store</DialogTitle>
@@ -135,11 +135,20 @@ export function CreateStoreDialog({
           </DialogHeader>
           <CreateStoreForm form={form} onSubmit={onSubmit}>
             <DialogFooter className="pt-4">
-              <FormFooter
-                loading={loading}
-                planMetrics={planMetrics}
-                onToggle={() => setOpen(false)}
-              />
+              <DialogClose asChild>
+                <Button type="button" variant="outline">
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit" disabled={loading || rateLimitExceeded}>
+                {loading && (
+                  <Icons.spinner
+                    className="mr-2 size-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                Add store
+              </Button>
             </DialogFooter>
           </CreateStoreForm>
         </DialogContent>
@@ -149,21 +158,21 @@ export function CreateStoreDialog({
 
   return (
     <Drawer
-      open={open}
       onOpenChange={(open) => {
         if (!open) {
           form.reset()
         }
-        setOpen(open)
         onOpenChange?.(open)
       }}
       {...props}
     >
-      <DynamicTrigger
-        planMetrics={planMetrics}
-        isDesktop={isDesktop}
-        showTrigger={showTrigger}
-      />
+      {!!onOpenChange ? null : rateLimitExceeded ? (
+        <RateLimitHoverCard planMetrics={planMetrics} />
+      ) : (
+        <DrawerTrigger asChild>
+          <Button size="sm">Create store</Button>
+        </DrawerTrigger>
+      )}
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>Create a new store</DrawerTitle>
@@ -173,11 +182,20 @@ export function CreateStoreDialog({
         </DrawerHeader>
         <CreateStoreForm form={form} onSubmit={onSubmit} className="px-4">
           <DrawerFooter className="flex-col-reverse px-0">
-            <FormFooter
-              loading={loading}
-              planMetrics={planMetrics}
-              onToggle={() => setOpen(false)}
-            />
+            <DrawerClose asChild>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
+            </DrawerClose>
+            <Button type="submit" disabled={loading || rateLimitExceeded}>
+              {loading && (
+                <Icons.spinner
+                  className="mr-2 size-4 animate-spin"
+                  aria-hidden="true"
+                />
+              )}
+              Add store
+            </Button>
           </DrawerFooter>
         </CreateStoreForm>
       </DrawerContent>
@@ -242,112 +260,30 @@ function CreateStoreForm({
   )
 }
 
-interface FormFooterProps {
-  loading: boolean
-  planMetrics: PlanMetrics
-  onToggle: (open: boolean) => void
+interface RateLimitHoverCardProps {
+  planMetrics: Awaited<ReturnType<typeof getUserPlanMetrics>>
 }
 
-function FormFooter({ onToggle, loading, planMetrics }: FormFooterProps) {
-  const { storeLimitExceeded, productLimitExceeded } = planMetrics
-
+export function RateLimitHoverCard({ planMetrics }: RateLimitHoverCardProps) {
   return (
-    <>
-      <Button type="button" variant="outline" onClick={() => onToggle(false)}>
-        Cancel
-      </Button>
-      <Button
-        type="submit"
-        disabled={loading || storeLimitExceeded || productLimitExceeded}
-      >
-        {loading && (
-          <Icons.spinner
-            className="mr-2 size-4 animate-spin"
-            aria-hidden="true"
-          />
-        )}
-        Add store
-      </Button>
-    </>
-  )
-}
-
-interface DynamicTriggerProps {
-  planMetrics: PlanMetrics
-  isDesktop: boolean
-  showTrigger?: boolean
-}
-
-function DynamicTrigger({
-  planMetrics,
-  showTrigger,
-  isDesktop,
-}: DynamicTriggerProps) {
-  if (!showTrigger) return null
-
-  const {
-    storeLimit,
-    productLimit,
-    storeLimitExceeded,
-    productLimitExceeded,
-    subscriptionPlan,
-  } = planMetrics
-
-  if (storeLimitExceeded || productLimitExceeded) {
-    return (
-      <HoverCard>
-        <HoverCardTrigger asChild>
-          <Button
-            size="sm"
-            className="cursor-not-allowed opacity-50 hover:bg-primary"
-          >
-            Create store
-          </Button>
-        </HoverCardTrigger>
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Button
+          size="sm"
+          className="cursor-not-allowed opacity-50 hover:bg-primary"
+        >
+          Create store
+        </Button>
+      </HoverCardTrigger>
+      <HoverCardPortal>
         <HoverCardContent
-          className="space-y-4 sm:w-80"
+          className="z-50 space-y-4 sm:w-80"
           align="end"
           sideOffset={8}
         >
-          {storeLimitExceeded && (
-            <div className="text-sm text-muted-foreground">
-              You&apos;ve reached the limit of{" "}
-              <span className="font-bold">{storeLimit}</span> stores for the{" "}
-              <span className="font-bold">{subscriptionPlan?.title}</span> plan.
-            </div>
-          )}
-          {productLimitExceeded && (
-            <div className="text-sm text-muted-foreground">
-              You&apos;ve reached the limit of{" "}
-              <span className="font-bold">{productLimit}</span> products for the{" "}
-              <span className="font-bold">{subscriptionPlan?.title}</span> plan.
-            </div>
-          )}
-          {subscriptionPlan && (
-            <ManageSubscriptionForm
-              stripePriceId={subscriptionPlan.stripePriceId}
-              stripeCustomerId={subscriptionPlan.stripeCustomerId}
-              stripeSubscriptionId={subscriptionPlan.stripeSubscriptionId}
-              isSubscribed={subscriptionPlan.isSubscribed ?? false}
-              isCurrentPlan={subscriptionPlan.title === "Standard"}
-            />
-          )}
+          <RateLimitAlert planMetrics={planMetrics} />
         </HoverCardContent>
-      </HoverCard>
-    )
-  }
-
-  if (isDesktop) {
-    return (
-      <DialogTrigger asChild>
-        <Button size="sm">Create store</Button>
-      </DialogTrigger>
-    )
-  }
-
-  return (
-    <DrawerTrigger asChild>
-      <Button size="sm">Create store</Button>
-    </DrawerTrigger>
+      </HoverCardPortal>
+    </HoverCard>
   )
 }

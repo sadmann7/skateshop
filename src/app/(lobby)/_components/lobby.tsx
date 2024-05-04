@@ -46,7 +46,7 @@ export async function Lobby({
     <Shell className="max-w-6xl gap-0">
       <PageHeader
         as="section"
-        className="mx-auto max-w-[61.25rem] items-center gap-2 text-center"
+        className="mx-auto items-center gap-2 text-center"
         withPadding
       >
         <Link
@@ -69,7 +69,7 @@ export async function Lobby({
           className="animate-fade-up"
           style={{ animationDelay: "0.20s", animationFillMode: "both" }}
         >
-          Build for your commerce platform
+          Foundation for your commerce platform
         </PageHeaderHeading>
         <PageHeaderDescription
           className="max-w-[46.875rem] animate-fade-up"
