@@ -10,9 +10,9 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
+import { ProductCardSkeleton } from "@/components/product-card-skeleton"
 import { Shell } from "@/components/shell"
-import { ProductCardSkeleton } from "@/components/skeletons/product-card-skeleton"
-import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
+import { StoreCardSkeleton } from "@/components/store-card-skeleton"
 
 import { CategoryCardSkeleton } from "./category-card-skeleton"
 
@@ -24,7 +24,7 @@ export function LobbySkeleton() {
         className="mx-auto items-center gap-2 text-center"
         withPadding
       >
-        <Skeleton className="h-7 w-44" />
+        <Skeleton className="h-7 w-44 rounded-full" />
         <PageHeaderHeading
           className="animate-fade-up"
           style={{ animationDelay: "0.20s", animationFillMode: "both" }}

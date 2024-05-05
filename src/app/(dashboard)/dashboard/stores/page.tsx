@@ -5,13 +5,9 @@ import { env } from "@/env.js"
 
 import { getStoresByUserId } from "@/lib/actions/store"
 import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
-import {
-  PageHeader,
-  PageHeaderDescription,
-  PageHeaderHeading,
-} from "@/components/page-header"
+import { PageHeader, PageHeaderHeading } from "@/components/page-header"
 import { Shell } from "@/components/shell"
-import { StoreCardSkeleton } from "@/components/skeletons/store-card-skeleton"
+import { StoreCardSkeleton } from "@/components/store-card-skeleton"
 
 import { CreateStoreDialog } from "./_components/create-store-dialog"
 import { Stores } from "./_components/stores"
@@ -34,21 +30,16 @@ export default async function StoresPage() {
 
   return (
     <Shell variant="sidebar">
-      <PageHeader className="max-w-full">
-        <div className="flex space-x-4">
-          <PageHeaderHeading size="sm" className="flex-1">
-            Stores
-          </PageHeaderHeading>
-          <CreateStoreDialog
-            userId={user.id}
-            planMetricsPromise={planMetricsPromise}
-          />
-        </div>
-        <PageHeaderDescription size="sm">
-          Manage your stores
-        </PageHeaderDescription>
+      <PageHeader className="max-w-full flex-row gap-4">
+        <PageHeaderHeading size="sm" className="flex-1">
+          Stores
+        </PageHeaderHeading>
+        <CreateStoreDialog
+          userId={user.id}
+          planMetricsPromise={planMetricsPromise}
+        />
       </PageHeader>
-      <section className="grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="flex items-center gap-4">
         <React.Suspense
           fallback={Array.from({ length: 3 }).map((_, i) => (
             <StoreCardSkeleton key={i} />

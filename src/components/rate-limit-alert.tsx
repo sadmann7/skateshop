@@ -1,6 +1,8 @@
+import Link from "next/link"
+
 import { type getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
 
 interface RateLimitAlertProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -38,7 +40,14 @@ export function RateLimitAlert({
       )}
       {subscriptionPlan ? (
         subscriptionPlan.title === "Pro" ? (
-          <Button className="w-full">Contact Sales</Button>
+          <Link
+            href="https://cal.com/sadmann7/15min"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonVariants({ className: "w-full" })}
+          >
+            Contact us
+          </Link>
         ) : (
           <ManageSubscriptionForm
             stripePriceId={subscriptionPlan.stripePriceId}

@@ -31,7 +31,7 @@ export default async function DashboardLayout({
             planMetricsPromise={planMetricsPromise}
           />
         </DashboardSidebar>
-        <div className="flex flex-col overflow-hidden">
+        <div className="flex flex-col">
           <DashboardHeader user={user}>
             <DashboardSidebarSheet className="lg:hidden">
               <DashboardSidebar>
@@ -43,7 +43,7 @@ export default async function DashboardLayout({
               </DashboardSidebar>
             </DashboardSidebarSheet>
           </DashboardHeader>
-          <main className="flex-1 px-4 lg:px-6">{children}</main>
+          <main className="flex-1 overflow-hidden px-6">{children}</main>
         </div>
       </div>
     </SidebarProvider>

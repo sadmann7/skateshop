@@ -7,9 +7,19 @@ import {
   revalidateTag,
 } from "next/cache"
 import { db } from "@/db"
-import { products, stores, type Store } from "@/db/schema"
+import { orders, products, stores, type Store } from "@/db/schema"
 import type { SearchParams } from "@/types"
-import { and, asc, count, desc, eq, isNull, not, sql } from "drizzle-orm"
+import {
+  and,
+  asc,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  isNull,
+  not,
+  sql,
+} from "drizzle-orm"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { slugify } from "@/lib/utils"
@@ -26,8 +36,10 @@ export async function getFeaturedStores() {
         .select({
           id: stores.id,
           name: stores.name,
+          slug: stores.slug,
           description: stores.description,
           stripeAccountId: stores.stripeAccountId,
+          productCount: count(products.id),
         })
         .from(stores)
         .limit(4)
@@ -53,9 +65,13 @@ export async function getStoresByUserId(input: { userId: string }) {
           slug: stores.slug,
           description: stores.description,
           stripeAccountId: stores.stripeAccountId,
+          productCount: count(products.id),
+          orderCount: count(orders.id),
+          customerCount: countDistinct(orders.email),
         })
         .from(stores)
         .leftJoin(products, eq(products.storeId, stores.id))
+        .leftJoin(orders, eq(orders.storeId, stores.id))
         .groupBy(stores.id)
         .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
         .where(eq(stores.userId, input.userId))
@@ -87,6 +103,7 @@ export async function getStores(input: SearchParams) {
         .select({
           id: stores.id,
           name: stores.name,
+          slug: stores.slug,
           description: stores.description,
           stripeAccountId: stores.stripeAccountId,
           productCount: count(products.id),

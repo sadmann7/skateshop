@@ -7,8 +7,6 @@ import { type getFeaturedStores } from "@/lib/actions/store"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
-import { ProductCard } from "@/components/cards/product-card"
-import { StoreCard } from "@/components/cards/store-card"
 import { ContentSection } from "@/components/content-section"
 import { Icons } from "@/components/icons"
 import {
@@ -17,7 +15,9 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
+import { ProductCard } from "@/components/product-card"
 import { Shell } from "@/components/shell"
+import { StoreCard } from "@/components/store-card"
 
 import { CategoryCard } from "./category-card"
 
@@ -58,8 +58,8 @@ export async function Lobby({
         >
           <Badge
             aria-hidden="true"
-            className="px-3.5 py-1.5"
             variant="secondary"
+            className="rounded-full px-3.5 py-1.5"
           >
             <Icons.gitHub className="mr-2 size-3.5" aria-hidden="true" />
             {githubStars} stars on GitHub

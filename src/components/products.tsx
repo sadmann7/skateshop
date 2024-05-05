@@ -42,9 +42,9 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import { ProductCard } from "@/components/cards/product-card"
 import { MultiSelect } from "@/components/multi-select"
 import { PaginationButton } from "@/components/pagination-button"
+import { ProductCard } from "@/components/product-card"
 
 interface ProductsProps {
   products: Product[]

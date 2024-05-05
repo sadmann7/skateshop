@@ -16,15 +16,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { StoreCard } from "@/components/cards/store-card"
+import { FacetedFilter } from "@/components/faceted-filter"
 import { PaginationButton } from "@/components/pagination-button"
+import { StoreCard } from "@/components/store-card"
 
-import { FacetedFilter } from "./faceted-filter"
+type StoresProps = Awaited<ReturnType<typeof getStores>>
 
-export function Stores({
-  data: stores,
-  pageCount,
-}: Awaited<ReturnType<typeof getStores>>) {
+export function Stores({ data: stores, pageCount }: StoresProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()

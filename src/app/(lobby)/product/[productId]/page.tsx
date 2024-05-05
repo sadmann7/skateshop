@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/accordion"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
-import { ProductCard } from "@/components/cards/product-card"
+import { ProductCard } from "@/components/product-card"
 import { ProductImageCarousel } from "@/components/product-image-carousel"
 import { Rating } from "@/components/rating"
 import { Shell } from "@/components/shell"

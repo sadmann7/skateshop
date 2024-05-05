@@ -1,4 +1,4 @@
-import { ErrorCard } from "@/components/cards/error-card"
+import { ErrorCard } from "@/components/error-card"
 import { Shell } from "@/components/shell"
 
 export default function ProductNotFound() {

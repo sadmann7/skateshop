@@ -15,8 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { UsageCard } from "@/components/cards/usage-card"
 import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
+import { UsageCard } from "@/components/usage-card"
 
 interface BillingProps {
   subscriptionPlanPromise: Promise<UserSubscriptionPlan | null>
