@@ -2,7 +2,6 @@ import { redirect } from "next/navigation"
 
 import { getStoresByUserId } from "@/lib/actions/store"
 import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
-import { SiteFooter } from "@/components/layouts/site-footer"
 
 import { DashboardHeader } from "./_components/dashboard-header"
 import { DashboardSidebar } from "./_components/dashboard-sidebar"
@@ -24,34 +23,28 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen flex-col">
-        <DashboardHeader user={user}>
-          <DashboardSidebarSheet className="lg:hidden">
-            <DashboardSidebar className="pl-4">
-              <StoreSwitcher
-                userId={user.id}
-                storesPromise={storesPromise}
-                planMetricsPromise={planMetricsPromise}
-              />
-            </DashboardSidebar>
-          </DashboardSidebarSheet>
-        </DashboardHeader>
-        <div className="container flex-1 items-start lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
-          <DashboardSidebar
-            // the top-16 class is used for the dashboard-header of h-16, added extra 0.1rem to fix the sticky layout shift issue
-            className="top-[calc(theme('spacing.16')_+_0.1rem)] z-30 hidden border-r lg:sticky lg:block"
-          >
-            <StoreSwitcher
-              userId={user.id}
-              storesPromise={storesPromise}
-              planMetricsPromise={planMetricsPromise}
-            />
-          </DashboardSidebar>
-          <main className="flex w-full flex-col overflow-hidden">
-            {children}
-          </main>
+      <div className="grid min-h-screen w-full lg:grid-cols-[17.5rem_1fr]">
+        <DashboardSidebar className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block">
+          <StoreSwitcher
+            userId={user.id}
+            storesPromise={storesPromise}
+            planMetricsPromise={planMetricsPromise}
+          />
+        </DashboardSidebar>
+        <div className="flex flex-col">
+          <DashboardHeader user={user}>
+            <DashboardSidebarSheet className="lg:hidden">
+              <DashboardSidebar>
+                <StoreSwitcher
+                  userId={user.id}
+                  storesPromise={storesPromise}
+                  planMetricsPromise={planMetricsPromise}
+                />
+              </DashboardSidebar>
+            </DashboardSidebarSheet>
+          </DashboardHeader>
+          <main className="flex-1 overflow-hidden px-6">{children}</main>
         </div>
-        <SiteFooter />
       </div>
     </SidebarProvider>
   )

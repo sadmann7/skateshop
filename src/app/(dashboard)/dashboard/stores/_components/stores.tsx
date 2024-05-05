@@ -1,6 +1,6 @@
 import { type getStoresByUserId } from "@/lib/actions/store"
-import { EmptyCard } from "@/components/cards/empty-card"
-import { StoreCard } from "@/components/cards/store-card"
+import { EmptyCard } from "@/components/empty-card"
+import { StoreCard } from "@/components/store-card"
 
 interface Stores {
   storesPromise: ReturnType<typeof getStoresByUserId>

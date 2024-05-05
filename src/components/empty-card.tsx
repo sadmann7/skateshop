@@ -5,7 +5,6 @@ import { Icons } from "@/components/icons"
 interface EmptyCardProps extends React.ComponentPropsWithoutRef<typeof Card> {
   title: string
   description?: string
-  action?: React.ReactNode
   icon?: keyof typeof Icons
 }
 
@@ -13,7 +12,7 @@ export function EmptyCard({
   title,
   description,
   icon = "placeholder",
-  action,
+  children,
   className,
   ...props
 }: EmptyCardProps) {
@@ -22,7 +21,7 @@ export function EmptyCard({
   return (
     <Card
       className={cn(
-        "flex w-full flex-col items-center justify-center space-y-6 bg-transparent p-16",
+        "flex w-full flex-col items-center justify-center space-y-6 rounded-md border-dashed bg-transparent p-16",
         className
       )}
       {...props}
@@ -34,7 +33,7 @@ export function EmptyCard({
         <CardTitle>{title}</CardTitle>
         {description ? <CardDescription>{description}</CardDescription> : null}
       </div>
-      {action ? action : null}
+      {children}
     </Card>
   )
 }

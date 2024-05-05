@@ -2,9 +2,15 @@ import * as React from "react"
 import Link from "next/link"
 
 import { getProductCount, type getCategories } from "@/lib/actions/product"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardDescription, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Icons } from "@/components/icons"
 
 interface CategoryCardProps {
   category: Awaited<ReturnType<typeof getCategories>>[number]
@@ -17,22 +23,18 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   return (
     <Link href={`/collections/${category.slug}`}>
-      <Card className="flex size-full flex-col gap-4 rounded-md p-5 transition-colors hover:bg-muted/25">
-        <div className="flex flex-1 flex-col space-y-1">
+      <Card className="h-full rounded-md transition-colors hover:bg-muted/25">
+        <CardHeader className="flex-1">
           <CardTitle className="capitalize">{category.name}</CardTitle>
           <CardDescription className="line-clamp-3 text-balance">
             {category.description}
           </CardDescription>
-        </div>
-        <React.Suspense
-          fallback={
-            <div className="pt-1">
-              <Skeleton className="h-4 w-20" />
-            </div>
-          }
-        >
-          <ProductCount productCountPromise={productCountPromise} />
-        </React.Suspense>
+        </CardHeader>
+        <CardContent className="pt-2">
+          <React.Suspense fallback={<Skeleton className="h-4 w-20" />}>
+            <ProductCount productCountPromise={productCountPromise} />
+          </React.Suspense>
+        </CardContent>
       </Card>
     </Link>
   )
@@ -46,11 +48,9 @@ async function ProductCount({ productCountPromise }: ProductCountProps) {
   const count = await productCountPromise
 
   return (
-    <Badge
-      variant="secondary"
-      className="pointer-events-none w-fit rounded font-medium"
-    >
+    <div className="flex w-fit items-center text-[0.8rem] text-muted-foreground">
+      <Icons.product className="mr-1.5 size-3.5" aria-hidden="true" />
       {count} products
-    </Badge>
+    </div>
   )
 }

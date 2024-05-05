@@ -15,8 +15,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { UsageCard } from "@/components/cards/usage-card"
 import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
+import { UsageCard } from "@/components/usage-card"
 
 interface BillingProps {
   subscriptionPlanPromise: Promise<UserSubscriptionPlan | null>
@@ -121,7 +121,7 @@ export async function Billing({
                   stripePriceId={plan.stripePriceId}
                   stripeCustomerId={subscriptionPlan?.stripeCustomerId}
                   stripeSubscriptionId={subscriptionPlan?.stripeSubscriptionId}
-                  isSubscribed={subscriptionPlan?.isSubscribed ?? false}
+                  isSubscribed={subscriptionPlan?.isSubscribed}
                   isCurrentPlan={subscriptionPlan?.title === plan.title}
                 />
               )}

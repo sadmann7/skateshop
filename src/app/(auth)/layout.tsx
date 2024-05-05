@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: React.PropsWithChildren) {
       <div className="relative aspect-video size-full">
         <Image
           src="/images/auth-layout.webp"
-          alt="A skateboarder doing a high drop"
+          alt="A skateboarder dropping into a bowl"
           fill
           className="absolute inset-0 object-cover"
           priority

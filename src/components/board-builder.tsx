@@ -35,8 +35,8 @@ import {
 } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
-import { ProductCard } from "@/components/cards/product-card"
 import { PaginationButton } from "@/components/pagination-button"
+import { ProductCard } from "@/components/product-card"
 
 interface BoardBuilderProps {
   products: Product[]
