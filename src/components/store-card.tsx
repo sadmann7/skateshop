@@ -72,7 +72,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
               : `Explore ${store.name} products`}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center gap-4 pt-4 text-[0.8rem] text-muted-foreground">
+        <CardContent className="flex flex-wrap items-center gap-4 pt-4 text-[0.8rem] text-muted-foreground">
           <div className="flex items-center">
             <Icons.product className="mr-1.5 size-3.5" aria-hidden="true" />
             {store.productCount} products

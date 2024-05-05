@@ -39,7 +39,7 @@ export default async function StoresPage() {
           planMetricsPromise={planMetricsPromise}
         />
       </PageHeader>
-      <section className="flex items-center gap-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <React.Suspense
           fallback={Array.from({ length: 3 }).map((_, i) => (
             <StoreCardSkeleton key={i} />

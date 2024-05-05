@@ -9,7 +9,7 @@ export function StoreCardSkeleton() {
         <Skeleton className="h-4 w-1/2" />
         <Skeleton className="h-4 w-1/4" />
       </CardHeader>
-      <CardContent className="flex items-center gap-4 pt-4">
+      <CardContent className="flex flex-wrap items-center gap-4 pt-4">
         <Skeleton className="h-4 w-1/3" />
         <Skeleton className="h-4 w-1/3" />
         <Skeleton className="h-4 w-1/3" />
