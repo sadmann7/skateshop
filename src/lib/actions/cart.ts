@@ -14,6 +14,7 @@ import {
   type deleteCartItemSchema,
   type deleteCartItemsSchema,
 } from "@/lib/validations/cart"
+import { dbPrefix } from "@/lib/constants"
 
 export async function getCart(input?: {
   storeId: string
@@ -61,7 +62,13 @@ export async function getCart(input?: {
           input?.storeId ? eq(products.storeId, input.storeId) : undefined
         )
       )
-      .groupBy(products.id)
+      .groupBy(
+        products.id,
+        categories.name,
+        subcategories.name,
+        stores.name,
+        stores.stripeAccountId
+      )
       .orderBy(desc(stores.stripeAccountId), asc(products.createdAt))
       .execute()
       .then((items) => {
@@ -96,7 +103,8 @@ export async function getUniqueStoreIds() {
       .from(carts)
       .leftJoin(
         products,
-        sql`JSON_CONTAINS(carts.items, JSON_OBJECT('productId', products.id))`
+        // Injecting the dbPrefix is breaking things for some reason
+        sql`skateshop_carts.items::jsonb @> jsonb_build_array(jsonb_build_object('productId', skateshop_products.id))`
       )
       .groupBy(products.storeId)
       .where(eq(carts.id, cartId))
@@ -105,6 +113,7 @@ export async function getUniqueStoreIds() {
 
     return storeIds
   } catch (err) {
+    console.error(err)
     return []
   }
 }
