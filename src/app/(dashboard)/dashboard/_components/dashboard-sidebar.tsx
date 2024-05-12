@@ -19,7 +19,7 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   return (
     <aside className={cn("h-screen w-full", className)} {...props}>
-      <div className="hidden h-[3.55rem] items-center border-b border-border/60 px-6 lg:flex">
+      <div className="hidden h-[3.55rem] items-center border-b border-border/60 px-4 lg:flex lg:px-6">
         <Link
           href="/"
           className="flex w-fit items-center font-heading tracking-wider text-foreground/90 transition-colors hover:text-foreground"

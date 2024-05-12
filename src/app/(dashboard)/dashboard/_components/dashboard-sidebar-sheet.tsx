@@ -15,13 +15,15 @@ import { Icons } from "@/components/icons"
 
 import { useSidebar } from "./sidebar-provider"
 
-export interface SidebarSheetProps extends ButtonProps {}
+export interface DashboardSidebarSheetProps
+  extends React.ComponentPropsWithRef<typeof SheetTrigger>,
+    ButtonProps {}
 
 export function DashboardSidebarSheet({
   children,
   className,
   ...props
-}: SidebarSheetProps) {
+}: DashboardSidebarSheetProps) {
   const { open, setOpen } = useSidebar()
   const isDesktop = useMediaQuery("(min-width: 1024px)")
 
