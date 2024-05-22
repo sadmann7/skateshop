@@ -15,15 +15,7 @@ import { getPlanLimits } from "@/lib/subscription"
  * It ensures a single request is made for multiple identical data fetches, with the returned data cached and shared across components during the server render.
  * @see https://react.dev/reference/react/cache#reference
  */
-export const getCachedUser = cache(async () => {
-  noStore()
-  try {
-    return await currentUser()
-  } catch (err) {
-    console.error(err)
-    return null
-  }
-})
+export const getCachedUser = cache(currentUser)
 
 export async function getUserUsageMetrics(input: { userId: string }) {
   noStore()
