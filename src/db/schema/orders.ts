@@ -1,13 +1,5 @@
 import { pgTable } from "@/db/utils"
-import { sql } from "drizzle-orm"
-import {
-  decimal,
-  index,
-  integer,
-  json,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core"
+import { decimal, index, integer, json, varchar } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/id"
@@ -15,6 +7,7 @@ import { type CheckoutItemSchema } from "@/lib/validations/cart"
 
 import { addresses } from "./addresses"
 import { stores } from "./stores"
+import { lifecycleDates } from "./utils"
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const orders = pgTable(
@@ -42,8 +35,7 @@ export const orders = pgTable(
     addressId: varchar("address_id", { length: 30 })
       .references(() => addresses.id, { onDelete: "cascade" })
       .notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+    ...lifecycleDates,
   },
   (table) => ({
     storeIdIdx: index(`${dbPrefix}_orders_store_id_idx`).on(table.storeId),

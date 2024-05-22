@@ -13,38 +13,38 @@ export function absoluteUrl(path: string) {
 
 export function formatPrice(
   price: number | string,
-  options: Intl.NumberFormatOptions = {}
+  opts: Intl.NumberFormatOptions = {}
 ) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: options.currency ?? "USD",
-    notation: options.notation ?? "compact",
-    ...options,
+    currency: opts.currency ?? "USD",
+    notation: opts.notation ?? "compact",
+    ...opts,
   }).format(Number(price))
 }
 
 export function formatNumber(
   number: number | string,
-  options: Intl.NumberFormatOptions = {}
+  opts: Intl.NumberFormatOptions = {}
 ) {
   return new Intl.NumberFormat("en-US", {
-    style: options.style ?? "decimal",
-    notation: options.notation ?? "standard",
-    minimumFractionDigits: options.minimumFractionDigits ?? 0,
-    maximumFractionDigits: options.maximumFractionDigits ?? 2,
-    ...options,
+    style: opts.style ?? "decimal",
+    notation: opts.notation ?? "standard",
+    minimumFractionDigits: opts.minimumFractionDigits ?? 0,
+    maximumFractionDigits: opts.maximumFractionDigits ?? 2,
+    ...opts,
   }).format(Number(number))
 }
 
 export function formatDate(
   date: Date | string | number,
-  options: Intl.DateTimeFormatOptions = {}
+  opts: Intl.DateTimeFormatOptions = {}
 ) {
   return new Intl.DateTimeFormat("en-US", {
-    month: options.month ?? "long",
-    day: options.day ?? "numeric",
-    year: options.year ?? "numeric",
-    ...options,
+    month: opts.month ?? "long",
+    day: opts.day ?? "numeric",
+    year: opts.year ?? "numeric",
+    ...opts,
   }).format(new Date(date))
 }
 

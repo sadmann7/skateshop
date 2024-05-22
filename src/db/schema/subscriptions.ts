@@ -1,8 +1,9 @@
 import { pgTable } from "@/db/utils"
-import { sql } from "drizzle-orm"
 import { timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
+
+import { lifecycleDates } from "./utils"
 
 export const subscriptions = pgTable("subscriptions", {
   id: varchar("id", { length: 30 })
@@ -13,8 +14,7 @@ export const subscriptions = pgTable("subscriptions", {
   stripePriceId: varchar("stripe_price_id", { length: 256 }),
   stripeCustomerId: varchar("stripe_customer_id", { length: 256 }),
   stripeCurrentPeriodEnd: timestamp("stripe_current_period_end"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  ...lifecycleDates,
 })
 
 export type Subscription = typeof subscriptions.$inferSelect

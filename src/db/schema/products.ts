@@ -1,13 +1,12 @@
 import { pgTable } from "@/db/utils"
 import type { StoredFile } from "@/types"
-import { relations, sql } from "drizzle-orm"
+import { relations } from "drizzle-orm"
 import {
   decimal,
   index,
   integer,
   json,
   text,
-  timestamp,
   varchar,
 } from "drizzle-orm/pg-core"
 
@@ -17,6 +16,7 @@ import { generateId } from "@/lib/id"
 import { categories } from "./categories"
 import { stores } from "./stores"
 import { subcategories } from "./subcategories"
+import { lifecycleDates } from "./utils"
 
 export const products = pgTable(
   "products",
@@ -45,8 +45,7 @@ export const products = pgTable(
     storeId: varchar("store_id", { length: 30 })
       .references(() => stores.id, { onDelete: "cascade" })
       .notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+    ...lifecycleDates,
   },
   (table) => ({
     storeIdIdx: index(`${dbPrefix}_products_store_id_idx`).on(table.storeId),

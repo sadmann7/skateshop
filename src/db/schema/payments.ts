@@ -1,17 +1,12 @@
 import { pgTable } from "@/db/utils"
-import { relations, sql } from "drizzle-orm"
-import {
-  boolean,
-  index,
-  integer,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm"
+import { boolean, index, integer, varchar } from "drizzle-orm/pg-core"
 
 import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/id"
 
 import { stores } from "./stores"
+import { lifecycleDates } from "./utils"
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = pgTable(
@@ -27,8 +22,7 @@ export const payments = pgTable(
     stripeAccountCreatedAt: integer("stripe_account_created_at"),
     stripeAccountExpiresAt: integer("stripe_account_expires_at"),
     detailsSubmitted: boolean("details_submitted").notNull().default(false),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+    ...lifecycleDates,
   },
   (table) => ({
     storeIdIdx: index(`${dbPrefix}_payments_store_id_idx`).on(table.storeId),

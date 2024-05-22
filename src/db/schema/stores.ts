@@ -1,11 +1,12 @@
 import { pgTable } from "@/db/utils"
-import { relations, sql } from "drizzle-orm"
-import { boolean, text, timestamp, varchar } from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm"
+import { boolean, text, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
 import { payments } from "./payments"
 import { products } from "./products"
+import { lifecycleDates } from "./utils"
 
 export const stores = pgTable("stores", {
   id: varchar("id", { length: 30 })
@@ -17,8 +18,7 @@ export const stores = pgTable("stores", {
   slug: text("slug").unique(),
   active: boolean("active").notNull().default(false),
   stripeAccountId: varchar("stripe_account_id"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  ...lifecycleDates,
 })
 
 export const storesRelations = relations(stores, ({ many }) => ({

@@ -1,8 +1,9 @@
 import { pgTable } from "@/db/utils"
-import { sql } from "drizzle-orm"
-import { boolean, timestamp, varchar } from "drizzle-orm/pg-core"
+import { boolean, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
+
+import { lifecycleDates } from "./utils"
 
 export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 30 })
@@ -15,8 +16,7 @@ export const notifications = pgTable("notifications", {
   communication: boolean("communication").default(false).notNull(),
   newsletter: boolean("newsletter").default(false).notNull(),
   marketing: boolean("marketing").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  ...lifecycleDates,
 })
 
 export type Notification = typeof notifications.$inferSelect
