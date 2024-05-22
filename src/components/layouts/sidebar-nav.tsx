@@ -1,20 +1,17 @@
 "use client"
 
 import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
 import type { SidebarNavItem } from "@/types"
-import { ChevronLeftIcon } from "@radix-ui/react-icons"
 
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
-import { useSidebar } from "@/app/(dashboard)/dashboard/_components/sidebar-provider"
+import { useSidebar } from "@/components/layouts/sidebar-provider"
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
   items: SidebarNavItem[]
 }
 
 export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
-  const segment = useSelectedLayoutSegment()
   const { open, setOpen } = useSidebar()
 
   if (!items?.length) return null
@@ -25,7 +22,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
       {...props}
     >
       {items.map((item, index) => {
-        const Icon = item.icon ? Icons[item.icon] : ChevronLeftIcon
+        const Icon = Icons[item.icon ?? "chevronLeft"]
 
         return item.href ? (
           <Link
@@ -41,7 +38,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
             <span
               className={cn(
                 "group flex w-full items-center rounded-md border border-transparent px-2 py-1 hover:bg-muted hover:text-foreground",
-                item.href.includes(String(segment))
+                item.active
                   ? "bg-muted font-medium text-foreground"
                   : "text-muted-foreground",
                 item.disabled && "pointer-events-none opacity-60"
@@ -56,6 +53,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
             key={index}
             className="flex w-full cursor-not-allowed items-center rounded-md p-2 text-muted-foreground hover:underline"
           >
+            <Icon className="mr-2 size-4" aria-hidden="true" />
             {item.title}
           </span>
         )

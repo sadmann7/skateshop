@@ -1,8 +1,8 @@
 import * as React from "react"
 
-import { getGithubStars } from "@/lib/actions/github"
 import { getCategories, getFeaturedProducts } from "@/lib/actions/product"
-import { getFeaturedStores } from "@/lib/actions/store"
+import { getGithubStars } from "@/lib/queries/github"
+import { getFeaturedStores } from "@/lib/queries/store"
 
 import { Lobby } from "./_components/lobby"
 import { LobbySkeleton } from "./_components/lobby-skeleton"

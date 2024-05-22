@@ -1,9 +1,9 @@
 import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
-import { type getGithubStars } from "@/lib/actions/github"
 import type { getCategories, getFeaturedProducts } from "@/lib/actions/product"
-import { type getFeaturedStores } from "@/lib/actions/store"
+import { type getGithubStars } from "@/lib/queries/github"
+import { type getFeaturedStores } from "@/lib/queries/store"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"

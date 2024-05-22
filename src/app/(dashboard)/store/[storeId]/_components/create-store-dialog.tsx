@@ -7,7 +7,7 @@ import { HoverCardPortal } from "@radix-ui/react-hover-card"
 import { useForm, type UseFormReturn } from "react-hook-form"
 import { toast } from "sonner"
 
-import { addStore } from "@/lib/actions/store"
+import { createStore } from "@/lib/actions/store"
 import { type getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import {
@@ -85,7 +85,7 @@ export function CreateStoreDialog({
   async function onSubmit(input: CreateStoreSchema) {
     setLoading(true)
 
-    const { data, error } = await addStore({ ...input, userId })
+    const { data, error } = await createStore({ ...input, userId })
 
     if (error) {
       toast.error(error)

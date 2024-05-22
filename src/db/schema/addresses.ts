@@ -9,7 +9,7 @@ import { lifecycleDates } from "./utils"
 export const addresses = pgTable("addresses", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => generateId())
-    .primaryKey(), // prefix_ + nanoid (16)
+    .primaryKey(), // prefix_ + nanoid (12)
   line1: varchar("line1", { length: 256 }),
   line2: varchar("line2", { length: 256 }),
   city: varchar("city", { length: 256 }),

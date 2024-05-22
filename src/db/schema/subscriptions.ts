@@ -8,7 +8,7 @@ import { lifecycleDates } from "./utils"
 export const subscriptions = pgTable("subscriptions", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => generateId())
-    .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+    .primaryKey(), // prefix_ + nanoid (12)
   userId: varchar("user_id", { length: 36 }), // uuid v4
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 256 }),
   stripePriceId: varchar("stripe_price_id", { length: 256 }),

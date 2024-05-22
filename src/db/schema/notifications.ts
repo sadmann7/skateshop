@@ -8,7 +8,7 @@ import { lifecycleDates } from "./utils"
 export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => generateId())
-    .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+    .primaryKey(), // prefix_ + nanoid (12)
   userId: varchar("user_id", { length: 36 }), // uuid v4
   email: varchar("email", { length: 256 }).notNull().unique(),
   token: varchar("token", { length: 256 }).notNull().unique(),

@@ -10,7 +10,7 @@ import {
   PlusCircledIcon,
 } from "@radix-ui/react-icons"
 
-import { type getStoresByUserId } from "@/lib/actions/store"
+import { type getStoresByUserId } from "@/lib/queries/store"
 import { type getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/popover"
 import { RateLimitAlert } from "@/components/rate-limit-alert"
 
-import { CreateStoreDialog } from "../stores/_components/create-store-dialog"
+import { CreateStoreDialog } from "./create-store-dialog"
 
 interface StoreSwitcherProps
   extends React.ComponentPropsWithoutRef<typeof PopoverTrigger> {

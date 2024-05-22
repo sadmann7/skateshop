@@ -23,7 +23,7 @@ export const products = pgTable(
   {
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
-      .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+      .primaryKey(), // prefix_ + nanoid (12)
     name: varchar("name", { length: 256 }).notNull(),
     description: text("description"),
     images: json("images").$type<StoredFile[] | null>().default(null),

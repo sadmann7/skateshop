@@ -10,7 +10,7 @@ import { lifecycleDates } from "./utils"
 export const carts = pgTable("carts", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => generateId())
-    .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+    .primaryKey(), // prefix_ + nanoid (12)
   paymentIntentId: varchar("payment_intent_id", { length: 256 }),
   clientSecret: varchar("client_secret", { length: 256 }),
   items: json("items").$type<CartItemSchema[] | null>().default(null),

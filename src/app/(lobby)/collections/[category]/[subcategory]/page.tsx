@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { env } from "@/env.js"
 
 import { getProducts } from "@/lib/actions/product"
-import { getStores } from "@/lib/actions/store"
+import { getStores } from "@/lib/queries/store"
 import { toTitleCase, unslugify } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"
 import {

@@ -3,15 +3,25 @@ import { redirect } from "next/navigation"
 import { getStoresByUserId } from "@/lib/queries/store"
 import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
 
-import { SidebarProvider } from "../../../components/layouts/sidebar-provider"
-import { DashboardHeader } from "../store/[storeId]/_components/dashboard-header"
-import { DashboardSidebar } from "../store/[storeId]/_components/dashboard-sidebar"
-import { DashboardSidebarSheet } from "../store/[storeId]/_components/dashboard-sidebar-sheet"
-import { StoreSwitcher } from "../store/[storeId]/_components/store-switcher"
+import { SidebarProvider } from "../../../../components/layouts/sidebar-provider"
+import { DashboardHeader } from "./_components/dashboard-header"
+import { DashboardSidebar } from "./_components/dashboard-sidebar"
+import { DashboardSidebarSheet } from "./_components/dashboard-sidebar-sheet"
+import { StoreSwitcher } from "./_components/store-switcher"
 
-export default async function DashboardLayout({
+interface DashboardStoreLayoutProps {
+  params: {
+    storeId: string
+  }
+  children: React.ReactNode
+}
+
+export default async function DashboardStoreLayout({
   children,
-}: React.PropsWithChildren) {
+  params,
+}: DashboardStoreLayoutProps) {
+  const storeId = decodeURIComponent(params.storeId)
+
   const user = await getCachedUser()
 
   if (!user) {
@@ -25,7 +35,7 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <div className="grid min-h-screen w-full lg:grid-cols-[17.5rem_1fr]">
         <DashboardSidebar
-          storeId="storeId"
+          storeId={storeId}
           className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block"
         >
           <StoreSwitcher
@@ -37,7 +47,7 @@ export default async function DashboardLayout({
         <div className="flex flex-col">
           <DashboardHeader user={user}>
             <DashboardSidebarSheet className="lg:hidden">
-              <DashboardSidebar storeId="storeId">
+              <DashboardSidebar storeId={storeId}>
                 <StoreSwitcher
                   userId={user.id}
                   storesPromise={storesPromise}

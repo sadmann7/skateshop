@@ -24,14 +24,14 @@ import { Textarea } from "@/components/ui/textarea"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
 import { LoadingButton } from "@/components/loading-button"
 
-interface UpdateStorePageProps {
+interface DashboardStorePageProps {
   params: {
     storeId: string
   }
 }
 
-async function getStoreFromParams(params: UpdateStorePageProps["params"]) {
-  const storeId = decodeURIComponent(params.storeId)
+async function getStoreFromParams(params: DashboardStorePageProps["params"]) {
+  const { storeId } = params
 
   const store = await db.query.stores.findFirst({
     columns: {
@@ -49,7 +49,7 @@ async function getStoreFromParams(params: UpdateStorePageProps["params"]) {
 
 export async function generateMetadata({
   params,
-}: UpdateStorePageProps): Promise<Metadata> {
+}: DashboardStorePageProps): Promise<Metadata> {
   const store = await getStoreFromParams(params)
 
   if (!store) {
@@ -58,14 +58,15 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-    title: `Update ${store.name} store`,
-    description: `Update your ${store.name} store name and description, or delete it`,
+    title: `Manage ${store.name} store`,
+    description:
+      store.description ?? "Manage inventory, orders, and more in your store.",
   }
 }
 
-export default async function UpdateStorePage({
+export default async function DashboardStorePage({
   params,
-}: UpdateStorePageProps) {
+}: DashboardStorePageProps) {
   const store = await getStoreFromParams(params)
 
   if (!store) {

@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { type getStoresByUserId } from "@/lib/actions/store"
+import { type getStoresByUserId } from "@/lib/queries/store"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import {

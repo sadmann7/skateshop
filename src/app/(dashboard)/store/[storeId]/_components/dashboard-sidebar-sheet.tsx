@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet"
 import { Icons } from "@/components/icons"
 
-import { useSidebar } from "./sidebar-provider"
+import { useSidebar } from "../../../../../components/layouts/sidebar-provider"
 
 export interface DashboardSidebarSheetProps
   extends React.ComponentPropsWithRef<typeof SheetTrigger>,

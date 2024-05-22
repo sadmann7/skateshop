@@ -39,7 +39,7 @@ interface GenerateIdOptions {
  */
 export function generateId(
   prefix?: keyof typeof prefixes,
-  { length = 16, separator = "_" }: GenerateIdOptions = {}
+  { length = 12, separator = "_" }: GenerateIdOptions = {}
 ) {
   const id = customAlphabet(
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",

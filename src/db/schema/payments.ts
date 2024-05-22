@@ -14,7 +14,7 @@ export const payments = pgTable(
   {
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
-      .primaryKey(), // prefix_ (if ocd kicks in) + nanoid (16)
+      .primaryKey(), // prefix_ + nanoid (12)
     storeId: varchar("store_id", { length: 30 })
       .references(() => stores.id, { onDelete: "cascade" })
       .notNull(),
