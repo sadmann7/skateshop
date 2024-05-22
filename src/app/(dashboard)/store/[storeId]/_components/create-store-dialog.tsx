@@ -4,12 +4,11 @@ import * as React from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HoverCardPortal } from "@radix-ui/react-hover-card"
-import { useForm, type UseFormReturn } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 import { createStore } from "@/lib/actions/store"
 import { type getUserPlanMetrics } from "@/lib/queries/user"
-import { cn } from "@/lib/utils"
 import {
   createStoreSchema,
   type CreateStoreSchema,
@@ -37,22 +36,14 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Icons } from "@/components/icons"
 import { RateLimitAlert } from "@/components/rate-limit-alert"
+
+import { CreateStoreForm } from "./create-store-form"
 
 interface CreateStoreDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
@@ -67,7 +58,7 @@ export function CreateStoreDialog({
   ...props
 }: CreateStoreDialogProps) {
   const router = useRouter()
-  const [loading, setLoading] = React.useState(false)
+  const [isCreatePending, startCreateTransaction] = React.useTransition()
   const isDesktop = useMediaQuery("(min-width: 640px)")
 
   const planMetrics = React.use(planMetricsPromise)
@@ -82,24 +73,23 @@ export function CreateStoreDialog({
     },
   })
 
-  async function onSubmit(input: CreateStoreSchema) {
-    setLoading(true)
+  function onSubmit(input: CreateStoreSchema) {
+    startCreateTransaction(async () => {
+      const { data, error } = await createStore({ ...input, userId })
 
-    const { data, error } = await createStore({ ...input, userId })
+      if (error) {
+        toast.error(error)
+        return
+      }
 
-    if (error) {
-      toast.error(error)
-      return
-    }
+      if (data) {
+        router.push(`/dashboard/stores/${data.id}`)
+        toast.success("Store created")
+      }
 
-    if (data) {
-      router.push(`/dashboard/stores/${data.id}`)
-      toast.success("Store created")
-    }
-
-    setLoading(false)
-    onOpenChange?.(false)
-    form.reset()
+      onOpenChange?.(false)
+      form.reset()
+    })
   }
 
   if (isDesktop) {
@@ -140,8 +130,11 @@ export function CreateStoreDialog({
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={loading || rateLimitExceeded}>
-                {loading && (
+              <Button
+                type="submit"
+                disabled={isCreatePending || rateLimitExceeded}
+              >
+                {isCreatePending && (
                   <Icons.spinner
                     className="mr-2 size-4 animate-spin"
                     aria-hidden="true"
@@ -187,8 +180,11 @@ export function CreateStoreDialog({
                 Cancel
               </Button>
             </DrawerClose>
-            <Button type="submit" disabled={loading || rateLimitExceeded}>
-              {loading && (
+            <Button
+              type="submit"
+              disabled={isCreatePending || rateLimitExceeded}
+            >
+              {isCreatePending && (
                 <Icons.spinner
                   className="mr-2 size-4 animate-spin"
                   aria-hidden="true"
@@ -200,63 +196,6 @@ export function CreateStoreDialog({
         </CreateStoreForm>
       </DrawerContent>
     </Drawer>
-  )
-}
-
-interface CreateStoreFormProps
-  extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
-  children: React.ReactNode
-  form: UseFormReturn<CreateStoreSchema>
-  onSubmit: (data: CreateStoreSchema) => void
-}
-
-function CreateStoreForm({
-  children,
-  form,
-  onSubmit,
-  className,
-  ...props
-}: CreateStoreFormProps) {
-  return (
-    <Form {...form}>
-      <form
-        className={cn("grid w-full gap-4", className)}
-        onSubmit={form.handleSubmit(onSubmit)}
-        autoComplete="off"
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Type store name here." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Type store description here."
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {children}
-      </form>
-    </Form>
   )
 }
 

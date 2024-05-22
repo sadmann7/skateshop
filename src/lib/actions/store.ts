@@ -8,7 +8,8 @@ import {
 import { redirect } from "next/navigation"
 import { db } from "@/db"
 import { stores } from "@/db/schema"
-import { and, eq, not } from "drizzle-orm"
+import { auth } from "@clerk/nextjs/server"
+import { and, desc, eq, not } from "drizzle-orm"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { slugify } from "@/lib/utils"
@@ -77,7 +78,7 @@ export async function updateStore(storeId: string, fd: FormData) {
       })
       .where(eq(stores.id, storeId))
 
-    revalidatePath(`/dashboard/stores/${storeId}`)
+    revalidatePath(`/store/${storeId}`)
 
     return {
       data: null,
@@ -92,19 +93,28 @@ export async function updateStore(storeId: string, fd: FormData) {
 }
 
 export async function deleteStore(storeId: string) {
-  const store = await db.query.stores.findFirst({
-    where: eq(stores.id, storeId),
-    columns: {
-      id: true,
-    },
-  })
+  const { userId } = auth()
 
-  if (!store) {
-    throw new Error("Store not found")
+  if (!userId) {
+    throw new Error("Unauthorized")
   }
+
+  const allStores = await db
+    .select({
+      id: stores.id,
+      userId: stores.userId,
+    })
+    .from(stores)
+    .where(and(eq(stores.id, storeId), eq(stores.userId, userId)))
+    .orderBy(desc(stores.createdAt))
+
+  // if (allStores.length < 2) {
+  //   throw new Error("Can't delete the only store")
+  // }
 
   await db.delete(stores).where(eq(stores.id, storeId))
 
-  revalidatePath("/dashboard/stores")
-  redirect("/dashboard/stores")
+  revalidateTag(`stores-${userId}`)
+
+  redirect(`/store/${allStores[1]?.id}`)
 }

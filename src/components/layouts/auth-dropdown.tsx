@@ -77,7 +77,7 @@ export async function AuthDropdown({
         <DropdownMenuSeparator />
         <React.Suspense
           fallback={Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-8 w-full" />
+            <Skeleton key={i} className="h-4 w-full" />
           ))}
         >
           <AuthDropdownGroup storePromise={storePromise} />
@@ -105,7 +105,7 @@ async function AuthDropdownGroup({ storePromise }: AuthDropdownGroupProps) {
   return (
     <DropdownMenuGroup>
       <DropdownMenuItem asChild>
-        <Link href={`/store/${store?.id}`}>
+        <Link href={store ? `/store/${store.id}` : "/onboarding"}>
           <DashboardIcon className="mr-2 size-4" aria-hidden="true" />
           Dashboard
           <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>

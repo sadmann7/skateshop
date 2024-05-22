@@ -1,7 +1,9 @@
+import * as React from "react"
 import { redirect } from "next/navigation"
 
 import { getStoresByUserId } from "@/lib/queries/store"
 import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import { SidebarProvider } from "../../../../components/layouts/sidebar-provider"
 import { DashboardHeader } from "./_components/dashboard-header"
@@ -38,25 +40,29 @@ export default async function DashboardStoreLayout({
           storeId={storeId}
           className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block"
         >
-          <StoreSwitcher
-            userId={user.id}
-            storesPromise={storesPromise}
-            planMetricsPromise={planMetricsPromise}
-          />
+          <React.Suspense fallback={<Skeleton className="h-10 w-full" />}>
+            <StoreSwitcher
+              userId={user.id}
+              storesPromise={storesPromise}
+              planMetricsPromise={planMetricsPromise}
+            />
+          </React.Suspense>
         </DashboardSidebar>
         <div className="flex flex-col">
-          <DashboardHeader user={user}>
+          <DashboardHeader user={user} storeId={storeId}>
             <DashboardSidebarSheet className="lg:hidden">
               <DashboardSidebar storeId={storeId}>
-                <StoreSwitcher
-                  userId={user.id}
-                  storesPromise={storesPromise}
-                  planMetricsPromise={planMetricsPromise}
-                />
+                <React.Suspense fallback={<Skeleton className="h-10 w-full" />}>
+                  <StoreSwitcher
+                    userId={user.id}
+                    storesPromise={storesPromise}
+                    planMetricsPromise={planMetricsPromise}
+                  />
+                </React.Suspense>
               </DashboardSidebar>
             </DashboardSidebarSheet>
           </DashboardHeader>
-          <main className="flex-1 overflow-hidden px-6">{children}</main>
+          <main className="flex-1 overflow-hidden px-6 pt-6">{children}</main>
         </div>
       </div>
     </SidebarProvider>

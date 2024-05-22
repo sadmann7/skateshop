@@ -80,7 +80,7 @@ export default async function DashboardStorePage({
   return (
     <div className="space-y-10">
       {stripeAccount ? (
-        <Card as="section">
+        <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="line-clamp-1 text-2xl">
               Manage Stripe account
@@ -149,11 +149,7 @@ export default async function DashboardStorePage({
           </CardFooter>
         </Card>
       ) : (
-        <Card
-          as="section"
-          id="connect-to-stripe"
-          aria-labelledby="connect-to-stripe-heading"
-        >
+        <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="line-clamp-1 text-2xl">
               Connect to Stripe

@@ -35,7 +35,7 @@ export default async function DashboardLayout({
           />
         </DashboardSidebar>
         <div className="flex flex-col">
-          <DashboardHeader user={user}>
+          <DashboardHeader user={user} storeId="storeId">
             <DashboardSidebarSheet className="lg:hidden">
               <DashboardSidebar storeId="storeId">
                 <StoreSwitcher

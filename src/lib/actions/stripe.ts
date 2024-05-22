@@ -394,8 +394,8 @@ export async function createAccountLink(
 
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
-      refresh_url: absoluteUrl(`/dashboard/stores/${input.storeId}`),
-      return_url: absoluteUrl(`/dashboard/stores/${input.storeId}`),
+      refresh_url: absoluteUrl(`/store/${input.storeId}`),
+      return_url: absoluteUrl(`/store/${input.storeId}`),
       type: "account_onboarding",
     })
 

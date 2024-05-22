@@ -44,6 +44,12 @@ export function DashboardSidebar({
       active: segments.includes("products"),
     },
     {
+      title: "Customers",
+      href: `/store/${storeId}/customers`,
+      icon: "avatar",
+      active: segments.includes("customers"),
+    },
+    {
       title: "Analytics",
       href: `/store/${storeId}/analytics`,
       icon: "analytics",
@@ -64,7 +70,7 @@ export function DashboardSidebar({
           href="/"
           className="flex w-fit items-center font-heading tracking-wider text-foreground/90 transition-colors hover:text-foreground"
         >
-          <Icons.logo className="mb-1 mr-2 size-6" aria-hidden="true" />
+          <Icons.logo className="mb-1 mr-2 size-7" aria-hidden="true" />
           {siteConfig.name}
         </Link>
       </div>
