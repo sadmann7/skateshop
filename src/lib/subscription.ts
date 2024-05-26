@@ -1,13 +1,15 @@
-import type { SubscriptionPlan } from "@/types"
+import type { Plan } from "@/types"
 
-import { subscriptionConfig } from "@/config/subscription"
+import { pricingConfig } from "@/config/pricing"
 
-export function getPlanLimits({
-  planTitle,
-}: {
-  planTitle?: SubscriptionPlan["title"]
-}) {
-  const { features } = subscriptionConfig.plans[planTitle ?? "Free"]
+export function getPlanByPriceId({ priceId }: { priceId: string }) {
+  return Object.values(pricingConfig.plans).find(
+    (plan) => plan.stripePriceId === priceId
+  )
+}
+
+export function getPlanLimits({ planId }: { planId?: Plan["id"] }) {
+  const { features } = pricingConfig.plans[planId ?? "free"]
 
   const [storeLimit, productLimit] = features.map((feature) => {
     const [value] = feature.match(/\d+/) || []

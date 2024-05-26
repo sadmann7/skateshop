@@ -12,8 +12,8 @@ export const subcategories = pgTable(
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ + nanoid (12)
-    name: varchar("name", { length: 256 }).notNull().unique(),
-    slug: varchar("slug", { length: 256 }).unique().notNull(),
+    name: text("name").notNull().unique(),
+    slug: text("slug").unique().notNull(),
     description: text("description"),
     categoryId: varchar("category_id", { length: 30 })
       .references(() => categories.id, { onDelete: "cascade" })

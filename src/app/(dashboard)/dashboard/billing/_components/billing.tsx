@@ -1,5 +1,5 @@
 import Link from "next/link"
-import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
+import type { PlanWithPrice, UserPlan } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 
 import { type getUserUsageMetrics } from "@/lib/queries/user"
@@ -15,26 +15,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
+import { ManagePlanForm } from "@/components/manage-plan-form"
 import { UsageCard } from "@/components/usage-card"
 
 interface BillingProps {
-  subscriptionPlanPromise: Promise<UserSubscriptionPlan | null>
-  subscriptionPlansPromise: Promise<SubscriptionPlanWithPrice[]>
+  planPromise: Promise<UserPlan | null>
+  plansPromise: Promise<PlanWithPrice[]>
   usageMetricsPromise: ReturnType<typeof getUserUsageMetrics>
 }
 
 export async function Billing({
-  subscriptionPlanPromise,
-  subscriptionPlansPromise,
+  planPromise,
+  plansPromise,
   usageMetricsPromise,
 }: BillingProps) {
-  const [subscriptionPlan, subscriptionPlans, usageMetrics] = await Promise.all(
-    [subscriptionPlanPromise, subscriptionPlansPromise, usageMetricsPromise]
-  )
+  const [plan, plans, usageMetrics] = await Promise.all([
+    planPromise,
+    plansPromise,
+    usageMetricsPromise,
+  ])
 
   const { storeLimit, productLimit } = getPlanLimits({
-    planTitle: subscriptionPlan?.title,
+    planId: plan?.id,
   })
 
   return (
@@ -48,15 +50,15 @@ export async function Billing({
               variant="secondary"
               className="pointer-events-none text-foreground/90"
             >
-              {subscriptionPlan?.title}
+              {plan?.title}
             </Badge>{" "}
             plan.{" "}
-            {subscriptionPlan?.isCanceled
+            {plan?.isCanceled
               ? "Your plan will be canceled on "
               : "Your plan renews on "}
-            {subscriptionPlan?.stripeCurrentPeriodEnd ? (
+            {plan?.stripeCurrentPeriodEnd ? (
               <span className="font-medium text-foreground/90">
-                {formatDate(subscriptionPlan.stripeCurrentPeriodEnd)}.
+                {formatDate(plan.stripeCurrentPeriodEnd)}.
               </span>
             ) : null}
           </div>
@@ -77,26 +79,26 @@ export async function Billing({
         </CardContent>
       </Card>
       <section className="grid gap-6 lg:grid-cols-3">
-        {subscriptionPlans.map((plan, i) => (
+        {plans.map((item, i) => (
           <Card
-            key={plan.title}
+            key={item.title}
             className={cn("flex flex-col", {
-              "sm:col-span-2 lg:col-span-1": i === subscriptionPlans.length - 1,
+              "sm:col-span-2 lg:col-span-1": i === plans.length - 1,
             })}
           >
             <CardHeader className="flex-1">
-              <CardTitle className="text-lg">{plan.title}</CardTitle>
-              <CardDescription>{plan.description}</CardDescription>
+              <CardTitle className="text-lg">{item.title}</CardTitle>
+              <CardDescription>{item.description}</CardDescription>
             </CardHeader>
             <CardContent className="grid flex-1 place-items-start gap-6">
               <div className="text-3xl font-bold">
-                {plan.price}
+                {item.price}
                 <span className="text-sm font-normal text-muted-foreground">
                   /month
                 </span>
               </div>
               <div className="w-full space-y-2">
-                {plan.features.map((feature) => (
+                {item.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-2">
                     <div className="aspect-square shrink-0 rounded-full bg-foreground p-px text-background">
                       <CheckIcon className="size-3.5" aria-hidden="true" />
@@ -109,7 +111,7 @@ export async function Billing({
               </div>
             </CardContent>
             <CardFooter className="pt-4">
-              {plan.title === "Free" ? (
+              {item.title === "Free" ? (
                 <Button className="w-full" asChild>
                   <Link href="/dashboard">
                     Get started
@@ -117,12 +119,12 @@ export async function Billing({
                   </Link>
                 </Button>
               ) : (
-                <ManageSubscriptionForm
-                  stripePriceId={plan.stripePriceId}
-                  stripeCustomerId={subscriptionPlan?.stripeCustomerId}
-                  stripeSubscriptionId={subscriptionPlan?.stripeSubscriptionId}
-                  isSubscribed={subscriptionPlan?.isSubscribed}
-                  isCurrentPlan={subscriptionPlan?.title === plan.title}
+                <ManagePlanForm
+                  stripePriceId={item.stripePriceId}
+                  stripeCustomerId={plan?.stripeCustomerId}
+                  stripeSubscriptionId={plan?.stripeSubscriptionId}
+                  isSubscribed={plan?.isSubscribed}
+                  isCurrentPlan={plan?.title === item.title}
                 />
               )}
             </CardFooter>

@@ -1,5 +1,11 @@
 import { relations } from "drizzle-orm"
-import { boolean, index, integer, pgTable, varchar } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  index,
+  pgTable,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
@@ -17,8 +23,8 @@ export const payments = pgTable(
       .references(() => stores.id, { onDelete: "cascade" })
       .notNull(),
     stripeAccountId: varchar("stripe_account_id", { length: 256 }).notNull(),
-    stripeAccountCreatedAt: integer("stripe_account_created_at"),
-    stripeAccountExpiresAt: integer("stripe_account_expires_at"),
+    stripeAccountCreatedAt: timestamp("stripe_account_created_at"),
+    stripeAccountExpiresAt: timestamp("stripe_account_expires_at"),
     detailsSubmitted: boolean("details_submitted").notNull().default(false),
     ...lifecycleDates,
   },

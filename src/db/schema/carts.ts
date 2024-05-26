@@ -1,4 +1,4 @@
-import { boolean, json, pgTable, varchar } from "drizzle-orm/pg-core"
+import { boolean, json, pgTable, text, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 import { type CartItemSchema } from "@/lib/validations/cart"
@@ -11,7 +11,7 @@ export const carts = pgTable("carts", {
     .$defaultFn(() => generateId())
     .primaryKey(), // prefix_ + nanoid (12)
   paymentIntentId: varchar("payment_intent_id", { length: 256 }),
-  clientSecret: varchar("client_secret", { length: 256 }),
+  clientSecret: text("client_secret"),
   items: json("items").$type<CartItemSchema[] | null>().default(null),
   closed: boolean("closed").notNull().default(false),
   ...lifecycleDates,

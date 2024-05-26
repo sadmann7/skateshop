@@ -4,6 +4,7 @@ import {
   integer,
   json,
   pgTable,
+  text,
   varchar,
 } from "drizzle-orm/pg-core"
 
@@ -29,14 +30,10 @@ export const orders = pgTable(
     amount: decimal("amount", { precision: 10, scale: 2 })
       .notNull()
       .default("0"),
-    stripePaymentIntentId: varchar("stripe_payment_intent_id", {
-      length: 256,
-    }).notNull(),
-    stripePaymentIntentStatus: varchar("stripe_payment_intent_status", {
-      length: 256,
-    }).notNull(),
-    name: varchar("name", { length: 256 }).notNull(),
-    email: varchar("email", { length: 256 }).notNull(),
+    stripePaymentIntentId: text("stripe_payment_intent_id").notNull(),
+    stripePaymentIntentStatus: text("stripe_payment_intent_status").notNull(),
+    name: text("name").notNull(),
+    email: text("email").notNull(),
     addressId: varchar("address_id", { length: 30 })
       .references(() => addresses.id, { onDelete: "cascade" })
       .notNull(),

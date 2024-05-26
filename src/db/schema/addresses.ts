@@ -1,4 +1,4 @@
-import { pgTable, varchar } from "drizzle-orm/pg-core"
+import { pgTable, text, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
@@ -9,12 +9,12 @@ export const addresses = pgTable("addresses", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => generateId())
     .primaryKey(), // prefix_ + nanoid (12)
-  line1: varchar("line1", { length: 256 }),
-  line2: varchar("line2", { length: 256 }),
-  city: varchar("city", { length: 256 }),
-  state: varchar("state", { length: 256 }),
-  postalCode: varchar("postal_code", { length: 256 }),
-  country: varchar("country", { length: 256 }),
+  line1: text("line1"),
+  line2: text("line2"),
+  city: text("city"),
+  state: text("state"),
+  postalCode: text("postal_code"),
+  country: text("country"),
   ...lifecycleDates,
 })
 

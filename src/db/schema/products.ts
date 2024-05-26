@@ -30,7 +30,7 @@ export const products = pgTable(
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ + nanoid (12)
-    name: varchar("name", { length: 256 }).notNull(),
+    name: text("name").notNull(),
     description: text("description"),
     images: json("images").$type<StoredFile[] | null>().default(null),
     categoryId: varchar("category_id", { length: 30 }).notNull(),

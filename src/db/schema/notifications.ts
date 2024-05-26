@@ -1,4 +1,4 @@
-import { boolean, pgTable, varchar } from "drizzle-orm/pg-core"
+import { boolean, pgTable, text, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
@@ -9,9 +9,9 @@ export const notifications = pgTable("notifications", {
     .$defaultFn(() => generateId())
     .primaryKey(), // prefix_ + nanoid (12)
   userId: varchar("user_id", { length: 36 }), // uuid v4
-  email: varchar("email", { length: 256 }).notNull().unique(),
-  token: varchar("token", { length: 256 }).notNull().unique(),
-  referredBy: varchar("referred_by", { length: 256 }),
+  email: text("email").notNull().unique(),
+  token: text("token").notNull().unique(),
+  referredBy: text("referred_by"),
   communication: boolean("communication").default(false).notNull(),
   newsletter: boolean("newsletter").default(false).notNull(),
   marketing: boolean("marketing").default(false).notNull(),

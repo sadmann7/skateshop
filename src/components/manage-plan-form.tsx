@@ -4,20 +4,20 @@ import * as React from "react"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { manageSubscription } from "@/lib/actions/stripe"
-import { type manageSubscriptionSchema } from "@/lib/validations/stripe"
+import { managePlan } from "@/lib/actions/stripe"
+import { type managePlanSchema } from "@/lib/validations/stripe"
 import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-type ManageSubscriptionFormProps = z.infer<typeof manageSubscriptionSchema>
+type ManagePlanFormProps = z.infer<typeof managePlanSchema>
 
-export function ManageSubscriptionForm({
+export function ManagePlanForm({
   isCurrentPlan,
   isSubscribed,
   stripeCustomerId,
   stripeSubscriptionId,
   stripePriceId,
-}: ManageSubscriptionFormProps) {
+}: ManagePlanFormProps) {
   const [loading, setLoading] = React.useState(false)
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -25,7 +25,7 @@ export function ManageSubscriptionForm({
 
     setLoading(true)
 
-    const { data, error } = await manageSubscription({
+    const { data, error } = await managePlan({
       isSubscribed,
       isCurrentPlan,
       stripeCustomerId,
