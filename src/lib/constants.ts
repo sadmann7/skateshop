@@ -8,5 +8,3 @@ export const redirects = {
   toVerify: "/verify-email",
   afterVerify: "/dashboard/stores",
 } as const
-
-export const dbPrefix = "skateshop"

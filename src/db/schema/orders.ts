@@ -1,7 +1,12 @@
-import { pgTable } from "@/db/utils"
-import { decimal, index, integer, json, varchar } from "drizzle-orm/pg-core"
+import {
+  decimal,
+  index,
+  integer,
+  json,
+  pgTable,
+  varchar,
+} from "drizzle-orm/pg-core"
 
-import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/id"
 import { type CheckoutItemSchema } from "@/lib/validations/cart"
 
@@ -38,10 +43,8 @@ export const orders = pgTable(
     ...lifecycleDates,
   },
   (table) => ({
-    storeIdIdx: index(`${dbPrefix}_orders_store_id_idx`).on(table.storeId),
-    addressIdIdx: index(`${dbPrefix}_orders_address_id_idx`).on(
-      table.addressId
-    ),
+    storeIdIdx: index("orders_store_id_idx").on(table.storeId),
+    addressIdIdx: index("orders_address_id_idx").on(table.addressId),
   })
 )
 

@@ -76,9 +76,13 @@ export async function AuthDropdown({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <React.Suspense
-          fallback={Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-4 w-full" />
-          ))}
+          fallback={
+            <div className="flex flex-col space-y-1.5 p-1">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-6 w-full" />
+              ))}
+            </div>
+          }
         >
           <AuthDropdownGroup storePromise={storePromise} />
         </React.Suspense>

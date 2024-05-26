@@ -1,8 +1,6 @@
-import { pgTable } from "@/db/utils"
 import { relations } from "drizzle-orm"
-import { boolean, index, integer, varchar } from "drizzle-orm/pg-core"
+import { boolean, index, integer, pgTable, varchar } from "drizzle-orm/pg-core"
 
-import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/id"
 
 import { stores } from "./stores"
@@ -25,7 +23,7 @@ export const payments = pgTable(
     ...lifecycleDates,
   },
   (table) => ({
-    storeIdIdx: index(`${dbPrefix}_payments_store_id_idx`).on(table.storeId),
+    storeIdIdx: index("payments_store_id_idx").on(table.storeId),
   })
 )
 

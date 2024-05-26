@@ -1,5 +1,4 @@
-import { pgTable } from "@/db/utils"
-import { boolean, json, varchar } from "drizzle-orm/pg-core"
+import { boolean, json, pgTable, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 import { type CartItemSchema } from "@/lib/validations/cart"

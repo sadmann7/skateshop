@@ -1,6 +1,5 @@
-import { pgTable } from "@/db/utils"
 import { relations } from "drizzle-orm"
-import { boolean, text, varchar } from "drizzle-orm/pg-core"
+import { boolean, integer, pgTable, text, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
@@ -17,6 +16,7 @@ export const stores = pgTable("stores", {
   description: text("description"),
   slug: text("slug").unique(),
   active: boolean("active").notNull().default(false),
+  tagLimit: integer("tag_limit").notNull().default(5),
   stripeAccountId: varchar("stripe_account_id"),
   ...lifecycleDates,
 })

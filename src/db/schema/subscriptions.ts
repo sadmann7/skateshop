@@ -1,5 +1,4 @@
-import { pgTable } from "@/db/utils"
-import { timestamp, varchar } from "drizzle-orm/pg-core"
+import { pgTable, timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
