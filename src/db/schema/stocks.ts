@@ -13,7 +13,7 @@ export const stocks = pgTable(
       .$defaultFn(() => generateId())
       .primaryKey(),
     productVariantId: varchar("product_variant_id", { length: 30 })
-      .references(() => productVariants.variantId, { onDelete: "cascade" })
+      .references(() => productVariants.id, { onDelete: "cascade" })
       .notNull(),
     quantity: integer("quantity").notNull().default(0),
     ...lifecycleDates,
@@ -28,7 +28,7 @@ export const stocks = pgTable(
 export const stocksRelations = relations(stocks, ({ one }) => ({
   productVariant: one(productVariants, {
     fields: [stocks.productVariantId],
-    references: [productVariants.variantId],
+    references: [productVariants.id],
   }),
   productVariantValues: one(productVariantValues, {
     fields: [stocks.productVariantId],

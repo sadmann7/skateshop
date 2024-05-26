@@ -4,21 +4,25 @@ import * as React from "react"
 import { toast } from "sonner"
 
 import { createAccountLink } from "@/lib/actions/stripe"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { Button, type ButtonProps } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
-interface ConnectToStripeButtonProps {
+interface ConnectToStripeButtonProps extends ButtonProps {
   storeId: string
 }
 
 export function ConnectStoreToStripeButton({
   storeId,
+  className,
+  ...props
 }: ConnectToStripeButtonProps) {
   const [loading, setLoading] = React.useState(false)
 
   return (
     <Button
       aria-label="Connect to Stripe"
+      className={cn(className)}
       onClick={async () => {
         setLoading(true)
 
@@ -38,6 +42,7 @@ export function ConnectStoreToStripeButton({
         }
       }}
       disabled={loading}
+      {...props}
     >
       {loading && (
         <Icons.spinner

@@ -6,7 +6,6 @@ import {
   type Product,
   type Subcategory,
 } from "@/db/schema"
-import { auth } from "@clerk/nextjs/server"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 
@@ -70,12 +69,6 @@ export async function seedProducts({
   storeId: string
   count?: number
 }) {
-  const { userId } = auth()
-
-  if (!userId) {
-    throw new Error("User not found")
-  }
-
   const productCount = count ?? 10
 
   const data: Product[] = []

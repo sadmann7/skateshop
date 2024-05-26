@@ -47,6 +47,9 @@ export type NewVariant = typeof variants.$inferInsert
 export const productVariants = pgTable(
   "product_variants",
   {
+    id: varchar("id", { length: 30 })
+      .$defaultFn(() => generateId())
+      .primaryKey(),
     productId: varchar("product_id", { length: 30 })
       .references(() => products.id, { onDelete: "cascade" })
       .notNull(),
@@ -56,10 +59,6 @@ export const productVariants = pgTable(
     ...lifecycleDates,
   },
   (table) => ({
-    pk: primaryKey({
-      name: "product_variants_pk",
-      columns: [table.productId, table.variantId],
-    }),
     productIdIdx: index("product_variants_product_id_idx").on(table.productId),
     variantIdIdx: index("product_variants_variant_id_idx").on(table.variantId),
   })
@@ -87,7 +86,7 @@ export const productVariantValues = pgTable(
   "product_variant_values",
   {
     productVariantId: varchar("product_variant_id", { length: 30 })
-      .references(() => productVariants.productId, { onDelete: "cascade" })
+      .references(() => productVariants.id, { onDelete: "cascade" })
       .notNull(),
     value: text("value").notNull(),
     price: decimal("price", { precision: 10, scale: 2 }).notNull(),
