@@ -89,7 +89,6 @@ export async function getProducts(input: SearchParams) {
           price: products.price,
           inventory: products.inventory,
           rating: products.rating,
-          tags: products.tags,
           storeId: products.storeId,
           createdAt: products.createdAt,
           updatedAt: products.updatedAt,

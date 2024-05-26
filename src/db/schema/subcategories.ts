@@ -1,8 +1,6 @@
-import { pgTable } from "@/db/utils"
 import { relations } from "drizzle-orm"
-import { index, text, varchar } from "drizzle-orm/pg-core"
+import { index, pgTable, text, varchar } from "drizzle-orm/pg-core"
 
-import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/id"
 
 import { categories } from "./categories"
@@ -14,8 +12,8 @@ export const subcategories = pgTable(
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ + nanoid (12)
-    name: varchar("name", { length: 256 }).notNull().unique(),
-    slug: varchar("slug", { length: 256 }).unique().notNull(),
+    name: text("name").notNull().unique(),
+    slug: text("slug").unique().notNull(),
     description: text("description"),
     categoryId: varchar("category_id", { length: 30 })
       .references(() => categories.id, { onDelete: "cascade" })
@@ -23,9 +21,9 @@ export const subcategories = pgTable(
     ...lifecycleDates,
   },
   (table) => ({
-    subcategoriesCategoryIdIdx: index(
-      `${dbPrefix}_subcategories_category_id_idx`
-    ).on(table.categoryId),
+    subcategoriesCategoryIdIdx: index("subcategories_category_id_idx").on(
+      table.categoryId
+    ),
   })
 )
 

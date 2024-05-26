@@ -4,7 +4,7 @@ import { redirect } from "next/navigation"
 import { env } from "@/env.js"
 import { RocketIcon } from "@radix-ui/react-icons"
 
-import { getSubscriptionPlan, getSubscriptionPlans } from "@/lib/actions/stripe"
+import { getPlan, getPlans } from "@/lib/actions/stripe"
 import { getCachedUser, getUserUsageMetrics } from "@/lib/queries/user"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
@@ -30,8 +30,8 @@ export default async function BillingPage() {
     redirect("/signin")
   }
 
-  const subscriptionPlanPromise = getSubscriptionPlan({ userId: user.id })
-  const subscriptionPlansPromise = getSubscriptionPlans()
+  const planPromise = getPlan({ userId: user.id })
+  const plansPromise = getPlans()
   const usageMetricsPromise = getUserUsageMetrics({ userId: user.id })
 
   return (
@@ -61,8 +61,8 @@ export default async function BillingPage() {
       </Alert>
       <React.Suspense fallback={<BillingSkeleton />}>
         <Billing
-          subscriptionPlanPromise={subscriptionPlanPromise}
-          subscriptionPlansPromise={subscriptionPlansPromise}
+          planPromise={planPromise}
+          plansPromise={plansPromise}
           usageMetricsPromise={usageMetricsPromise}
         />
       </React.Suspense>

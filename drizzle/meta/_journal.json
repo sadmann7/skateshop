@@ -1,13 +1,1 @@
-{
-  "version": "5",
-  "dialect": "mysql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1715957988777,
-      "tag": "0000_condemned_hedge_knight",
-      "breakpoints": true
-    }
-  ]
-}
+{"version":"5","dialect":"mysql","entries":[]}

@@ -45,7 +45,11 @@ export function CreateStoreForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Type store name here." {...field} />
+                <Input
+                  placeholder="Type store name here."
+                  autoFocus
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

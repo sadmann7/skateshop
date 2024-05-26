@@ -38,7 +38,7 @@ export async function getFeaturedStores() {
         .limit(4)
         .leftJoin(products, eq(products.storeId, stores.id))
         .groupBy(stores.id)
-        .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
+        .orderBy(desc(sql<number>`count(*)`))
     },
     ["featured-stores"],
     {

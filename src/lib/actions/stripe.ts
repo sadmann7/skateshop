@@ -3,19 +3,18 @@
 import {
   unstable_cache as cache,
   unstable_noStore as noStore,
-  revalidateTag,
 } from "next/cache"
 import { cookies } from "next/headers"
 import { db } from "@/db"
 import { carts, payments, stores } from "@/db/schema"
-import type { SubscriptionPlanWithPrice, UserSubscriptionPlan } from "@/types"
+import type { PlanWithPrice, UserPlan } from "@/types"
 import { clerkClient, currentUser } from "@clerk/nextjs/server"
 import { addDays } from "date-fns"
 import { eq } from "drizzle-orm"
 import type Stripe from "stripe"
 import { type z } from "zod"
 
-import { subscriptionConfig } from "@/config/subscription"
+import { pricingConfig } from "@/config/pricing"
 import { calculateOrderAmount } from "@/lib/checkout"
 import { getErrorMessage } from "@/lib/handle-error"
 import { stripe } from "@/lib/stripe"
@@ -27,17 +26,15 @@ import type {
   getPaymentIntentSchema,
   getPaymentIntentsSchema,
   getStripeAccountSchema,
-  manageSubscriptionSchema,
+  managePlanSchema,
 } from "@/lib/validations/stripe"
 
 // Retrieve prices for all plans from Stripe
-export async function getSubscriptionPlans(): Promise<
-  SubscriptionPlanWithPrice[]
-> {
+export async function getPlans(): Promise<PlanWithPrice[]> {
   return await cache(
     async () => {
-      const standardPriceId = subscriptionConfig.plans.Standard.stripePriceId
-      const proPriceId = subscriptionConfig.plans.Pro.stripePriceId
+      const standardPriceId = pricingConfig.plans.standard.stripePriceId
+      const proPriceId = pricingConfig.plans.pro.stripePriceId
 
       const [standardPrice, proPrice] = await Promise.all([
         stripe.prices.retrieve(standardPriceId),
@@ -46,7 +43,7 @@ export async function getSubscriptionPlans(): Promise<
 
       const currency = proPrice.currency
 
-      return Object.values(subscriptionConfig.plans).map((plan) => {
+      return Object.values(pricingConfig.plans).map((plan) => {
         const price =
           plan.stripePriceId === proPriceId
             ? proPrice
@@ -68,10 +65,10 @@ export async function getSubscriptionPlans(): Promise<
   )()
 }
 
-// Getting the subscription plan for a user
-export async function getSubscriptionPlan(input: {
+// Getting the subscription plan by store id
+export async function getPlan(input: {
   userId: string
-}): Promise<UserSubscriptionPlan | null> {
+}): Promise<UserPlan | null> {
   noStore()
   try {
     const user = await clerkClient.users.getUser(input.userId)
@@ -94,10 +91,10 @@ export async function getSubscriptionPlan(input: {
       ).getTime() > Date.now()
 
     const plan = isSubscribed
-      ? Object.values(subscriptionConfig.plans).find(
+      ? Object.values(pricingConfig.plans).find(
           (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
         )
-      : subscriptionConfig.plans.Free
+      : pricingConfig.plans.free
 
     if (!plan) {
       throw new Error("Plan not found.")
@@ -126,7 +123,7 @@ export async function getSubscriptionPlan(input: {
   }
 }
 
-// Getting the Stripe account for a store
+// Getting the Stripe account by store id
 export async function getStripeAccount(
   input: z.infer<typeof getStripeAccountSchema>
 ) {
@@ -178,7 +175,9 @@ export async function getStripeAccount(
           .update(payments)
           .set({
             detailsSubmitted: account.details_submitted,
-            stripeAccountCreatedAt: account.created,
+            stripeAccountCreatedAt: account.created
+              ? new Date(account.created * 1000)
+              : null,
           })
           .where(eq(payments.storeId, input.storeId))
 
@@ -186,7 +185,6 @@ export async function getStripeAccount(
           .update(stores)
           .set({
             stripeAccountId: account.id,
-            active: true,
           })
           .where(eq(stores.id, input.storeId))
       })
@@ -304,10 +302,8 @@ export async function getPaymentIntent(
   }
 }
 
-// Managing stripe subscriptions for a user
-export async function manageSubscription(
-  input: z.infer<typeof manageSubscriptionSchema>
-) {
+// Managing subscription by store id
+export async function managePlan(input: z.infer<typeof managePlanSchema>) {
   noStore()
 
   try {
@@ -354,8 +350,6 @@ export async function manageSubscription(
         userId: user.id,
       },
     })
-
-    revalidateTag("user-subscription")
 
     return {
       data: {

@@ -4,6 +4,7 @@ import React from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 
+import { Button } from "@/components/ui/button"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
 
 interface ConnectStripeProps {
@@ -48,10 +49,11 @@ export function ConnectStripe({ storeId }: ConnectStripeProps) {
             },
           }}
         >
-          Now connect your store to Stripe
+          Now let&apos;s connect your store to Stripe
         </motion.h1>
         {storeId && (
           <motion.div
+            className="flex flex-col-reverse gap-2 pt-2.5 sm:flex-row sm:justify-end"
             variants={{
               hidden: { opacity: 0, x: 100 },
               show: {
@@ -61,7 +63,14 @@ export function ConnectStripe({ storeId }: ConnectStripeProps) {
               },
             }}
           >
-            <ConnectStoreToStripeButton storeId={storeId} />
+            <ConnectStoreToStripeButton storeId={storeId} className="w-full" />
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/store/${storeId}`)}
+              className="w-full"
+            >
+              Skip for now
+            </Button>
           </motion.div>
         )}
       </motion.div>

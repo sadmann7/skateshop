@@ -24,7 +24,19 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
       {items.map((item, index) => {
         const Icon = Icons[item.icon ?? "chevronLeft"]
 
-        return item.href ? (
+        if (!item.href) {
+          return (
+            <span
+              key={index}
+              className="flex w-full cursor-not-allowed items-center rounded-md p-2 text-muted-foreground hover:underline"
+            >
+              <Icon className="mr-2 size-4" aria-hidden="true" />
+              {item.title}
+            </span>
+          )
+        }
+
+        return (
           <Link
             aria-label={item.title}
             key={index}
@@ -48,14 +60,6 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
               <span>{item.title}</span>
             </span>
           </Link>
-        ) : (
-          <span
-            key={index}
-            className="flex w-full cursor-not-allowed items-center rounded-md p-2 text-muted-foreground hover:underline"
-          >
-            <Icon className="mr-2 size-4" aria-hidden="true" />
-            {item.title}
-          </span>
         )
       })}
     </div>

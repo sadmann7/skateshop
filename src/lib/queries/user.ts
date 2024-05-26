@@ -7,7 +7,7 @@ import { products, stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs/server"
 import { count, countDistinct, eq } from "drizzle-orm"
 
-import { getSubscriptionPlan } from "@/lib/actions/stripe"
+import { getPlan } from "@/lib/actions/stripe"
 import { getPlanLimits } from "@/lib/subscription"
 
 /**
@@ -58,7 +58,7 @@ export async function getUserPlanMetrics(input: { userId: string }) {
   }
 
   try {
-    const subscriptionPlan = await getSubscriptionPlan({ userId: input.userId })
+    const subscriptionPlan = await getPlan({ userId: input.userId })
 
     if (!subscriptionPlan) {
       return fallback
@@ -69,7 +69,7 @@ export async function getUserPlanMetrics(input: { userId: string }) {
     })
 
     const { storeLimit, productLimit } = getPlanLimits({
-      planTitle: subscriptionPlan.title,
+      planId: subscriptionPlan.id,
     })
 
     const storeLimitExceeded = storeCount >= storeLimit

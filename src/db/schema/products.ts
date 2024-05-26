@@ -1,4 +1,3 @@
-import { pgTable } from "@/db/utils"
 import type { StoredFile } from "@/types"
 import { relations } from "drizzle-orm"
 import {
@@ -6,11 +5,12 @@ import {
   index,
   integer,
   json,
+  pgEnum,
+  pgTable,
   text,
   varchar,
 } from "drizzle-orm/pg-core"
 
-import { dbPrefix } from "@/lib/constants"
 import { generateId } from "@/lib/id"
 
 import { categories } from "./categories"
@@ -18,13 +18,19 @@ import { stores } from "./stores"
 import { subcategories } from "./subcategories"
 import { lifecycleDates } from "./utils"
 
+export const productStatusEnum = pgEnum("product_status", [
+  "active",
+  "draft",
+  "archived",
+])
+
 export const products = pgTable(
   "products",
   {
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ + nanoid (12)
-    name: varchar("name", { length: 256 }).notNull(),
+    name: text("name").notNull(),
     description: text("description"),
     images: json("images").$type<StoredFile[] | null>().default(null),
     categoryId: varchar("category_id", { length: 30 }).notNull(),
@@ -39,20 +45,22 @@ export const products = pgTable(
      * @see https://www.postgresql.org/docs/current/datatype-numeric.html#:~:text=9223372036854775808%20to%20%2B9223372036854775807-,decimal,the%20decimal%20point%3B%20up%20to%2016383%20digits%20after%20the%20decimal%20point,-real
      */
     price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0"),
+    originalPrice: decimal("original_price", {
+      precision: 10,
+      scale: 2,
+    }).default("0"),
     inventory: integer("inventory").notNull().default(0),
     rating: integer("rating").notNull().default(0),
-    tags: json("tags").$type<string[] | null>().default(null),
+    status: productStatusEnum("status").notNull().default("active"),
     storeId: varchar("store_id", { length: 30 })
       .references(() => stores.id, { onDelete: "cascade" })
       .notNull(),
     ...lifecycleDates,
   },
   (table) => ({
-    storeIdIdx: index(`${dbPrefix}_products_store_id_idx`).on(table.storeId),
-    categoryIdIdx: index(`${dbPrefix}_products_category_id_idx`).on(
-      table.categoryId
-    ),
-    subcategoryIdIdx: index(`${dbPrefix}_products_subcategory_id_idx`).on(
+    storeIdIdx: index("products_store_id_idx").on(table.storeId),
+    categoryIdIdx: index("products_category_id_idx").on(table.categoryId),
+    subcategoryIdIdx: index("products_subcategory_id_idx").on(
       table.subcategoryId
     ),
   })

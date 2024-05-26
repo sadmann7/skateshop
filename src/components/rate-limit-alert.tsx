@@ -3,7 +3,8 @@ import Link from "next/link"
 import { type getUserPlanMetrics } from "@/lib/queries/user"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { ManageSubscriptionForm } from "@/components/manage-subscription-form"
+
+import { ManagePlanForm } from "./manage-plan-form"
 
 interface RateLimitAlertProps extends React.HTMLAttributes<HTMLDivElement> {
   planMetrics: Awaited<ReturnType<typeof getUserPlanMetrics>>
@@ -49,7 +50,7 @@ export function RateLimitAlert({
             Contact us
           </Link>
         ) : (
-          <ManageSubscriptionForm
+          <ManagePlanForm
             stripePriceId={subscriptionPlan.stripePriceId}
             stripeCustomerId={subscriptionPlan.stripeCustomerId}
             stripeSubscriptionId={subscriptionPlan.stripeSubscriptionId}
