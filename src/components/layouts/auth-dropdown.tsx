@@ -79,7 +79,7 @@ export async function AuthDropdown({
           fallback={
             <div className="flex flex-col space-y-1.5 p-1">
               {Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-6 w-full" />
+                <Skeleton key={i} className="h-6 w-full rounded-sm" />
               ))}
             </div>
           }

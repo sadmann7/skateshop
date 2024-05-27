@@ -6,7 +6,7 @@ import { stores } from "@/db/schema"
 import { env } from "@/env.js"
 import { eq } from "drizzle-orm"
 
-import { deleteStore, updateStore } from "@/lib/actions/store"
+import { updateStore } from "@/lib/actions/store"
 import { getStripeAccount } from "@/lib/actions/stripe"
 import { cn, formatDate } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
@@ -205,14 +205,14 @@ export default async function DashboardStorePage({
                 Update store
                 <span className="sr-only">Update store</span>
               </LoadingButton>
-              <LoadingButton
+              {/* <LoadingButton
                 formAction={deleteStore.bind(null, store.id)}
                 variant="destructive"
                 action="delete"
               >
                 Delete store
                 <span className="sr-only">Delete store</span>
-              </LoadingButton>
+              </LoadingButton> */}
             </div>
           </form>
         </CardContent>

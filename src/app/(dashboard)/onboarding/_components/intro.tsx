@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 
 export function Intro() {
   const router = useRouter()
-
   const showText = useDebounce(true, 800)
 
   return (

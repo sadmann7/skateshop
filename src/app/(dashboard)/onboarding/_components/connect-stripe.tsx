@@ -7,6 +7,8 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ConnectStoreToStripeButton } from "@/components/connect-store-to-stripe-button"
 
+import { StepHeader } from "./step-header"
+
 interface ConnectStripeProps {
   storeId: string | null
 }
@@ -36,24 +38,15 @@ export function ConnectStripe({ storeId }: ConnectStripeProps) {
         }}
         initial="hidden"
         animate="show"
-        className="flex flex-col rounded-xl bg-background/60 p-8"
+        className="flex flex-col space-y-6 rounded-xl bg-background/60 p-8"
       >
-        <motion.h1
-          className="mb-4 text-balance text-2xl font-bold transition-colors sm:text-3xl"
-          variants={{
-            hidden: { opacity: 0, x: 250 },
-            show: {
-              opacity: 1,
-              x: 0,
-              transition: { duration: 0.4, type: "spring" },
-            },
-          }}
-        >
-          Now let&apos;s connect your store to Stripe
-        </motion.h1>
+        <StepHeader
+          title="Now let's connect your store to Stripe"
+          description="Connect your store to Stripe to start accepting payments"
+        />
         {storeId && (
           <motion.div
-            className="flex flex-col-reverse gap-2 pt-2.5 sm:flex-row sm:justify-end"
+            className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
             variants={{
               hidden: { opacity: 0, x: 100 },
               show: {

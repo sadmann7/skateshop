@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "@/components/icons"
 
 import { CreateStoreForm } from "../../store/[storeId]/_components/create-store-form"
+import { StepHeader } from "./step-header"
 
 interface CreateStoreProps {
   userId: string
@@ -56,7 +57,6 @@ export function CreateStore({ userId }: CreateStoreProps) {
 
   return (
     <motion.div
-      className="my-auto flex size-full flex-col items-center justify-center"
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, type: "spring" }}
     >
@@ -70,21 +70,12 @@ export function CreateStore({ userId }: CreateStoreProps) {
         }}
         initial="hidden"
         animate="show"
-        className="flex flex-col rounded-xl bg-background/60 p-8"
+        className="flex flex-col space-y-4 rounded-xl bg-background/60 p-8"
       >
-        <motion.h1
-          className="mb-4 text-balance text-2xl font-bold transition-colors sm:text-3xl"
-          variants={{
-            hidden: { opacity: 0, x: 250 },
-            show: {
-              opacity: 1,
-              x: 0,
-              transition: { duration: 0.4, type: "spring" },
-            },
-          }}
-        >
-          Let&apos;s start by creating your store
-        </motion.h1>
+        <StepHeader
+          title="Let's start by creating your store"
+          description="You can update your store name and description later"
+        />
         <motion.div
           variants={{
             hidden: { opacity: 0, x: 100 },

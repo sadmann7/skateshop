@@ -19,12 +19,10 @@ export function Onboarding({ userId }: OnboardingProps) {
   const storeId = search.get("store")
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-14rem)] w-full max-w-screen-sm flex-col items-center">
-      <AnimatePresence mode="wait">
-        {!step && <Intro key="intro" />}
-        {step === "create" && <CreateStore userId={userId} />}
-        {step === "connect" && <ConnectStripe storeId={storeId} />}
-      </AnimatePresence>
-    </div>
+    <AnimatePresence mode="wait">
+      {!step && <Intro key="intro" />}
+      {step === "create" && <CreateStore userId={userId} />}
+      {step === "connect" && <ConnectStripe storeId={storeId} />}
+    </AnimatePresence>
   )
 }
