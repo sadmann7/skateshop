@@ -14,6 +14,11 @@ import { productConfig } from "@/config/product"
 import { generateId } from "@/lib/id"
 import { absoluteUrl, slugify } from "@/lib/utils"
 
+export async function revalidate() {
+  console.log("🔄 Revalidating...")
+  await fetch(absoluteUrl("/api/revalidate"))
+}
+
 export async function seedCategories() {
   const data: Omit<Category, "createdAt" | "updatedAt">[] =
     productConfig.categories.map((category) => ({
@@ -27,7 +32,6 @@ export async function seedCategories() {
   await db.delete(categories)
   console.log(`📝 Inserting ${data.length} categories`)
   await db.insert(categories).values(data)
-  await fetch(absoluteUrl("/api/revalidate"))
 }
 
 export async function seedSubcategories() {
@@ -62,7 +66,6 @@ export async function seedSubcategories() {
   await db.delete(subcategories)
   console.log(`📝 Inserting ${data.length} subcategories`)
   await db.insert(subcategories).values(data)
-  await fetch(absoluteUrl("/api/revalidate"))
 }
 
 export async function seedProducts({
@@ -110,5 +113,4 @@ export async function seedProducts({
   await db.delete(products).where(eq(products.storeId, storeId))
   console.log(`📝 Inserting ${data.length} products`)
   await db.insert(products).values(data)
-  await fetch(absoluteUrl("/api/revalidate"))
 }

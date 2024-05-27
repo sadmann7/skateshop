@@ -1,6 +1,6 @@
 import {
+  revalidate,
   seedCategories,
-  seedProducts,
   seedSubcategories,
 } from "@/lib/actions/seed"
 
@@ -13,9 +13,7 @@ async function runSeed() {
 
   await seedSubcategories()
 
-  await seedProducts({
-    storeId: "Dawqq1CClHUW",
-  })
+  await revalidate()
 
   const end = Date.now()
 
