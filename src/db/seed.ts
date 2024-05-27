@@ -1,5 +1,5 @@
 import {
-  revalidate,
+  revalidateItems,
   seedCategories,
   seedSubcategories,
 } from "@/lib/actions/seed"
@@ -13,7 +13,9 @@ async function runSeed() {
 
   await seedSubcategories()
 
-  await revalidate()
+  // Add more seed functions here
+
+  await revalidateItems()
 
   const end = Date.now()
 

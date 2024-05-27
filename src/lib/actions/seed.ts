@@ -14,7 +14,7 @@ import { productConfig } from "@/config/product"
 import { generateId } from "@/lib/id"
 import { absoluteUrl, slugify } from "@/lib/utils"
 
-export async function revalidate() {
+export async function revalidateItems() {
   console.log("🔄 Revalidating...")
   await fetch(absoluteUrl("/api/revalidate"))
 }
