@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
+import { addProduct } from "@/lib/actions/product"
+import { getErrorMessage } from "@/lib/handle-error"
 import {
-  addProduct,
   type getCategories,
   type getSubcategories,
-} from "@/lib/actions/product"
-import { getErrorMessage } from "@/lib/handle-error"
+} from "@/lib/queries/product"
 import {
   createProductSchema,
   type CreateProductSchema,

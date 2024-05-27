@@ -3,6 +3,7 @@ import {
   categories,
   products,
   subcategories,
+  type Category,
   type Product,
   type Subcategory,
 } from "@/db/schema"
@@ -11,23 +12,26 @@ import { eq } from "drizzle-orm"
 
 import { productConfig } from "@/config/product"
 import { generateId } from "@/lib/id"
-import { slugify } from "@/lib/utils"
+import { absoluteUrl, slugify } from "@/lib/utils"
 
 export async function seedCategories() {
-  const data = productConfig.categories.map((category) => ({
-    id: generateId(),
-    name: category.name,
-    slug: slugify(category.name),
-    description: category.description,
-  }))
+  const data: Omit<Category, "createdAt" | "updatedAt">[] =
+    productConfig.categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      slug: slugify(category.name),
+      description: category.description,
+      image: category.image,
+    }))
 
   await db.delete(categories)
   console.log(`📝 Inserting ${data.length} categories`)
   await db.insert(categories).values(data)
+  await fetch(absoluteUrl("/api/revalidate"))
 }
 
 export async function seedSubcategories() {
-  const data: Subcategory[] = []
+  const data: Omit<Subcategory, "createdAt" | "updatedAt">[] = []
 
   const allCategories = await db
     .select({
@@ -45,13 +49,11 @@ export async function seedSubcategories() {
     if (subcategories) {
       subcategories.forEach((subcategory) => {
         data.push({
-          id: generateId(),
+          id: subcategory.id,
           name: subcategory.name,
           slug: slugify(subcategory.name),
           categoryId: category.id,
           description: subcategory.description,
-          updatedAt: new Date(),
-          createdAt: new Date(),
         })
       })
     }
@@ -60,6 +62,7 @@ export async function seedSubcategories() {
   await db.delete(subcategories)
   console.log(`📝 Inserting ${data.length} subcategories`)
   await db.insert(subcategories).values(data)
+  await fetch(absoluteUrl("/api/revalidate"))
 }
 
 export async function seedProducts({
@@ -69,21 +72,23 @@ export async function seedProducts({
   storeId: string
   count?: number
 }) {
-  const productCount = count ?? 10
+  const data: Omit<Product, "createdAt" | "updatedAt">[] = []
 
-  const data: Product[] = []
+  const categoryIds = productConfig.categories.map((category) => category.id)
 
-  const categories = productConfig.categories.map((category) => category.name)
+  for (let i = 0; i < (count ?? 10); i++) {
+    const categoryId = faker.helpers.shuffle(categoryIds)[0]
 
-  for (let i = 0; i < productCount; i++) {
-    const category = faker.helpers.shuffle(categories)[0] ?? "skateboards"
+    if (!categoryId) {
+      throw new Error(`${categoryId} category not found`)
+    }
 
     const allSubcategories = await db
       .select({
         id: subcategories.id,
       })
       .from(subcategories)
-      .where(eq(subcategories.categoryId, category))
+      .where(eq(subcategories.categoryId, categoryId))
       .execute()
 
     data.push({
@@ -94,17 +99,16 @@ export async function seedProducts({
       originalPrice: faker.commerce.price(),
       status: faker.helpers.shuffle(products.status.enumValues)[0] ?? "active",
       images: null,
-      categoryId: category,
+      categoryId,
       subcategoryId: faker.helpers.shuffle(allSubcategories)[0]?.id ?? null,
       storeId,
-      inventory: faker.number.float({ min: 50, max: 100 }),
-      rating: faker.number.float({ min: 0, max: 5 }),
-      createdAt: faker.date.past(),
-      updatedAt: faker.date.past(),
+      inventory: faker.number.int({ min: 50, max: 100 }),
+      rating: faker.number.int({ min: 0, max: 5 }),
     })
   }
 
   await db.delete(products).where(eq(products.storeId, storeId))
   console.log(`📝 Inserting ${data.length} products`)
   await db.insert(products).values(data)
+  await fetch(absoluteUrl("/api/revalidate"))
 }

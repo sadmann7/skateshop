@@ -16,7 +16,9 @@ import { generateId } from "@/lib/id"
 import { categories } from "./categories"
 import { stores } from "./stores"
 import { subcategories } from "./subcategories"
+import { productTags } from "./tags"
 import { lifecycleDates } from "./utils"
+import { productVariants } from "./variants"
 
 export const productStatusEnum = pgEnum("product_status", [
   "active",
@@ -33,7 +35,9 @@ export const products = pgTable(
     name: text("name").notNull(),
     description: text("description"),
     images: json("images").$type<StoredFile[] | null>().default(null),
-    categoryId: varchar("category_id", { length: 30 }).notNull(),
+    categoryId: varchar("category_id", { length: 30 })
+      .references(() => categories.id, { onDelete: "cascade" })
+      .notNull(),
     subcategoryId: varchar("subcategory_id", { length: 30 }).references(
       () => subcategories.id,
       { onDelete: "cascade" }
@@ -66,7 +70,7 @@ export const products = pgTable(
   })
 )
 
-export const productsRelations = relations(products, ({ one }) => ({
+export const productsRelations = relations(products, ({ one, many }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
   category: one(categories, {
     fields: [products.categoryId],
@@ -76,6 +80,8 @@ export const productsRelations = relations(products, ({ one }) => ({
     fields: [products.subcategoryId],
     references: [subcategories.id],
   }),
+  variants: many(productVariants, { relationName: "productVariants" }),
+  tags: many(productTags, { relationName: "productTags" }),
 }))
 
 export type Product = typeof products.$inferSelect

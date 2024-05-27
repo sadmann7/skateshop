@@ -55,7 +55,7 @@ export const siteConfig = {
         },
         ...category.subcategories.map((subcategory) => ({
           title: subcategory.name,
-          href: `/categories/${slugify(category.name)}/${subcategory.slug}`,
+          href: `/categories/${slugify(category.name)}/${slugify(subcategory.name)}`,
           description: subcategory.description,
           items: [],
         })),

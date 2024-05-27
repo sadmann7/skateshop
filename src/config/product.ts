@@ -1,172 +1,172 @@
+import type { Category, Subcategory } from "@/db/schema"
+
+import { generateId } from "@/lib/id"
+
 export type ProductConfig = typeof productConfig
 
 export const productConfig = {
   categories: [
     {
-      name: "skateboards",
+      id: generateId(),
+      name: "Skateboards",
       description: "The best skateboards for all levels of skaters.",
+      image: "/images/categories/skateboard-one.webp",
       subcategories: [
         {
+          id: generateId(),
           name: "Decks",
           description: "The board itself.",
-          image: "/images/deck-one.webp",
-          slug: "decks",
         },
         {
+          id: generateId(),
           name: "Wheels",
           description: "The wheels that go on the board.",
-          image: "/images/wheel-one.webp",
-          slug: "wheels",
         },
         {
+          id: generateId(),
           name: "Trucks",
           description: "The trucks that go on the board.",
-          image: "/images/truck-one.webp",
-          slug: "trucks",
         },
         {
+          id: generateId(),
           name: "Bearings",
           description: "The bearings that go in the wheels.",
-          image: "/images/bearing-one.webp",
-          slug: "bearings",
         },
         {
+          id: generateId(),
           name: "Griptape",
           description: "The griptape that goes on the board.",
-          image: "/images/griptape-one.webp",
-          slug: "griptape",
         },
         {
+          id: generateId(),
           name: "Hardware",
           description: "The hardware that goes on the board.",
-          image: "/images/hardware-one.webp",
-          slug: "hardware",
         },
         {
+          id: generateId(),
           name: "Tools",
           description: "The tools that go with the board.",
-          image: "/images/tool-one.webp",
-          slug: "tools",
         },
       ],
     },
     {
-      name: "clothing",
+      id: generateId(),
+      name: "Clothing",
       description: "Stylish and comfortable skateboarding clothing.",
+      image: "/images/categories/clothing-one.webp",
       subcategories: [
         {
+          id: generateId(),
           name: "T-shirts",
           description: "Cool and comfy tees for effortless style.",
-          slug: "t-shirts",
         },
         {
+          id: generateId(),
           name: "Hoodies",
           description: "Cozy up in trendy hoodies.",
-          slug: "hoodies",
         },
         {
+          id: generateId(),
           name: "Pants",
           description: "Relaxed and stylish pants for everyday wear.",
-          slug: "pants",
         },
         {
+          id: generateId(),
           name: "Shorts",
           description: "Stay cool with casual and comfortable shorts.",
-          slug: "shorts",
         },
         {
+          id: generateId(),
           name: "Hats",
           description: "Top off your look with stylish and laid-back hats.",
-          slug: "hats",
         },
       ],
     },
     {
-      name: "shoes",
+      id: generateId(),
+      name: "Shoes",
       description: "Rad shoes for long skate sessions.",
+      image: "/images/categories/shoes-one.webp",
       subcategories: [
         {
+          id: generateId(),
           name: "Low Tops",
           description: "Rad low tops shoes for a stylish low-profile look.",
-          slug: "low-tops",
         },
         {
+          id: generateId(),
           name: "High Tops",
           description: "Elevate your style with rad high top shoes.",
-          slug: "high-tops",
         },
         {
+          id: generateId(),
           name: "Slip-ons",
           description: "Effortless style with rad slip-on shoes.",
-          slug: "slip-ons",
         },
         {
+          id: generateId(),
           name: "Pros",
           description: "Performance-driven rad shoes for the pros.",
-          slug: "pros",
         },
         {
+          id: generateId(),
           name: "Classics",
           description: "Timeless style with rad classic shoes.",
-          slug: "classics",
         },
       ],
     },
     {
-      name: "accessories",
+      id: generateId(),
+      name: "Accessories",
       description:
         "The essential skateboarding accessories to keep you rolling.",
+      image: "/images/categories/backpack-one.webp",
       subcategories: [
         {
+          id: generateId(),
           name: "Skate Tools",
           description:
             "Essential tools for maintaining your skateboard, all rad.",
-          slug: "skate-tools",
         },
         {
+          id: generateId(),
           name: "Bushings",
           description: "Upgrade your ride with our rad selection of bushings.",
-          slug: "bushings",
         },
         {
+          id: generateId(),
           name: "Shock & Riser Pads",
           description:
             "Enhance your skateboard's performance with rad shock and riser pads.",
-          slug: "shock-riser-pads",
         },
         {
+          id: generateId(),
           name: "Skate Rails",
           description:
             "Add creativity and style to your tricks with our rad skate rails.",
-          slug: "skate-rails",
         },
         {
+          id: generateId(),
           name: "Wax",
           description:
             "Keep your board gliding smoothly with our rad skate wax.",
-          slug: "wax",
         },
         {
+          id: generateId(),
           name: "Socks",
           description: "Keep your feet comfy and stylish with our rad socks.",
-          slug: "socks",
         },
         {
+          id: generateId(),
           name: "Backpacks",
           description: "Carry your gear in style with our rad backpacks.",
-          slug: "backpacks",
         },
       ],
     },
-  ],
-  tags: [
-    "new",
-    "sale",
-    "bestseller",
-    "featured",
-    "popular",
-    "trending",
-    "limited",
-    "exclusive",
-  ],
+  ] satisfies ({
+    subcategories: Omit<
+      Subcategory,
+      "slug" | "categoryId" | "createdAt" | "updatedAt"
+    >[]
+  } & Pick<Category, "id" | "name" | "description" | "image">)[],
 }

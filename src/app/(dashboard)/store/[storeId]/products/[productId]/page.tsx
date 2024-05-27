@@ -5,7 +5,7 @@ import { products } from "@/db/schema"
 import { env } from "@/env.js"
 import { and, eq } from "drizzle-orm"
 
-import { getCategories, getSubcategories } from "@/lib/actions/product"
+import { getCategories, getSubcategories } from "@/lib/queries/product"
 import {
   Card,
   CardContent,

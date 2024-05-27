@@ -30,7 +30,7 @@ export function StoreCard({ store, href }: StoreCardProps) {
 
   return (
     <Link href={href}>
-      <Card className="relative h-full rounded-md transition-colors hover:bg-muted/25">
+      <Card className="relative h-full rounded-lg transition-colors hover:bg-muted/25">
         {isUserStore ? (
           <Tooltip>
             <TooltipTrigger asChild>

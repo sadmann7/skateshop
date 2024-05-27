@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { env } from "@/env.js"
 
-import { getProducts } from "@/lib/actions/product"
+import { getProducts } from "@/lib/queries/product"
 import { getStores } from "@/lib/queries/store"
 import { toTitleCase, unslugify } from "@/lib/utils"
 import { productsSearchParamsSchema } from "@/lib/validations/params"

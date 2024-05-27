@@ -7,13 +7,12 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
+import { deleteProduct, updateProduct } from "@/lib/actions/product"
+import { getErrorMessage } from "@/lib/handle-error"
 import {
-  deleteProduct,
-  updateProduct,
   type getCategories,
   type getSubcategories,
-} from "@/lib/actions/product"
-import { getErrorMessage } from "@/lib/handle-error"
+} from "@/lib/queries/product"
 import {
   updateProductSchema,
   type UpdateProductSchema,

@@ -1,7 +1,10 @@
 import * as React from "react"
 import Link from "next/link"
 
-import { getProductCount, type getCategories } from "@/lib/actions/product"
+import {
+  getProductCountByCategory,
+  type getCategories,
+} from "@/lib/queries/product"
 import {
   Card,
   CardContent,
@@ -17,13 +20,13 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
-  const productCountPromise = getProductCount({
+  const productCountPromise = getProductCountByCategory({
     categoryId: category.id,
   })
 
   return (
     <Link href={`/collections/${category.slug}`}>
-      <Card className="h-full rounded-md transition-colors hover:bg-muted/25">
+      <Card className="h-full rounded-lg transition-colors hover:bg-muted/25">
         <CardHeader className="flex-1">
           <CardTitle className="capitalize">{category.name}</CardTitle>
           <CardDescription className="line-clamp-3 text-balance">
@@ -41,7 +44,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
 }
 
 interface ProductCountProps {
-  productCountPromise: ReturnType<typeof getProductCount>
+  productCountPromise: ReturnType<typeof getProductCountByCategory>
 }
 
 async function ProductCount({ productCountPromise }: ProductCountProps) {

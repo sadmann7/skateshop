@@ -13,6 +13,7 @@ export const categories = pgTable("categories", {
     .primaryKey(), // prefix_ + nanoid (12)
   name: text("name").notNull().unique(),
   slug: text("slug").notNull().unique(),
+  image: text("image"),
   description: text("description"),
   ...lifecycleDates,
 })

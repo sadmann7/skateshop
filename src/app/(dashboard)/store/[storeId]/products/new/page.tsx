@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { env } from "@/env.js"
 
-import { getCategories, getSubcategories } from "@/lib/actions/product"
+import { getCategories, getSubcategories } from "@/lib/queries/product"
 import { getCachedUser } from "@/lib/queries/user"
 import {
   Card,

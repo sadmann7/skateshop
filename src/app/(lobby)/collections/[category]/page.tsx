@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { env } from "@/env.js"
 import type { SearchParams } from "@/types"
 
-import { getProducts } from "@/lib/actions/product"
+import { getProducts } from "@/lib/queries/product"
 import { toTitleCase } from "@/lib/utils"
 import { AlertCard } from "@/components/alert-card"
 import {
@@ -34,8 +34,6 @@ export default async function CategoryPage({
   const category = decodeURIComponent(params.category)
 
   const productsTransaction = await getProducts(searchParams)
-
-  console.log({ productsTransaction })
 
   return (
     <Shell>
