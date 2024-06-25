@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .limit(50000)
         .offset(0)
         .groupBy(stores.id)
-        .orderBy(desc(stores.active), desc(sql<number>`count(*)`))
+        .orderBy(desc(sql<number>`count(*)`))
     } catch (err) {
       return []
     }

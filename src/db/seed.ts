@@ -1,4 +1,8 @@
-import { seedCategories, seedSubcategories } from "@/lib/actions/seed"
+import {
+  revalidateItems,
+  seedCategories,
+  seedSubcategories,
+} from "@/lib/actions/seed"
 
 async function runSeed() {
   console.log("⏳ Running seed...")
@@ -8,6 +12,10 @@ async function runSeed() {
   await seedCategories()
 
   await seedSubcategories()
+
+  // Add more seed functions here
+
+  await revalidateItems()
 
   const end = Date.now()
 

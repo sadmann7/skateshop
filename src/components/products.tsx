@@ -14,7 +14,7 @@ import { queryConfig } from "@/config/query"
 import {
   type getCategories,
   type getSubcategoriesByCategory,
-} from "@/lib/actions/product"
+} from "@/lib/queries/product"
 import { cn, toTitleCase, truncate } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"

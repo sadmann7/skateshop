@@ -2,7 +2,7 @@ import * as z from "zod"
 
 import { cartLineItemSchema } from "@/lib/validations/cart"
 
-export const manageSubscriptionSchema = z.object({
+export const managePlanSchema = z.object({
   stripePriceId: z.string(),
   stripeCustomerId: z.string().optional().nullable(),
   stripeSubscriptionId: z.string().optional().nullable(),

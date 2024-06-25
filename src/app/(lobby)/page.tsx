@@ -1,13 +1,13 @@
 import * as React from "react"
 
-import { getGithubStars } from "@/lib/actions/github"
-import { getCategories, getFeaturedProducts } from "@/lib/actions/product"
-import { getFeaturedStores } from "@/lib/actions/store"
+import { getGithubStars } from "@/lib/queries/github"
+import { getCategories, getFeaturedProducts } from "@/lib/queries/product"
+import { getFeaturedStores } from "@/lib/queries/store"
 
 import { Lobby } from "./_components/lobby"
 import { LobbySkeleton } from "./_components/lobby-skeleton"
 
-export default function IndexPage() {
+export default async function IndexPage() {
   /**
    * To avoid sequential waterfall requests, multiple promises are passed to fetch data parallelly.
    * These promises are also passed to the `Lobby` component, making them hot promises. This means they can execute without being awaited, further preventing sequential requests.

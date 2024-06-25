@@ -7,7 +7,7 @@ export interface DashboardConfig {
 export const dashboardConfig: DashboardConfig = {
   sidebarNav: [
     {
-      title: "Stores",
+      title: "Dashboard",
       href: "/dashboard/stores",
       icon: "store",
       items: [],

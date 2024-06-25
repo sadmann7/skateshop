@@ -1,3 +1,4 @@
+import { type Store } from "@/db/schema"
 import { type SQL } from "drizzle-orm"
 import type Stripe from "stripe"
 import { type ClientUploadedFileData } from "uploadthing/types"
@@ -7,6 +8,7 @@ import type { Icons } from "@/components/icons"
 export interface NavItem {
   title: string
   href?: string
+  active?: boolean
   disabled?: boolean
   external?: boolean
   icon?: keyof typeof Icons
@@ -15,10 +17,6 @@ export interface NavItem {
 }
 
 export interface NavItemWithChildren extends NavItem {
-  items: NavItemWithChildren[]
-}
-
-export interface NavItemWithOptionalChildren extends NavItem {
   items?: NavItemWithChildren[]
 }
 
@@ -31,7 +29,7 @@ export interface FooterItem {
   }[]
 }
 
-export type MainNavItem = NavItemWithOptionalChildren
+export type MainNavItem = NavItemWithChildren
 
 export type SidebarNavItem = NavItemWithChildren
 
@@ -68,18 +66,25 @@ export type DrizzleWhere<T> =
 
 export type StripePaymentStatus = Stripe.PaymentIntent.Status
 
-export interface SubscriptionPlan {
-  title: "Free" | "Standard" | "Pro"
+export interface Plan {
+  id: Store["plan"]
+  title: string
   description: string
   features: string[]
   stripePriceId: string
+  limits: {
+    stores: number
+    products: number
+    tags: number
+    variants: number
+  }
 }
 
-export interface SubscriptionPlanWithPrice extends SubscriptionPlan {
+export interface PlanWithPrice extends Plan {
   price: string
 }
 
-export interface UserSubscriptionPlan extends SubscriptionPlan {
+export interface UserPlan extends Plan {
   stripeSubscriptionId?: string | null
   stripeCurrentPeriodEnd?: string | null
   stripeCustomerId?: string | null

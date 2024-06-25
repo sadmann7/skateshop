@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons"
 
 import { queryConfig } from "@/config/query"
-import { type getStores } from "@/lib/actions/store"
+import { type getStores } from "@/lib/queries/store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {

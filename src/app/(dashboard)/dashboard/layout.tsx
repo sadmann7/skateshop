@@ -1,13 +1,13 @@
 import { redirect } from "next/navigation"
 
-import { getStoresByUserId } from "@/lib/actions/store"
+import { getStoresByUserId } from "@/lib/queries/store"
 import { getCachedUser, getUserPlanMetrics } from "@/lib/queries/user"
 
-import { DashboardHeader } from "./_components/dashboard-header"
-import { DashboardSidebar } from "./_components/dashboard-sidebar"
-import { DashboardSidebarSheet } from "./_components/dashboard-sidebar-sheet"
-import { SidebarProvider } from "./_components/sidebar-provider"
-import { StoreSwitcher } from "./_components/store-switcher"
+import { SidebarProvider } from "../../../components/layouts/sidebar-provider"
+import { DashboardHeader } from "../store/[storeId]/_components/dashboard-header"
+import { DashboardSidebar } from "../store/[storeId]/_components/dashboard-sidebar"
+import { DashboardSidebarSheet } from "../store/[storeId]/_components/dashboard-sidebar-sheet"
+import { StoreSwitcher } from "../store/[storeId]/_components/store-switcher"
 
 export default async function DashboardLayout({
   children,
@@ -24,7 +24,10 @@ export default async function DashboardLayout({
   return (
     <SidebarProvider>
       <div className="grid min-h-screen w-full lg:grid-cols-[17.5rem_1fr]">
-        <DashboardSidebar className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block">
+        <DashboardSidebar
+          storeId="storeId"
+          className="top-0 z-30 hidden flex-col gap-4 border-r border-border/60 lg:sticky lg:block"
+        >
           <StoreSwitcher
             userId={user.id}
             storesPromise={storesPromise}
@@ -32,9 +35,9 @@ export default async function DashboardLayout({
           />
         </DashboardSidebar>
         <div className="flex flex-col">
-          <DashboardHeader user={user}>
+          <DashboardHeader user={user} storeId="storeId">
             <DashboardSidebarSheet className="lg:hidden">
-              <DashboardSidebar>
+              <DashboardSidebar storeId="storeId">
                 <StoreSwitcher
                   userId={user.id}
                   storesPromise={storesPromise}

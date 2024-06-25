@@ -7,7 +7,7 @@ import { products, stores } from "@/db/schema"
 import { currentUser } from "@clerk/nextjs/server"
 import { count, countDistinct, eq } from "drizzle-orm"
 
-import { getSubscriptionPlan } from "@/lib/actions/stripe"
+import { getPlan } from "@/lib/actions/stripe"
 import { getPlanLimits } from "@/lib/subscription"
 
 /**
@@ -15,15 +15,7 @@ import { getPlanLimits } from "@/lib/subscription"
  * It ensures a single request is made for multiple identical data fetches, with the returned data cached and shared across components during the server render.
  * @see https://react.dev/reference/react/cache#reference
  */
-export const getCachedUser = cache(async () => {
-  noStore()
-  try {
-    return await currentUser()
-  } catch (err) {
-    console.error(err)
-    return null
-  }
-})
+export const getCachedUser = cache(currentUser)
 
 export async function getUserUsageMetrics(input: { userId: string }) {
   noStore()
@@ -66,7 +58,7 @@ export async function getUserPlanMetrics(input: { userId: string }) {
   }
 
   try {
-    const subscriptionPlan = await getSubscriptionPlan({ userId: input.userId })
+    const subscriptionPlan = await getPlan({ userId: input.userId })
 
     if (!subscriptionPlan) {
       return fallback
@@ -77,7 +69,7 @@ export async function getUserPlanMetrics(input: { userId: string }) {
     })
 
     const { storeLimit, productLimit } = getPlanLimits({
-      planTitle: subscriptionPlan.title,
+      planId: subscriptionPlan.id,
     })
 
     const storeLimitExceeded = storeCount >= storeLimit
