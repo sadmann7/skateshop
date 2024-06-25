@@ -14,7 +14,6 @@ import {
   type deleteCartItemSchema,
   type deleteCartItemsSchema,
 } from "@/lib/validations/cart"
-import { dbPrefix } from "@/lib/constants"
 
 export async function getCart(input?: {
   storeId: string
@@ -103,8 +102,10 @@ export async function getUniqueStoreIds() {
       .from(carts)
       .leftJoin(
         products,
-        // Injecting the dbPrefix is breaking things for some reason
-        sql`skateshop_carts.items::jsonb @> jsonb_build_array(jsonb_build_object('productId', skateshop_products.id))`
+        sql`EXISTS (
+          SELECT 1 FROM unnest(carts.items::json[]) as item
+          WHERE (item->>'productId')::text = products.id::text
+        )`
       )
       .groupBy(products.storeId)
       .where(eq(carts.id, cartId))
@@ -160,10 +161,11 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
     const cartId = cookieStore.get("cartId")?.value
 
     if (!cartId) {
+      // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
       const cart = await db
         .insert(carts)
         .values({
-          items: [input],
+          items: sql`ARRAY[${input}::json]::json[]`,
         })
         .returning({ insertedId: carts.id })
 
@@ -198,10 +200,11 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
     if (cart.closed) {
       await db.delete(carts).where(eq(carts.id, cartId))
 
+      // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
       const newCart = await db
         .insert(carts)
         .values({
-          items: [input],
+          items: sql`ARRAY[${input}::json]::json[]`,
         })
         .returning({ insertedId: carts.id })
 
@@ -224,10 +227,14 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
       cart.items?.push(input)
     }
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          // @ts-ignore - cart is not null due to early returns
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
@@ -280,10 +287,14 @@ export async function updateCartItem(rawInput: z.infer<typeof cartItemSchema>) {
       cartItem.quantity = input.quantity
     }
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          // @ts-ignore - cart is not null due to early returns
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
@@ -348,10 +359,13 @@ export async function deleteCartItem(
     cart.items =
       cart.items?.filter((item) => item.productId !== input.productId) ?? []
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
@@ -387,10 +401,13 @@ export async function deleteCartItems(
         (item) => !input.productIds.includes(item.productId)
       ) ?? []
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
