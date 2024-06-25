@@ -61,7 +61,13 @@ export async function getCart(input?: {
           input?.storeId ? eq(products.storeId, input.storeId) : undefined
         )
       )
-      .groupBy(products.id)
+      .groupBy(
+        products.id,
+        categories.name,
+        subcategories.name,
+        stores.name,
+        stores.stripeAccountId
+      )
       .orderBy(desc(stores.stripeAccountId), asc(products.createdAt))
       .execute()
       .then((items) => {
@@ -96,7 +102,10 @@ export async function getUniqueStoreIds() {
       .from(carts)
       .leftJoin(
         products,
-        sql`JSON_CONTAINS(carts.items, JSON_OBJECT('productId', products.id))`
+        sql`EXISTS (
+          SELECT 1 FROM unnest(carts.items::json[]) as item
+          WHERE (item->>'productId')::text = products.id::text
+        )`
       )
       .groupBy(products.storeId)
       .where(eq(carts.id, cartId))
@@ -105,6 +114,7 @@ export async function getUniqueStoreIds() {
 
     return storeIds
   } catch (err) {
+    console.error(err)
     return []
   }
 }
@@ -151,10 +161,11 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
     const cartId = cookieStore.get("cartId")?.value
 
     if (!cartId) {
+      // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
       const cart = await db
         .insert(carts)
         .values({
-          items: [input],
+          items: sql`ARRAY[${input}::json]::json[]`,
         })
         .returning({ insertedId: carts.id })
 
@@ -189,10 +200,11 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
     if (cart.closed) {
       await db.delete(carts).where(eq(carts.id, cartId))
 
+      // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
       const newCart = await db
         .insert(carts)
         .values({
-          items: [input],
+          items: sql`ARRAY[${input}::json]::json[]`,
         })
         .returning({ insertedId: carts.id })
 
@@ -215,10 +227,14 @@ export async function addToCart(rawInput: z.infer<typeof cartItemSchema>) {
       cart.items?.push(input)
     }
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          // @ts-ignore - cart is not null due to early returns
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
@@ -271,10 +287,14 @@ export async function updateCartItem(rawInput: z.infer<typeof cartItemSchema>) {
       cartItem.quantity = input.quantity
     }
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          // @ts-ignore - cart is not null due to early returns
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
@@ -339,10 +359,13 @@ export async function deleteCartItem(
     cart.items =
       cart.items?.filter((item) => item.productId !== input.productId) ?? []
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
@@ -378,10 +401,13 @@ export async function deleteCartItems(
         (item) => !input.productIds.includes(item.productId)
       ) ?? []
 
+    // Note: ARRAY[]::json[] is a workaround for a drizzle bug with escaping json
     await db
       .update(carts)
       .set({
-        items: cart.items,
+        items: sql`ARRAY[${sql.raw(
+          cart.items.map(item => `'${JSON.stringify(item)}'::json`).join(',')
+        )}]::json[]`
       })
       .where(eq(carts.id, cartId))
 
