@@ -112,7 +112,7 @@ export function StoreSwitcher({
                     className="text-sm"
                   >
                     <FrameIcon
-                      className="mr-2 size-4  text-muted-foreground"
+                      className="mr-2 size-4 text-muted-foreground"
                       aria-hidden="true"
                     />
                     {store.name}

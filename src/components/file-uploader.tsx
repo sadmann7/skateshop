@@ -302,7 +302,7 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
           className="size-7"
           onClick={onRemove}
         >
-          <Cross2Icon className="size-4 " aria-hidden="true" />
+          <Cross2Icon className="size-4" aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>
