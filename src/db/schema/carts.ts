@@ -12,7 +12,7 @@ export const carts = pgTable("carts", {
     .primaryKey(), // prefix_ + nanoid (12)
   paymentIntentId: varchar("payment_intent_id", { length: 256 }),
   clientSecret: text("client_secret"),
-  items: json("items").$type<CartItemSchema[] | null>().default(null),
+  items: json("items").array().$type<CartItemSchema[] | null>().default(null),
   closed: boolean("closed").notNull().default(false),
   ...lifecycleDates,
 })
