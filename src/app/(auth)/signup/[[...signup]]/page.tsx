@@ -13,6 +13,8 @@ import {
 import { Shell } from "@/components/shell"
 import { OAuthSignIn } from "@/app/(auth)/_components/oauth-signin"
 import { SignUpForm } from "@/app/(auth)/_components/signup-form"
+import { redirect } from "next/navigation";
+import { getCachedUser } from "@/lib/queries/user";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -20,7 +22,13 @@ export const metadata: Metadata = {
   description: "Sign up for an account",
 }
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  const user = await getCachedUser();
+
+  if (user) {
+    redirect("/");
+  }
+  
   return (
     <Shell className="max-w-lg">
       <Card>

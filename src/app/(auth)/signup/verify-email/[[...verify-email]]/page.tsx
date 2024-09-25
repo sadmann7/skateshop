@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/card"
 import { Shell } from "@/components/shell"
 import { VerifyEmailForm } from "@/app/(auth)/_components/verify-email-form"
+import { redirect } from "next/navigation";
+import { getCachedUser } from "@/lib/queries/user";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -17,7 +19,13 @@ export const metadata: Metadata = {
   description: "Verify your email address to continue with your sign up",
 }
 
-export default function VerifyEmailPage() {
+export default async function VerifyEmailPage() {
+  const user = await getCachedUser();
+
+  if (user) {
+    redirect("/");
+  }
+  
   return (
     <Shell className="max-w-lg">
       <Card>

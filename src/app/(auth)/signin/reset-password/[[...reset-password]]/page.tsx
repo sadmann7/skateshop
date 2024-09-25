@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/card"
 import { Shell } from "@/components/shell"
 import { ResetPasswordForm } from "@/app/(auth)/_components/reset-password-form"
+import { redirect } from "next/navigation";
+import { getCachedUser } from "@/lib/queries/user";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -17,7 +19,13 @@ export const metadata: Metadata = {
   description: "Enter your email to reset your password",
 }
 
-export default function ResetPasswordPage() {
+export default async function ResetPasswordPage() {
+  const user = await getCachedUser();
+
+  if (user) {
+    redirect("/");
+  }
+  
   return (
     <Shell className="max-w-lg">
       <Card>
