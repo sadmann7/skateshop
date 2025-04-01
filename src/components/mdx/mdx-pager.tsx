@@ -1,17 +1,17 @@
-import Link from "next/link"
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
-import { cn, truncate } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button";
+import { cn, truncate } from "@/lib/utils";
 
 interface MdxPagerItem {
-  title: string
-  slug: string
+  title: string;
+  slug: string;
 }
 
 interface MdxPagerProps extends React.HTMLAttributes<HTMLDivElement> {
-  currentItem: MdxPagerItem
-  allItems: MdxPagerItem[]
+  currentItem: MdxPagerItem;
+  allItems: MdxPagerItem[];
 }
 
 export function MdxPager({
@@ -20,10 +20,10 @@ export function MdxPager({
   className,
   ...props
 }: MdxPagerProps) {
-  const pager = getPager(currentItem, allItems)
+  const pager = getPager(currentItem, allItems);
 
   if (!pager) {
-    return null
+    return null;
   }
 
   return (
@@ -52,21 +52,21 @@ export function MdxPager({
         </Link>
       ) : null}
     </div>
-  )
+  );
 }
 
 export function getPager(currentItem: MdxPagerItem, allItems: MdxPagerItem[]) {
-  const flattenedLinks = allItems.flat()
+  const flattenedLinks = allItems.flat();
   const activeIndex = flattenedLinks.findIndex(
-    (link) => currentItem.slug === link?.slug
-  )
-  const prev = activeIndex !== 0 ? flattenedLinks[activeIndex - 1] : null
+    (link) => currentItem.slug === link?.slug,
+  );
+  const prev = activeIndex !== 0 ? flattenedLinks[activeIndex - 1] : null;
   const next =
     activeIndex !== flattenedLinks.length - 1
       ? flattenedLinks[activeIndex + 1]
-      : null
+      : null;
   return {
     prev,
     next,
-  }
+  };
 }

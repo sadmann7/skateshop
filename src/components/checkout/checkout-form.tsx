@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
 import {
   AddressElement,
   LinkAuthenticationElement,
   PaymentElement,
   useElements,
   useStripe,
-} from "@stripe/react-stripe-js"
-import { toast } from "sonner"
+} from "@stripe/react-stripe-js";
+import * as React from "react";
+import { toast } from "sonner";
 
-import { absoluteUrl, cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { absoluteUrl, cn } from "@/lib/utils";
 
 // See the stripe playemnts docs: https://stripe.com/docs/payments/quickstart
 
 interface CheckoutFormProps extends React.ComponentPropsWithoutRef<"form"> {
-  storeId: string
+  storeId: string;
 }
 
 export function CheckoutForm({
@@ -25,53 +25,53 @@ export function CheckoutForm({
   className,
   ...props
 }: CheckoutFormProps) {
-  const id = React.useId()
-  const stripe = useStripe()
-  const elements = useElements()
-  const [email, setEmail] = React.useState("")
-  const [message, setMessage] = React.useState<string | null>(null)
-  const [isLoading, setIsLoading] = React.useState(false)
+  const id = React.useId();
+  const stripe = useStripe();
+  const elements = useElements();
+  const [email, setEmail] = React.useState("");
+  const [message, setMessage] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (!stripe) return
+    if (!stripe) return;
 
     const clientSecret = new URLSearchParams(window.location.search).get(
-      "payment_intent_client_secret"
-    )
+      "payment_intent_client_secret",
+    );
 
-    if (!clientSecret) return
+    if (!clientSecret) return;
 
     void stripe
       .retrievePaymentIntent(clientSecret)
       .then(({ paymentIntent }) => {
         switch (paymentIntent?.status) {
           case "succeeded":
-            setMessage("Payment succeeded!")
-            break
+            setMessage("Payment succeeded!");
+            break;
           case "processing":
-            setMessage("Your payment is processing.")
-            break
+            setMessage("Your payment is processing.");
+            break;
           case "requires_payment_method":
-            setMessage("Your payment was not successful, please try again.")
-            break
+            setMessage("Your payment was not successful, please try again.");
+            break;
           default:
-            setMessage("Something went wrong.")
-            break
+            setMessage("Something went wrong.");
+            break;
         }
-      })
-  }, [stripe])
+      });
+  }, [stripe]);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+    event.preventDefault();
 
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
-      return
+      return;
     }
 
-    setIsLoading(true)
-    setMessage(null)
+    setIsLoading(true);
+    setMessage(null);
 
     const { error } = await stripe.confirmPayment({
       //`Elements` instance that was used to create the Payment Element
@@ -80,7 +80,7 @@ export function CheckoutForm({
         return_url: absoluteUrl(`/checkout/${storeId}/success`),
         receipt_email: email,
       },
-    })
+    });
 
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
@@ -88,14 +88,14 @@ export function CheckoutForm({
     // be redirected to an intermediate site first to authorize the payment, then
     // redirected to the `return_url`.
     if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message ?? "Something went wrong, please try again.")
+      setMessage(error.message ?? "Something went wrong, please try again.");
     } else {
-      setMessage("Something went wrong, please try again.")
+      setMessage("Something went wrong, please try again.");
     }
 
-    toast.error(message)
+    toast.error(message);
 
-    setIsLoading(false)
+    setIsLoading(false);
   }
 
   return (
@@ -137,5 +137,5 @@ export function CheckoutForm({
         Pay
       </Button>
     </form>
-  )
+  );
 }

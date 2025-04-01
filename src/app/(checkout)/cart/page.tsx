@@ -1,27 +1,27 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { env } from "@/env.js"
+import { env } from "@/env.js";
+import type { Metadata } from "next";
+import Link from "next/link";
 
-import { getUniqueStoreIds } from "@/lib/actions/cart"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { CheckoutCard } from "@/components/checkout/checkout-card"
-import { Icons } from "@/components/icons"
+import { CheckoutCard } from "@/components/checkout/checkout-card";
+import { Icons } from "@/components/icons";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { Shell } from "@/components/shell"
+} from "@/components/page-header";
+import { Shell } from "@/components/shell";
+import { buttonVariants } from "@/components/ui/button";
+import { getUniqueStoreIds } from "@/lib/actions/cart";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Cart",
   description: "Checkout with your cart items",
-}
+};
 
 export default async function CartPage() {
-  const uniqueStoreIds = await getUniqueStoreIds()
+  const uniqueStoreIds = await getUniqueStoreIds();
 
   return (
     <Shell>
@@ -37,7 +37,7 @@ export default async function CartPage() {
       {uniqueStoreIds.length > 0 ? (
         uniqueStoreIds.map(
           (storeId) =>
-            storeId && <CheckoutCard key={storeId} storeId={storeId} />
+            storeId && <CheckoutCard key={storeId} storeId={storeId} />,
         )
       ) : (
         <section
@@ -49,7 +49,7 @@ export default async function CartPage() {
             className="mb-4 size-16 text-muted-foreground"
             aria-hidden="true"
           />
-          <div className="text-xl font-medium text-muted-foreground">
+          <div className="font-medium text-muted-foreground text-xl">
             Your cart is empty
           </div>
           <Link
@@ -59,8 +59,8 @@ export default async function CartPage() {
               buttonVariants({
                 variant: "link",
                 size: "sm",
-                className: "text-sm text-muted-foreground",
-              })
+                className: "text-muted-foreground text-sm",
+              }),
             )}
           >
             Add items to your cart to checkout
@@ -68,5 +68,5 @@ export default async function CartPage() {
         </section>
       )}
     </Shell>
-  )
+  );
 }

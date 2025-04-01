@@ -12,15 +12,15 @@ import {
   Section,
   Tailwind,
   Text,
-} from "@react-email/components"
+} from "@react-email/components";
 
 interface NewsletterWelcomeEmailProps {
-  firstName?: string
-  fromEmail: string
-  token: string
+  firstName?: string;
+  fromEmail: string;
+  token: string;
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? ""
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "";
 
 // For previewing we need to put images in the .react-email/public folder
 // In production we need to put images in the root public folder
@@ -41,14 +41,14 @@ const newsletterImages = [
       "https://www.pexels.com/photo/skateboarder-jumping-a-skateboard-5037502/",
     description: `${`We'll`} be keeping you up to date with the latest skateboarding news, events, and more. Stay up to date with the latest trends and tricks. Stay tuned for more!`,
   },
-]
+];
 
 export default function NewsletterWelcomeEmail({
   firstName = "there",
   fromEmail,
   token,
 }: NewsletterWelcomeEmailProps) {
-  const previewText = `Hi ${firstName}, welcome to Skateshop13!`
+  const previewText = `Hi ${firstName}, welcome to Skateshop13!`;
 
   return (
     <Html>
@@ -127,5 +127,5 @@ export default function NewsletterWelcomeEmail({
         </Body>
       </Tailwind>
     </Html>
-  )
+  );
 }

@@ -1,23 +1,23 @@
-import type { StripePaymentStatus } from "@/types"
+import type { StripePaymentStatus } from "@/types";
 
-import { cn } from "@/lib/utils"
-import { type CartLineItemSchema } from "@/lib/validations/cart"
+import { cn } from "@/lib/utils";
+import type { CartLineItemSchema } from "@/lib/validations/cart";
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 export function calculateOrderAmount(items: CartLineItemSchema[]) {
   const total = items.reduce((acc, item) => {
-    return acc + Number(item.price) * item.quantity
-  }, 0)
-  const fee = total * 0.01
+    return acc + Number(item.price) * item.quantity;
+  }, 0);
+  const fee = total * 0.01;
   return {
     total: Number((total * 100).toFixed(0)), // converts to cents which stripe charges in
     fee: Number((fee * 100).toFixed(0)),
-  }
+  };
 }
 
 export const stripePaymentStatuses: {
-  label: string
-  value: StripePaymentStatus
+  label: string;
+  value: StripePaymentStatus;
 }[] = [
   { label: "Canceled", value: "canceled" },
   { label: "Processing", value: "processing" },
@@ -26,16 +26,16 @@ export const stripePaymentStatuses: {
   { label: "Requires Confirmation", value: "requires_confirmation" },
   { label: "Requires Payment Method", value: "requires_payment_method" },
   { label: "Succeeded", value: "succeeded" },
-]
+];
 
 export function getStripePaymentStatusColor({
   status,
   shade = 600,
 }: {
-  status: StripePaymentStatus
-  shade?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950
+  status: StripePaymentStatus;
+  shade?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 950;
 }) {
-  const bg = `bg-${shade}`
+  const bg = `bg-${shade}`;
 
   return cn({
     [`${bg}-red`]: status === "canceled",
@@ -47,5 +47,5 @@ export function getStripePaymentStatusColor({
       "requires_payment_method",
     ].includes(status),
     [`bg-green-${shade}`]: status === "succeeded",
-  })
+  });
 }

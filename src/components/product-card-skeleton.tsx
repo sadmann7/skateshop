@@ -1,8 +1,13 @@
-import { cn } from "@/lib/utils"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { PlaceholderImage } from "@/components/placeholder-image"
+import { PlaceholderImage } from "@/components/placeholder-image";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface ProductCardSkeletonProps
   extends React.ComponentPropsWithoutRef<typeof Card> {}
@@ -30,5 +35,5 @@ export function ProductCardSkeleton({
         <Skeleton className="size-8 shrink-0" />
       </CardFooter>
     </Card>
-  )
+  );
 }

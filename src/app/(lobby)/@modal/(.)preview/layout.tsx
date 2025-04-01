@@ -1,4 +1,4 @@
-import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
+import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 
 export default function ModalLayout({ children }: React.PropsWithChildren) {
   return (
@@ -7,5 +7,5 @@ export default function ModalLayout({ children }: React.PropsWithChildren) {
         {children}
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

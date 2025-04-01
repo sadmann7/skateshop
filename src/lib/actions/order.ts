@@ -1,9 +1,8 @@
-"use server"
+"use server";
 
-import { unstable_noStore as noStore } from "next/cache"
-import { cookies } from "next/headers"
-import { db } from "@/db"
+import { db } from "@/db";
 import {
+  type Order,
   addresses,
   carts,
   categories,
@@ -11,9 +10,8 @@ import {
   payments,
   products,
   subcategories,
-  type Order,
-} from "@/db/schema"
-import type { SearchParams } from "@/types"
+} from "@/db/schema";
+import type { SearchParams } from "@/types";
 import {
   and,
   asc,
@@ -25,30 +23,33 @@ import {
   like,
   lte,
   sql,
-} from "drizzle-orm"
-import type Stripe from "stripe"
-import { z } from "zod"
+} from "drizzle-orm";
+import { unstable_noStore as noStore } from "next/cache";
+import { cookies } from "next/headers";
+import type Stripe from "stripe";
+import { z } from "zod";
 
+import { CART_COOKIE_NAME } from "@/lib/constants";
 import {
-  checkoutItemSchema,
   type CartLineItemSchema,
   type CheckoutItemSchema,
-} from "@/lib/validations/cart"
-import type { getOrderLineItemsSchema } from "@/lib/validations/order"
-import { ordersSearchParamsSchema } from "@/lib/validations/params"
+  checkoutItemSchema,
+} from "@/lib/validations/cart";
+import type { getOrderLineItemsSchema } from "@/lib/validations/order";
+import { ordersSearchParamsSchema } from "@/lib/validations/params";
 
 export async function getOrderLineItems(
   input: z.infer<typeof getOrderLineItemsSchema> & {
-    paymentIntent?: Stripe.Response<Stripe.PaymentIntent> | null
-  }
+    paymentIntent?: Stripe.Response<Stripe.PaymentIntent> | null;
+  },
 ): Promise<CartLineItemSchema[]> {
   try {
     const safeParsedItems = z
       .array(checkoutItemSchema)
-      .safeParse(JSON.parse(input.items ?? "[]"))
+      .safeParse(JSON.parse(input.items ?? "[]"));
 
     if (!safeParsedItems.success) {
-      throw new Error("Could not parse items.")
+      throw new Error("Could not parse items.");
     }
 
     const lineItems = await db
@@ -68,8 +69,8 @@ export async function getOrderLineItems(
       .where(
         inArray(
           products.id,
-          safeParsedItems.data.map((item) => item.productId)
-        )
+          safeParsedItems.data.map((item) => item.productId),
+        ),
       )
       .groupBy(products.id)
       .orderBy(desc(products.createdAt))
@@ -77,20 +78,21 @@ export async function getOrderLineItems(
       .then((items) => {
         return items.map((item) => {
           const quantity = safeParsedItems.data.find(
-            (checkoutItem) => checkoutItem.productId === item.id
-          )?.quantity
+            (checkoutItem) => checkoutItem.productId === item.id,
+          )?.quantity;
 
           return {
             ...item,
             quantity: quantity ?? 0,
-          }
-        })
-      })
+          };
+        });
+      });
 
     // Temporary workaround for payment_intent.succeeded webhook event not firing in production
     // TODO: Remove this once the webhook is working
     if (input.paymentIntent?.status === "succeeded") {
-      const cartId = String(cookies().get("cartId")?.value)
+      const cookiesStore = await cookies();
+      const cartId = String(cookiesStore.get(CART_COOKIE_NAME)?.value);
 
       const cart = await db.query.carts.findFirst({
         columns: {
@@ -99,14 +101,14 @@ export async function getOrderLineItems(
           clientSecret: true,
         },
         where: eq(carts.id, cartId),
-      })
+      });
 
       if (!cart || cart.closed) {
-        return lineItems
+        return lineItems;
       }
 
       if (!cart.clientSecret || !cart.paymentIntentId) {
-        return lineItems
+        return lineItems;
       }
 
       const payment = await db.query.payments.findFirst({
@@ -115,14 +117,14 @@ export async function getOrderLineItems(
           stripeAccountId: true,
         },
         where: eq(payments.storeId, input.storeId),
-      })
+      });
 
       if (!payment?.stripeAccountId) {
-        return lineItems
+        return lineItems;
       }
 
       // Create new address in DB
-      const stripeAddress = input.paymentIntent.shipping?.address
+      const stripeAddress = input.paymentIntent.shipping?.address;
 
       const newAddress = await db
         .insert(addresses)
@@ -134,9 +136,9 @@ export async function getOrderLineItems(
           country: stripeAddress?.country,
           postalCode: stripeAddress?.postal_code,
         })
-        .returning({ insertedId: addresses.id })
+        .returning({ insertedId: addresses.id });
 
-      if (!newAddress[0]?.insertedId) throw new Error("No address created.")
+      if (!newAddress[0]?.insertedId) throw new Error("No address created.");
 
       // Create new order in db
       await db.insert(orders).values({
@@ -144,7 +146,7 @@ export async function getOrderLineItems(
         items: input.items as unknown as CheckoutItemSchema[],
         quantity: safeParsedItems.data.reduce(
           (acc, item) => acc + item.quantity,
-          0
+          0,
         ),
         amount: String(Number(input.paymentIntent.amount) / 100),
         stripePaymentIntentId: input.paymentIntent.id,
@@ -152,7 +154,7 @@ export async function getOrderLineItems(
         name: input.paymentIntent.shipping?.name ?? "",
         email: input.paymentIntent.receipt_email ?? "",
         addressId: newAddress[0].insertedId,
-      })
+      });
 
       // Update product inventory in db
       for (const item of safeParsedItems.data) {
@@ -162,16 +164,16 @@ export async function getOrderLineItems(
             inventory: true,
           },
           where: eq(products.id, item.productId),
-        })
+        });
 
         if (!product) {
-          return lineItems
+          return lineItems;
         }
 
-        const inventory = product.inventory - item.quantity
+        const inventory = product.inventory - item.quantity;
 
         if (inventory < 0) {
-          return lineItems
+          return lineItems;
         }
 
         await db
@@ -179,7 +181,7 @@ export async function getOrderLineItems(
           .set({
             inventory: product.inventory - item.quantity,
           })
-          .where(eq(products.id, item.productId))
+          .where(eq(products.id, item.productId));
       }
 
       await db
@@ -188,40 +190,40 @@ export async function getOrderLineItems(
           closed: true,
           items: [],
         })
-        .where(eq(carts.paymentIntentId, cart.paymentIntentId))
+        .where(eq(carts.paymentIntentId, cart.paymentIntentId));
     }
 
-    return lineItems
+    return lineItems;
   } catch (err) {
-    return []
+    return [];
   }
 }
 
 export async function getStoreOrders(input: {
-  storeId: string
-  searchParams: SearchParams
+  storeId: string;
+  searchParams: SearchParams;
 }) {
-  noStore()
+  noStore();
   try {
     const { page, per_page, sort, customer, status, from, to } =
-      ordersSearchParamsSchema.parse(input.searchParams)
+      ordersSearchParamsSchema.parse(input.searchParams);
 
     // Fallback page for invalid page numbers
-    const fallbackPage = isNaN(page) || page < 1 ? 1 : page
+    const fallbackPage = Number.isNaN(page) || page < 1 ? 1 : page;
     // Number of items per page
-    const limit = isNaN(per_page) ? 10 : per_page
+    const limit = Number.isNaN(per_page) ? 10 : per_page;
     // Number of items to skip
-    const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
+    const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0;
     // Column and order to sort by
     const [column, order] = (sort.split(".") as [
       keyof Order | undefined,
       "asc" | "desc" | undefined,
-    ]) ?? ["createdAt", "desc"]
+    ]) ?? ["createdAt", "desc"];
 
-    const statuses = status ? status.split(".") : []
+    const statuses = status ? status.split(".") : [];
 
-    const fromDay = from ? new Date(from) : undefined
-    const toDay = to ? new Date(to) : undefined
+    const fromDay = from ? new Date(from) : undefined;
+    const toDay = to ? new Date(to) : undefined;
 
     // Transaction is used to ensure both queries are executed in a single transaction
     return await db.transaction(async (tx) => {
@@ -252,18 +254,18 @@ export async function getStoreOrders(input: {
             fromDay && toDay
               ? and(
                   gte(orders.createdAt, fromDay),
-                  lte(orders.createdAt, toDay)
+                  lte(orders.createdAt, toDay),
                 )
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .orderBy(
           column && column in orders
             ? order === "asc"
               ? asc(orders[column])
               : desc(orders[column])
-            : desc(orders.createdAt)
-        )
+            : desc(orders.createdAt),
+        );
 
       const count = await tx
         .select({
@@ -283,38 +285,38 @@ export async function getStoreOrders(input: {
             fromDay && toDay
               ? and(
                   gte(orders.createdAt, fromDay),
-                  lte(orders.createdAt, toDay)
+                  lte(orders.createdAt, toDay),
                 )
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .execute()
-        .then((res) => res[0]?.count ?? 0)
+        .then((res) => res[0]?.count ?? 0);
 
-      const pageCount = Math.ceil(count / limit)
+      const pageCount = Math.ceil(count / limit);
 
       return {
         data,
         pageCount,
-      }
-    })
+      };
+    });
   } catch (err) {
-    console.error(err)
+    console.error(err);
     return {
       data: [],
       pageCount: 0,
-    }
+    };
   }
 }
 
 export async function getOrderCount(input: {
-  storeId: string
-  fromDay?: Date
-  toDay?: Date
+  storeId: string;
+  fromDay?: Date;
+  toDay?: Date;
 }) {
-  noStore()
+  noStore();
   try {
-    const { storeId, fromDay, toDay } = input
+    const { storeId, fromDay, toDay } = input;
 
     return await db
       .select({
@@ -326,24 +328,24 @@ export async function getOrderCount(input: {
           eq(orders.storeId, storeId),
           fromDay && toDay
             ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
-            : undefined
-        )
+            : undefined,
+        ),
       )
       .execute()
-      .then((res) => res[0]?.count ?? 0)
+      .then((res) => res[0]?.count ?? 0);
   } catch (err) {
-    return 0
+    return 0;
   }
 }
 
 export async function getSaleCount(input: {
-  storeId: string
-  fromDay?: Date
-  toDay?: Date
+  storeId: string;
+  fromDay?: Date;
+  toDay?: Date;
 }) {
-  noStore()
+  noStore();
   try {
-    const { storeId, fromDay, toDay } = input
+    const { storeId, fromDay, toDay } = input;
 
     const storeOrders = await db
       .select({
@@ -355,29 +357,29 @@ export async function getSaleCount(input: {
           eq(orders.storeId, storeId),
           fromDay && toDay
             ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
-            : undefined
-        )
-      )
+            : undefined,
+        ),
+      );
 
     const sales = storeOrders.reduce(
       (acc, order) => acc + Number(order.amount),
-      0
-    )
+      0,
+    );
 
-    return sales
+    return sales;
   } catch (err) {
-    return 0
+    return 0;
   }
 }
 
 export async function getSales(input: {
-  storeId: string
-  fromDay?: Date
-  toDay?: Date
+  storeId: string;
+  fromDay?: Date;
+  toDay?: Date;
 }) {
-  noStore()
+  noStore();
   try {
-    const { storeId, fromDay, toDay } = input
+    const { storeId, fromDay, toDay } = input;
 
     return await db
       .select({
@@ -391,34 +393,34 @@ export async function getSales(input: {
           eq(orders.storeId, storeId),
           fromDay && toDay
             ? and(gte(orders.createdAt, fromDay), lte(orders.createdAt, toDay))
-            : undefined
-        )
+            : undefined,
+        ),
       )
       .groupBy(
         sql`EXTRACT(YEAR FROM ${orders.createdAt})`,
-        sql`EXTRACT(MONTH FROM ${orders.createdAt})`
+        sql`EXTRACT(MONTH FROM ${orders.createdAt})`,
       )
       .orderBy(
         sql`EXTRACT(YEAR FROM ${orders.createdAt})`,
-        sql`EXTRACT(MONTH FROM ${orders.createdAt})`
+        sql`EXTRACT(MONTH FROM ${orders.createdAt})`,
       )
-      .execute()
+      .execute();
   } catch (err) {
-    return []
+    return [];
   }
 }
 
 export async function getCustomers(input: {
-  storeId: string
-  limit: number
-  offset: number
-  fromDay?: Date
-  toDay?: Date
+  storeId: string;
+  limit: number;
+  offset: number;
+  fromDay?: Date;
+  toDay?: Date;
 }) {
-  noStore()
+  noStore();
   try {
     const transaction = await db.transaction(async (tx) => {
-      const { storeId, limit, offset, fromDay, toDay } = input
+      const { storeId, limit, offset, fromDay, toDay } = input;
 
       const customers = await tx
         .select({
@@ -435,13 +437,13 @@ export async function getCustomers(input: {
             fromDay && toDay
               ? and(
                   gte(orders.createdAt, fromDay),
-                  lte(orders.createdAt, toDay)
+                  lte(orders.createdAt, toDay),
                 )
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .groupBy(orders.email, orders.name, orders.createdAt)
-        .orderBy(desc(orders.createdAt))
+        .orderBy(desc(orders.createdAt));
 
       const customerCount = await tx
         .select({
@@ -454,25 +456,25 @@ export async function getCustomers(input: {
             fromDay && toDay
               ? and(
                   gte(orders.createdAt, fromDay),
-                  lte(orders.createdAt, toDay)
+                  lte(orders.createdAt, toDay),
                 )
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .execute()
-        .then((res) => res[0]?.count ?? 0)
+        .then((res) => res[0]?.count ?? 0);
 
       return {
         customers,
         customerCount,
-      }
-    })
+      };
+    });
 
-    return transaction
+    return transaction;
   } catch (err) {
     return {
       customers: [],
       customerCount: 0,
-    }
+    };
   }
 }

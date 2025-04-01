@@ -1,10 +1,9 @@
-import * as React from "react"
-import { type Option } from "@/types"
-import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons"
+import type { Option } from "@/types";
+import { CheckIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,19 +12,20 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
 interface FacetedFilterProps {
-  title?: string
-  filterValues: string[]
-  setFilterValues: React.Dispatch<React.SetStateAction<string[]>>
-  options: Option[]
+  title?: string;
+  filterValues: string[];
+  setFilterValues: React.Dispatch<React.SetStateAction<string[]>>;
+  options: Option[];
 }
 
 export function FacetedFilter({
@@ -36,8 +36,8 @@ export function FacetedFilter({
 }: FacetedFilterProps) {
   const selectedValues = React.useMemo(
     () => new Set(filterValues),
-    [filterValues]
-  )
+    [filterValues],
+  );
 
   return (
     <Popover>
@@ -92,20 +92,20 @@ export function FacetedFilter({
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
-                const isSelected = selectedValues.has(option.value)
+                const isSelected = selectedValues.has(option.value);
                 return (
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
                       if (isSelected) {
-                        selectedValues.delete(option.value)
+                        selectedValues.delete(option.value);
                       } else {
-                        selectedValues.add(option.value)
+                        selectedValues.add(option.value);
                       }
-                      const filterValues = Array.from(selectedValues)
+                      const filterValues = Array.from(selectedValues);
                       setFilterValues(
-                        filterValues.length > 0 ? filterValues : []
-                      )
+                        filterValues.length > 0 ? filterValues : [],
+                      );
                     }}
                   >
                     <div
@@ -113,7 +113,7 @@ export function FacetedFilter({
                         "mr-2 flex size-4 items-center justify-center rounded-sm border border-primary",
                         isSelected
                           ? "bg-primary text-primary-foreground"
-                          : "opacity-50 [&_svg]:invisible"
+                          : "opacity-50 [&_svg]:invisible",
                       )}
                     >
                       <CheckIcon className={cn("size-4")} aria-hidden="true" />
@@ -126,7 +126,7 @@ export function FacetedFilter({
                     )}
                     <span>{option.label}</span>
                   </CommandItem>
-                )
+                );
               })}
             </CommandGroup>
             {selectedValues.size > 0 && (
@@ -146,5 +146,5 @@ export function FacetedFilter({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

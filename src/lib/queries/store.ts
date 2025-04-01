@@ -1,13 +1,9 @@
-import "server-only"
+import "server-only";
 
-import {
-  unstable_cache as cache,
-  unstable_noStore as noStore,
-} from "next/cache"
-import { db } from "@/db"
-import { orders, products, stores, type Store } from "@/db/schema"
-import { takeFirstOrThrow } from "@/db/utils"
-import type { SearchParams } from "@/types"
+import { db } from "@/db";
+import { type Store, orders, products, stores } from "@/db/schema";
+import { takeFirstOrThrow } from "@/db/utils";
+import type { SearchParams } from "@/types";
 import {
   and,
   asc,
@@ -18,9 +14,13 @@ import {
   isNull,
   not,
   sql,
-} from "drizzle-orm"
+} from "drizzle-orm";
+import {
+  unstable_cache as cache,
+  unstable_noStore as noStore,
+} from "next/cache";
 
-import { getStoresSchema } from "@/lib/validations/store"
+import { getStoresSchema } from "@/lib/validations/store";
 
 export async function getFeaturedStores() {
   return await cache(
@@ -38,18 +38,18 @@ export async function getFeaturedStores() {
         .limit(4)
         .leftJoin(products, eq(products.storeId, stores.id))
         .groupBy(stores.id)
-        .orderBy(desc(sql<number>`count(*)`))
+        .orderBy(desc(sql<number>`count(*)`));
     },
     ["featured-stores"],
     {
       revalidate: 3600, // every hour
       tags: ["featured-stores"],
-    }
-  )()
+    },
+  )();
 }
 
 export async function getStoreByUserId(input: { userId: string }) {
-  noStore()
+  noStore();
   try {
     const store = await db
       .select({
@@ -59,11 +59,11 @@ export async function getStoreByUserId(input: { userId: string }) {
       .from(stores)
       .where(eq(stores.userId, input.userId))
       .orderBy(desc(stores.stripeAccountId))
-      .then(takeFirstOrThrow)
+      .then(takeFirstOrThrow);
 
-    return store
+    return store;
   } catch (err) {
-    return null
+    return null;
   }
 }
 
@@ -86,29 +86,29 @@ export async function getStoresByUserId(input: { userId: string }) {
         .leftJoin(orders, eq(orders.storeId, stores.id))
         .groupBy(stores.id)
         .orderBy(desc(stores.stripeAccountId), desc(sql<number>`count(*)`))
-        .where(eq(stores.userId, input.userId))
+        .where(eq(stores.userId, input.userId));
     },
     [`stores-${input.userId}`],
     {
       revalidate: 900,
       tags: [`stores-${input.userId}`],
-    }
-  )()
+    },
+  )();
 }
 
 export async function getStores(input: SearchParams) {
-  noStore()
+  noStore();
   try {
-    const search = getStoresSchema.parse(input)
+    const search = getStoresSchema.parse(input);
 
-    const limit = search.per_page
-    const offset = (search.page - 1) * limit
+    const limit = search.per_page;
+    const offset = (search.page - 1) * limit;
     const [column, order] =
       (search.sort?.split(".") as [
         keyof Store | undefined,
         "asc" | "desc" | undefined,
-      ]) ?? []
-    const statuses = search.statuses?.split(".") ?? []
+      ]) ?? [];
+    const statuses = search.statuses?.split(".") ?? [];
 
     const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
@@ -132,8 +132,8 @@ export async function getStores(input: SearchParams) {
               : undefined,
             statuses.includes("inactive") && !statuses.includes("active")
               ? isNull(stores.stripeAccountId)
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .groupBy(stores.id)
         .orderBy(
@@ -149,8 +149,8 @@ export async function getStores(input: SearchParams) {
                     ? order === "asc"
                       ? asc(stores[column])
                       : desc(stores[column])
-                    : desc(stores.createdAt)
-        )
+                    : desc(stores.createdAt),
+        );
 
       const total = await tx
         .select({
@@ -165,29 +165,29 @@ export async function getStores(input: SearchParams) {
               : undefined,
             statuses.includes("inactive") && !statuses.includes("active")
               ? isNull(stores.stripeAccountId)
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .execute()
-        .then((res) => res[0]?.count ?? 0)
+        .then((res) => res[0]?.count ?? 0);
 
       return {
         data,
         total,
-      }
-    })
+      };
+    });
 
-    const pageCount = Math.ceil(total / limit)
+    const pageCount = Math.ceil(total / limit);
 
     return {
       data,
       pageCount,
-    }
+    };
   } catch (err) {
-    console.error(err)
+    console.error(err);
     return {
       data: [],
       pageCount: 0,
-    }
+    };
   }
 }

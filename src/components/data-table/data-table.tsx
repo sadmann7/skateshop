@@ -1,5 +1,5 @@
-import * as React from "react"
-import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
+import { type Table as TanstackTable, flexRender } from "@tanstack/react-table";
+import type * as React from "react";
 
 import {
   Table,
@@ -8,16 +8,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
-import { DataTablePagination } from "./data-table-pagination"
+import { DataTablePagination } from "./data-table-pagination";
 
 interface DataTableProps<TData> {
   /**
    * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
    * @type TanstackTable<TData>
    */
-  table: TanstackTable<TData>
+  table: TanstackTable<TData>;
 
   /**
    * The floating bar to render at the bottom of the table on row selection.
@@ -25,7 +25,7 @@ interface DataTableProps<TData> {
    * @type React.ReactNode | null
    * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
-  floatingBar?: React.ReactNode | null
+  floatingBar?: React.ReactNode | null;
 }
 
 export function DataTable<TData>({
@@ -46,10 +46,10 @@ export function DataTable<TData>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -65,7 +65,7 @@ export function DataTable<TData>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -89,5 +89,5 @@ export function DataTable<TData>({
         {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
       </div>
     </div>
-  )
+  );
 }

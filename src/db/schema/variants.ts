@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { relations } from "drizzle-orm";
 import {
   decimal,
   index,
@@ -7,14 +7,14 @@ import {
   text,
   unique,
   varchar,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { products } from "./products"
-import { stocks } from "./stocks"
-import { stores } from "./stores"
-import { lifecycleDates } from "./utils"
+import { products } from "./products";
+import { stocks } from "./stocks";
+import { stores } from "./stores";
+import { lifecycleDates } from "./utils";
 
 // store variants
 export const variants = pgTable(
@@ -34,15 +34,15 @@ export const variants = pgTable(
       .on(table.name, table.storeId)
       .nullsNotDistinct(),
     storeIdIdx: index("variants_store_id_idx").on(table.storeId),
-  })
-)
+  }),
+);
 
 export const variantsRelations = relations(variants, ({ one }) => ({
   store: one(stores, { fields: [variants.storeId], references: [stores.id] }),
-}))
+}));
 
-export type Variant = typeof variants.$inferSelect
-export type NewVariant = typeof variants.$inferInsert
+export type Variant = typeof variants.$inferSelect;
+export type NewVariant = typeof variants.$inferInsert;
 
 export const productVariants = pgTable(
   "product_variants",
@@ -61,8 +61,8 @@ export const productVariants = pgTable(
   (table) => ({
     productIdIdx: index("product_variants_product_id_idx").on(table.productId),
     variantIdIdx: index("product_variants_variant_id_idx").on(table.variantId),
-  })
-)
+  }),
+);
 
 export const productVariantsRelations = relations(
   productVariants,
@@ -76,11 +76,11 @@ export const productVariantsRelations = relations(
       references: [variants.id],
     }),
     productVariantValues: many(productVariantValues),
-  })
-)
+  }),
+);
 
-export type ProductVariant = typeof productVariants.$inferSelect
-export type NewProductVariant = typeof productVariants.$inferInsert
+export type ProductVariant = typeof productVariants.$inferSelect;
+export type NewProductVariant = typeof productVariants.$inferInsert;
 
 export const productVariantValues = pgTable(
   "product_variant_values",
@@ -101,11 +101,11 @@ export const productVariantValues = pgTable(
       columns: [table.productVariantId, table.value],
     }),
     productVariantIdIdx: index("variant_values_product_variant_id_idx").on(
-      table.productVariantId
+      table.productVariantId,
     ),
     stockIdIdx: index("variant_values_stock_id_idx").on(table.stockId),
-  })
-)
+  }),
+);
 
 export const productVariantValuesRelations = relations(
   productVariantValues,
@@ -114,8 +114,8 @@ export const productVariantValuesRelations = relations(
       fields: [productVariantValues.productVariantId],
       references: [productVariants.productId],
     }),
-  })
-)
+  }),
+);
 
-export type ProductVariantValue = typeof productVariantValues.$inferSelect
-export type NewProductVariantValue = typeof productVariantValues.$inferInsert
+export type ProductVariantValue = typeof productVariantValues.$inferSelect;
+export type NewProductVariantValue = typeof productVariantValues.$inferInsert;

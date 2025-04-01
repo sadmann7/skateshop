@@ -1,15 +1,15 @@
-import "server-only"
+import "server-only";
 
-import { unstable_noStore as noStore } from "next/cache"
-import { db } from "@/db"
-import { notifications } from "@/db/schema"
-import { and, eq } from "drizzle-orm"
+import { db } from "@/db";
+import { notifications } from "@/db/schema";
+import { and, eq } from "drizzle-orm";
+import { unstable_noStore as noStore } from "next/cache";
 
 export async function getNotification(input: {
-  token?: string
-  email?: string
+  token?: string;
+  email?: string;
 }) {
-  noStore()
+  noStore();
 
   try {
     const notification = await db
@@ -28,14 +28,14 @@ export async function getNotification(input: {
             : input.token && input.email
               ? and(
                   eq(notifications.token, input.token),
-                  eq(notifications.email, input.email)
+                  eq(notifications.email, input.email),
                 )
-              : undefined
+              : undefined,
       )
-      .then((res) => res[0])
+      .then((res) => res[0]);
 
-    return notification
+    return notification;
   } catch (err) {
-    return null
+    return null;
   }
 }

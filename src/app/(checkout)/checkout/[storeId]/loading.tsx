@@ -1,7 +1,7 @@
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CheckoutLoading() {
   return (
@@ -74,5 +74,5 @@ export default function CheckoutLoading() {
         </ScrollArea>
       </div>
     </section>
-  )
+  );
 }

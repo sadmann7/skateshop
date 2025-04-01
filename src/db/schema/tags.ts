@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { relations } from "drizzle-orm";
 import {
   index,
   pgTable,
@@ -6,13 +6,13 @@ import {
   text,
   unique,
   varchar,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { products } from "./products"
-import { stores } from "./stores"
-import { lifecycleDates } from "./utils"
+import { products } from "./products";
+import { stores } from "./stores";
+import { lifecycleDates } from "./utils";
 
 // store tags
 export const tags = pgTable(
@@ -33,18 +33,18 @@ export const tags = pgTable(
       .on(table.name, table.storeId)
       .nullsNotDistinct(),
     storeIdIdx: index("tags_store_id_idx").on(table.storeId),
-  })
-)
+  }),
+);
 
 export const tagsRelations = relations(tags, ({ one, many }) => ({
   store: one(stores, { fields: [tags.storeId], references: [stores.id] }),
   products: many(products, {
     relationName: "productTags",
   }),
-}))
+}));
 
-export type Tag = typeof tags.$inferSelect
-export type NewTag = typeof tags.$inferInsert
+export type Tag = typeof tags.$inferSelect;
+export type NewTag = typeof tags.$inferInsert;
 
 export const productTags = pgTable(
   "product_tags",
@@ -64,10 +64,10 @@ export const productTags = pgTable(
     }),
     productTagIdx: index("product_tags_product_id_tag_id_idx").on(
       table.productId,
-      table.tagId
+      table.tagId,
     ),
-  })
-)
+  }),
+);
 
 export const productTagsRelations = relations(productTags, ({ one }) => ({
   product: one(products, {
@@ -75,7 +75,7 @@ export const productTagsRelations = relations(productTags, ({ one }) => ({
     references: [products.id],
   }),
   tag: one(tags, { fields: [productTags.tagId], references: [tags.id] }),
-}))
+}));
 
-export type ProductTag = typeof productTags.$inferSelect
-export type NewProductTag = typeof productTags.$inferInsert
+export type ProductTag = typeof productTags.$inferSelect;
+export type NewProductTag = typeof productTags.$inferInsert;

@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 
-import { filterProducts } from "@/lib/actions/product"
-import { cn, isMacOs } from "@/lib/utils"
-import { useDebounce } from "@/hooks/use-debounce"
-import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons";
+import { Kbd } from "@/components/kbd";
+import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
   CommandEmpty,
@@ -15,59 +14,60 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
-import { Kbd } from "@/components/kbd"
+} from "@/components/ui/command";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useDebounce } from "@/hooks/use-debounce";
+import { filterProducts } from "@/lib/actions/product";
+import { cn, isMacOs } from "@/lib/utils";
 
 type ProductGroup = NonNullable<
   Awaited<ReturnType<typeof filterProducts>>["data"]
->[number]
+>[number];
 
 export function ProductsCombobox() {
-  const router = useRouter()
-  const [open, setOpen] = React.useState(false)
-  const [query, setQuery] = React.useState("")
-  const debouncedQuery = useDebounce(query, 300)
-  const [data, setData] = React.useState<ProductGroup[] | null>(null)
-  const [loading, setLoading] = React.useState(false)
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+  const [query, setQuery] = React.useState("");
+  const debouncedQuery = useDebounce(query, 300);
+  const [data, setData] = React.useState<ProductGroup[] | null>(null);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (debouncedQuery.length <= 0) {
-      setData(null)
-      return
+      setData(null);
+      return;
     }
 
     async function fetchData() {
-      setLoading(true)
-      const { data, error } = await filterProducts({ query: debouncedQuery })
+      setLoading(true);
+      const { data, error } = await filterProducts({ query: debouncedQuery });
 
       if (error) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
-      setData(data)
-      setLoading(false)
+      setData(data);
+      setLoading(false);
     }
 
-    void fetchData()
-  }, [debouncedQuery])
+    void fetchData();
+  }, [debouncedQuery]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
+        e.preventDefault();
+        setOpen((open) => !open);
       }
-    }
-    window.addEventListener("keydown", handleKeyDown)
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [])
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const onSelect = React.useCallback((callback: () => unknown) => {
-    setOpen(false)
-    callback()
-  }, [])
+    setOpen(false);
+    callback();
+  }, []);
 
   return (
     <>
@@ -89,9 +89,9 @@ export function ProductsCombobox() {
       <CommandDialog
         open={open}
         onOpenChange={(open) => {
-          setOpen(open)
+          setOpen(open);
           if (!open) {
-            setQuery("")
+            setQuery("");
           }
         }}
       >
@@ -135,7 +135,7 @@ export function ProductsCombobox() {
                       />
                       <span className="truncate">{item.name}</span>
                     </CommandItem>
-                  )
+                  );
                 })}
               </CommandGroup>
             ))
@@ -143,5 +143,5 @@ export function ProductsCombobox() {
         </CommandList>
       </CommandDialog>
     </>
-  )
+  );
 }

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons"
+import { ChevronDownIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
 
-import { queryConfig } from "@/config/query"
-import { type getStores } from "@/lib/queries/store"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { FacetedFilter } from "@/components/faceted-filter";
+import { PaginationButton } from "@/components/pagination-button";
+import { StoreCard } from "@/components/store-card";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,60 +15,60 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { FacetedFilter } from "@/components/faceted-filter"
-import { PaginationButton } from "@/components/pagination-button"
-import { StoreCard } from "@/components/store-card"
+} from "@/components/ui/dropdown-menu";
+import { queryConfig } from "@/config/query";
+import type { getStores } from "@/lib/queries/store";
+import { cn } from "@/lib/utils";
 
-type StoresProps = Awaited<ReturnType<typeof getStores>>
+type StoresProps = Awaited<ReturnType<typeof getStores>>;
 
 export function Stores({ data: stores, pageCount }: StoresProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const [isPending, startTransition] = React.useTransition()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = React.useTransition();
 
   // Search params
-  const page = searchParams?.get("page") ?? "1"
-  const per_page = searchParams?.get("per_page") ?? "8"
-  const sort = searchParams?.get("sort") ?? "productCount.desc"
-  const statuses = searchParams?.get("statuses")
+  const page = searchParams?.get("page") ?? "1";
+  const per_page = searchParams?.get("per_page") ?? "8";
+  const sort = searchParams?.get("sort") ?? "productCount.desc";
+  const statuses = searchParams?.get("statuses");
 
   // Create query string
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString())
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
 
       for (const [key, value] of Object.entries(params)) {
         if (value === null) {
-          newSearchParams.delete(key)
+          newSearchParams.delete(key);
         } else {
-          newSearchParams.set(key, String(value))
+          newSearchParams.set(key, String(value));
         }
       }
 
-      return newSearchParams.toString()
+      return newSearchParams.toString();
     },
-    [searchParams]
-  )
+    [searchParams],
+  );
 
   // Store status filter
   const [filterValues, setFilterValues] = React.useState<string[]>(
-    statuses ? statuses?.split(".") : []
-  )
+    statuses ? statuses?.split(".") : [],
+  );
 
   React.useEffect(() => {
     startTransition(() => {
       const newQueryString = createQueryString({
         statuses: filterValues?.length ? filterValues.join(".") : null,
-      })
+      });
 
       router.push(`${pathname}?${newQueryString}`, {
         scroll: false,
-      })
-    })
+      });
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValues])
+  }, [filterValues]);
 
   return (
     <section className="flex flex-col space-y-6">
@@ -95,9 +95,9 @@ export function Stores({ data: stores, pageCount }: StoresProps) {
                       })}`,
                       {
                         scroll: false,
-                      }
-                    )
-                  })
+                      },
+                    );
+                  });
                 }}
               >
                 {option.label}
@@ -152,5 +152,5 @@ export function Stores({ data: stores, pageCount }: StoresProps) {
         />
       ) : null}
     </section>
-  )
+  );
 }

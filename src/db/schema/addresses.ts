@@ -1,8 +1,8 @@
-import { pgTable, text, varchar } from "drizzle-orm/pg-core"
+import { pgTable, text, varchar } from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { lifecycleDates } from "./utils"
+import { lifecycleDates } from "./utils";
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const addresses = pgTable("addresses", {
@@ -16,7 +16,7 @@ export const addresses = pgTable("addresses", {
   postalCode: text("postal_code"),
   country: text("country"),
   ...lifecycleDates,
-})
+});
 
-export type Address = typeof addresses.$inferSelect
-export type NewAddress = typeof addresses.$inferInsert
+export type Address = typeof addresses.$inferSelect;
+export type NewAddress = typeof addresses.$inferInsert;

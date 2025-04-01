@@ -1,44 +1,45 @@
-import { type Metadata } from "next"
-import { cookies } from "next/headers"
-import Link from "next/link"
-import { env } from "@/env.js"
-import { CheckIcon, CircleIcon } from "@radix-ui/react-icons"
+import { env } from "@/env.js";
+import { CheckIcon, CircleIcon } from "@radix-ui/react-icons";
+import type { Metadata } from "next";
+import { cookies } from "next/headers";
+import Link from "next/link";
 
-import { getCartItems } from "@/lib/actions/cart"
-import { getProducts } from "@/lib/actions/product"
-import { cn } from "@/lib/utils"
-import { productsSearchParamsSchema } from "@/lib/validations/params"
-import { BoardBuilder } from "@/components/board-builder"
+import { BoardBuilder } from "@/components/board-builder";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { Shell } from "@/components/shell"
+} from "@/components/page-header";
+import { Shell } from "@/components/shell";
+import { getCartItems } from "@/lib/actions/cart";
+import { getProducts } from "@/lib/actions/product";
+import { cn } from "@/lib/utils";
+import { productsSearchParamsSchema } from "@/lib/validations/params";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Build a Board",
   description: "Select the components for your board",
-}
+};
 
 interface BuildABoadPageProps {
   searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+    [key: string]: string | string[] | undefined;
+  };
 }
 
 export default async function BuildABoardPage({
   searchParams,
 }: BuildABoadPageProps) {
   const { page, per_page, sort, subcategory, price_range, active } =
-    productsSearchParamsSchema.parse(searchParams)
+    productsSearchParamsSchema.parse(searchParams);
 
   // Products transaction
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 8
-  const offset = typeof page === "string" ? (parseInt(page) - 1) * limit : 0
+  const limit = typeof per_page === "string" ? Number.parseInt(per_page) : 8;
+  const offset =
+    typeof page === "string" ? (Number.parseInt(page) - 1) * limit : 0;
   const activeSubcategory =
-    typeof subcategory === "string" ? subcategory : "decks"
+    typeof subcategory === "string" ? subcategory : "decks";
 
   // const { data, pageCount } = await getProducts({
   //   limit,
@@ -50,8 +51,8 @@ export default async function BuildABoardPage({
   // })
 
   // Get cart items
-  const cartId = cookies().get("cartId")?.value
-  const cartItems = await getCartItems({ cartId })
+  const cartId = (await cookies()).get("cartId")?.value;
+  const cartItems = await getCartItems({ cartId });
 
   return (
     <Shell className="gap-4">
@@ -65,7 +66,7 @@ export default async function BuildABoardPage({
         </PageHeaderDescription>
       </PageHeader>
       {/* <section
-        className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/50 pb-4 pt-6 shadow-md sm:backdrop-blur"
+        className="sticky top-14 z-30 w-full shrink-0 overflow-hidden bg-background/50 pb-4 pt-6 shadow-md sm:backdrop-blur-sm"
       >
         <div className="grid place-items-center overflow-x-auto">
           <div className="inline-flex w-fit items-center rounded border bg-background p-1 text-muted-foreground shadow-2xl">
@@ -78,7 +79,7 @@ export default async function BuildABoardPage({
               >
                 <div
                   className={cn(
-                    "inline-flex items-center justify-center whitespace-nowrap rounded border-b-2 border-transparent px-3 py-1.5 text-sm font-medium ring-offset-background transition-all hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "inline-flex items-center justify-center whitespace-nowrap rounded border-b-2 border-transparent px-3 py-1.5 text-sm font-medium ring-offset-background transition-all hover:bg-muted hover:text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     subcategory.slug === activeSubcategory &&
                       "rounded-none border-primary text-foreground hover:rounded-t"
                   )}
@@ -104,5 +105,5 @@ export default async function BuildABoardPage({
         cartItems={cartItems ?? []}
       /> */}
     </Shell>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import Loglib from "@loglib/tracker/react"
+import Loglib from "@loglib/tracker/react";
 
 export function Analytics() {
   return (
@@ -7,5 +7,5 @@ export function Analytics() {
         id: "skateshop_sadmn",
       }}
     />
-  )
+  );
 }

@@ -1,30 +1,30 @@
-import { type Metadata } from "next"
-import { env } from "@/env.js"
-import type { SearchParams } from "@/types"
+import { env } from "@/env.js";
+import type { SearchParams } from "@/types";
+import type { Metadata } from "next";
 
-import { getProducts } from "@/lib/actions/product"
-import { AlertCard } from "@/components/alert-card"
+import { AlertCard } from "@/components/alert-card";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { Shell } from "@/components/shell"
+} from "@/components/page-header";
+import { Shell } from "@/components/shell";
+import { getProducts } from "@/lib/actions/product";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Products",
   description: "Buy products from our stores",
-}
+};
 
 interface ProductsPageProps {
-  searchParams: SearchParams
+  searchParams: SearchParams;
 }
 
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
-  const productsTransaction = await getProducts(searchParams)
+  const productsTransaction = await getProducts(searchParams);
 
   return (
     <Shell>
@@ -36,5 +36,5 @@ export default async function ProductsPage({
       </PageHeader>
       <AlertCard />
     </Shell>
-  )
+  );
 }

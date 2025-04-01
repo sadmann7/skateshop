@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { useSelectedLayoutSegment } from "next/navigation"
-import type { MainNavItem } from "@/types"
+import type { MainNavItem } from "@/types";
+import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
+import * as React from "react";
 
-import { siteConfig } from "@/config/site"
-import { cn } from "@/lib/utils"
-import { useMediaQuery } from "@/hooks/use-media-query"
+import { Icons } from "@/components/icons";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Icons } from "@/components/icons"
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { siteConfig } from "@/config/site";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 
 interface MobileNavProps {
-  items?: MainNavItem[]
+  items?: MainNavItem[];
 }
 
 export function MobileNav({ items }: MobileNavProps) {
-  const isDesktop = useMediaQuery("(min-width: 1024px)")
-  const segment = useSelectedLayoutSegment()
-  const [open, setOpen] = React.useState(false)
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const segment = useSelectedLayoutSegment();
+  const [open, setOpen] = React.useState(false);
 
-  if (isDesktop) return null
+  if (isDesktop) return null;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -83,7 +83,7 @@ export function MobileNav({ items }: MobileNavProps) {
                           >
                             {item.title}
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </AccordionContent>
@@ -94,15 +94,15 @@ export function MobileNav({ items }: MobileNavProps) {
         </ScrollArea>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
 interface MobileLinkProps
   extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  href: string
-  disabled?: boolean
-  segment: string
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  href: string;
+  disabled?: boolean;
+  segment: string;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function MobileLink({
@@ -121,12 +121,12 @@ function MobileLink({
         "text-foreground/70 transition-colors hover:text-foreground",
         href.includes(segment) && "text-foreground",
         disabled && "pointer-events-none opacity-60",
-        className
+        className,
       )}
       onClick={() => setOpen(false)}
       {...props}
     >
       {children}
     </Link>
-  )
+  );
 }

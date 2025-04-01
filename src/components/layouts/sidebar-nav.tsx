@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import type { SidebarNavItem } from "@/types"
+import type { SidebarNavItem } from "@/types";
+import Link from "next/link";
 
-import { cn } from "@/lib/utils"
-import { Icons } from "@/components/icons"
-import { useSidebar } from "@/components/layouts/sidebar-provider"
+import { Icons } from "@/components/icons";
+import { useSidebar } from "@/components/layouts/sidebar-provider";
+import { cn } from "@/lib/utils";
 
 export interface SidebarNavProps extends React.HTMLAttributes<HTMLDivElement> {
-  items: SidebarNavItem[]
+  items: SidebarNavItem[];
 }
 
 export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
-  const { open, setOpen } = useSidebar()
+  const { open, setOpen } = useSidebar();
 
-  if (!items?.length) return null
+  if (!items?.length) return null;
 
   return (
     <div
@@ -22,7 +22,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
       {...props}
     >
       {items.map((item, index) => {
-        const Icon = Icons[item.icon ?? "chevronLeft"]
+        const Icon = Icons[item.icon ?? "chevronLeft"];
 
         if (!item.href) {
           return (
@@ -33,7 +33,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
               <Icon className="mr-2 size-4" aria-hidden="true" />
               {item.title}
             </span>
-          )
+          );
         }
 
         return (
@@ -44,7 +44,7 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
             target={item.external ? "_blank" : ""}
             rel={item.external ? "noreferrer" : ""}
             onClick={() => {
-              if (open) setOpen(false)
+              if (open) setOpen(false);
             }}
           >
             <span
@@ -53,15 +53,15 @@ export function SidebarNav({ items, className, ...props }: SidebarNavProps) {
                 item.active
                   ? "bg-muted font-medium text-foreground"
                   : "text-muted-foreground",
-                item.disabled && "pointer-events-none opacity-60"
+                item.disabled && "pointer-events-none opacity-60",
               )}
             >
               <Icon className="mr-2 size-4" aria-hidden="true" />
               <span>{item.title}</span>
             </span>
           </Link>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

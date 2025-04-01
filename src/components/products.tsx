@@ -1,25 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { type Product, type Store } from "@/db/schema"
-import type { Option } from "@/types"
+import type { Product, Store } from "@/db/schema";
+import type { Option } from "@/types";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
 
-import { queryConfig } from "@/config/query"
-import {
-  type getCategories,
-  type getSubcategoriesByCategory,
-} from "@/lib/actions/product"
-import { cn, toTitleCase, truncate } from "@/lib/utils"
-import { useDebounce } from "@/hooks/use-debounce"
-import { Button } from "@/components/ui/button"
-import { Card, CardDescription } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
+import { MultiSelect } from "@/components/multi-select";
+import { PaginationButton } from "@/components/pagination-button";
+import { ProductCard } from "@/components/product-card";
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,11 +23,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -39,24 +35,28 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { MultiSelect } from "@/components/multi-select"
-import { PaginationButton } from "@/components/pagination-button"
-import { ProductCard } from "@/components/product-card"
+} from "@/components/ui/sheet";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { queryConfig } from "@/config/query";
+import { useDebounce } from "@/hooks/use-debounce";
+import type {
+  getCategories,
+  getSubcategoriesByCategory,
+} from "@/lib/actions/product";
+import { cn, toTitleCase, truncate } from "@/lib/utils";
 
 interface ProductsProps {
-  products: Product[]
-  pageCount: number
-  categories?: string[]
-  category?: Awaited<ReturnType<typeof getCategories>>[number]
-  subcategories?: Awaited<ReturnType<typeof getSubcategoriesByCategory>>
+  products: Product[];
+  pageCount: number;
+  categories?: string[];
+  category?: Awaited<ReturnType<typeof getCategories>>[number];
+  subcategories?: Awaited<ReturnType<typeof getSubcategoriesByCategory>>;
   stores?: Pick<
     Store & { productCount: number },
     "id" | "name" | "productCount"
-  >[]
-  storePageCount?: number
+  >[];
+  storePageCount?: number;
 }
 
 export function Products({
@@ -68,57 +68,59 @@ export function Products({
   stores,
   storePageCount,
 }: ProductsProps) {
-  const id = React.useId()
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const [isPending, startTransition] = React.useTransition()
+  const id = React.useId();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = React.useTransition();
 
   // Search params
-  const page = searchParams?.get("page") ?? "1"
-  const per_page = searchParams?.get("per_page") ?? "8"
-  const sort = searchParams?.get("sort") ?? "createdAt.desc"
-  const store_ids = searchParams?.get("store_ids")
-  const store_page = searchParams?.get("store_page") ?? "1"
-  const categoriesParam = searchParams?.get("categories")
-  const subcategoriesParam = searchParams?.get("subcategories")
-  const active = searchParams?.get("active") ?? "true"
+  const page = searchParams?.get("page") ?? "1";
+  const per_page = searchParams?.get("per_page") ?? "8";
+  const sort = searchParams?.get("sort") ?? "createdAt.desc";
+  const store_ids = searchParams?.get("store_ids");
+  const store_page = searchParams?.get("store_page") ?? "1";
+  const categoriesParam = searchParams?.get("categories");
+  const subcategoriesParam = searchParams?.get("subcategories");
+  const active = searchParams?.get("active") ?? "true";
 
   // Create query string
   const createQueryString = React.useCallback(
     (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString())
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
 
       for (const [key, value] of Object.entries(params)) {
         if (value === null) {
-          newSearchParams.delete(key)
+          newSearchParams.delete(key);
         } else {
-          newSearchParams.set(key, String(value))
+          newSearchParams.set(key, String(value));
         }
       }
 
-      return newSearchParams.toString()
+      return newSearchParams.toString();
     },
-    [searchParams]
-  )
+    [searchParams],
+  );
 
   // Price filter
-  const [priceRange, setPriceRange] = React.useState<[number, number]>([0, 500])
-  const debouncedPrice = useDebounce(priceRange, 500)
+  const [priceRange, setPriceRange] = React.useState<[number, number]>([
+    0, 500,
+  ]);
+  const debouncedPrice = useDebounce(priceRange, 500);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
-    const [min, max] = debouncedPrice
+    const [min, max] = debouncedPrice;
     startTransition(() => {
       const newQueryString = createQueryString({
         price_range: `${min}-${max}`,
-      })
+      });
 
       router.push(`${pathname}?${newQueryString}`, {
         scroll: false,
-      })
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedPrice])
+      });
+    });
+  }, [debouncedPrice]);
 
   // Category filter
   const [selectedCategories, setSelectedCategories] = React.useState<
@@ -129,24 +131,26 @@ export function Products({
           label: toTitleCase(c),
           value: c,
         }))
-      : null
-  )
+      : null,
+  );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     startTransition(() => {
       const newQueryString = createQueryString({
         categories: selectedCategories?.length
           ? // Join categories with a dot to make search params prettier
-            selectedCategories.map((c) => c.value).join(".")
+            selectedCategories
+              .map((c) => c.value)
+              .join(".")
           : null,
-      })
+      });
 
       router.push(`${pathname}?${newQueryString}`, {
         scroll: false,
-      })
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCategories])
+      });
+    });
+  }, [selectedCategories]);
 
   // Subcategory filter
   const [selectedSubcategories, setSelectedSubcategories] = React.useState<
@@ -157,41 +161,41 @@ export function Products({
           label: toTitleCase(c),
           value: c,
         }))
-      : null
-  )
+      : null,
+  );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     startTransition(() => {
       const newQueryString = createQueryString({
         subcategories: selectedSubcategories?.length
           ? selectedSubcategories.map((s) => s.value).join(".")
           : null,
-      })
+      });
 
       router.push(`${pathname}?${newQueryString}`, {
         scroll: false,
-      })
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedSubcategories])
+      });
+    });
+  }, [selectedSubcategories]);
 
   // Store filter
   const [storeIds, setStoreIds] = React.useState<string[] | null>(
-    store_ids ? store_ids?.split(".") : null
-  )
+    store_ids ? store_ids?.split(".") : null,
+  );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     startTransition(() => {
       const newQueryString = createQueryString({
         store_ids: storeIds?.length ? storeIds.join(".") : null,
-      })
+      });
 
       router.push(`${pathname}?${newQueryString}`, {
         scroll: false,
-      })
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeIds])
+      });
+    });
+  }, [storeIds]);
 
   return (
     <section className="flex flex-col space-y-6">
@@ -208,7 +212,7 @@ export function Products({
             </SheetHeader>
             <Separator />
             <div className="flex flex-1 flex-col gap-5 overflow-hidden p-1">
-              <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+              <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs">
                 <div className="space-y-0.5">
                   <Label htmlFor={`active-${id}`}>Active stores</Label>
                   <CardDescription>
@@ -226,20 +230,18 @@ export function Products({
                         })}`,
                         {
                           scroll: false,
-                        }
-                      )
+                        },
+                      );
                     })
                   }
                   disabled={isPending}
                 />
               </div>
               <Card className="space-y-4 rounded-lg p-3">
-                <h3 className="text-sm font-medium tracking-wide text-foreground">
+                <h3 className="font-medium text-foreground text-sm tracking-wide">
                   Price range ($)
                 </h3>
                 <Slider
-                  variant="range"
-                  thickness="thin"
                   defaultValue={[0, 500]}
                   max={500}
                   step={1}
@@ -256,8 +258,8 @@ export function Products({
                     max={priceRange[1]}
                     value={priceRange[0]}
                     onChange={(e) => {
-                      const value = Number(e.target.value)
-                      setPriceRange([value, priceRange[1]])
+                      const value = Number(e.target.value);
+                      setPriceRange([value, priceRange[1]]);
                     }}
                   />
                   <span className="text-muted-foreground">-</span>
@@ -268,15 +270,15 @@ export function Products({
                     max={500}
                     value={priceRange[1]}
                     onChange={(e) => {
-                      const value = Number(e.target.value)
-                      setPriceRange([priceRange[0], value])
+                      const value = Number(e.target.value);
+                      setPriceRange([priceRange[0], value]);
                     }}
                   />
                 </div>
               </Card>
               {categories?.length ? (
                 <Card className="space-y-4 rounded-lg p-3">
-                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                  <h3 className="font-medium text-foreground text-sm tracking-wide">
                     Categories
                   </h3>
                   <MultiSelect
@@ -292,7 +294,7 @@ export function Products({
               ) : null}
               {category ? (
                 <Card className="space-y-4 rounded-lg p-3">
-                  <h3 className="text-sm font-medium tracking-wide text-foreground">
+                  <h3 className="font-medium text-foreground text-sm tracking-wide">
                     Subcategories
                   </h3>
                   <MultiSelect
@@ -311,7 +313,7 @@ export function Products({
               {stores?.length ? (
                 <Card className="space-y-4 overflow-hidden rounded-lg py-3 pl-3">
                   <div className="flex gap-2 pr-3">
-                    <h3 className="flex-1 text-sm font-medium tracking-wide text-foreground">
+                    <h3 className="flex-1 font-medium text-foreground text-sm tracking-wide">
                       Stores
                     </h3>
                     <div className="flex items-center space-x-2">
@@ -327,9 +329,9 @@ export function Products({
                               })}`,
                               {
                                 scroll: false,
-                              }
-                            )
-                          })
+                              },
+                            );
+                          });
                         }}
                         disabled={Number(store_page) === 1 || isPending}
                       >
@@ -351,9 +353,9 @@ export function Products({
                               })}`,
                               {
                                 scroll: false,
-                              }
-                            )
-                          })
+                              },
+                            );
+                          });
                         }}
                         disabled={
                           Number(store_page) === storePageCount || isPending
@@ -379,18 +381,18 @@ export function Products({
                             checked={storeIds?.includes(store.id) ?? false}
                             onCheckedChange={(value) => {
                               if (value) {
-                                setStoreIds([...(storeIds ?? []), store.id])
+                                setStoreIds([...(storeIds ?? []), store.id]);
                               } else {
                                 setStoreIds(
                                   storeIds?.filter((id) => id !== store.id) ??
-                                    null
-                                )
+                                    null,
+                                );
                               }
                             }}
                           />
                           <Label
                             htmlFor={`${id}-store-${store.id}`}
-                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            className="font-medium text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                           >
                             {`${truncate(store.name, 20)} (${
                               store.productCount
@@ -422,14 +424,14 @@ export function Products({
                         })}`,
                         {
                           scroll: false,
-                        }
-                      )
+                        },
+                      );
 
-                      setPriceRange([0, 100])
-                      setSelectedCategories(null)
-                      setSelectedSubcategories(null)
-                      setStoreIds(null)
-                    })
+                      setPriceRange([0, 100]);
+                      setSelectedCategories(null);
+                      setSelectedSubcategories(null);
+                      setStoreIds(null);
+                    });
                   }}
                   disabled={isPending}
                 >
@@ -461,9 +463,9 @@ export function Products({
                       })}`,
                       {
                         scroll: false,
-                      }
-                    )
-                  })
+                      },
+                    );
+                  });
                 }}
               >
                 {option.label}
@@ -474,7 +476,7 @@ export function Products({
       </div>
       {!isPending && !products.length ? (
         <div className="mx-auto flex max-w-xs flex-col space-y-1.5">
-          <h1 className="text-center text-2xl font-bold">No products found</h1>
+          <h1 className="text-center font-bold text-2xl">No products found</h1>
           <p className="text-center text-muted-foreground">
             Try changing your filters, or check back later for new products
           </p>
@@ -495,5 +497,5 @@ export function Products({
         />
       ) : null}
     </section>
-  )
+  );
 }

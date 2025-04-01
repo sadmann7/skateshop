@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Image from "next/image"
+import Image from "next/image";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface MdxImageProps extends React.ComponentProps<typeof Image> {}
 
@@ -13,5 +13,5 @@ export function MdxImage({ className, ...props }: MdxImageProps) {
       alt={props.alt ?? "Uncaptioned"}
       className={cn(className)}
     />
-  )
+  );
 }

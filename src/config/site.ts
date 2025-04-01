@@ -1,9 +1,9 @@
-import type { FooterItem, MainNavItem } from "@/types"
+import type { FooterItem, MainNavItem } from "@/types";
 
-import { productConfig } from "@/config/product"
-import { slugify } from "@/lib/utils"
+import { productConfig } from "@/config/product";
+import { slugify } from "@/lib/utils";
 
-export type SiteConfig = typeof siteConfig
+export type SiteConfig = typeof siteConfig;
 
 const links = {
   x: "https://twitter.com/sadmann17",
@@ -11,7 +11,7 @@ const links = {
   githubAccount: "https://github.com/sadmann7",
   discord: "https://discord.com/users/sadmann7",
   calDotCom: "https://cal.com/sadmann7",
-}
+};
 
 export const siteConfig = {
   name: "Skateshop",
@@ -169,4 +169,4 @@ export const siteConfig = {
       ],
     },
   ] satisfies FooterItem[],
-}
+};

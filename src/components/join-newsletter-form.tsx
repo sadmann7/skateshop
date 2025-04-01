@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { PaperPlaneIcon } from "@radix-ui/react-icons"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PaperPlaneIcon } from "@radix-ui/react-icons";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { unknownError } from "@/lib/constants"
-import { emailSchema, type EmailSchema } from "@/lib/validations/notification"
-import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,12 +15,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { unknownError } from "@/lib/constants";
+import { type EmailSchema, emailSchema } from "@/lib/validations/notification";
 
 export function JoinNewsletterForm() {
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
 
   // react-hook-form
   const form = useForm<EmailSchema>({
@@ -29,10 +29,10 @@ export function JoinNewsletterForm() {
     defaultValues: {
       email: "",
     },
-  })
+  });
 
   async function onSubmit(data: EmailSchema) {
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await fetch("/api/email/newsletter", {
         method: "POST",
@@ -41,32 +41,32 @@ export function JoinNewsletterForm() {
           token: crypto.randomUUID(),
           subject: "Welcome to Skateshop13",
         }),
-      })
+      });
 
       if (!response.ok) {
         switch (response.status) {
           case 409:
-            toast.error("You are already subscribed to our newsletter.")
-            break
+            toast.error("You are already subscribed to our newsletter.");
+            break;
           case 422:
-            toast.error("Invalid input.")
-            break
+            toast.error("Invalid input.");
+            break;
           case 429:
-            toast.error("The daily email limit has been reached.")
-            break
+            toast.error("The daily email limit has been reached.");
+            break;
           default:
-            toast.error(unknownError)
+            toast.error(unknownError);
         }
-        return
+        return;
       }
 
-      toast.success("You have been subscribed to our newsletter.")
-      form.reset()
+      toast.success("You have been subscribed to our newsletter.");
+      form.reset();
     } catch (err) {
-      console.log(err)
-      toast.error(unknownError)
+      console.log(err);
+      toast.error(unknownError);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -111,5 +111,5 @@ export function JoinNewsletterForm() {
         />
       </form>
     </Form>
-  )
+  );
 }

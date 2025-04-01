@@ -1,12 +1,12 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { siteConfig } from "@/config/site"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import { JoinNewsletterForm } from "@/components/join-newsletter-form"
-import { ModeToggle } from "@/components/layouts/mode-toggle"
-import { Shell } from "@/components/shell"
+import { Icons } from "@/components/icons";
+import { JoinNewsletterForm } from "@/components/join-newsletter-form";
+import { ModeToggle } from "@/components/layouts/mode-toggle";
+import { Shell } from "@/components/shell";
+import { buttonVariants } from "@/components/ui/button";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
 export function SiteFooter() {
   return (
@@ -72,7 +72,7 @@ export function SiteFooter() {
                 buttonVariants({
                   size: "icon",
                   variant: "ghost",
-                })
+                }),
               )}
             >
               <Icons.gitHub className="size-4" aria-hidden="true" />
@@ -83,5 +83,5 @@ export function SiteFooter() {
         </section>
       </Shell>
     </footer>
-  )
+  );
 }

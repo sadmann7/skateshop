@@ -1,19 +1,19 @@
-import type { Metadata, Viewport } from "next"
-import { env } from "@/env.js"
-import { ClerkProvider } from "@clerk/nextjs"
+import { env } from "@/env.js";
+import { ClerkProvider } from "@clerk/nextjs";
+import type { Metadata, Viewport } from "next";
 
-import "@/styles/globals.css"
+import "@/styles/globals.css";
 
-import { GeistMono } from "geist/font/mono"
-import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
 
-import { siteConfig } from "@/config/site"
-import { fontHeading } from "@/lib/fonts"
-import { absoluteUrl, cn } from "@/lib/utils"
-import { Toaster } from "@/components/ui/toaster"
-import { Analytics } from "@/components/analytics"
-import { ThemeProvider } from "@/components/providers"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
+import { Analytics } from "@/components/analytics";
+import { ThemeProvider } from "@/components/providers";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { Toaster } from "@/components/ui/sonner";
+import { siteConfig } from "@/config/site";
+import { fontHeading } from "@/lib/fonts";
+import { absoluteUrl, cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     icon: "/icon.png",
   },
   manifest: absoluteUrl("/site.webmanifest"),
-}
+};
 
 export const viewport: Viewport = {
   colorScheme: "dark light",
@@ -64,10 +64,10 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-}
+};
 
 interface RootLayoutProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
@@ -80,7 +80,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             "min-h-screen bg-background font-sans antialiased",
             GeistSans.variable,
             GeistMono.variable,
-            fontHeading.variable
+            fontHeading.variable,
           )}
         >
           <ThemeProvider
@@ -97,5 +97,5 @@ export default function RootLayout({ children }: RootLayoutProps) {
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }

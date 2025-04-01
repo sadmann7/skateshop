@@ -1,10 +1,10 @@
-import { relations } from "drizzle-orm"
-import { index, pgTable, text, varchar } from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm";
+import { index, pgTable, text, varchar } from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { categories } from "./categories"
-import { lifecycleDates } from "./utils"
+import { categories } from "./categories";
+import { lifecycleDates } from "./utils";
 
 export const subcategories = pgTable(
   "subcategories",
@@ -22,17 +22,17 @@ export const subcategories = pgTable(
   },
   (table) => ({
     subcategoriesCategoryIdIdx: index("subcategories_category_id_idx").on(
-      table.categoryId
+      table.categoryId,
     ),
-  })
-)
+  }),
+);
 
 export const subcategoriesRelations = relations(subcategories, ({ one }) => ({
   category: one(categories, {
     fields: [subcategories.categoryId],
     references: [categories.id],
   }),
-}))
+}));
 
-export type Subcategory = typeof subcategories.$inferSelect
-export type NewSubcategory = typeof subcategories.$inferInsert
+export type Subcategory = typeof subcategories.$inferSelect;
+export type NewSubcategory = typeof subcategories.$inferInsert;

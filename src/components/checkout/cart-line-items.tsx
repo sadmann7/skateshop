@@ -1,18 +1,18 @@
-import Image from "next/image"
-import { Slot } from "@radix-ui/react-slot"
+import { Slot } from "@radix-ui/react-slot";
+import Image from "next/image";
 
-import { cn, formatPrice } from "@/lib/utils"
-import { type CartLineItemSchema } from "@/lib/validations/cart"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { UpdateCart } from "@/components/checkout/update-cart"
-import { Icons } from "@/components/icons"
+import { UpdateCart } from "@/components/checkout/update-cart";
+import { Icons } from "@/components/icons";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { cn, formatPrice } from "@/lib/utils";
+import type { CartLineItemSchema } from "@/lib/validations/cart";
 
 interface CartLineItemsProps extends React.HTMLAttributes<HTMLDivElement> {
-  items: CartLineItemSchema[]
-  isScrollable?: boolean
-  isEditable?: boolean
-  variant?: "default" | "minimal"
+  items: CartLineItemSchema[];
+  isScrollable?: boolean;
+  isEditable?: boolean;
+  variant?: "default" | "minimal";
 }
 
 export function CartLineItems({
@@ -23,7 +23,7 @@ export function CartLineItems({
   className,
   ...props
 }: CartLineItemsProps) {
-  const Comp = isScrollable ? ScrollArea : Slot
+  const Comp = isScrollable ? ScrollArea : Slot;
 
   return (
     <Comp className="h-full">
@@ -31,7 +31,7 @@ export function CartLineItems({
         className={cn(
           "flex w-full flex-col gap-5",
           isScrollable && "pr-6",
-          className
+          className,
         )}
         {...props}
       >
@@ -40,7 +40,7 @@ export function CartLineItems({
             <div
               className={cn(
                 "flex items-start justify-between gap-4",
-                isEditable && "flex-col xs:flex-row"
+                isEditable && "flex-col xs:flex-row",
               )}
             >
               <div className="flex items-center space-x-4">
@@ -76,7 +76,7 @@ export function CartLineItems({
                     <span className="line-clamp-1 text-xs text-muted-foreground">
                       {formatPrice(item.price)} x {item.quantity} ={" "}
                       {formatPrice(
-                        (Number(item.price) * Number(item.quantity)).toFixed(2)
+                        (Number(item.price) * Number(item.quantity)).toFixed(2),
                       )}
                     </span>
                   ) : (
@@ -99,7 +99,7 @@ export function CartLineItems({
                 <div className="flex flex-col space-y-1 font-medium">
                   <span className="ml-auto line-clamp-1 text-sm">
                     {formatPrice(
-                      (Number(item.price) * item.quantity).toFixed(2)
+                      (Number(item.price) * item.quantity).toFixed(2),
                     )}
                   </span>
                   <span className="line-clamp-1 text-xs text-muted-foreground">
@@ -113,5 +113,5 @@ export function CartLineItems({
         ))}
       </div>
     </Comp>
-  )
+  );
 }

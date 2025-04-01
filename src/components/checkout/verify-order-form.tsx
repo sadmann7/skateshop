@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import type { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import type { z } from "zod";
 
-import { cn } from "@/lib/utils"
-import { verifyOrderSchema } from "@/lib/validations/order"
-import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,16 +15,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/icons"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { verifyOrderSchema } from "@/lib/validations/order";
 
 interface VerifyOderFormProps extends React.ComponentPropsWithoutRef<"form"> {}
-type Inputs = z.infer<typeof verifyOrderSchema>
+type Inputs = z.infer<typeof verifyOrderSchema>;
 
 export function VerifyOderForm({ className, ...props }: VerifyOderFormProps) {
-  const router = useRouter()
-  const [isPending, startTransition] = React.useTransition()
+  const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -33,17 +33,17 @@ export function VerifyOderForm({ className, ...props }: VerifyOderFormProps) {
     defaultValues: {
       deliveryPostalCode: "",
     },
-  })
+  });
 
   function onSubmit(data: Inputs) {
     startTransition(() => {
-      console.log(data)
+      console.log(data);
       // Original source: https://github.com/jackblatch/OneStopShop/blob/main/app/(storefront)/checkout/%5BstoreSlug%5D/order-confirmation/components/verification.tsx
       const location = `${
         window.location.href.split("&delivery_postal_code=")[0]
-      }&delivery_postal_code=${data.deliveryPostalCode.split(" ").join("")}`
-      router.push(location)
-    })
+      }&delivery_postal_code=${data.deliveryPostalCode.split(" ").join("")}`;
+      router.push(location);
+    });
   }
 
   return (
@@ -81,5 +81,5 @@ export function VerifyOderForm({ className, ...props }: VerifyOderFormProps) {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

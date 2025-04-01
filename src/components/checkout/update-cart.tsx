@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { MinusIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons"
+import { MinusIcon, PlusIcon, TrashIcon } from "@radix-ui/react-icons";
+import * as React from "react";
 
-import { deleteCartItem, updateCartItem } from "@/lib/actions/cart"
-import { showErrorToast } from "@/lib/handle-error"
-import { type CartLineItemSchema } from "@/lib/validations/cart"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { deleteCartItem, updateCartItem } from "@/lib/actions/cart";
+import { showErrorToast } from "@/lib/handle-error";
+import type { CartLineItemSchema } from "@/lib/validations/cart";
 
 interface UpdateCartProps {
-  cartLineItem: CartLineItemSchema
+  cartLineItem: CartLineItemSchema;
 }
 
 export function UpdateCart({ cartLineItem }: UpdateCartProps) {
-  const id = React.useId()
-  const [isPending, startTransition] = React.useTransition()
+  const id = React.useId();
+  const [isPending, startTransition] = React.useTransition();
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 xs:w-auto xs:justify-normal">
@@ -31,11 +31,11 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                 await updateCartItem({
                   productId: cartLineItem.id,
                   quantity: Number(cartLineItem.quantity) - 1,
-                })
+                });
               } catch (err) {
-                showErrorToast(err)
+                showErrorToast(err);
               }
-            })
+            });
           }}
           disabled={isPending}
         >
@@ -54,11 +54,11 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                 await updateCartItem({
                   productId: cartLineItem.id,
                   quantity: Number(e.target.value),
-                })
+                });
               } catch (err) {
-                showErrorToast(err)
+                showErrorToast(err);
               }
-            })
+            });
           }}
           disabled={isPending}
         />
@@ -73,11 +73,11 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                 await updateCartItem({
                   productId: cartLineItem.id,
                   quantity: Number(cartLineItem.quantity) + 1,
-                })
+                });
               } catch (err) {
-                showErrorToast(err)
+                showErrorToast(err);
               }
-            })
+            });
           }}
           disabled={isPending}
         >
@@ -95,11 +95,11 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
             try {
               await deleteCartItem({
                 productId: cartLineItem.id,
-              })
+              });
             } catch (err) {
-              showErrorToast(err)
+              showErrorToast(err);
             }
-          })
+          });
         }}
         disabled={isPending}
       >
@@ -107,5 +107,5 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
         <span className="sr-only">Delete item</span>
       </Button>
     </div>
-  )
+  );
 }

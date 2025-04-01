@@ -1,5 +1,5 @@
-import type { StoredFile } from "@/types"
-import { relations } from "drizzle-orm"
+import type { StoredFile } from "@/types";
+import { relations } from "drizzle-orm";
 import {
   decimal,
   index,
@@ -9,20 +9,20 @@ import {
   pgTable,
   text,
   varchar,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { categories } from "./categories"
-import { stores } from "./stores"
-import { subcategories } from "./subcategories"
-import { lifecycleDates } from "./utils"
+import { categories } from "./categories";
+import { stores } from "./stores";
+import { subcategories } from "./subcategories";
+import { lifecycleDates } from "./utils";
 
 export const productStatusEnum = pgEnum("product_status", [
   "active",
   "draft",
   "archived",
-])
+]);
 
 export const products = pgTable(
   "products",
@@ -36,7 +36,7 @@ export const products = pgTable(
     categoryId: varchar("category_id", { length: 30 }).notNull(),
     subcategoryId: varchar("subcategory_id", { length: 30 }).references(
       () => subcategories.id,
-      { onDelete: "cascade" }
+      { onDelete: "cascade" },
     ),
     /**
      * postgresql docs suggest using numeric for money
@@ -61,10 +61,10 @@ export const products = pgTable(
     storeIdIdx: index("products_store_id_idx").on(table.storeId),
     categoryIdIdx: index("products_category_id_idx").on(table.categoryId),
     subcategoryIdIdx: index("products_subcategory_id_idx").on(
-      table.subcategoryId
+      table.subcategoryId,
     ),
-  })
-)
+  }),
+);
 
 export const productsRelations = relations(products, ({ one }) => ({
   store: one(stores, { fields: [products.storeId], references: [stores.id] }),
@@ -76,7 +76,7 @@ export const productsRelations = relations(products, ({ one }) => ({
     fields: [products.subcategoryId],
     references: [subcategories.id],
   }),
-}))
+}));
 
-export type Product = typeof products.$inferSelect
-export type NewProduct = typeof products.$inferInsert
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;

@@ -1,13 +1,13 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { type getUserPlanMetrics } from "@/lib/queries/user"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button";
+import type { getUserPlanMetrics } from "@/lib/queries/user";
+import { cn } from "@/lib/utils";
 
-import { ManagePlanForm } from "./manage-plan-form"
+import { ManagePlanForm } from "./manage-plan-form";
 
 interface RateLimitAlertProps extends React.HTMLAttributes<HTMLDivElement> {
-  planMetrics: Awaited<ReturnType<typeof getUserPlanMetrics>>
+  planMetrics: Awaited<ReturnType<typeof getUserPlanMetrics>>;
 }
 
 export function RateLimitAlert({
@@ -21,7 +21,7 @@ export function RateLimitAlert({
     storeLimitExceeded,
     productLimitExceeded,
     subscriptionPlan,
-  } = planMetrics
+  } = planMetrics;
 
   return (
     <div className={cn("space-y-4", className)} {...props}>
@@ -59,5 +59,5 @@ export function RateLimitAlert({
         )
       ) : null}
     </div>
-  )
+  );
 }

@@ -4,9 +4,9 @@ import {
   GearIcon,
   HomeIcon,
   ImageIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons";
 
-export type IconProps = React.HTMLAttributes<SVGElement>
+export type IconProps = React.HTMLAttributes<SVGElement>;
 
 export const Icons = {
   logo: (props: IconProps) => (
@@ -330,4 +330,4 @@ export const Icons = {
   placeholder: ImageIcon,
   settings: GearIcon,
   chevronLeft: ChevronLeftIcon,
-}
+};

@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
+import Image from "next/image";
 // Original source: https://github.com/vercel/platforms/blob/main/components/blur-image.tsx
-import type { ComponentProps } from "react"
-import * as React from "react"
-import Image from "next/image"
+import type { ComponentProps } from "react";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface BlurImageProps extends ComponentProps<typeof Image> {}
 
 export function BlurImage({ className, alt, ...props }: BlurImageProps) {
-  const [isLoading, setLoading] = React.useState(true)
+  const [isLoading, setLoading] = React.useState(true);
 
   return (
     <Image
@@ -18,10 +18,10 @@ export function BlurImage({ className, alt, ...props }: BlurImageProps) {
       className={cn(
         className,
         "duration-700 ease-in-out",
-        isLoading ? "scale-105 blur-lg" : "scale-100 blur-0"
+        isLoading ? "scale-105 blur-lg" : "scale-100 blur-0",
       )}
       onLoad={() => setLoading(false)}
       {...props}
     />
-  )
+  );
 }

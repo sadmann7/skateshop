@@ -1,22 +1,22 @@
-import * as React from "react"
-import { usePathname, useRouter } from "next/navigation"
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons";
+import { usePathname, useRouter } from "next/navigation";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface PaginationButtonProps extends React.HTMLAttributes<HTMLDivElement> {
-  pageCount: number
-  page?: string
-  per_page?: string
-  sort?: string
-  createQueryString: (params: Record<string, string | number | null>) => string
-  siblingCount?: number
+  pageCount: number;
+  page?: string;
+  per_page?: string;
+  sort?: string;
+  createQueryString: (params: Record<string, string | number | null>) => string;
+  siblingCount?: number;
 }
 
 export function PaginationButton({
@@ -29,43 +29,43 @@ export function PaginationButton({
   className,
   ...props
 }: PaginationButtonProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const [isPending, startTransition] = React.useTransition()
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = React.useTransition();
 
   // Memoize pagination range to avoid unnecessary re-renders
   const paginationRange = React.useMemo(() => {
-    const delta = siblingCount + 2
+    const delta = siblingCount + 2;
 
-    const range = []
+    const range = [];
     for (
       let i = Math.max(2, Number(page) - delta);
       i <= Math.min(pageCount - 1, Number(page) + delta);
       i++
     ) {
-      range.push(i)
+      range.push(i);
     }
 
     if (Number(page) - delta > 2) {
-      range.unshift("...")
+      range.unshift("...");
     }
     if (Number(page) + delta < pageCount - 1) {
-      range.push("...")
+      range.push("...");
     }
 
-    range.unshift(1)
+    range.unshift(1);
     if (pageCount !== 1) {
-      range.push(pageCount)
+      range.push(pageCount);
     }
 
-    return range
-  }, [pageCount, page, siblingCount])
+    return range;
+  }, [pageCount, page, siblingCount]);
 
   return (
     <div
       className={cn(
         "flex flex-wrap items-center justify-center gap-2",
-        className
+        className,
       )}
       {...props}
     >
@@ -81,9 +81,9 @@ export function PaginationButton({
                 page: 1,
                 per_page: per_page ?? null,
                 sort: sort ?? null,
-              })}`
-            )
-          })
+              })}`,
+            );
+          });
         }}
         disabled={Number(page) === 1 || isPending}
       >
@@ -101,9 +101,9 @@ export function PaginationButton({
                 page: Number(page) - 1,
                 per_page: per_page ?? null,
                 sort: sort ?? null,
-              })}`
-            )
-          })
+              })}`,
+            );
+          });
         }}
         disabled={Number(page) === 1 || isPending}
       >
@@ -135,15 +135,15 @@ export function PaginationButton({
                     page: pageNumber,
                     per_page: per_page ?? null,
                     sort: sort ?? null,
-                  })}`
-                )
-              })
+                  })}`,
+                );
+              });
             }}
             disabled={isPending}
           >
             {pageNumber}
           </Button>
-        )
+        ),
       )}
       <Button
         aria-label="Go to next page"
@@ -157,9 +157,9 @@ export function PaginationButton({
                 page: Number(page) + 1,
                 per_page: per_page ?? null,
                 sort: sort ?? null,
-              })}`
-            )
-          })
+              })}`,
+            );
+          });
         }}
         disabled={Number(page) === (pageCount ?? 10) || isPending}
       >
@@ -176,13 +176,13 @@ export function PaginationButton({
               page: pageCount ?? 10,
               per_page: per_page ?? null,
               sort: sort ?? null,
-            })}`
-          )
+            })}`,
+          );
         }}
         disabled={Number(page) === (pageCount ?? 10) || isPending}
       >
         <DoubleArrowRightIcon className="size-4" aria-hidden="true" />
       </Button>
     </div>
-  )
+  );
 }

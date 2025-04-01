@@ -1,47 +1,47 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { type Order } from "@/db/schema"
-import type { StripePaymentStatus } from "@/types"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { type ColumnDef } from "@tanstack/react-table"
-import { z } from "zod"
+import type { Order } from "@/db/schema";
+import type { StripePaymentStatus } from "@/types";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import type { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
+import * as React from "react";
+import { z } from "zod";
 
-import {
-  getStripePaymentStatusColor,
-  stripePaymentStatuses,
-} from "@/lib/checkout"
-import { cn, formatDate, formatId, formatPrice } from "@/lib/utils"
-import { checkoutItemSchema } from "@/lib/validations/cart"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTable } from "@/components/data-table/data-table"
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+} from "@/components/ui/dropdown-menu";
+import {
+  getStripePaymentStatusColor,
+  stripePaymentStatuses,
+} from "@/lib/checkout";
+import { cn, formatDate, formatId, formatPrice } from "@/lib/utils";
+import { checkoutItemSchema } from "@/lib/validations/cart";
 
 export type AwaitedOrder = Pick<
   Order,
   "id" | "email" | "items" | "amount" | "createdAt" | "storeId"
 > & {
-  status: Order["stripePaymentIntentStatus"]
-  store: string | null
-}
+  status: Order["stripePaymentIntentStatus"];
+  store: string | null;
+};
 
 interface PurchasesTableProps {
   promise: Promise<{
-    data: AwaitedOrder[]
-    pageCount: number
-  }>
+    data: AwaitedOrder[];
+    pageCount: number;
+  }>;
 }
 
 export function PurchasesTable({ promise }: PurchasesTableProps) {
-  const { data, pageCount } = React.use(promise)
+  const { data, pageCount } = React.use(promise);
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<AwaitedOrder, unknown>[]>(
@@ -52,7 +52,7 @@ export function PurchasesTable({ promise }: PurchasesTableProps) {
           <DataTableColumnHeader column={column} title="Order ID" />
         ),
         cell: ({ cell }) => {
-          return <span>{formatId(String(cell.getValue()))}</span>
+          return <span>{formatId(String(cell.getValue()))}</span>;
         },
       },
       {
@@ -69,12 +69,12 @@ export function PurchasesTable({ promise }: PurchasesTableProps) {
                 getStripePaymentStatusColor({
                   status: cell.getValue() as StripePaymentStatus,
                   shade: 600,
-                })
+                }),
               )}
             >
               {String(cell.getValue())}
             </Badge>
-          )
+          );
         },
       },
       {
@@ -91,18 +91,18 @@ export function PurchasesTable({ promise }: PurchasesTableProps) {
         cell: ({ cell }) => {
           const safeParsedItems = z
             .array(checkoutItemSchema)
-            .safeParse(JSON.parse(cell.getValue() as string))
+            .safeParse(JSON.parse(cell.getValue() as string));
 
           return (
             <span>
               {safeParsedItems.success
                 ? safeParsedItems.data.reduce(
                     (acc, item) => acc + item.quantity,
-                    0
+                    0,
                   )
                 : 0}
             </span>
-          )
+          );
         },
       },
       {
@@ -150,10 +150,10 @@ export function PurchasesTable({ promise }: PurchasesTableProps) {
         ),
       },
     ],
-    []
-  )
+    [],
+  );
 
-  return null
+  return null;
 
   // return (
   //   <DataTable

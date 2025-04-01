@@ -1,14 +1,14 @@
-import { Slot } from "@radix-ui/react-slot"
+import { Slot } from "@radix-ui/react-slot";
 
-import { cn } from "@/lib/utils"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface PlaceholderImageProps
   extends React.ComponentPropsWithoutRef<typeof AspectRatio> {
-  isSkeleton?: boolean
-  asChild?: boolean
+  isSkeleton?: boolean;
+  asChild?: boolean;
 }
 
 export function PlaceholderImage({
@@ -17,7 +17,7 @@ export function PlaceholderImage({
   className,
   ...props
 }: PlaceholderImageProps) {
-  const Comp = asChild ? Slot : AspectRatio
+  const Comp = asChild ? Slot : AspectRatio;
 
   return (
     <Comp
@@ -31,7 +31,7 @@ export function PlaceholderImage({
         aria-roledescription="placeholder"
         className={cn(
           "flex size-full items-center justify-center",
-          isSkeleton ? "animate-pulse" : "animate-none"
+          isSkeleton ? "animate-pulse" : "animate-none",
         )}
       >
         <Icons.placeholder
@@ -40,5 +40,5 @@ export function PlaceholderImage({
         />
       </Skeleton>
     </Comp>
-  )
+  );
 }

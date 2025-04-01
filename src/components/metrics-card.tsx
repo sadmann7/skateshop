@@ -1,11 +1,11 @@
 // Original source: https://github.com/openstatusHQ/openstatus/blob/main/apps/web/src/app/app/%5BworkspaceSlug%5D/(dashboard)/monitors/%5Bid%5D/_components/metrics-card.tsx
 
-import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
-import type { VariantProps } from "class-variance-authority"
-import { cva } from "class-variance-authority"
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
+import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const metricsCardVariants = cva("flex flex-col rounded-lg border px-3 py-2", {
   variants: {
@@ -27,23 +27,23 @@ const metricsCardVariants = cva("flex flex-col rounded-lg border px-3 py-2", {
   defaultVariants: {
     variant: "default",
   },
-})
+});
 
 interface MetricsCardProps extends VariantProps<typeof metricsCardVariants> {
-  title: string
-  value?: number
-  suffix: string
+  title: string;
+  value?: number;
+  suffix: string;
   /**
    * Value indicating the change in the metric compared to the previous period.
    * e.g. 1 means no change, 2 means a 100% increase, 0.5 means a 50% decrease.
    */
-  delta?: number
+  delta?: number;
   /**
    * If true, the card will have a fading effect. Useful for cards that are
    * not yet ready to be displayed or data is empty.
    */
-  fading?: boolean
-  className?: string
+  fading?: boolean;
+  className?: string;
 }
 
 export function MetricsCard({
@@ -74,7 +74,7 @@ export function MetricsCard({
         {delta || delta === 0 ? <DeltaBadge value={delta} /> : null}
       </div>
     </div>
-  )
+  );
 }
 
 const badgeVariants = cva("", {
@@ -90,19 +90,19 @@ const badgeVariants = cva("", {
   defaultVariants: {
     variant: "default",
   },
-})
+});
 
 interface DeltaBadgeProps extends VariantProps<typeof badgeVariants> {
-  value: number
-  decimal?: number
+  value: number;
+  decimal?: number;
 }
 
 function DeltaBadge({ value, decimal = 1 }: DeltaBadgeProps) {
-  const round = Math.pow(10, decimal) // 10^1 = 10 (1 decimal), 10^2 = 100 (2 decimals), etc.
-  const percentage = Math.round((value - 1) * round) / round
+  const round = Math.pow(10, decimal); // 10^1 = 10 (1 decimal), 10^2 = 100 (2 decimals), etc.
+  const percentage = Math.round((value - 1) * round) / round;
 
   const variant: VariantProps<typeof badgeVariants>["variant"] =
-    percentage > 0 ? "increase" : percentage < 0 ? "decrease" : "default"
+    percentage > 0 ? "increase" : percentage < 0 ? "decrease" : "default";
 
   return (
     <Badge variant="secondary" className={badgeVariants({ variant })}>
@@ -112,5 +112,5 @@ function DeltaBadge({ value, decimal = 1 }: DeltaBadgeProps) {
       </span>
       {Math.abs(percentage)}%
     </Badge>
-  )
+  );
 }

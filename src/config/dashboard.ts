@@ -1,7 +1,7 @@
-import { type SidebarNavItem } from "@/types"
+import type { SidebarNavItem } from "@/types";
 
 export interface DashboardConfig {
-  sidebarNav: SidebarNavItem[]
+  sidebarNav: SidebarNavItem[];
 }
 
 export const dashboardConfig: DashboardConfig = {
@@ -37,4 +37,4 @@ export const dashboardConfig: DashboardConfig = {
       items: [],
     },
   ],
-}
+};

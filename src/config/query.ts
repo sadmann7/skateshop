@@ -1,4 +1,4 @@
-export type QueryConfig = typeof queryConfig
+export type QueryConfig = typeof queryConfig;
 
 export const queryConfig = {
   store: {
@@ -49,4 +49,4 @@ export const queryConfig = {
       },
     ],
   },
-}
+};

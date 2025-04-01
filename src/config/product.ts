@@ -1,4 +1,4 @@
-export type ProductConfig = typeof productConfig
+export type ProductConfig = typeof productConfig;
 
 export const productConfig = {
   categories: [
@@ -169,4 +169,4 @@ export const productConfig = {
     "limited",
     "exclusive",
   ],
-}
+};

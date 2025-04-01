@@ -441,12 +441,12 @@ const patterns = [
     image:
       '<svg width="84" height="16" viewBox="0 0 84 16" xmlns="http://www.w3.org/2000/svg"><path d="M78 7V4h-2v3h-3v2h3v3h2V9h3V7h-3zM30 7V4h-2v3h-3v2h3v3h2V9h3V7h-3zM10 0h2v16h-2V0zm6 0h4v16h-4V0zM2 0h4v16H2V0zm50 0h2v16h-2V0zM38 0h2v16h-2V0zm28 0h2v16h-2V0zm-8 0h6v16h-6V0zM42 0h6v16h-6V0z" fill="#000" fill-rule="evenodd"/></svg>',
   },
-]
+];
 
 const bgPattern = (
   pattern: (typeof patterns)[number],
   fgColor: string,
-  opacity: number
+  opacity: number,
 ) => {
   const svg = pattern.image
     .replace('fill="#000"', `fill="${fgColor}" fill-opacity="${opacity}"`)
@@ -454,9 +454,9 @@ const bgPattern = (
     .replace(/</g, "%3C")
     .replace(/>/g, "%3E")
     .replace(/&/g, "%26")
-    .replace(/#/g, "%23")
-  return 'url("data:image/svg+xml,' + svg + '")'
-}
+    .replace(/#/g, "%23");
+  return 'url("data:image/svg+xml,' + svg + '")';
+};
 
 const colors = [
   "#e51c23",
@@ -475,30 +475,30 @@ const colors = [
   "#ff5722",
   "#795548",
   "#607d8b",
-]
+];
 
 export const getRandomPatternStyle = (seed: string) => {
   // Generate a 32-bit hash based on the seed,
   // then use it to pick a pattern and a color.
-  let hash = 0
+  let hash = 0;
   if (seed.length !== 0) {
     for (let i = 0; i < seed.length; i++) {
-      hash = seed.charCodeAt(i) + ((hash << 5) - hash)
-      hash = hash & hash
+      hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+      hash = hash & hash;
     }
   }
-  const [nPatterns, nColors] = [patterns.length, colors.length]
-  const pattern = patterns[((hash % nPatterns) + nPatterns) % nPatterns]
-  const fgColor = colors[((hash % nColors) + nColors) % nColors]
-  const bgColor = "#fff"
-  const opacity = 0.4
+  const [nPatterns, nColors] = [patterns.length, colors.length];
+  const pattern = patterns[((hash % nPatterns) + nPatterns) % nPatterns];
+  const fgColor = colors[((hash % nColors) + nColors) % nColors];
+  const bgColor = "#fff";
+  const opacity = 0.4;
 
   if (!pattern || !fgColor) {
-    throw new Error("Something went wrong trying to pick a pattern...")
+    throw new Error("Something went wrong trying to pick a pattern...");
   }
 
   return {
     backgroundColor: bgColor,
     backgroundImage: bgPattern(pattern, fgColor, opacity),
-  }
-}
+  };
+};

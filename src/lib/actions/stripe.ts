@@ -1,47 +1,48 @@
-"use server"
+"use server";
 
+import { db } from "@/db";
+import { carts, payments, stores } from "@/db/schema";
+import type { PlanWithPrice, UserPlan } from "@/types";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { addDays } from "date-fns";
+import { eq } from "drizzle-orm";
 import {
   unstable_cache as cache,
   unstable_noStore as noStore,
-} from "next/cache"
-import { cookies } from "next/headers"
-import { db } from "@/db"
-import { carts, payments, stores } from "@/db/schema"
-import type { PlanWithPrice, UserPlan } from "@/types"
-import { clerkClient, currentUser } from "@clerk/nextjs/server"
-import { addDays } from "date-fns"
-import { eq } from "drizzle-orm"
-import type Stripe from "stripe"
-import { type z } from "zod"
+} from "next/cache";
+import { cookies } from "next/headers";
+import type Stripe from "stripe";
+import type { z } from "zod";
 
-import { pricingConfig } from "@/config/pricing"
-import { calculateOrderAmount } from "@/lib/checkout"
-import { getErrorMessage } from "@/lib/handle-error"
-import { stripe } from "@/lib/stripe"
-import { absoluteUrl, formatPrice, getUserEmail } from "@/lib/utils"
-import { userPrivateMetadataSchema } from "@/lib/validations/auth"
-import { type CheckoutItemSchema } from "@/lib/validations/cart"
+import { pricingConfig } from "@/config/pricing";
+import { calculateOrderAmount } from "@/lib/checkout";
+import { CART_COOKIE_NAME } from "@/lib/constants";
+import { getErrorMessage } from "@/lib/handle-error";
+import { stripe } from "@/lib/stripe";
+import { absoluteUrl, formatPrice, getUserEmail } from "@/lib/utils";
+import { userPrivateMetadataSchema } from "@/lib/validations/auth";
+import type { CheckoutItemSchema } from "@/lib/validations/cart";
 import type {
   createPaymentIntentSchema,
   getPaymentIntentSchema,
   getPaymentIntentsSchema,
   getStripeAccountSchema,
   managePlanSchema,
-} from "@/lib/validations/stripe"
+} from "@/lib/validations/stripe";
 
 // Retrieve prices for all plans from Stripe
 export async function getPlans(): Promise<PlanWithPrice[]> {
   return await cache(
     async () => {
-      const standardPriceId = pricingConfig.plans.standard.stripePriceId
-      const proPriceId = pricingConfig.plans.pro.stripePriceId
+      const standardPriceId = pricingConfig.plans.standard.stripePriceId;
+      const proPriceId = pricingConfig.plans.pro.stripePriceId;
 
       const [standardPrice, proPrice] = await Promise.all([
         stripe.prices.retrieve(standardPriceId),
         stripe.prices.retrieve(proPriceId),
-      ])
+      ]);
 
-      const currency = proPrice.currency
+      const currency = proPrice.currency;
 
       return Object.values(pricingConfig.plans).map((plan) => {
         const price =
@@ -49,37 +50,38 @@ export async function getPlans(): Promise<PlanWithPrice[]> {
             ? proPrice
             : plan.stripePriceId === standardPriceId
               ? standardPrice
-              : null
+              : null;
 
         return {
           ...plan,
           price: formatPrice((price?.unit_amount ?? 0) / 100, { currency }),
-        }
-      })
+        };
+      });
     },
     ["subscription-plans"],
     {
       revalidate: 3600, // every hour
       tags: ["subscription-plans"],
-    }
-  )()
+    },
+  )();
 }
 
 // Getting the subscription plan by store id
 export async function getPlan(input: {
-  userId: string
+  userId: string;
 }): Promise<UserPlan | null> {
-  noStore()
+  noStore();
   try {
-    const user = await clerkClient.users.getUser(input.userId)
+    const authClient = await clerkClient();
+    const user = await authClient.users.getUser(input.userId);
 
     if (!user) {
-      throw new Error("User not found.")
+      throw new Error("User not found.");
     }
 
     const userPrivateMetadata = userPrivateMetadataSchema.parse(
-      user.privateMetadata
-    )
+      user.privateMetadata,
+    );
 
     // Check if user is subscribed
     const isSubscribed =
@@ -87,26 +89,26 @@ export async function getPlan(input: {
       !!userPrivateMetadata.stripeCurrentPeriodEnd &&
       addDays(
         new Date(userPrivateMetadata.stripeCurrentPeriodEnd),
-        1
-      ).getTime() > Date.now()
+        1,
+      ).getTime() > Date.now();
 
     const plan = isSubscribed
       ? Object.values(pricingConfig.plans).find(
-          (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId
+          (plan) => plan.stripePriceId === userPrivateMetadata.stripePriceId,
         )
-      : pricingConfig.plans.free
+      : pricingConfig.plans.free;
 
     if (!plan) {
-      throw new Error("Plan not found.")
+      throw new Error("Plan not found.");
     }
 
     // Check if user has canceled subscription
-    let isCanceled = false
+    let isCanceled = false;
     if (isSubscribed && !!userPrivateMetadata.stripeSubscriptionId) {
       const stripePlan = await stripe.subscriptions.retrieve(
-        userPrivateMetadata.stripeSubscriptionId
-      )
-      isCanceled = stripePlan.cancel_at_period_end
+        userPrivateMetadata.stripeSubscriptionId,
+      );
+      isCanceled = stripePlan.cancel_at_period_end;
     }
 
     return {
@@ -117,35 +119,35 @@ export async function getPlan(input: {
       isSubscribed,
       isCanceled,
       isActive: isSubscribed && !isCanceled,
-    }
+    };
   } catch (err) {
-    return null
+    return null;
   }
 }
 
 // Getting the Stripe account by store id
 export async function getStripeAccount(
-  input: z.infer<typeof getStripeAccountSchema>
+  input: z.infer<typeof getStripeAccountSchema>,
 ) {
-  noStore()
+  noStore();
 
   const falsyReturn = {
     isConnected: false,
     account: null,
     payment: null,
-  }
+  };
 
   try {
-    const retrieveAccount = input.retrieveAccount ?? true
+    const retrieveAccount = input.retrieveAccount ?? true;
 
     const store = await db.query.stores.findFirst({
       columns: {
         stripeAccountId: true,
       },
       where: eq(stores.id, input.storeId),
-    })
+    });
 
-    if (!store) return falsyReturn
+    if (!store) return falsyReturn;
 
     const payment = await db.query.payments.findFirst({
       columns: {
@@ -153,20 +155,20 @@ export async function getStripeAccount(
         detailsSubmitted: true,
       },
       where: eq(payments.storeId, input.storeId),
-    })
+    });
 
-    if (!payment || !payment.stripeAccountId) return falsyReturn
+    if (!payment || !payment.stripeAccountId) return falsyReturn;
 
     if (!retrieveAccount)
       return {
         isConnected: true,
         account: null,
         payment,
-      }
+      };
 
-    const account = await stripe.accounts.retrieve(payment.stripeAccountId)
+    const account = await stripe.accounts.retrieve(payment.stripeAccountId);
 
-    if (!account) return falsyReturn
+    if (!account) return falsyReturn;
 
     // If the account details have been submitted, we update the store and payment records
     if (account.details_submitted && !payment.detailsSubmitted) {
@@ -179,46 +181,46 @@ export async function getStripeAccount(
               ? new Date(account.created * 1000)
               : null,
           })
-          .where(eq(payments.storeId, input.storeId))
+          .where(eq(payments.storeId, input.storeId));
 
         await tx
           .update(stores)
           .set({
             stripeAccountId: account.id,
           })
-          .where(eq(stores.id, input.storeId))
-      })
+          .where(eq(stores.id, input.storeId));
+      });
     }
 
     return {
       isConnected: payment.detailsSubmitted,
       account: account.details_submitted ? account : null,
       payment,
-    }
+    };
   } catch (err) {
-    return falsyReturn
+    return falsyReturn;
   }
 }
 
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Getting payment intents for a store
 export async function getPaymentIntents(
-  input: z.infer<typeof getPaymentIntentsSchema>
+  input: z.infer<typeof getPaymentIntentsSchema>,
 ) {
-  noStore()
+  noStore();
 
   try {
     const { isConnected, payment } = await getStripeAccount({
       storeId: input.storeId,
       retrieveAccount: false,
-    })
+    });
 
     if (!isConnected || !payment) {
-      throw new Error("Store not connected to Stripe.")
+      throw new Error("Store not connected to Stripe.");
     }
 
     if (!payment.stripeAccountId) {
-      throw new Error("Stripe account not found.")
+      throw new Error("Stripe account not found.");
     }
 
     const paymentIntents = await stripe.paymentIntents.list(
@@ -227,8 +229,8 @@ export async function getPaymentIntents(
       },
       {
         stripeAccount: payment.stripeAccountId,
-      }
-    )
+      },
+    );
 
     return {
       paymentIntents: paymentIntents.data.map((item) => ({
@@ -238,47 +240,48 @@ export async function getPaymentIntents(
         cartId: item.metadata.cartId,
       })),
       hasMore: paymentIntents.has_more,
-    }
+    };
   } catch (err) {
     return {
       paymentIntents: [],
       hasMore: false,
-    }
+    };
   }
 }
 
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Getting a payment intent for a store
 export async function getPaymentIntent(
-  input: z.infer<typeof getPaymentIntentSchema>
+  input: z.infer<typeof getPaymentIntentSchema>,
 ) {
-  noStore()
+  noStore();
 
   try {
-    const cartId = cookies().get("cartId")?.value
+    const cookiesList = await cookies();
+    const cartId = cookiesList.get(CART_COOKIE_NAME)?.value;
 
     const { isConnected, payment } = await getStripeAccount({
       storeId: input.storeId,
       retrieveAccount: false,
-    })
+    });
 
     if (!isConnected || !payment) {
-      throw new Error("Store not connected to Stripe.")
+      throw new Error("Store not connected to Stripe.");
     }
 
     if (!payment.stripeAccountId) {
-      throw new Error("Stripe account not found.")
+      throw new Error("Stripe account not found.");
     }
 
     const paymentIntent = await stripe.paymentIntents.retrieve(
       input.paymentIntentId,
       {
         stripeAccount: payment.stripeAccountId,
-      }
-    )
+      },
+    );
 
     if (paymentIntent.status !== "succeeded") {
-      throw new Error("Payment intent not succeeded.")
+      throw new Error("Payment intent not succeeded.");
     }
 
     if (
@@ -286,50 +289,50 @@ export async function getPaymentIntent(
       paymentIntent.shipping?.address?.postal_code?.split(" ").join("") !==
         input.deliveryPostalCode
     ) {
-      throw new Error("CartId or delivery postal code does not match.")
+      throw new Error("CartId or delivery postal code does not match.");
     }
 
     return {
       paymentIntent,
       isVerified: true,
-    }
+    };
   } catch (err) {
-    console.error(err)
+    console.error(err);
     return {
       paymentIntent: null,
       isVerified: false,
-    }
+    };
   }
 }
 
 // Managing subscription by store id
 export async function managePlan(input: z.infer<typeof managePlanSchema>) {
-  noStore()
+  noStore();
 
   try {
-    const billingUrl = absoluteUrl("/dashboard/billing")
+    const billingUrl = absoluteUrl("/dashboard/billing");
 
-    const user = await currentUser()
+    const user = await currentUser();
 
     if (!user) {
-      throw new Error("User not found.")
+      throw new Error("User not found.");
     }
 
-    const email = getUserEmail(user)
+    const email = getUserEmail(user);
 
     // If the user is already subscribed to a plan, we redirect them to the Stripe billing portal
     if (input.isSubscribed && input.stripeCustomerId && input.isCurrentPlan) {
       const stripeSession = await stripe.billingPortal.sessions.create({
         customer: input.stripeCustomerId,
         return_url: billingUrl,
-      })
+      });
 
       return {
         data: {
           url: stripeSession.url,
         },
         error: null,
-      }
+      };
     }
 
     // If the user is not subscribed to a plan, we create a Stripe Checkout session
@@ -349,52 +352,52 @@ export async function managePlan(input: z.infer<typeof managePlanSchema>) {
       metadata: {
         userId: user.id,
       },
-    })
+    });
 
     return {
       data: {
         url: stripeSession.url ?? billingUrl,
       },
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }
 
 // Connecting a Stripe account to a store
 export async function createAccountLink(
-  input: z.infer<typeof getStripeAccountSchema>
+  input: z.infer<typeof getStripeAccountSchema>,
 ) {
-  noStore()
+  noStore();
 
   try {
-    const { isConnected, payment, account } = await getStripeAccount(input)
+    const { isConnected, payment, account } = await getStripeAccount(input);
 
     if (isConnected) {
-      throw new Error("Store already connected to Stripe.")
+      throw new Error("Store already connected to Stripe.");
     }
 
     // Delete the existing account if details have not been submitted
     if (account && !account.details_submitted) {
-      await stripe.accounts.del(account.id)
+      await stripe.accounts.del(account.id);
     }
 
     const stripeAccountId =
-      payment?.stripeAccountId ?? (await createStripeAccount())
+      payment?.stripeAccountId ?? (await createStripeAccount());
 
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
       refresh_url: absoluteUrl(`/store/${input.storeId}`),
       return_url: absoluteUrl(`/store/${input.storeId}`),
       type: "account_onboarding",
-    })
+    });
 
     if (!accountLink?.url) {
-      throw new Error("Error creating Stripe account link, please try again.")
+      throw new Error("Error creating Stripe account link, please try again.");
     }
 
     return {
@@ -402,74 +405,75 @@ export async function createAccountLink(
         url: accountLink.url,
       },
       error: null,
-    }
+    };
 
     async function createStripeAccount(): Promise<string> {
-      const account = await stripe.accounts.create({ type: "standard" })
+      const account = await stripe.accounts.create({ type: "standard" });
 
       if (!account) {
-        throw new Error("Error creating Stripe account.")
+        throw new Error("Error creating Stripe account.");
       }
 
       // If payment record exists, we update it with the new account id
       if (payment) {
         await db.update(payments).set({
           stripeAccountId: account.id,
-        })
+        });
       } else {
         await db.insert(payments).values({
           storeId: input.storeId,
           stripeAccountId: account.id,
-        })
+        });
       }
 
-      return account.id
+      return account.id;
     }
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }
 
 // Modified from: https://github.com/jackblatch/OneStopShop/blob/main/server-actions/stripe/payment.ts
 // Creating a payment intent for a store
 export async function createPaymentIntent(
-  input: z.infer<typeof createPaymentIntentSchema>
+  input: z.infer<typeof createPaymentIntentSchema>,
 ) {
-  noStore()
+  noStore();
 
   try {
-    const { isConnected, payment } = await getStripeAccount(input)
+    const { isConnected, payment } = await getStripeAccount(input);
 
     if (!isConnected || !payment) {
-      throw new Error("Store not connected to Stripe.")
+      throw new Error("Store not connected to Stripe.");
     }
 
     if (!payment.stripeAccountId) {
-      throw new Error("Stripe account not found.")
+      throw new Error("Stripe account not found.");
     }
 
-    const cartId = cookies().get("cartId")?.value
+    const cookiesList = await cookies();
+    const cartId = cookiesList.get(CART_COOKIE_NAME)?.value;
 
     if (!cartId) {
-      throw new Error("Cart not found.")
+      throw new Error("Cart not found.");
     }
 
     const checkoutItems: CheckoutItemSchema[] = input.items.map((item) => ({
       productId: item.id,
       price: Number(item.price),
       quantity: item.quantity,
-    }))
+    }));
 
     const metadata: Stripe.MetadataParam = {
       cartId: cartId,
       // Stripe metadata values must be within 500 characters string
       items: JSON.stringify(checkoutItems),
-    }
+    };
 
-    const { total, fee } = calculateOrderAmount(input.items)
+    const { total, fee } = calculateOrderAmount(input.items);
 
     // Update the cart with the payment intent id and client secret if it exists
     // if (!cartId) {
@@ -510,8 +514,8 @@ export async function createPaymentIntent(
       },
       {
         stripeAccount: payment.stripeAccountId,
-      }
-    )
+      },
+    );
 
     // Update the cart with the payment intent id and client secret
     if (paymentIntent.status === "requires_payment_method") {
@@ -521,7 +525,7 @@ export async function createPaymentIntent(
           paymentIntentId: paymentIntent.id,
           clientSecret: paymentIntent.client_secret,
         })
-        .where(eq(carts.id, cartId))
+        .where(eq(carts.id, cartId));
     }
 
     return {
@@ -529,11 +533,11 @@ export async function createPaymentIntent(
         clientSecret: paymentIntent.client_secret,
       },
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }

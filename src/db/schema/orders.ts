@@ -6,14 +6,14 @@ import {
   pgTable,
   text,
   varchar,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
-import { type CheckoutItemSchema } from "@/lib/validations/cart"
+import { generateId } from "@/lib/id";
+import type { CheckoutItemSchema } from "@/lib/validations/cart";
 
-import { addresses } from "./addresses"
-import { stores } from "./stores"
-import { lifecycleDates } from "./utils"
+import { addresses } from "./addresses";
+import { stores } from "./stores";
+import { lifecycleDates } from "./utils";
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const orders = pgTable(
@@ -42,8 +42,8 @@ export const orders = pgTable(
   (table) => ({
     storeIdIdx: index("orders_store_id_idx").on(table.storeId),
     addressIdIdx: index("orders_address_id_idx").on(table.addressId),
-  })
-)
+  }),
+);
 
-export type Order = typeof orders.$inferSelect
-export type NewOrder = typeof orders.$inferInsert
+export type Order = typeof orders.$inferSelect;
+export type NewOrder = typeof orders.$inferInsert;

@@ -1,10 +1,10 @@
-import Link from "next/link"
+import Link from "next/link";
 
-import { getCart } from "@/lib/actions/cart"
-import { cn, formatPrice } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import { CartLineItems } from "@/components/checkout/cart-line-items";
+import { Icons } from "@/components/icons";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -12,22 +12,22 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { CartLineItems } from "@/components/checkout/cart-line-items"
-import { Icons } from "@/components/icons"
+} from "@/components/ui/sheet";
+import { getCart } from "@/lib/actions/cart";
+import { cn, formatPrice } from "@/lib/utils";
 
 export async function CartSheet() {
-  const cartLineItems = await getCart()
+  const cartLineItems = await getCart();
 
   const itemCount = cartLineItems.reduce(
     (total, item) => total + Number(item.quantity),
-    0
-  )
+    0,
+  );
 
   const cartTotal = cartLineItems.reduce(
     (total, item) => total + item.quantity * Number(item.price),
-    0
-  )
+    0,
+  );
 
   return (
     <Sheet>
@@ -107,7 +107,7 @@ export async function CartSheet() {
                     variant: "link",
                     size: "sm",
                     className: "text-sm text-muted-foreground",
-                  })
+                  }),
                 )}
               >
                 Add items to your cart to checkout
@@ -117,5 +117,5 @@ export async function CartSheet() {
         )}
       </SheetContent>
     </Sheet>
-  )
+  );
 }

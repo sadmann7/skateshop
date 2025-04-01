@@ -1,18 +1,18 @@
-import * as React from "react"
-import Link from "next/link"
-import { ArrowRightIcon } from "@radix-ui/react-icons"
-import { Slot } from "@radix-ui/react-slot"
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { Slot } from "@radix-ui/react-slot";
+import Link from "next/link";
+import type * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface ContentSectionProps extends React.HTMLAttributes<HTMLDivElement> {
-  title: string
-  description?: string
-  href: string
-  linkText?: string
-  children: React.ReactNode
-  asChild?: boolean
+  title: string;
+  description?: string;
+  href: string;
+  linkText?: string;
+  children: React.ReactNode;
+  asChild?: boolean;
 }
 
 export function ContentSection({
@@ -25,7 +25,7 @@ export function ContentSection({
   asChild = false,
   ...props
 }: ContentSectionProps) {
-  const ChildrenShell = asChild ? Slot : "div"
+  const ChildrenShell = asChild ? Slot : "div";
 
   return (
     <section className={cn("space-y-6", className)} {...props}>
@@ -52,7 +52,7 @@ export function ContentSection({
         <ChildrenShell
           className={cn(
             !asChild &&
-              "grid gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+              "grid gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
           )}
         >
           {children}
@@ -70,5 +70,5 @@ export function ContentSection({
         </Button>
       </div>
     </section>
-  )
+  );
 }

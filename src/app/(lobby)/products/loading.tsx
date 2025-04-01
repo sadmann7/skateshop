@@ -1,6 +1,6 @@
-import { Skeleton } from "@/components/ui/skeleton"
-import { ProductCardSkeleton } from "@/components/product-card-skeleton"
-import { Shell } from "@/components/shell"
+import { ProductCardSkeleton } from "@/components/product-card-skeleton";
+import { Shell } from "@/components/shell";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductsLoading() {
   return (
@@ -21,5 +21,5 @@ export default function ProductsLoading() {
         </div>
       </div>
     </Shell>
-  )
+  );
 }

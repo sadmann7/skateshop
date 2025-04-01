@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { motion, AnimatePresence as MotionPresence } from "framer-motion"
+import { AnimatePresence as MotionPresence, motion } from "framer-motion";
+import type * as React from "react";
 import {
-  useInView,
   type IntersectionObserverProps,
-} from "react-intersection-observer"
+  useInView,
+} from "react-intersection-observer";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
-export const MotionDiv = motion.div
-export const MotionSection = motion.section
-export const MotionH1 = motion.h1
-export const MotionP = motion.p
-export const AnimatePresence = MotionPresence
+export const MotionDiv = motion.div;
+export const MotionSection = motion.section;
+export const MotionH1 = motion.h1;
+export const MotionP = motion.p;
+export const AnimatePresence = MotionPresence;
 
 interface MotionShellProps
   extends React.ComponentPropsWithoutRef<typeof motion.div> {
-  delay?: IntersectionObserverProps["delay"]
-  threshold?: IntersectionObserverProps["threshold"]
-  once?: IntersectionObserverProps["triggerOnce"]
-  margin?: IntersectionObserverProps["rootMargin"]
+  delay?: IntersectionObserverProps["delay"];
+  threshold?: IntersectionObserverProps["threshold"];
+  once?: IntersectionObserverProps["triggerOnce"];
+  margin?: IntersectionObserverProps["rootMargin"];
 }
 
 export function MotionShell({
@@ -36,7 +36,7 @@ export function MotionShell({
     threshold,
     triggerOnce: once,
     rootMargin: margin,
-  })
+  });
 
   return (
     <MotionDiv
@@ -50,5 +50,5 @@ export function MotionShell({
       }}
       {...props}
     />
-  )
+  );
 }

@@ -1,13 +1,13 @@
 /** Originally from `shadcn/ui-docs`
  * @link https://github.com/shadcn/ui/blob/main/apps/www/components/callout.tsx
  */
-import * as React from "react"
+import type * as React from "react";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface CalloutProps extends React.PropsWithChildren {
-  icon?: string
-  title?: string
+  icon?: string;
+  title?: string;
 }
 
 export function Callout({ title, children, icon, ...props }: CalloutProps) {
@@ -17,5 +17,5 @@ export function Callout({ title, children, icon, ...props }: CalloutProps) {
       {title && <AlertTitle>{title}</AlertTitle>}
       <AlertDescription>{children}</AlertDescription>
     </Alert>
-  )
+  );
 }

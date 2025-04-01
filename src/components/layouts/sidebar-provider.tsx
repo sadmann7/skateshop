@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
 interface SidebarContextProps {
-  open: boolean
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const SidebarContext = React.createContext<SidebarContextProps>({
   open: false,
   setOpen: () => {},
-})
+});
 
 export const SidebarProvider = ({ children }: React.PropsWithChildren) => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(false);
 
   return (
     <SidebarContext.Provider
@@ -24,15 +24,15 @@ export const SidebarProvider = ({ children }: React.PropsWithChildren) => {
     >
       {children}
     </SidebarContext.Provider>
-  )
-}
+  );
+};
 
 export const useSidebar = () => {
-  const context = React.useContext(SidebarContext)
+  const context = React.useContext(SidebarContext);
 
   if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider")
+    throw new Error("useSidebar must be used within a SidebarProvider");
   }
 
-  return context
-}
+  return context;
+};

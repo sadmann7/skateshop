@@ -1,14 +1,19 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
-import { Shell } from "@/components/shell"
+} from "@/components/page-header";
+import { Shell } from "@/components/shell";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CartLoading() {
   return (
@@ -19,7 +24,7 @@ export default function CartLoading() {
           Checkout with your cart items
         </PageHeaderDescription>
       </PageHeader>
-      <Card as="section">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-x-4 py-4">
           <Skeleton className="h-6 w-20" />
           <Skeleton className="h-8 w-20" />
@@ -30,7 +35,7 @@ export default function CartLoading() {
             <div className="flex max-h-[280px] flex-col gap-5">
               {Array.from({ length: 2 }).map((_, j) => (
                 <div key={j} className="space-y-3">
-                  <div className="flex flex-col items-start justify-between gap-4 xs:flex-row">
+                  <div className="flex xs:flex-row flex-col items-start justify-between gap-4">
                     <div className="flex items-center space-x-4">
                       <div className="relative size-16 overflow-hidden rounded">
                         <div className="flex h-full items-center justify-center bg-secondary">
@@ -46,7 +51,7 @@ export default function CartLoading() {
                         <Skeleton className="h-2.5 w-10" />
                       </div>
                     </div>
-                    <div className="flex w-full items-center justify-between space-x-1 xs:w-auto xs:justify-normal">
+                    <div className="flex w-full xs:w-auto items-center xs:justify-normal justify-between space-x-1">
                       <div className="flex items-center space-x-1">
                         <Skeleton className="size-8" />
                         <Skeleton className="h-8 w-14" />
@@ -68,5 +73,5 @@ export default function CartLoading() {
         </CardFooter>
       </Card>
     </Shell>
-  )
+  );
 }

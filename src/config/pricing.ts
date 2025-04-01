@@ -1,7 +1,7 @@
-import { env } from "@/env.js"
-import { type Plan } from "@/types"
+import { env } from "@/env.js";
+import type { Plan } from "@/types";
 
-export type PricingConfig = typeof pricingConfig
+export type PricingConfig = typeof pricingConfig;
 
 export const pricingConfig = {
   plans: {
@@ -45,4 +45,4 @@ export const pricingConfig = {
       },
     },
   } satisfies Record<Plan["id"], Plan>,
-}
+};

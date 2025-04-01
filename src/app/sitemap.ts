@@ -1,10 +1,9 @@
-import { type MetadataRoute } from "next"
-import { db } from "@/db"
-import { categories, products, stores, subcategories } from "@/db/schema"
-import { allPages, allPosts } from "contentlayer/generated"
-import { count, desc, eq, sql } from "drizzle-orm"
+import { db } from "@/db";
+import { categories, products, stores, subcategories } from "@/db/schema";
+import { count, desc, eq, sql } from "drizzle-orm";
+import type { MetadataRoute } from "next";
 
-import { absoluteUrl } from "@/lib/utils"
+import { absoluteUrl } from "@/lib/utils";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   async function getAllStores() {
@@ -19,16 +18,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .limit(50000)
         .offset(0)
         .groupBy(stores.id)
-        .orderBy(desc(sql<number>`count(*)`))
+        .orderBy(desc(sql<number>`count(*)`));
     } catch (err) {
-      return []
+      return [];
     }
   }
 
   const storesRoutes = (await getAllStores()).map((store) => ({
     url: absoluteUrl(`/products?store_ids=${store.id}`),
     lastModified: new Date().toISOString(),
-  }))
+  }));
 
   async function getAllProducts() {
     try {
@@ -45,17 +44,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .orderBy(
           desc(count(stores.stripeAccountId)),
           desc(count(products.images)),
-          desc(products.createdAt)
-        )
+          desc(products.createdAt),
+        );
     } catch (err) {
-      return []
+      return [];
     }
   }
 
   const productsRoutes = (await getAllProducts()).map((product) => ({
     url: absoluteUrl(`/product/${product.id}`),
     lastModified: new Date().toISOString(),
-  }))
+  }));
 
   async function getAllCategories() {
     try {
@@ -67,16 +66,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           description: categories.description,
         })
         .from(categories)
-        .orderBy(desc(categories.name))
+        .orderBy(desc(categories.name));
     } catch (err) {
-      return []
+      return [];
     }
   }
 
   const categoriesRoutes = (await getAllCategories()).map((category) => ({
     url: absoluteUrl(`/collections/${category.slug}`),
     lastModified: new Date().toISOString(),
-  }))
+  }));
 
   async function getAllSubcategories() {
     try {
@@ -87,30 +86,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           slug: subcategories.slug,
           description: subcategories.description,
         })
-        .from(subcategories)
+        .from(subcategories);
     } catch (err) {
-      return []
+      return [];
     }
   }
 
-  const subcategoriesRoutes = (await getAllSubcategories())
-    .map((s) =>
-      categoriesRoutes.map((c) => ({
-        url: absoluteUrl(`/collections/${c.url.split("/").pop()}/${s.slug}`),
-        lastModified: new Date().toISOString(),
-      }))
-    )
-    .flat()
-
-  const pagesRoutes = allPages.map((page) => ({
-    url: absoluteUrl(page.slug),
-    lastModified: new Date().toISOString(),
-  }))
-
-  const postsRoutes = allPosts.map((post) => ({
-    url: absoluteUrl(post.slug),
-    lastModified: new Date().toISOString(),
-  }))
+  const subcategoriesRoutes = (await getAllSubcategories()).flatMap((s) =>
+    categoriesRoutes.map((c) => ({
+      url: absoluteUrl(`/collections/${c.url.split("/").pop()}/${s.slug}`),
+      lastModified: new Date().toISOString(),
+    })),
+  );
 
   const routes = [
     "",
@@ -125,7 +112,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((route) => ({
     url: absoluteUrl(route),
     lastModified: new Date().toISOString(),
-  }))
+  }));
 
   return [
     ...routes,
@@ -133,7 +120,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...productsRoutes,
     ...categoriesRoutes,
     ...subcategoriesRoutes,
-    ...pagesRoutes,
-    ...postsRoutes,
-  ]
+  ];
 }

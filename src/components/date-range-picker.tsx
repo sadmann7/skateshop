@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { addDays, format } from "date-fns"
-import type { DateRange } from "react-day-picker"
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { addDays, format } from "date-fns";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
+import type { ButtonProps, DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { Button, type ButtonProps } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface DateRangePickerProps
   extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
@@ -23,7 +23,7 @@ interface DateRangePickerProps
    * @type DateRange
    * @example { from: new Date(), to: new Date() }
    */
-  dateRange?: DateRange
+  dateRange?: DateRange;
 
   /**
    * The number of days to display in the date range picker.
@@ -31,35 +31,38 @@ interface DateRangePickerProps
    * @type number
    * @example 7
    */
-  dayCount?: number
+  dayCount?: number;
 
   /**
    * The placeholder text of the calendar trigger button.
    * @default "Pick a date"
    * @type string | undefined
    */
-  placeholder?: string
+  placeholder?: string;
 
   /**
    * The variant of the calendar trigger button.
    * @default "outline"
    * @type "default" | "outline" | "secondary" | "ghost"
    */
-  triggerVariant?: Exclude<ButtonProps["variant"], "destructive" | "link">
+  triggerVariant?: Exclude<
+    React.ComponentProps<typeof Button>["variant"],
+    "destructive" | "link"
+  >;
 
   /**
    * The size of the calendar trigger button.
    * @default "default"
    * @type "default" | "sm" | "lg"
    */
-  triggerSize?: Exclude<ButtonProps["size"], "icon">
+  triggerSize?: Exclude<React.ComponentProps<typeof Button>["size"], "icon">;
 
   /**
    * The class name of the calendar trigger button.
    * @default undefined
    * @type string
    */
-  triggerClassName?: string
+  triggerClassName?: string;
 }
 
 export function DateRangePicker({
@@ -72,51 +75,50 @@ export function DateRangePicker({
   className,
   ...props
 }: DateRangePickerProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [from, to] = React.useMemo(() => {
-    let fromDay: Date | undefined
-    let toDay: Date | undefined
+    let fromDay: Date | undefined;
+    let toDay: Date | undefined;
 
     if (dateRange) {
-      fromDay = dateRange.from
-      toDay = dateRange.to
+      fromDay = dateRange.from;
+      toDay = dateRange.to;
     } else if (dayCount) {
-      toDay = new Date()
-      fromDay = addDays(toDay, -dayCount)
+      toDay = new Date();
+      fromDay = addDays(toDay, -dayCount);
     }
 
-    return [fromDay, toDay]
-  }, [dateRange, dayCount])
+    return [fromDay, toDay];
+  }, [dateRange, dayCount]);
 
   const [date, setDate] = React.useState<DateRange | undefined>({
     from,
     to,
-  })
+  });
 
   // Update query string
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams)
+    const newSearchParams = new URLSearchParams(searchParams);
     if (date?.from) {
-      newSearchParams.set("from", format(date.from, "yyyy-MM-dd"))
+      newSearchParams.set("from", format(date.from, "yyyy-MM-dd"));
     } else {
-      newSearchParams.delete("from")
+      newSearchParams.delete("from");
     }
 
     if (date?.to) {
-      newSearchParams.set("to", format(date.to, "yyyy-MM-dd"))
+      newSearchParams.set("to", format(date.to, "yyyy-MM-dd"));
     } else {
-      newSearchParams.delete("to")
+      newSearchParams.delete("to");
     }
 
     router.push(`${pathname}?${newSearchParams.toString()}`, {
       scroll: false,
-    })
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date?.from, date?.to])
+    });
+  }, [date?.from, date?.to]);
 
   return (
     <div className="grid gap-2">
@@ -128,7 +130,7 @@ export function DateRangePicker({
             className={cn(
               "w-full justify-start truncate text-left font-normal",
               !date && "text-muted-foreground",
-              triggerClassName
+              triggerClassName,
             )}
           >
             <CalendarIcon className="mr-2 size-4" />
@@ -158,5 +160,5 @@ export function DateRangePicker({
         </PopoverContent>
       </Popover>
     </div>
-  )
+  );
 }

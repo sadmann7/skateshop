@@ -1,38 +1,38 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { db } from "@/db"
-import { stores } from "@/db/schema"
-import { env } from "@/env.js"
-import { ArrowLeftIcon } from "@radix-ui/react-icons"
-import { eq } from "drizzle-orm"
+import { db } from "@/db";
+import { stores } from "@/db/schema";
+import { env } from "@/env.js";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { eq } from "drizzle-orm";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-import { getCart } from "@/lib/actions/cart"
-import { createPaymentIntent, getStripeAccount } from "@/lib/actions/stripe"
-import { cn, formatPrice } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { CartLineItems } from "@/components/checkout/cart-line-items"
-import { CheckoutForm } from "@/components/checkout/checkout-form"
-import { CheckoutShell } from "@/components/checkout/checkout-shell"
-import { Shell } from "@/components/shell"
+import { CartLineItems } from "@/components/checkout/cart-line-items";
+import { CheckoutForm } from "@/components/checkout/checkout-form";
+import { CheckoutShell } from "@/components/checkout/checkout-shell";
+import { Shell } from "@/components/shell";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { getCart } from "@/lib/actions/cart";
+import { createPaymentIntent, getStripeAccount } from "@/lib/actions/stripe";
+import { cn, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Checkout",
   description: "Checkout with store items",
-}
+};
 
 interface CheckoutPageProps {
   params: {
-    storeId: string
-  }
+    storeId: string;
+  };
 }
 
 export default async function CheckoutPage({ params }: CheckoutPageProps) {
-  const storeId = decodeURIComponent(params.storeId)
+  const storeId = decodeURIComponent(params.storeId);
 
   const store = await db
     .select({
@@ -43,33 +43,33 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     .from(stores)
     .where(eq(stores.id, storeId))
     .execute()
-    .then((rows) => rows[0])
+    .then((rows) => rows[0]);
 
   if (!store) {
-    notFound()
+    notFound();
   }
 
   const { isConnected } = await getStripeAccount({
     storeId,
-  })
+  });
 
-  const cartLineItems = await getCart({ storeId })
+  const cartLineItems = await getCart({ storeId });
 
   const paymentIntentPromise = createPaymentIntent({
     storeId: store.id,
     items: cartLineItems,
-  })
+  });
 
   const total = cartLineItems.reduce(
     (total, item) => total + Number(item.quantity) * Number(item.price),
-    0
-  )
+    0,
+  );
 
   if (!(isConnected && store.stripeAccountId)) {
     return (
       <Shell variant="centered">
         <div className="flex flex-col items-center justify-center gap-2 pt-20">
-          <div className="text-center text-2xl font-bold">
+          <div className="text-center font-bold text-2xl">
             Store is not connected to Stripe
           </div>
           <div className="text-center text-muted-foreground">
@@ -82,21 +82,21 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
             className={cn(
               buttonVariants({
                 size: "sm",
-              })
+              }),
             )}
           >
             Back to cart
           </Link>
         </div>
       </Shell>
-    )
+    );
   }
 
   return (
     <section className="relative flex h-full min-h-dvh flex-col items-start justify-center lg:h-dvh lg:flex-row lg:overflow-hidden">
       <div className="w-full space-y-12 pt-8 lg:pt-16">
         <div className="fixed top-0 z-40 h-16 w-full bg-[#09090b] py-4 lg:static lg:top-auto lg:z-0 lg:h-0 lg:py-0">
-          <div className="container flex max-w-xl items-center justify-between space-x-2 lg:ml-auto lg:mr-0 lg:pr-[4.5rem]">
+          <div className="container flex max-w-xl items-center justify-between space-x-2 lg:mr-0 lg:ml-auto lg:pr-[4.5rem]">
             <Link
               aria-label="Back to cart"
               href="/cart"
@@ -119,7 +119,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                   Details
                 </Button>
               </DrawerTrigger>
-              <DrawerContent className="mx-auto flex h-[82%] w-full max-w-4xl flex-col space-y-6 border pb-6 pt-8">
+              <DrawerContent className="mx-auto flex h-[82%] w-full max-w-4xl flex-col space-y-6 border pt-8 pb-6">
                 <CartLineItems
                   items={cartLineItems}
                   variant="minimal"
@@ -133,7 +133,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
                       Total (
                       {cartLineItems.reduce(
                         (acc, item) => acc + Number(item.quantity),
-                        0
+                        0,
                       )}
                       )
                     </div>
@@ -144,30 +144,30 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
             </Drawer>
           </div>
         </div>
-        <div className="container flex max-w-xl flex-col items-center space-y-1 lg:ml-auto lg:mr-0 lg:items-start lg:pr-[4.5rem]">
+        <div className="container flex max-w-xl flex-col items-center gap-1 lg:mr-0 lg:ml-auto lg:items-start lg:pr-[4.5rem]">
           <div className="line-clamp-1 font-semibold text-muted-foreground">
             Pay {store.name}
           </div>
-          <div className="text-3xl font-bold">{formatPrice(total)}</div>
+          <div className="font-bold text-3xl">{formatPrice(total)}</div>
         </div>
         <CartLineItems
           items={cartLineItems}
           isEditable={false}
-          className="container hidden w-full max-w-xl lg:ml-auto lg:mr-0 lg:flex lg:max-h-[580px] lg:pr-[4.5rem]"
+          className="container hidden w-full max-w-xl lg:mr-0 lg:ml-auto lg:flex lg:max-h-[580px] lg:pr-[4.5rem]"
         />
       </div>
       <CheckoutShell
         paymentIntentPromise={paymentIntentPromise}
         storeStripeAccountId={store.stripeAccountId}
-        className="size-full flex-1 bg-white pb-12 pt-10 lg:flex-initial lg:pl-12 lg:pt-16"
+        className="size-full flex-1 bg-white pt-10 pb-12 lg:flex-initial lg:pt-16 lg:pl-12"
       >
         <ScrollArea className="h-full">
           <CheckoutForm
             storeId={store.id}
-            className="container max-w-xl pr-6 lg:ml-0 lg:mr-auto"
+            className="container max-w-xl pr-6 lg:mr-auto lg:ml-0"
           />
         </ScrollArea>
       </CheckoutShell>
     </section>
-  )
+  );
 }

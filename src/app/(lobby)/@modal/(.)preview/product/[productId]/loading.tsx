@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils"
-import { Skeleton } from "@/components/ui/skeleton"
-import { DialogShell } from "@/components/dialog-shell"
-import { PlaceholderImage } from "@/components/placeholder-image"
+import { DialogShell } from "@/components/dialog-shell";
+import { PlaceholderImage } from "@/components/placeholder-image";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export default function ProductModalLoading() {
   return (
     <DialogShell className="flex flex-col gap-2 overflow-visible sm:flex-row">
-      <Skeleton className="absolute right-10 top-4 size-4" />
+      <Skeleton className="absolute top-4 right-10 size-4" />
       <PlaceholderImage ratio={16 / 9} className="rounded-none" isSkeleton />
       <div className="w-full space-y-8 p-6 sm:p-10">
         <div className="space-y-2.5">
@@ -25,5 +25,5 @@ export default function ProductModalLoading() {
         </div>
       </div>
     </DialogShell>
-  )
+  );
 }

@@ -1,30 +1,30 @@
-import Image from "next/image"
-import Link from "next/link"
-import { notFound } from "next/navigation"
-import { db } from "@/db"
-import { categories, products } from "@/db/schema"
-import type { StoredFile } from "@/types"
-import { EnterFullScreenIcon } from "@radix-ui/react-icons"
-import { eq, sql } from "drizzle-orm"
+import { db } from "@/db";
+import { categories, products } from "@/db/schema";
+import type { StoredFile } from "@/types";
+import { EnterFullScreenIcon } from "@radix-ui/react-icons";
+import { eq, sql } from "drizzle-orm";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-import { cn, formatPrice } from "@/lib/utils"
-import { AlertDialogAction } from "@/components/ui/alert-dialog"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { buttonVariants } from "@/components/ui/button"
-import { DialogShell } from "@/components/dialog-shell"
-import { PlaceholderImage } from "@/components/placeholder-image"
-import { Rating } from "@/components/rating"
+import { DialogShell } from "@/components/dialog-shell";
+import { PlaceholderImage } from "@/components/placeholder-image";
+import { Rating } from "@/components/rating";
+import { AlertDialogAction } from "@/components/ui/alert-dialog";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { buttonVariants } from "@/components/ui/button";
+import { cn, formatPrice } from "@/lib/utils";
 
 interface ProductModalPageProps {
   params: {
-    productId: string
-  }
+    productId: string;
+  };
 }
 
 export default async function ProductModalPage({
   params,
 }: ProductModalPageProps) {
-  const productId = decodeURIComponent(params.productId)
+  const productId = decodeURIComponent(params.productId);
 
   const product = await db
     .select({
@@ -41,10 +41,10 @@ export default async function ProductModalPage({
     .leftJoin(categories, eq(products.categoryId, categories.id))
     .where(eq(products.id, productId))
     .execute()
-    .then((rows) => rows[0])
+    .then((rows) => rows[0]);
 
   if (!product) {
-    notFound()
+    notFound();
   }
 
   return (
@@ -55,8 +55,8 @@ export default async function ProductModalPage({
             variant: "ghost",
             size: "icon",
             className:
-              "absolute right-10 top-4 h-auto w-auto shrink-0 rounded-sm bg-transparent p-0 text-foreground opacity-70 ring-offset-background transition-opacity hover:bg-transparent hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
-          })
+              "absolute right-10 top-4 h-auto w-auto shrink-0 rounded-sm bg-transparent p-0 text-foreground opacity-70 ring-offset-background transition-opacity hover:bg-transparent hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground",
+          }),
         )}
         asChild
       >
@@ -94,5 +94,5 @@ export default async function ProductModalPage({
         </p>
       </div>
     </DialogShell>
-  )
+  );
 }

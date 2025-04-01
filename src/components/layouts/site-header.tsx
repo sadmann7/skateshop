@@ -1,14 +1,14 @@
-import type { User } from "@clerk/nextjs/server"
+import type { User } from "@clerk/nextjs/server";
 
-import { siteConfig } from "@/config/site"
-import { CartSheet } from "@/components/checkout/cart-sheet"
-import { AuthDropdown } from "@/components/layouts/auth-dropdown"
-import { MainNav } from "@/components/layouts/main-nav"
-import { MobileNav } from "@/components/layouts/mobile-nav"
-import { ProductsCombobox } from "@/components/products-combobox"
+import { CartSheet } from "@/components/checkout/cart-sheet";
+import { AuthDropdown } from "@/components/layouts/auth-dropdown";
+import { MainNav } from "@/components/layouts/main-nav";
+import { MobileNav } from "@/components/layouts/mobile-nav";
+import { ProductsCombobox } from "@/components/products-combobox";
+import { siteConfig } from "@/config/site";
 
 interface SiteHeaderProps {
-  user: User | null
+  user: User | null;
 }
 
 export function SiteHeader({ user }: SiteHeaderProps) {
@@ -26,5 +26,5 @@ export function SiteHeader({ user }: SiteHeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

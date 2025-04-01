@@ -1,14 +1,14 @@
-import { useMDXComponent } from "next-contentlayer/hooks"
+import { useMDXComponent } from "next-contentlayer/hooks";
 
-import { cn } from "@/lib/utils"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Callout } from "@/components/mdx/callout"
-import { CodeBlock } from "@/components/mdx/code-block"
-import { LinkBadge } from "@/components/mdx/link-badge"
-import { MdxCard } from "@/components/mdx/mdx-card"
-import { MdxImage } from "@/components/mdx/mdx-image"
+import { Callout } from "@/components/mdx/callout";
+import { CodeBlock } from "@/components/mdx/code-block";
+import { LinkBadge } from "@/components/mdx/link-badge";
+import { MdxCard } from "@/components/mdx/mdx-card";
+import { MdxImage } from "@/components/mdx/mdx-image";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 /** Originally from `shadcn/ui-docs`
  * @link https://github.com/shadcn/ui/blob/main/apps/www/components/mdx-components.tsx
@@ -25,7 +25,7 @@ const components = {
     <h2
       className={cn(
         "mt-12 scroll-m-20 border-b pb-2 font-sans text-2xl font-semibold tracking-tight first:mt-0",
-        className
+        className,
       )}
       {...props}
     />
@@ -34,7 +34,7 @@ const components = {
     <h3
       className={cn(
         "mt-8 scroll-m-20 font-sans text-xl font-semibold tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
@@ -43,7 +43,7 @@ const components = {
     <h4
       className={cn(
         "mt-8 scroll-m-20 font-sans text-lg font-semibold tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
@@ -52,7 +52,7 @@ const components = {
     <h5
       className={cn(
         "mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
@@ -61,7 +61,7 @@ const components = {
     <h6
       className={cn(
         "mt-8 scroll-m-20 text-base font-semibold tracking-tight",
-        className
+        className,
       )}
       {...props}
     />
@@ -73,10 +73,7 @@ const components = {
     />
   ),
   p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p
-      className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
-      {...props}
-    />
+    <p className={cn("leading-7 not-first:mt-6", className)} {...props} />
   ),
   ul: ({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) => (
     <ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
@@ -119,7 +116,7 @@ const components = {
     <th
       className={cn(
         "border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
-        className
+        className,
       )}
       {...props}
     />
@@ -128,7 +125,7 @@ const components = {
     <td
       className={cn(
         "border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
-        className
+        className,
       )}
       {...props}
     />
@@ -138,7 +135,7 @@ const components = {
     <code
       className={cn(
         "relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm",
-        className
+        className,
       )}
       {...props}
     />
@@ -152,18 +149,18 @@ const components = {
   LinkBadge: LinkBadge,
   ScrollArea,
   Callout,
-}
+};
 
 interface MdxProps {
-  code: string
+  code: string;
 }
 
 export function Mdx({ code }: MdxProps) {
-  const Component = useMDXComponent(code)
+  const Component = useMDXComponent(code);
 
   return (
     <div className="mdx overflow-hidden">
       <Component components={components} />
     </div>
-  )
+  );
 }

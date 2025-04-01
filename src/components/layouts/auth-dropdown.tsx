@@ -1,12 +1,11 @@
-import * as React from "react"
-import Link from "next/link"
-import type { User } from "@clerk/nextjs/server"
-import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons"
+import type { User } from "@clerk/nextjs/server";
+import { DashboardIcon, ExitIcon, GearIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import * as React from "react";
 
-import { getStoreByUserId } from "@/lib/queries/store"
-import { cn, getUserEmail } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button, type ButtonProps } from "@/components/ui/button"
+import { Icons } from "@/components/icons";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +15,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getStoreByUserId } from "@/lib/queries/store";
+import { cn, getUserEmail } from "@/lib/utils";
 
 interface AuthDropdownProps
   extends React.ComponentPropsWithRef<typeof DropdownMenuTrigger>,
-    ButtonProps {
-  user: User | null
+    React.ComponentProps<typeof Button> {
+  user: User | null;
 }
 
 export async function AuthDropdown({
@@ -39,15 +39,15 @@ export async function AuthDropdown({
           <span className="sr-only">Sign In</span>
         </Link>
       </Button>
-    )
+    );
   }
 
   const initials = `${user.firstName?.charAt(0) ?? ""} ${
     user.lastName?.charAt(0) ?? ""
-  }`
-  const email = getUserEmail(user)
+  }`;
+  const email = getUserEmail(user);
 
-  const storePromise = getStoreByUserId({ userId: user.id })
+  const storePromise = getStoreByUserId({ userId: user.id });
 
   return (
     <DropdownMenu>
@@ -66,10 +66,10 @@ export async function AuthDropdown({
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="font-medium text-sm leading-none">
               {user.firstName} {user.lastName}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="text-muted-foreground text-xs leading-none">
               {email}
             </p>
           </div>
@@ -96,15 +96,15 @@ export async function AuthDropdown({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 interface AuthDropdownGroupProps {
-  storePromise: ReturnType<typeof getStoreByUserId>
+  storePromise: ReturnType<typeof getStoreByUserId>;
 }
 
 async function AuthDropdownGroup({ storePromise }: AuthDropdownGroupProps) {
-  const store = await storePromise
+  const store = await storePromise;
 
   return (
     <DropdownMenuGroup>
@@ -130,5 +130,5 @@ async function AuthDropdownGroup({ storePromise }: AuthDropdownGroupProps) {
         </Link>
       </DropdownMenuItem>
     </DropdownMenuGroup>
-  )
+  );
 }

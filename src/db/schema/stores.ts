@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { relations } from "drizzle-orm";
 import {
   boolean,
   integer,
@@ -7,16 +7,16 @@ import {
   text,
   timestamp,
   varchar,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { customers } from "./customers"
-import { payments } from "./payments"
-import { products } from "./products"
-import { lifecycleDates } from "./utils"
+import { customers } from "./customers";
+import { payments } from "./payments";
+import { products } from "./products";
+import { lifecycleDates } from "./utils";
 
-export const storePlanEnum = pgEnum("store_plan", ["free", "standard", "pro"])
+export const storePlanEnum = pgEnum("store_plan", ["free", "standard", "pro"]);
 
 export const stores = pgTable("stores", {
   id: varchar("id", { length: 30 })
@@ -36,13 +36,13 @@ export const stores = pgTable("stores", {
   tagLimit: integer("tag_limit").notNull().default(5),
   variantLimit: integer("variant_limit").notNull().default(5),
   ...lifecycleDates,
-})
+});
 
 export const storesRelations = relations(stores, ({ many }) => ({
   products: many(products, { relationName: "storeProducts" }),
   payments: many(payments, { relationName: "storePayments" }),
   customers: many(customers, { relationName: "storeCustomers" }),
-}))
+}));
 
-export type Store = typeof stores.$inferSelect
-export type NewStore = typeof stores.$inferInsert
+export type Store = typeof stores.$inferSelect;
+export type NewStore = typeof stores.$inferInsert;

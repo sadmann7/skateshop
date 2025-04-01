@@ -1,5 +1,4 @@
-import { cn } from "@/lib/utils"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -7,42 +6,43 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * The number of columns in the table.
    * @type number
    */
-  columnCount: number
+  columnCount: number;
 
   /**
    * The number of rows in the table.
    * @default 10
    * @type number | undefined
    */
-  rowCount?: number
+  rowCount?: number;
 
   /**
    * The number of searchable columns in the table.
    * @default 0
    * @type number | undefined
    */
-  searchableColumnCount?: number
+  searchableColumnCount?: number;
 
   /**
    * The number of filterable columns in the table.
    * @default 0
    * @type number | undefined
    */
-  filterableColumnCount?: number
+  filterableColumnCount?: number;
 
   /**
    * Flag to show the table view options.
    * @default undefined
    * @type boolean | undefined
    */
-  showViewOptions?: boolean
+  showViewOptions?: boolean;
 
   /**
    * The width of each cell in the table.
@@ -51,21 +51,21 @@ interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default ["auto"]
    * @type string[] | undefined
    */
-  cellWidths?: string[]
+  cellWidths?: string[];
 
   /**
    * Flag to show the pagination bar.
    * @default true
    * @type boolean | undefined
    */
-  withPagination?: boolean
+  withPagination?: boolean;
 
   /**
    * Flag to prevent the table from shrinking to fit the content.
    * @default false
    * @type boolean | undefined
    */
-  shrinkZero?: boolean
+  shrinkZero?: boolean;
 }
 
 export function DataTableSkeleton(props: DataTableSkeletonProps) {
@@ -80,7 +80,7 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
     shrinkZero = false,
     className,
     ...skeletonProps
-  } = props
+  } = props;
 
   return (
     <div
@@ -163,5 +163,5 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
         </div>
       ) : null}
     </div>
-  )
+  );
 }

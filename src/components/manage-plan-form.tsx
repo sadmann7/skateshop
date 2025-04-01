@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { toast } from "sonner"
-import { type z } from "zod"
+import * as React from "react";
+import { toast } from "sonner";
+import type { z } from "zod";
 
-import { managePlan } from "@/lib/actions/stripe"
-import { type managePlanSchema } from "@/lib/validations/stripe"
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { managePlan } from "@/lib/actions/stripe";
+import type { managePlanSchema } from "@/lib/validations/stripe";
 
-type ManagePlanFormProps = z.infer<typeof managePlanSchema>
+type ManagePlanFormProps = z.infer<typeof managePlanSchema>;
 
 export function ManagePlanForm({
   isCurrentPlan,
@@ -18,12 +18,12 @@ export function ManagePlanForm({
   stripeSubscriptionId,
   stripePriceId,
 }: ManagePlanFormProps) {
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+    e.preventDefault();
 
-    setLoading(true)
+    setLoading(true);
 
     const { data, error } = await managePlan({
       isSubscribed,
@@ -31,19 +31,19 @@ export function ManagePlanForm({
       stripeCustomerId,
       stripeSubscriptionId,
       stripePriceId,
-    })
+    });
 
     if (data?.url) {
-      window.location.href = data.url
-      return
+      window.location.href = data.url;
+      return;
     }
 
     if (error) {
-      toast.error(error)
-      return
+      toast.error(error);
+      return;
     }
 
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
@@ -58,5 +58,5 @@ export function ManagePlanForm({
         {isCurrentPlan ? "Manage plan" : "Subscribe now"}
       </Button>
     </form>
-  )
+  );
 }

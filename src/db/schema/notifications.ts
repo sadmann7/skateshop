@@ -1,8 +1,8 @@
-import { boolean, pgTable, text, varchar } from "drizzle-orm/pg-core"
+import { boolean, pgTable, text, varchar } from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { lifecycleDates } from "./utils"
+import { lifecycleDates } from "./utils";
 
 export const notifications = pgTable("notifications", {
   id: varchar("id", { length: 30 })
@@ -16,7 +16,7 @@ export const notifications = pgTable("notifications", {
   newsletter: boolean("newsletter").default(false).notNull(),
   marketing: boolean("marketing").default(false).notNull(),
   ...lifecycleDates,
-})
+});
 
-export type Notification = typeof notifications.$inferSelect
-export type NewNotification = typeof notifications.$inferInsert
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;

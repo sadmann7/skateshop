@@ -1,16 +1,16 @@
-import { relations } from "drizzle-orm"
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
   pgTable,
   timestamp,
   varchar,
-} from "drizzle-orm/pg-core"
+} from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
-import { stores } from "./stores"
-import { lifecycleDates } from "./utils"
+import { stores } from "./stores";
+import { lifecycleDates } from "./utils";
 
 // @see: https://github.com/jackblatch/OneStopShop/blob/main/db/schema.ts
 export const payments = pgTable(
@@ -30,12 +30,12 @@ export const payments = pgTable(
   },
   (table) => ({
     storeIdIdx: index("payments_store_id_idx").on(table.storeId),
-  })
-)
+  }),
+);
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   store: one(stores, { fields: [payments.storeId], references: [stores.id] }),
-}))
+}));
 
-export type Payment = typeof payments.$inferSelect
-export type NewPayment = typeof payments.$inferInsert
+export type Payment = typeof payments.$inferSelect;
+export type NewPayment = typeof payments.$inferInsert;

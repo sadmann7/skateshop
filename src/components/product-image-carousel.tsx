@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Image from "next/image"
-import { type StoredFile } from "@/types"
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
+import type { StoredFile } from "@/types";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
-} from "embla-carousel-react"
+} from "embla-carousel-react";
+import Image from "next/image";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
+import { Icons } from "@/components/icons";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-type CarouselApi = UseEmblaCarouselType["1"]
-type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
-type CarouselOptions = UseCarouselParameters["0"]
+type CarouselApi = UseEmblaCarouselType["1"];
+type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
+type CarouselOptions = UseCarouselParameters["0"];
 
 interface ProductImageCarouselProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  images: StoredFile[]
-  options?: CarouselOptions
+  images: StoredFile[];
+  options?: CarouselOptions;
 }
 
 export function ProductImageCarousel({
@@ -28,52 +28,52 @@ export function ProductImageCarousel({
   options,
   ...props
 }: ProductImageCarouselProps) {
-  const [emblaRef, emblaApi] = useEmblaCarousel(options)
+  const [emblaRef, emblaApi] = useEmblaCarousel(options);
 
-  const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true)
-  const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true)
-  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [prevBtnDisabled, setPrevBtnDisabled] = React.useState(true);
+  const [nextBtnDisabled, setNextBtnDisabled] = React.useState(true);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const scrollPrev = React.useCallback(
     () => emblaApi && emblaApi.scrollPrev(),
-    [emblaApi]
-  )
+    [emblaApi],
+  );
   const scrollNext = React.useCallback(
     () => emblaApi && emblaApi.scrollNext(),
-    [emblaApi]
-  )
+    [emblaApi],
+  );
 
   const scrollTo = React.useCallback(
     (index: number) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi]
-  )
+    [emblaApi],
+  );
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
       if (event.key === "ArrowLeft") {
-        scrollPrev()
+        scrollPrev();
       } else if (event.key === "ArrowRight") {
-        scrollNext()
+        scrollNext();
       }
     },
-    [scrollNext, scrollPrev]
-  )
+    [scrollNext, scrollPrev],
+  );
 
   const onSelect = React.useCallback((emblaApi: CarouselApi) => {
-    if (!emblaApi) return
+    if (!emblaApi) return;
 
-    setSelectedIndex(emblaApi.selectedScrollSnap())
-    setPrevBtnDisabled(!emblaApi.canScrollPrev())
-    setNextBtnDisabled(!emblaApi.canScrollNext())
-  }, [])
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    setPrevBtnDisabled(!emblaApi.canScrollPrev());
+    setNextBtnDisabled(!emblaApi.canScrollNext());
+  }, []);
 
   React.useEffect(() => {
-    if (!emblaApi) return
+    if (!emblaApi) return;
 
-    onSelect(emblaApi)
-    emblaApi.on("reInit", onSelect)
-    emblaApi.on("select", onSelect)
-  }, [emblaApi, onSelect])
+    onSelect(emblaApi);
+    emblaApi.on("reInit", onSelect);
+    emblaApi.on("select", onSelect);
+  }, [emblaApi, onSelect]);
 
   if (images.length === 0) {
     return (
@@ -88,7 +88,7 @@ export function ProductImageCarousel({
           aria-hidden="true"
         />
       </div>
-    )
+    );
   }
 
   return (
@@ -143,8 +143,8 @@ export function ProductImageCarousel({
               variant="outline"
               size="icon"
               className={cn(
-                "group relative aspect-square size-full max-w-[100px] rounded-none shadow-sm hover:bg-transparent focus-visible:ring-foreground",
-                i === selectedIndex && "ring-1 ring-foreground"
+                "group relative aspect-square size-full max-w-[100px] rounded-none shadow-xs hover:bg-transparent focus-visible:ring-foreground",
+                i === selectedIndex && "ring-1 ring-foreground",
               )}
               onClick={() => scrollTo(i)}
               onKeyDown={handleKeyDown}
@@ -174,5 +174,5 @@ export function ProductImageCarousel({
         </div>
       ) : null}
     </div>
-  )
+  );
 }

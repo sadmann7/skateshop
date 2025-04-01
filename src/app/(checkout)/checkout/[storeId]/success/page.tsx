@@ -1,62 +1,62 @@
-import type { Metadata } from "next"
-import Link from "next/link"
-import { db } from "@/db"
-import { stores } from "@/db/schema"
-import { env } from "@/env.js"
-import { eq } from "drizzle-orm"
+import { db } from "@/db";
+import { stores } from "@/db/schema";
+import { env } from "@/env.js";
+import { eq } from "drizzle-orm";
+import type { Metadata } from "next";
+import Link from "next/link";
 
-import { getOrderLineItems } from "@/lib/actions/order"
-import { getPaymentIntent } from "@/lib/actions/stripe"
-import { cn, formatPrice } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { CartLineItems } from "@/components/checkout/cart-line-items"
-import { VerifyOderForm } from "@/components/checkout/verify-order-form"
+import { CartLineItems } from "@/components/checkout/cart-line-items";
+import { VerifyOderForm } from "@/components/checkout/verify-order-form";
 import {
   PageHeader,
   PageHeaderDescription,
   PageHeaderHeading,
-} from "@/components/page-header"
+} from "@/components/page-header";
+import { buttonVariants } from "@/components/ui/button";
+import { getOrderLineItems } from "@/lib/actions/order";
+import { getPaymentIntent } from "@/lib/actions/stripe";
+import { cn, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Order Success",
   description: "Order summary for your purchase",
-}
+};
 
 interface OrderSuccessPageProps {
   params: {
-    storeId: string
-  }
+    storeId: string;
+  };
   searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+    [key: string]: string | string[] | undefined;
+  };
 }
 
 export default async function OrderSuccessPage({
   params,
   searchParams,
 }: OrderSuccessPageProps) {
-  const storeId = decodeURIComponent(params.storeId)
+  const storeId = decodeURIComponent(params.storeId);
   const {
     payment_intent,
     payment_intent_client_secret,
     redirect_status,
     delivery_postal_code,
-  } = searchParams ?? {}
+  } = searchParams ?? {};
 
   const store = await db.query.stores.findFirst({
     columns: {
       name: true,
     },
     where: eq(stores.id, storeId),
-  })
+  });
 
   const { isVerified, paymentIntent } = await getPaymentIntent({
     storeId,
     paymentIntentId: typeof payment_intent === "string" ? payment_intent : "",
     deliveryPostalCode:
       typeof delivery_postal_code === "string" ? delivery_postal_code : "",
-  })
+  });
 
   const lineItems =
     isVerified && paymentIntent
@@ -65,7 +65,7 @@ export default async function OrderSuccessPage({
           items: paymentIntent?.metadata?.items,
           paymentIntent,
         })
-      : []
+      : [];
 
   return (
     <div className="flex size-full max-h-dvh flex-col gap-10 overflow-hidden pb-8 pt-6 md:py-8">
@@ -96,7 +96,7 @@ export default async function OrderSuccessPage({
                 Total (
                 {lineItems.reduce(
                   (acc, item) => acc + Number(item.quantity),
-                  0
+                  0,
                 )}
                 )
               </span>
@@ -105,8 +105,8 @@ export default async function OrderSuccessPage({
                   lineItems.reduce(
                     (acc, item) =>
                       acc + Number(item.price) * Number(item.quantity),
-                    0
-                  )
+                    0,
+                  ),
                 )}
               </span>
             </div>
@@ -123,7 +123,7 @@ export default async function OrderSuccessPage({
                 buttonVariants({
                   size: "sm",
                   className: "text-center",
-                })
+                }),
               )}
             >
               Continue shopping
@@ -136,7 +136,7 @@ export default async function OrderSuccessPage({
                   variant: "outline",
                   size: "sm",
                   className: "text-center",
-                })
+                }),
               )}
             >
               Back to cart
@@ -162,5 +162,5 @@ export default async function OrderSuccessPage({
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,17 +1,17 @@
-import { db } from "@/db"
+import { db } from "@/db";
 import {
+  type Product,
+  type Subcategory,
   categories,
   products,
   subcategories,
-  type Product,
-  type Subcategory,
-} from "@/db/schema"
-import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
+} from "@/db/schema";
+import { faker } from "@faker-js/faker";
+import { eq } from "drizzle-orm";
 
-import { productConfig } from "@/config/product"
-import { generateId } from "@/lib/id"
-import { slugify } from "@/lib/utils"
+import { productConfig } from "@/config/product";
+import { generateId } from "@/lib/id";
+import { slugify } from "@/lib/utils";
 
 export async function seedCategories() {
   const data = productConfig.categories.map((category) => ({
@@ -19,15 +19,15 @@ export async function seedCategories() {
     name: category.name,
     slug: slugify(category.name),
     description: category.description,
-  }))
+  }));
 
-  await db.delete(categories)
-  console.log(`📝 Inserting ${data.length} categories`)
-  await db.insert(categories).values(data)
+  await db.delete(categories);
+  console.log(`📝 Inserting ${data.length} categories`);
+  await db.insert(categories).values(data);
 }
 
 export async function seedSubcategories() {
-  const data: Subcategory[] = []
+  const data: Subcategory[] = [];
 
   const allCategories = await db
     .select({
@@ -35,12 +35,12 @@ export async function seedSubcategories() {
       name: categories.name,
     })
     .from(categories)
-    .execute()
+    .execute();
 
   allCategories.forEach((category) => {
     const subcategories = productConfig.categories.find(
-      (c) => c.name === category.name
-    )?.subcategories
+      (c) => c.name === category.name,
+    )?.subcategories;
 
     if (subcategories) {
       subcategories.forEach((subcategory) => {
@@ -52,31 +52,31 @@ export async function seedSubcategories() {
           description: subcategory.description,
           updatedAt: new Date(),
           createdAt: new Date(),
-        })
-      })
+        });
+      });
     }
-  })
+  });
 
-  await db.delete(subcategories)
-  console.log(`📝 Inserting ${data.length} subcategories`)
-  await db.insert(subcategories).values(data)
+  await db.delete(subcategories);
+  console.log(`📝 Inserting ${data.length} subcategories`);
+  await db.insert(subcategories).values(data);
 }
 
 export async function seedProducts({
   storeId,
   count,
 }: {
-  storeId: string
-  count?: number
+  storeId: string;
+  count?: number;
 }) {
-  const productCount = count ?? 10
+  const productCount = count ?? 10;
 
-  const data: Product[] = []
+  const data: Product[] = [];
 
-  const categories = productConfig.categories.map((category) => category.name)
+  const categories = productConfig.categories.map((category) => category.name);
 
   for (let i = 0; i < productCount; i++) {
-    const category = faker.helpers.shuffle(categories)[0] ?? "skateboards"
+    const category = faker.helpers.shuffle(categories)[0] ?? "skateboards";
 
     const allSubcategories = await db
       .select({
@@ -84,7 +84,7 @@ export async function seedProducts({
       })
       .from(subcategories)
       .where(eq(subcategories.categoryId, category))
-      .execute()
+      .execute();
 
     data.push({
       id: generateId(),
@@ -101,10 +101,10 @@ export async function seedProducts({
       rating: faker.number.float({ min: 0, max: 5 }),
       createdAt: faker.date.past(),
       updatedAt: faker.date.past(),
-    })
+    });
   }
 
-  await db.delete(products).where(eq(products.storeId, storeId))
-  console.log(`📝 Inserting ${data.length} products`)
-  await db.insert(products).values(data)
+  await db.delete(products).where(eq(products.storeId, storeId));
+  console.log(`📝 Inserting ${data.length} products`);
+  await db.insert(products).values(data);
 }

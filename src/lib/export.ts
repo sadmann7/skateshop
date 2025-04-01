@@ -1,60 +1,46 @@
-import { type Table } from "@tanstack/react-table"
+import type { Table } from "@tanstack/react-table";
 
 export function exportTableToCSV<TData>(
-  /**
-   * The table to export.
-   * @type Table<TData>
-   */
   table: Table<TData>,
   opts: {
-    /**
-     * The filename for the CSV file.
-     * @default "table"
-     * @example "tasks"
-     */
-    filename?: string
-    /**
-     * The columns to exclude from the CSV file.
-     * @default []
-     * @example ["select", "actions"]
-     */
-    excludeColumns?: (keyof TData | "select" | "actions")[]
-  } = {}
-): void {
-  const { filename = "table", excludeColumns = [] } = opts
+    filename?: string;
 
-  // Retrieve headers (column names)
+    excludeColumns?: (keyof TData | "select" | "actions")[];
+  } = {},
+): void {
+  const { filename = "table", excludeColumns = [] } = opts;
+
   const headers = table
     .getAllLeafColumns()
     .map((column) => column.id)
-    .filter((id) => !excludeColumns.includes(id))
+    .filter(
+      (id) =>
+        !excludeColumns.includes(id as keyof TData | "select" | "actions"),
+    );
 
-  // Build CSV content
   const csvContent = [
     headers.join(","),
     ...table.getRowModel().rows.map((row) =>
       headers
         .map((header) => {
-          const cellValue = row.getValue(header)
+          const cellValue = row.getValue(header);
           // Handle values that might contain commas or newlines
           return typeof cellValue === "string"
             ? `"${cellValue.replace(/"/g, '""')}"`
-            : cellValue
+            : cellValue;
         })
-        .join(",")
+        .join(","),
     ),
-  ].join("\n")
+  ].join("\n");
 
-  // Create a Blob with CSV content
-  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
-  // Create a link and trigger the download
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement("a")
-  link.setAttribute("href", url)
-  link.setAttribute("download", `${filename}.csv`)
-  link.style.visibility = "hidden"
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `${filename}.csv`);
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

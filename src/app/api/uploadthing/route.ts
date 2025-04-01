@@ -1,6 +1,6 @@
-import { createRouteHandler } from "uploadthing/next"
+import { createRouteHandler } from "uploadthing/next";
 
-import { ourFileRouter } from "./core"
+import { ourFileRouter } from "./core";
 
 // Export routes for Next App Router
 export const { GET, POST } = createRouteHandler({
@@ -8,4 +8,4 @@ export const { GET, POST } = createRouteHandler({
 
   // Apply an (optional) custom config:
   // config: { ... },
-})
+});

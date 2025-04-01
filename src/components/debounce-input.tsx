@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import { Input, type InputProps } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 
-interface DebounceInputProps extends InputProps {
-  debounce?: number
+interface DebounceInputProps extends React.ComponentProps<typeof Input> {
+  debounce?: number;
 }
 
 export function DebounceInput({
@@ -13,29 +13,29 @@ export function DebounceInput({
   debounce = 500,
   ...props
 }: DebounceInputProps) {
-  const [value, setValue] = React.useState(props.value ?? "")
-  const [debouncedValue, setDebouncedValue] = React.useState(value)
+  const [value, setValue] = React.useState(props.value ?? "");
+  const [debouncedValue, setDebouncedValue] = React.useState(value);
 
   React.useEffect(() => {
-    setValue(props.value ?? "")
-  }, [props.value])
+    setValue(props.value ?? "");
+  }, [props.value]);
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
-      setDebouncedValue(value)
-    }, debounce)
+      setDebouncedValue(value);
+    }, debounce);
 
     return () => {
-      clearTimeout(timeout)
-    }
-  }, [value, debounce])
+      clearTimeout(timeout);
+    };
+  }, [value, debounce]);
 
   React.useEffect(() => {
     if (debouncedValue !== props.value) {
       // @ts-expect-error debouncedValue is not React.ChangeEvent<HTMLInputElement>
-      onChange?.(debouncedValue)
+      onChange?.(debouncedValue);
     }
-  }, [debouncedValue, onChange, props.value])
+  }, [debouncedValue, onChange, props.value]);
 
   return (
     <Input
@@ -43,5 +43,5 @@ export function DebounceInput({
       value={value}
       onChange={(e) => setValue(e.target.value)}
     />
-  )
+  );
 }

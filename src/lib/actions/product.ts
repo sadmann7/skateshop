@@ -1,29 +1,29 @@
-"use server"
+"use server";
 
+import { db } from "@/db";
 import {
-  unstable_cache as cache,
-  unstable_noStore as noStore,
-  revalidatePath,
-} from "next/cache"
-import { db } from "@/db"
-import {
+  type Product,
   categories,
   products,
   stores,
   subcategories,
-  type Product,
-} from "@/db/schema"
-import type { SearchParams, StoredFile } from "@/types"
-import { and, asc, count, desc, eq, gte, inArray, lte, sql } from "drizzle-orm"
-import { type z } from "zod"
-
-import { getErrorMessage } from "@/lib/handle-error"
+} from "@/db/schema";
+import type { SearchParams, StoredFile } from "@/types";
+import { and, asc, count, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import {
-  getProductsSchema,
+  unstable_cache as cache,
+  unstable_noStore as noStore,
+  revalidatePath,
+} from "next/cache";
+import type { z } from "zod";
+
+import { getErrorMessage } from "@/lib/handle-error";
+import {
   type CreateProductSchema,
   type createProductSchema,
+  getProductsSchema,
   type updateProductRatingSchema,
-} from "@/lib/validations/product"
+} from "@/lib/validations/product";
 
 // See the unstable_cache API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_cache
 export async function getFeaturedProducts() {
@@ -47,35 +47,35 @@ export async function getFeaturedProducts() {
         .orderBy(
           desc(count(stores.stripeAccountId)),
           desc(count(products.images)),
-          desc(products.createdAt)
-        )
+          desc(products.createdAt),
+        );
     },
     ["featured-products"],
     {
       revalidate: 3600, // every hour
       tags: ["featured-products"],
-    }
-  )()
+    },
+  )();
 }
 
 // See the unstable_noStore API docs: https://nextjs.org/docs/app/api-reference/functions/unstable_noStore
 export async function getProducts(input: SearchParams) {
-  noStore()
+  noStore();
 
   try {
-    const search = getProductsSchema.parse(input)
+    const search = getProductsSchema.parse(input);
 
-    const limit = search.per_page
-    const offset = (search.page - 1) * limit
+    const limit = search.per_page;
+    const offset = (search.page - 1) * limit;
 
     const [column, order] = (search.sort?.split(".") as [
       keyof Product | undefined,
       "asc" | "desc" | undefined,
-    ]) ?? ["createdAt", "desc"]
-    const [minPrice, maxPrice] = search.price_range?.split("-") ?? []
-    const categoryIds = search.categories?.split(".") ?? []
-    const subcategoryIds = search.subcategories?.split(".") ?? []
-    const storeIds = search.store_ids?.split(".") ?? []
+    ]) ?? ["createdAt", "desc"];
+    const [minPrice, maxPrice] = search.price_range?.split("-") ?? [];
+    const categoryIds = search.categories?.split(".") ?? [];
+    const subcategoryIds = search.subcategories?.split(".") ?? [];
+    const storeIds = search.store_ids?.split(".") ?? [];
 
     const transaction = await db.transaction(async (tx) => {
       const data = await tx
@@ -113,8 +113,8 @@ export async function getProducts(input: SearchParams) {
             storeIds.length ? inArray(products.storeId, storeIds) : undefined,
             input.active === "true"
               ? sql`(${stores.stripeAccountId}) is not null`
-              : undefined
-          )
+              : undefined,
+          ),
         )
         .groupBy(products.id)
         .orderBy(
@@ -122,8 +122,8 @@ export async function getProducts(input: SearchParams) {
             ? order === "asc"
               ? asc(products[column])
               : desc(products[column])
-            : desc(products.createdAt)
-        )
+            : desc(products.createdAt),
+        );
 
       const total = await tx
         .select({
@@ -140,31 +140,31 @@ export async function getProducts(input: SearchParams) {
               : undefined,
             minPrice ? gte(products.price, minPrice) : undefined,
             maxPrice ? lte(products.price, maxPrice) : undefined,
-            storeIds.length ? inArray(products.storeId, storeIds) : undefined
-          )
+            storeIds.length ? inArray(products.storeId, storeIds) : undefined,
+          ),
         )
         .execute()
-        .then((res) => res[0]?.count ?? 0)
+        .then((res) => res[0]?.count ?? 0);
 
-      const pageCount = Math.ceil(total / limit)
+      const pageCount = Math.ceil(total / limit);
 
       return {
         data,
         pageCount,
-      }
-    })
+      };
+    });
 
-    return transaction
+    return transaction;
   } catch (err) {
     return {
       data: [],
       pageCount: 0,
-    }
+    };
   }
 }
 
 export async function getProductCount({ categoryId }: { categoryId: string }) {
-  noStore()
+  noStore();
 
   try {
     return await db
@@ -174,9 +174,9 @@ export async function getProductCount({ categoryId }: { categoryId: string }) {
       .from(products)
       .where(eq(products.categoryId, categoryId))
       .execute()
-      .then((res) => res[0]?.count ?? 0)
+      .then((res) => res[0]?.count ?? 0);
   } catch (err) {
-    return 0
+    return 0;
   }
 }
 
@@ -191,14 +191,14 @@ export async function getCategories() {
           description: categories.description,
         })
         .from(categories)
-        .orderBy(desc(categories.name))
+        .orderBy(desc(categories.name));
     },
     ["categories"],
     {
       revalidate: 3600, // every hour
       tags: ["categories"],
-    }
-  )()
+    },
+  )();
 }
 
 export async function getSubcategories() {
@@ -211,20 +211,20 @@ export async function getSubcategories() {
           slug: subcategories.slug,
           description: subcategories.description,
         })
-        .from(subcategories)
+        .from(subcategories);
     },
     ["subcategories"],
     {
       revalidate: 3600, // every hour
       tags: ["subcategories"],
-    }
-  )()
+    },
+  )();
 }
 
 export async function getSubcategoriesByCategory({
   categoryId,
 }: {
-  categoryId: string
+  categoryId: string;
 }) {
   return await cache(
     async () => {
@@ -236,24 +236,24 @@ export async function getSubcategoriesByCategory({
           description: subcategories.description,
         })
         .from(subcategories)
-        .where(eq(subcategories.id, categoryId))
+        .where(eq(subcategories.id, categoryId));
     },
     [`subcategories-${categoryId}`],
     {
       revalidate: 3600, // every hour
       tags: [`subcategories-${categoryId}`],
-    }
-  )()
+    },
+  )();
 }
 
 export async function filterProducts({ query }: { query: string }) {
-  noStore()
+  noStore();
   try {
     if (query.length === 0) {
       return {
         data: null,
         error: null,
-      }
+      };
     }
 
     const categoriesWithProducts = await db.query.categories.findMany({
@@ -271,25 +271,25 @@ export async function filterProducts({ query }: { query: string }) {
       },
       // This doesn't do anything
       where: (table, { sql }) => sql`position(${query} in ${table.name}) > 0`,
-    })
+    });
 
     return {
       data: categoriesWithProducts,
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }
 
 export async function addProduct(
   input: Omit<CreateProductSchema, "images"> & {
-    storeId: string
-    images: StoredFile[]
-  }
+    storeId: string;
+    images: StoredFile[];
+  },
 ) {
   try {
     const productWithSameName = await db.query.products.findFirst({
@@ -297,44 +297,44 @@ export async function addProduct(
         id: true,
       },
       where: eq(products.name, input.name),
-    })
+    });
 
     if (productWithSameName) {
-      throw new Error("Product name already taken.")
+      throw new Error("Product name already taken.");
     }
 
     await db.insert(products).values({
       ...input,
       images: JSON.stringify(input.images) as unknown as StoredFile[],
-    })
+    });
 
-    revalidatePath(`/dashboard/stores/${input.storeId}/products.`)
+    revalidatePath(`/dashboard/stores/${input.storeId}/products.`);
 
     return {
       data: null,
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }
 
 export async function updateProduct(
-  input: z.infer<typeof createProductSchema> & { id: string; storeId: string }
+  input: z.infer<typeof createProductSchema> & { id: string; storeId: string },
 ) {
   try {
     const product = await db.query.products.findFirst({
       where: and(
         eq(products.id, input.id),
-        eq(products.storeId, input.storeId)
+        eq(products.storeId, input.storeId),
       ),
-    })
+    });
 
     if (!product) {
-      throw new Error("Product not found.")
+      throw new Error("Product not found.");
     }
 
     await db
@@ -343,24 +343,24 @@ export async function updateProduct(
         ...input,
         images: JSON.stringify(input.images) as unknown as StoredFile[],
       })
-      .where(eq(products.id, input.id))
+      .where(eq(products.id, input.id));
 
-    revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`)
+    revalidatePath(`/dashboard/stores/${input.storeId}/products/${input.id}`);
 
     return {
       data: null,
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }
 
 export async function updateProductRating(
-  input: z.infer<typeof updateProductRatingSchema>
+  input: z.infer<typeof updateProductRatingSchema>,
 ) {
   try {
     const product = await db.query.products.findFirst({
@@ -369,28 +369,28 @@ export async function updateProductRating(
         rating: true,
       },
       where: eq(products.id, input.id),
-    })
+    });
 
     if (!product) {
-      throw new Error("Product not found.")
+      throw new Error("Product not found.");
     }
 
     await db
       .update(products)
       .set({ rating: input.rating })
-      .where(eq(products.id, input.id))
+      .where(eq(products.id, input.id));
 
-    revalidatePath("/")
+    revalidatePath("/");
 
     return {
       data: null,
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }
 
@@ -402,26 +402,26 @@ export async function deleteProduct(input: { id: string; storeId: string }) {
       },
       where: and(
         eq(products.id, input.id),
-        eq(products.storeId, input.storeId)
+        eq(products.storeId, input.storeId),
       ),
-    })
+    });
 
     if (!product) {
-      throw new Error("Product not found.")
+      throw new Error("Product not found.");
     }
 
-    await db.delete(products).where(eq(products.id, input.id))
+    await db.delete(products).where(eq(products.id, input.id));
 
-    revalidatePath(`/dashboard/stores/${input.storeId}/products`)
+    revalidatePath(`/dashboard/stores/${input.storeId}/products`);
 
     return {
       data: null,
       error: null,
-    }
+    };
   } catch (err) {
     return {
       data: null,
       error: getErrorMessage(err),
-    }
+    };
   }
 }

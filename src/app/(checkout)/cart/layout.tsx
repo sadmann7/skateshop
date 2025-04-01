@@ -1,16 +1,16 @@
-import * as React from "react"
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation";
+import type * as React from "react";
 
-import { getCachedUser } from "@/lib/queries/user"
-import { SiteHeader } from "@/components/layouts/site-header"
+import { SiteHeader } from "@/components/layouts/site-header";
+import { getCachedUser } from "@/lib/queries/user";
 
 export default async function CartLayout({
   children,
 }: React.PropsWithChildren) {
-  const user = await getCachedUser()
+  const user = await getCachedUser();
 
   if (!user) {
-    redirect("/signin")
+    redirect("/signin");
   }
 
   return (
@@ -18,5 +18,5 @@ export default async function CartLayout({
       <SiteHeader user={user} />
       <main className="flex-1">{children}</main>
     </div>
-  )
+  );
 }

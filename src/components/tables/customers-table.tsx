@@ -1,39 +1,39 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { type ColumnDef } from "@tanstack/react-table"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import type { ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
+import * as React from "react";
 
-import { formatDate, formatPrice } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTable } from "@/components/data-table/data-table"
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+} from "@/components/ui/dropdown-menu";
+import { formatDate, formatPrice } from "@/lib/utils";
 
 interface AwaitedCustomer {
-  email: string | null
-  name: string | null
-  orderPlaced: number
-  totalSpent: number
-  createdAt: string
+  email: string | null;
+  name: string | null;
+  orderPlaced: number;
+  totalSpent: number;
+  createdAt: string;
 }
 
 interface CustomersTableProps {
   promise: Promise<{
-    data: AwaitedCustomer[]
-    pageCount: number
-  }>
-  storeId: string
+    data: AwaitedCustomer[];
+    pageCount: number;
+  }>;
+  storeId: string;
 }
 
 export function CustomersTable({ promise, storeId }: CustomersTableProps) {
-  const { data, pageCount } = React.use(promise)
+  const { data, pageCount } = React.use(promise);
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<AwaitedCustomer, unknown>[]>(
@@ -79,7 +79,7 @@ export function CustomersTable({ promise, storeId }: CustomersTableProps) {
         cell: ({ row }) => {
           const slug = row.original.email
             ?.replace("@", `-${Math.random().toString(36).substring(2, 10)}-`)
-            .replace(".com", "")
+            .replace(".com", "");
 
           return (
             <DropdownMenu>
@@ -100,14 +100,14 @@ export function CustomersTable({ promise, storeId }: CustomersTableProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          )
+          );
         },
       },
     ],
-    [storeId]
-  )
+    [storeId],
+  );
 
-  return null
+  return null;
 
   // return (
   //   <DataTable

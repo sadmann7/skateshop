@@ -1,6 +1,6 @@
-import * as z from "zod"
+import * as z from "zod";
 
-import { cartLineItemSchema } from "@/lib/validations/cart"
+import { cartLineItemSchema } from "@/lib/validations/cart";
 
 export const managePlanSchema = z.object({
   stripePriceId: z.string(),
@@ -8,17 +8,17 @@ export const managePlanSchema = z.object({
   stripeSubscriptionId: z.string().optional().nullable(),
   isSubscribed: z.boolean().optional(),
   isCurrentPlan: z.boolean().optional(),
-})
+});
 
 export const getStripeAccountSchema = z.object({
   storeId: z.string(),
   retrieveAccount: z.boolean().default(true).optional(),
-})
+});
 
 export const createPaymentIntentSchema = z.object({
   storeId: z.string(),
   items: z.array(cartLineItemSchema),
-})
+});
 
 export const getPaymentIntentsSchema = z.object({
   storeId: z.string(),
@@ -28,10 +28,10 @@ export const getPaymentIntentsSchema = z.object({
   customer: z.string().optional(),
   expand: z.array(z.string()).optional(),
   created: z.number().optional(),
-})
+});
 
 export const getPaymentIntentSchema = z.object({
   storeId: z.string(),
   paymentIntentId: z.string(),
   deliveryPostalCode: z.string().optional().nullable(),
-})
+});

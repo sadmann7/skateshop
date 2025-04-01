@@ -1,10 +1,10 @@
-import { cn } from "@/lib/utils"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Icons } from "@/components/icons"
-import { ProductCardSkeleton } from "@/components/product-card-skeleton"
-import { Shell } from "@/components/shell"
+import { Icons } from "@/components/icons";
+import { ProductCardSkeleton } from "@/components/product-card-skeleton";
+import { Shell } from "@/components/shell";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 export default function ProductLoading() {
   return (
@@ -77,14 +77,15 @@ export default function ProductLoading() {
       </div>
       <div className="space-y-6 overflow-hidden">
         <Skeleton className="h-7 w-1/4" />
-        <ScrollArea orientation="horizontal" className="pb-3.5">
+        <ScrollArea className="pb-3.5">
           <div className="flex gap-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <ProductCardSkeleton key={i} className="min-w-[260px]" />
             ))}
           </div>
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>
     </Shell>
-  )
+  );
 }
