@@ -12,6 +12,13 @@ export const authSchema = z.object({
     .max(100, {
       message: "Password must be at most 100 characters long",
     }),
+  username: z.string().min(3, {
+    message: "Username must be at least 3 characters long",
+  }),
+  phoneNumber: z.string()
+    .regex(/^\+91[0-9]{10}$/, {
+      message: "Please enter a valid Indian phone number starting with +91 followed by 10 digits",
+    }),
 })
 
 export const verifyEmailSchema = z.object({
@@ -23,8 +30,21 @@ export const verifyEmailSchema = z.object({
     .max(6),
 })
 
+export const verifyPhoneSchema = z.object({
+  code: z
+    .string()
+    .min(6, {
+      message: "Verification code must be 6 characters long",
+    })
+    .max(6),
+})
+
 export const checkEmailSchema = z.object({
   email: authSchema.shape.email,
+})
+
+export const checkPhoneSchema = z.object({
+  phone: authSchema.shape.phoneNumber,
 })
 
 export const resetPasswordSchema = z

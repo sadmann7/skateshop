@@ -36,6 +36,8 @@ export function SignUpForm() {
     defaultValues: {
       email: "",
       password: "",
+      username: "",
+      phoneNumber: "",
     },
   })
 
@@ -48,6 +50,8 @@ export function SignUpForm() {
       await signUp.create({
         emailAddress: data.email,
         password: data.password,
+        username: data.username,
+        ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
       })
 
       // Send email verification code
@@ -77,6 +81,32 @@ export function SignUpForm() {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="rodneymullen180@gmail.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="rodneymullen180" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phoneNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input placeholder="+1234567890" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
