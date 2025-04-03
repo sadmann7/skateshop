@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form"
 import type { z } from "zod"
 
 import { showErrorToast } from "@/lib/handle-error"
-import { verifyEmailSchema } from "@/lib/validations/auth"
+import { verifyPhoneSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -22,16 +22,16 @@ import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 import { toast } from "sonner"
 
-type Inputs = z.infer<typeof verifyEmailSchema>
+type Inputs = z.infer<typeof verifyPhoneSchema>
 
-export function VerifyEmailForm() {
+export function VerifyPhoneForm() {
   const router = useRouter()
   const { isLoaded, signUp, setActive } = useSignUp()
   const [loading, setLoading] = React.useState(false)
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(verifyEmailSchema),
+    resolver: zodResolver(verifyPhoneSchema),
     defaultValues: {
       code: "",
     },
@@ -43,7 +43,7 @@ export function VerifyEmailForm() {
     setLoading(true)
 
     try {
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
+      const completeSignUp = await signUp.attemptPhoneNumberVerification({
         code: data.code,
       })
       if (completeSignUp.status !== "complete") {
@@ -51,19 +51,12 @@ export function VerifyEmailForm() {
              or if the user needs to complete more steps.*/
         console.log(JSON.stringify(completeSignUp, null, 2))
       }
-      const emailStatus = completeSignUp.verifications.emailAddress.status
-      if (emailStatus && ["complete", "verified"].includes(emailStatus)) {
-        // await setActive({ session: completeSignUp.createdSessionId })
+      if (completeSignUp.status === "complete") {
+        await setActive({ session: completeSignUp.createdSessionId })
 
-        // router.push(`${window.location.origin}/`)
-        // Send phone verification code
-        await signUp.preparePhoneNumberVerification({
-          strategy: "phone_code",
-        })
-
-        router.push("/signup/verify-phone")
-        toast.message("Check your phone", {
-          description: "We sent you a 6-digit verification code.",
+        router.push(`${window.location.origin}/`)
+        toast.message("Account Created!", {
+          description: "Congratulations! Your account has been created.",
         })
       }
     } catch (err) {
