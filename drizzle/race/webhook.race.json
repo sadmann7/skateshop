@@ -1,0 +1,25 @@
+{
+  "rule": "A redelivered payment_intent.succeeded creates one order and takes stock once",
+  "setup": "INSERT INTO stores VALUES ('st1'); INSERT INTO products VALUES ('p1',10)",
+  "invariant": "SELECT (SELECT count(*) FROM orders WHERE stripe_payment_intent_id='pi_1') <= 1 AND (SELECT inventory FROM products WHERE id='p1') >= 8",
+  "isolation": [
+    "read committed"
+  ],
+  "notes": "SQL transliteration of the webhook handler; covers bounded SQL orders only, not HTTP or Stripe.",
+  "requests": [
+    {
+      "statements": [
+        "INSERT INTO addresses(id,line1) SELECT 'a1','x' WHERE NOT EXISTS (SELECT 1 FROM orders WHERE stripe_payment_intent_id='pi_1')",
+        "INSERT INTO orders(id,store_id,quantity,stripe_payment_intent_id,address_id) SELECT 'o1','st1',2,'pi_1','a1' WHERE NOT EXISTS (SELECT 1 FROM orders WHERE stripe_payment_intent_id='pi_1') ON CONFLICT (stripe_payment_intent_id) DO NOTHING",
+        "UPDATE products SET inventory = inventory - 2 WHERE id='p1' AND EXISTS (SELECT 1 FROM orders WHERE id='o1')"
+      ]
+    },
+    {
+      "statements": [
+        "INSERT INTO addresses(id,line1) SELECT 'a2','x' WHERE NOT EXISTS (SELECT 1 FROM orders WHERE stripe_payment_intent_id='pi_1')",
+        "INSERT INTO orders(id,store_id,quantity,stripe_payment_intent_id,address_id) SELECT 'o2','st1',2,'pi_1','a2' WHERE NOT EXISTS (SELECT 1 FROM orders WHERE stripe_payment_intent_id='pi_1') ON CONFLICT (stripe_payment_intent_id) DO NOTHING",
+        "UPDATE products SET inventory = inventory - 2 WHERE id='p1' AND EXISTS (SELECT 1 FROM orders WHERE id='o2')"
+      ]
+    }
+  ]
+}

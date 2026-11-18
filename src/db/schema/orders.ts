@@ -30,7 +30,7 @@ export const orders = pgTable(
     amount: decimal("amount", { precision: 10, scale: 2 })
       .notNull()
       .default("0"),
-    stripePaymentIntentId: text("stripe_payment_intent_id").notNull(),
+    stripePaymentIntentId: text("stripe_payment_intent_id").notNull().unique(),
     stripePaymentIntentStatus: text("stripe_payment_intent_status").notNull(),
     name: text("name").notNull(),
     email: text("email").notNull(),
