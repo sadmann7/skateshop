@@ -22,6 +22,8 @@
     "db:drop-migration": "drizzle-kit drop",
     "db:seed": "dotenv tsx src/db/seed.ts",
     "db:studio": "dotenv drizzle-kit studio",
+    "test": "npm run test:race",
+    "test:race": "npx -y viberaven@1.10.0 race . --spec drizzle/race/webhook.race.json --migrations drizzle/race",
     "email:dev": "email dev --dir src/components/emails -p 3001",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe --latest",
     "unlighthouse": "pnpm dlx unlighthouse --site https://skateshop.sadmn.com"

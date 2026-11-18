@@ -142,6 +142,15 @@ export async function POST(req: Request) {
             return new Response("Store not found.", { status: 404 })
           }
 
+          // Stripe redelivers events: if this payment intent already has an
+          // order, it was processed before. The unique index on
+          // stripe_payment_intent_id covers two deliveries running at once.
+          const existingOrder = await db.query.orders.findFirst({
+            columns: { id: true },
+            where: eq(orders.stripePaymentIntentId, paymentIntentId),
+          })
+          if (existingOrder) break
+
           // Create new address in DB
           const stripeAddress = paymentIntentSucceeded?.shipping?.address
 

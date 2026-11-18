@@ -74,6 +74,10 @@ This is an open source e-commerce skateshop build with everything new in Next.js
    pnpm run stripe:listen
    ```
 
+### Webhook concurrency test
+
+Stripe can deliver webhook events late, twice, or out of order. `pnpm test:race` runs the Stripe webhook's database writes in every possible order on a real Postgres with [VibeRaven](https://viberaven.dev) (`npx -y viberaven race`), and fails if any order breaks the rule in `drizzle/race/webhook.race.json`. It also runs in `npm test`. Add a rule there when you add a webhook handler.
+
 ## How do I deploy this?
 
 Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.

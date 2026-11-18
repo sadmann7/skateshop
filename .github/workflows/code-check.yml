@@ -128,3 +128,16 @@ jobs:
       - run: pnpm contentlayer build
 
       - run: pnpm typecheck
+
+  race:
+    runs-on: ubuntu-latest
+    name: Webhook concurrency
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm run test:race
